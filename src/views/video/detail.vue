@@ -32,7 +32,9 @@
                 <span>下载MV</span>
             </div>
         </div>
-        <comment :data="data" :title="'评论'"></comment>
+        <div class="div" v-loading="loading">
+            <comment :data="data" :title="'评论'"></comment>
+        </div>
     </div>
     <div class="right flex-1 flexbox-v">
         <div class="lyric-text-content">
@@ -126,6 +128,9 @@ export default {
                 hotComments: [], // 精彩评论
                 comments: [] // 所有评论
             },
+            limit: 50,
+            offset: 0,
+            loading: true,
             videos: []
         })
         // const { ctx } = getCurrentInstance()
@@ -139,6 +144,12 @@ export default {
             detailStore.videos,
             detailStore.countData
         ], (value) => {
+            if (state.offset) {
+                if (detailStore.total >= state.data.comments.length) {
+                    state.data.comments = [...state.data.comments, ...value[1]]
+                }
+                return
+            }
             state.data.hotComments = value[0]
             state.data.comments = value[1]
             state.playData = value[2]
@@ -151,11 +162,36 @@ export default {
                 id: router.currentRoute.value.query.id,
                 type: router.currentRoute.value.query.type || 'video'
             })
+            // console.log(router, 'playlistRes')
+            const params = {
+                id: router.currentRoute.value.query.id,
+                type: router.currentRoute.value.query.type || 'video',
+                limit: state.limit,
+                offset: state.offset
+            }
+            getData(params)
+            document.querySelector('.video-detail').addEventListener('scroll', function (e) {
+                // 获取定义好的scroll盒子
+                // const el = scrollDom.value
+                const condition = this.scrollHeight - this.scrollTop <= this.clientHeight
+                if (condition && !state.loading && detailStore.hasMore && detailStore.total >= state.data.comments.length) {
+                    state.offset++
+                    getData({ ...params, offset: state.offset, limit: state.limit })
+                }
+            })
             store.commit('showMenu', false)
         })
         // methods
         const getData = async (params) => {
+            if (state.offset > 0) {
+                state.loading = true
+                await store.dispatch('detail/getVideoCommentByPage', params).then(res => {
+                    state.loading = false
+                })
+                return
+            }
             await store.dispatch('detail/getVideoData', params).then(res => {
+                state.loading = false
             })
         }
         const onItemlistClick = (item, type) => {

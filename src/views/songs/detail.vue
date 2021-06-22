@@ -46,7 +46,9 @@
         </div>
     </div>
     <div class="bottom flexbox-h">
-        <comment :data="data"></comment>
+        <div class="comment-content" v-loading="loading">
+            <comment :data="data"></comment>
+        </div>
         <div class="same-content">
             <div class="same-play-list grid-list" v-if="data.playLists && data.playLists.length">
                 <h2 class="title">包含这首歌的歌单</h2>
@@ -117,6 +119,7 @@ export default {
             lyricList: [],
             data: {
                 total: 0,
+                hasMore: true,
                 hotComments: [], // 精彩评论
                 comments: [], // 所有评论
                 playLists: [],
@@ -134,6 +137,9 @@ export default {
                 // },
                 speed: 400
             },
+            limit: 50,
+            offset: 0,
+            loading: true,
             currLyric: detailStore.currLyric || {}, // 当前播放的歌词
             playData: rootStore.playData
         })
@@ -149,13 +155,19 @@ export default {
             detailStore.data.playLists,
             detailStore.data.songs
         ], (value) => {
+            if (state.offset) {
+                if (detailStore.data.total >= state.data.comments.length) {
+                    state.data.comments = [...state.data.comments, ...value[2]]
+                }
+                return
+            }
             state.lyricList = value[0]
             state.data.hotComments = value[1]
-            state.data.comments = value[2]
             state.playData = value[3]
             state.data.total = value[4]
             state.data.playLists = value[5]
             state.data.songs = value[6]
+            state.data.comments = value[2]
         })
         watch(() => rootStore.playData.url, (value) => {
             lyricScrollDom.value.scrollTop = 0
@@ -177,14 +189,34 @@ export default {
             getData({
                 id: router.currentRoute.value.query.id
             })
+            // console.log(router, 'playlistRes')
+            const params = { id: router.currentRoute.value.query.id, type: state.type, limit: state.limit, offset: state.offset }
+            getData(params)
+            document.querySelector('.song-detail').addEventListener('scroll', function (e) {
+                // 获取定义好的scroll盒子
+                // const el = scrollDom.value
+                const condition = this.scrollHeight - this.scrollTop <= this.clientHeight
+                if (condition && !state.loading && detailStore.data.hasMore && detailStore.data.total >= state.data.comments.length) {
+                    state.offset++
+                    getData({ ...params, offset: state.offset, limit: state.limit, type: state.type })
+                }
+            })
             store.commit('showMenu', false)
         })
         // methods
         const getData = async (params) => {
+            if (state.offset > 0) {
+                state.loading = true
+                await store.dispatch('detail/getCommentByPage', params).then(res => {
+                    state.loading = false
+                })
+                return
+            }
             await store.dispatch('detail/getsongData', params).then(res => {
                 // initSwiper()
                 state.currLyric = state.lyricList[0]
                 lyricScrollDom.value.scrollTop = 0
+                state.loading = false
             })
         }
         const onItemlistClick = (item, type) => {

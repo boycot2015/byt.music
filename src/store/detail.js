@@ -9,6 +9,7 @@ export default {
                 total: 0,
                 playLists: [],
                 songs: [],
+                hasMore: true,
                 hotComments: [], // 精彩评论
                 comments: [] // 所有评论
             },
@@ -19,6 +20,7 @@ export default {
         },
         videoDetail: {
             total: 0,
+            hasMore: true,
             countData: {},
             playData: {},
             hotComments: [], // 精彩评论
@@ -55,6 +57,16 @@ export default {
             }
             currLyric && (state.songDetail.currLyric = currLyric)
             currLyric && store.set('currLyric', currLyric)
+        },
+        updateComment (state, data) {
+            state.songDetail.data.total = data.total
+            state.songDetail.data.hasMore = data.more
+            state.songDetail.data.comments = data.comments
+        },
+        updateVideoComment (state, data) {
+            state.videoDetail.total = data.total
+            state.videoDetail.hasMore = data.more
+            state.videoDetail.comments = data.comments
         }
     },
     actions: {
@@ -93,6 +105,7 @@ export default {
                     el.time = filterTime(el.time)
                 })
                 state.data.total = commentRes.total
+                state.data.hasMore = commentRes.more
                 state.data.hotComments = commentRes.hotComments
                 state.data.comments = commentRes.comments
             }
@@ -154,6 +167,23 @@ export default {
             // console.log(state, 'state')
             commit('setVideoData', state)
             return Promise.resolve({ code: 200, success: true })
+        },
+        async getCommentByPage ({ commit }, params) {
+            const commentRes = await comment.music(params)
+            if (commentRes.code === 200) {
+                commentRes.comments.map(el => {
+                    el.time = filterTime(el.time)
+                })
+                commit('updateComment', commentRes)
+                return Promise.resolve({ code: 200, success: true })
+            }
+        },
+        async getVideoCommentByPage ({ state, commit }, params) {
+            const videoCommentRes = await video.comment(params)
+            if (videoCommentRes && videoCommentRes.code === 200) {
+                commit('updateVideoComment', videoCommentRes)
+                return Promise.resolve({ code: 200, success: true })
+            }
         }
     }
 }
