@@ -1,88 +1,92 @@
 <template>
-<div class="song-detail active">
-    <div class="top flexbox-h just-c">
-        <div class="handler" :class="{'active': !playData.paused}">
-            <div class="point"></div>
-            <div class="line-1"></div>
-            <div class="line-2"></div>
-            <div class="line-3"></div>
-            <div class="header-cap"></div>
-        </div>
-        <div class="mask" :style="{backgroundImage: `url(${playData.picUrl})`}"></div>
-        <div class="cover" :class="{'active play': !playData.paused, 'active pause': playData.paused}">
-            <div class="img">
-                <img :src="playData.picUrl" alt="">
+<div class="song-detail active flexbox-v">
+    <div class="scroll-view" ref="scrollDom">
+        <div class="top flexbox-h just-c">
+            <div class="handler" :class="{'active': !playData.paused}">
+                <div class="point"></div>
+                <div class="line-1"></div>
+                <div class="line-2"></div>
+                <div class="line-3"></div>
+                <div class="header-cap"></div>
             </div>
-        </div>
-        <div class="lyric-text-content">
-            <div class="info">
-                <div class="song-info flexbox-h">
-                    <p class="name">
-                        {{playData.name}}
-                        <span class="level red bd-red pad2 font12">{{playData.level === 'exhigh' ?'标准音质':'极高音质'}}</span>
-                        <span v-if="playData.type" class="type red bd-red pad2 font12">{{playData.type.toUpperCase()}}</span>
-                    </p>
+            <div class="mask" :style="{backgroundImage: `url(${playData.picUrl})`}"></div>
+            <div class="cover" :class="{'active play': !playData.paused, 'active pause': playData.paused}">
+                <div class="img">
+                    <img :src="playData.picUrl" alt="">
                 </div>
-                <div class="single-info flexbox-h">
-                    <span class="al-name line-one flex-1" title="{{playData.alName}}">专辑：<i>{{playData.alName}}</i></span>
-                    <span class="al-name line-one flex-1" title="{{playData.singer}}">歌手：<i>{{playData.singer}}</i></span>
-                    <span class="al-name line-one flex-1" title="{{playData.alName}}">来源：<i>{{playData.alName}}</i></span>
-                </div>
-                <i class="icon-music-minify icon-minify" @click="onTurnBack"></i>
             </div>
-            <div class="wrap" ref="lyricScrollDom">
-                <div class="lyric-text">
-                    <template v-if="lyricList && lyricList.length">
-                        <p
-                        v-for="item in lyricList" :key="item.id"
-                        :class="{'active': currLyric.time === item.time}"
-                        class="lyric-text-item">
-                        {{item.text}}
+            <div class="lyric-text-content">
+                <div class="info">
+                    <div class="song-info flexbox-h">
+                        <p class="name">
+                            {{playData.name}}
+                            <span class="level red bd-red pad2 font12">{{playData.level === 'exhigh' ?'标准音质':'极高音质'}}</span>
+                            <span v-if="playData.type" class="type red bd-red pad2 font12">{{playData.type.toUpperCase()}}</span>
                         </p>
-                    </template>
-                    <p class="lyric-text-item " v-else data-time="">暂无歌词~</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="bottom flexbox-h">
-        <div class="comment-content" v-loading="loading">
-            <comment :data="data"></comment>
-        </div>
-        <div class="same-content">
-            <div class="same-play-list grid-list" v-if="data.playLists && data.playLists.length">
-                <h2 class="title">包含这首歌的歌单</h2>
-                <div v-for="item in data.playLists" :key="item.id" @click="onItemlistClick(item, 1)" class="grid-list-item ftype-0 " data-id="{{item.id}}" data-type="{{item.type}}">
-                    <div class="same-play-list-item grid-list-item js-list-detail ftype-0" data-id="{{item.id}}" data-type="{{item.type}}">
-                        <div class="img fl">
-                            <span class="icon icon-music-pause"></span>
-                            <img :src="item.coverImgUrl" alt="">
-                        </div>
-                        <div class="text fl" title="{{item.rcmdtext || item.name}}">
-                            <p class="name line-one">{{item.name}}</p>
-                            <span class="play-count singer">播放：{{item.playCount}}</span>
-                        </div>
                     </div>
+                    <div class="single-info flexbox-h">
+                        <span class="al-name line-one flex-1" title="{{playData.alName}}">专辑：<i>{{playData.alName}}</i></span>
+                        <span class="al-name line-one flex-1" title="{{playData.singer}}">歌手：<i>{{playData.singer}}</i></span>
+                        <span class="al-name line-one flex-1" title="{{playData.alName}}">来源：<i>{{playData.alName}}</i></span>
+                    </div>
+                    <i class="icon-music-minify icon-minify" @click="onTurnBack"></i>
                 </div>
-            </div>
-            <div class="same-music-list grid-list" v-if="data.songs && data.songs.length">
-                <h2 class="title">相似歌曲</h2>
-                <div v-for="item in data.songs" @click="onItemlistClick(item, 2)" :key="item.id" class="grid-list-item ftype-0" data-id="{{item.id}}" data-url="{{item.mp3Url}}" data-type="{{item.type}}">
-                    <div class="same-play-list-item grid-list-item js-list-detail ftype-0" data-id="{{item.id}}" data-type="{{item.type}}" data-url="{{item.mp3Url}}">
-                        <div class="img fl">
-                            <span class="icon icon-music-pause"></span>
-                            <img :src="item.album.picUrl" alt="">
-                        </div>
-                        <div class="text fl" title="{{item.rcmdtext || item.name}}">
-                            <p class="name line-one">{{item.name}}</p>
-                            <span v-for="(singer, index) in item.album.artists" :key="singer.id" class="singer" v-html="singer.name + (index < item.album.artists.length - 1 ? '/': '')">
-                            </span>
-                        </div>
+                <div class="wrap" ref="lyricScrollDom">
+                    <div class="lyric-text">
+                        <template v-if="lyricList && lyricList.length">
+                            <p
+                            v-for="item in lyricList" :key="item.id"
+                            :class="{'active': currLyric.time === item.time}"
+                            class="lyric-text-item">
+                            {{item.text}}
+                            </p>
+                        </template>
+                        <p class="lyric-text-item " v-else data-time="">暂无歌词~</p>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="bottom flexbox-h">
+            <div class="comment-content" v-loading="loading">
+                <comment :data="data"></comment>
+            </div>
+            <div class="same-content">
+                <div class="same-play-list grid-list" v-if="data.playLists && data.playLists.length">
+                    <h2 class="title">包含这首歌的歌单</h2>
+                    <div v-for="item in data.playLists" :key="item.id" @click="onItemlistClick(item, 1)" class="grid-list-item ftype-0 " data-id="{{item.id}}" data-type="{{item.type}}">
+                        <div class="same-play-list-item grid-list-item js-list-detail ftype-0" data-id="{{item.id}}" data-type="{{item.type}}">
+                            <div class="img fl">
+                                <span class="icon icon-music-pause"></span>
+                                <img :src="item.coverImgUrl" alt="">
+                            </div>
+                            <div class="text fl" title="{{item.rcmdtext || item.name}}">
+                                <p class="name line-one">{{item.name}}</p>
+                                <span class="play-count singer">播放：{{item.playCount}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="same-music-list grid-list" v-if="data.songs && data.songs.length">
+                    <h2 class="title">相似歌曲</h2>
+                    <div v-for="item in data.songs" @click="onItemlistClick(item, 2)" :key="item.id" class="grid-list-item ftype-0" data-id="{{item.id}}" data-url="{{item.mp3Url}}" data-type="{{item.type}}">
+                        <div class="same-play-list-item grid-list-item js-list-detail ftype-0" data-id="{{item.id}}" data-type="{{item.type}}" data-url="{{item.mp3Url}}">
+                            <div class="img fl">
+                                <span class="icon icon-music-pause"></span>
+                                <img :src="item.album.picUrl" alt="">
+                            </div>
+                            <div class="text fl" title="{{item.rcmdtext || item.name}}">
+                                <p class="name line-one">{{item.name}}</p>
+                                <span v-for="(singer, index) in item.album.artists" :key="singer.id" class="singer" v-html="singer.name + (index < item.album.artists.length - 1 ? '/': '')">
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <!-- v-if="scrollTop > clientHeight"  -->
+    <div class="fix-top" :class="{show: scrollTop > clientHeight, hide: scrollTop <= clientHeight}" @click="scrollToTop">返回顶部</div>
 </div>
 </template>
 
@@ -115,6 +119,7 @@ export default {
         const detailStore = rootStore.detail.songDetail
         const router = useRouter()
         const lyricScrollDom = ref(null)
+        const scrollDom = ref(null)
         const state = reactive({
             lyricList: [],
             data: {
@@ -140,6 +145,8 @@ export default {
             limit: 50,
             offset: 0,
             loading: true,
+            scrollTop: 0,
+            clientHeight: 0,
             currLyric: detailStore.currLyric || {}, // 当前播放的歌词
             playData: rootStore.playData
         })
@@ -171,6 +178,8 @@ export default {
         })
         watch(() => rootStore.playData.url, (value) => {
             lyricScrollDom.value.scrollTop = 0
+            scrollDom.value.scrollTop = 0
+            state.offset = 0
         })
         watch(() => detailStore.currLyric, (value) => {
             state.currLyric = value
@@ -192,9 +201,11 @@ export default {
             // console.log(router, 'playlistRes')
             const params = { id: router.currentRoute.value.query.id, type: state.type, limit: state.limit, offset: state.offset }
             getData(params)
-            document.querySelector('.song-detail').addEventListener('scroll', function (e) {
+            document.querySelector('.scroll-view').addEventListener('scroll', function (e) {
                 // 获取定义好的scroll盒子
                 // const el = scrollDom.value
+                state.scrollTop = this.scrollTop
+                state.clientHeight = this.clientHeight
                 const condition = this.scrollHeight - this.scrollTop <= this.clientHeight
                 if (condition && !state.loading && detailStore.data.hasMore && detailStore.data.total >= state.data.comments.length) {
                     state.offset++
@@ -216,6 +227,7 @@ export default {
                 // initSwiper()
                 state.currLyric = state.lyricList[0]
                 lyricScrollDom.value.scrollTop = 0
+                scrollDom.value.scrollTop = 0
                 state.loading = false
             })
         }
@@ -230,6 +242,9 @@ export default {
                 route.path = '/songs/list'
             }
             router.push(route)
+            lyricScrollDom.value.scrollTop = 0
+            scrollDom.value.scrollTop = 0
+            state.offset = 0
             getData(item)
             store.dispatch('setPlayData', item)
         }
@@ -247,12 +262,17 @@ export default {
             state.playData.playListId + '' === '0' && (route.query.isDaily = true)
             router.push(route)
         }
+        const scrollToTop = () => {
+            scrollDom.value.scrollTop = 0
+        }
         return {
             ...toRefs(state),
             router,
             lyricScrollDom,
+            scrollDom,
             onTurnBack,
-            onItemlistClick
+            onItemlistClick,
+            scrollToTop
         }
     }
 }

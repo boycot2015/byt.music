@@ -200,3 +200,44 @@ function getStyle (ele, attr) {
     }
     return ele.currentStyle[attr]
 }
+/**
+ * 更换主题
+ * @param {*} $event
+ */
+export const changeTheme = ($event) => {
+    const localBg = window.localStorage.getItem('bgUrl')
+    if (localBg && !$event) {
+        document.querySelector('.music-client').style.backgroundImage = `url(${localBg})`
+        document.querySelector('.music-client .header').style.backgroundImage = `url(${localBg})`
+        document.querySelector('.music-client .footer').style.backgroundImage = `url(${localBg})`
+        document.querySelector('.music-client .js-play-list .title').style.backgroundImage = `url(${localBg})`
+        document.querySelector('.music-client .js-aside-template').style.backgroundImage = `url(${localBg})`
+        document.querySelector('.music-client .footer').classList = 'footer flexbox-h  theme'
+
+        if (document.querySelector('.music-client .js-mini-music-list .wrap') !== null) {
+            document.querySelector('.music-client .js-mini-music-list .wrap').style.backgroundImage = `url(${localBg})`
+        }
+        return
+    }
+    const requireModule = require.context(
+        '../assets/images/bgs/',
+        false,
+        /(\.png|\.jpg|\.jpeg)$/
+    )
+    const imagesNameArr = []
+    for (var i = 0; i < requireModule.keys().length; i++) {
+        imagesNameArr.push(requireModule.keys()[i].substr(2, requireModule.keys()[i].length))
+    }
+    let bgUrl = imagesNameArr[Math.floor(Math.random() * imagesNameArr.length)]
+    bgUrl = require(`../assets/images/bgs/${bgUrl}`)
+    window.localStorage.setItem('bgUrl', bgUrl)
+    document.querySelector('.music-client').style.backgroundImage = `url(${bgUrl})`
+    document.querySelector('.music-client .header').style.backgroundImage = `url(${bgUrl})`
+    document.querySelector('.music-client .footer').style.backgroundImage = `url(${bgUrl})`
+    document.querySelector('.music-client .js-play-list .title').style.backgroundImage = `url(${bgUrl})`
+    document.querySelector('.music-client .js-aside-template').style.backgroundImage = `url(${bgUrl})`
+    document.querySelector('.music-client .footer').classList = 'footer flexbox-h theme'
+    if (document.querySelector('.music-client .js-mini-music-list .wrap') !== null) {
+        document.querySelector('.music-client .js-mini-music-list .wrap').style.backgroundImage = `url(${bgUrl})`
+    }
+}

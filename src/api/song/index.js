@@ -12,6 +12,16 @@ export default {
             params
         })
     },
+    subscribe (params) {
+        return axios.get(urls.subscribe, {
+            params
+        })
+    },
+    like (params) {
+        return axios.get(urls.like, {
+            params
+        })
+    },
     hotCate (params) {
         return axios.get(urls.hotCate, {
             params

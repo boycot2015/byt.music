@@ -100,14 +100,14 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     (response) => {
         // 请求成功
-        // console.log('请求成功', response.data)
+        console.log('请求成功', response.data)
         if (response.status === 200) {
             if (response.data.code === 301) {
                 errorHandle(response.data.code)
             }
-            return Promise.resolve(response.data)
+            return Promise.resolve(response.data || response)
         } else {
-            return Promise.reject(response.data)
+            return Promise.reject(response.data || response)
         }
     },
     (error) => {
@@ -116,11 +116,10 @@ service.interceptors.response.use(
             response
         } = error
         if (response) {
-            if (!errorHandle(response.status, response)) {
-                return Promise.reject(response)
-            }
+            errorHandle(response.status, response)
+            return Promise.reject(response.data)
         } else {
-            // console.log('网咯错误****', error)
+            console.log('网咯错误****', error)
         }
     }
 )

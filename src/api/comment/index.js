@@ -8,6 +8,11 @@ export default {
             params
         })
     }, // 歌曲评论
+    like (params) {
+        return axios.get(urls.like, {
+            params
+        })
+    },
     playList (params) {
         return axios.get(urls.playList, {
             params

@@ -123,6 +123,7 @@
     <!-- /src/source/前世今生-文武贝钢琴版.mp3 -->
     <!-- <audio id="play-audio" controls="controls"></audio> -->
     <video id="play-audio" controls="controls"></video>
+    <div class="change-theme-btn" ref="dragthemeBox" @click="changeTheme" :style="{...theme.btn.styles}"></div>
 </div>
 </template>
 
@@ -147,7 +148,8 @@ import {
 import {
     useRouter
 } from 'vue-router'
-import { drag } from '@/utils'
+import { drag, changeTheme } from '@/utils'
+
 export default {
     name: 'layout',
     components: {
@@ -199,6 +201,10 @@ export default {
                     top: 0
                 }
             },
+            themeBarPos: {
+                t: 0,
+                b: 0
+            },
             progressPsition: '',
             playIndex: storeState.playData.playIndex,
             activeIndex: 0,
@@ -211,10 +217,19 @@ export default {
             isBoxMoved: false,
             isMinBoxMoved: false,
             showVolume: false,
-            showFooter: true
+            showFooter: true,
+            theme: {
+                btn: {
+                    styles: {}
+                },
+                config: {
+                    bgUrl: ''
+                }
+            }
         })
         const dragBox = ref(null)
         const dragMiniBox = ref(null)
+        const dragthemeBox = ref(null)
         const textMoveDom = ref(null)
         let audio = null
         // const { ctx } = getCurrentInstance()
@@ -313,6 +328,16 @@ export default {
             })
             audio = document.getElementById('play-audio')
             textMove(textMoveDom.value)
+            drag({
+                obj: [dragthemeBox.value],
+                target: [dragthemeBox.value],
+                site: state.themeBarPos,
+                cancelElem: [],
+                fn (pos) {
+                    // console.log(pos, 'pos')
+                }
+            })
+            changeTheme()
         })
         onUpdated(() => {
             // 处理
@@ -484,6 +509,8 @@ export default {
             playPrev,
             playNext,
             textMove,
+            changeTheme,
+            dragthemeBox,
             // ...computed(() => storeState).value,
             ...toRefs(state)
         }
@@ -491,7 +518,7 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style lang="less">
 /* 可以设置不同的进入和离开动画 */
 /* 设置持续时间和动画函数 */
 .slide-fade-enter-active {
@@ -508,5 +535,40 @@ export default {
 .slide-fade-enter-to ,.slide-fade-leave-to {
     transform: translate(0px);
     opacity: 1;
+}
+.change-theme-btn {
+    position: fixed;
+    top: 0px;
+    z-index: 100000;
+    right: 200px;
+    width: 32px;
+    font-size: 16px;
+    color: @white;
+    cursor: pointer;
+    &:before {
+        position: relative;
+        left: 50%;
+        margin-left: -2px;
+        content: "";
+        height: 40px;
+        width: 4px;
+        display: inline-block;
+        z-index: 9;
+        background: @white;
+        border-radius: 3px;
+    }
+    &:after {
+        content: "换主题";
+        line-height: 14px;
+        padding: 10px 8px;
+        top: -5px;
+        line-height: 20px;
+        position: relative;
+        z-index: 10;
+        background: @primary;
+        box-shadow: 0 0 10px @c-ccc;
+        border-radius: 3px;
+        display: block;
+    }
 }
 </style>

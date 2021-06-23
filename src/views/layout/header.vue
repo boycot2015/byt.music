@@ -29,7 +29,8 @@
             <user-info ref="userDialog" class="user-box" @mousedown.stop v-if="showLogin && hasLogin" @on-logout="onLogOut"></user-info>
         </div>
         <span class="text vip-text">{{headerData.vipTxt}}</span>
-        <div @click="showDialog" class="text icon theme icon-music-clothes"></div>
+        <!--  @click="showDialog"  -->
+        <div class="text icon theme icon-music-clothes" @click="changeTheme"></div>
         <div class="text icon message icon-music-msg"></div>
         <div class="text icon setting icon-music-setting"></div>
     </div>
@@ -61,6 +62,7 @@ import {
 } from 'vuex'
 import loginForm from '@/views/components/login'
 import userInfo from '@/views/components/userInfo'
+import { changeTheme } from '@/utils'
 export default {
     name: 'musicHeader',
     components: {
@@ -169,6 +171,7 @@ export default {
             onLogOut,
             onSearch,
             showDialog,
+            changeTheme,
             ...toRefs(state)
         }
     }

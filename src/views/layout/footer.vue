@@ -34,7 +34,7 @@
         </div>
         <div class="others flex-3 flexbox-h just-b">
             <i class="type">标准</i>
-            <i class="new">new</i>
+            <i class="new icon-music-love" @click="collect"></i>
             <i class="word">词</i>
             <i class="icon js-play-list-btn icon-music-play-list" @click.stop="showList = !showList"></i>
             <div class="play-list js-play-list" v-show="showList">
@@ -86,13 +86,15 @@ import {
     watch,
     reactive,
     toRefs,
-    onMounted
+    onMounted,
+    inject
     // getCurrentInstance
 } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { drag } from '@/utils'
 import List from '@/views/components/List'
+import { song } from '@/api/apiList'
 export default {
     name: 'musicFooter',
     components: {
@@ -121,6 +123,7 @@ export default {
                 volume: 0.2,
                 currentTime: '00:00',
                 paused: true,
+                liked: false,
                 ...computed(() => store.state.playData)
             },
             playList: {
@@ -388,6 +391,23 @@ export default {
                 })
             })
         }
+        // 收藏/取消歌单
+        const showToast = inject('showToast')
+        const collect = () => {
+            song.like({ id: state.playData.id }).then(res => {
+                showToast({
+                    text: res.message || `${state.liked ? '取消':'收藏'}${res.code === 200 ? '成功':'失败'}！`,
+                    showWrap: true, // 是否显示组件
+                    showContent: true // 作用:在隐藏组件之前,显示隐藏动画
+                })
+            }).catch(err => {
+                showToast({
+                    text: err.message || `${(state.liked ? '/取消':'收藏')}`,
+                    showWrap: true, // 是否显示组件
+                    showContent: true // 作用:在隐藏组件之前,显示隐藏动画
+                })
+            })
+        }
         return {
             ...toRefs(state),
             progressTimeDom,
@@ -400,6 +420,7 @@ export default {
             toggleAudioMouted,
             playPrev,
             playNext,
+            collect,
             onListItemdbClick
         }
     }
