@@ -123,7 +123,7 @@
     <!-- /src/source/前世今生-文武贝钢琴版.mp3 -->
     <!-- <audio id="play-audio" controls="controls"></audio> -->
     <video id="play-audio" controls="controls"></video>
-    <div class="change-theme-btn" ref="dragthemeBox" @click="changeTheme" :style="{...theme.btn.styles}"></div>
+    <div class="change-theme-btn" ref="dragthemeBox" @click="changeTheme"></div>
 </div>
 </template>
 
@@ -217,15 +217,7 @@ export default {
             isBoxMoved: false,
             isMinBoxMoved: false,
             showVolume: false,
-            showFooter: true,
-            theme: {
-                btn: {
-                    styles: {}
-                },
-                config: {
-                    bgUrl: ''
-                }
-            }
+            showFooter: true
         })
         const dragBox = ref(null)
         const dragMiniBox = ref(null)
@@ -545,6 +537,11 @@ export default {
     font-size: 16px;
     color: @white;
     cursor: pointer;
+    &.active {
+         &:before {
+            height: 50px;
+         }
+    }
     &:before {
         position: relative;
         left: 50%;
@@ -555,6 +552,7 @@ export default {
         display: inline-block;
         z-index: 9;
         background: @white;
+        transform: all 0.3s;
         border-radius: 3px;
     }
     &:after {

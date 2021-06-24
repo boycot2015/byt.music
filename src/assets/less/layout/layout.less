@@ -1,4 +1,4 @@
-.container {
+.music-client {
     height: 100%;
     width: 100%;
     background: url('../../images/bg.jpg');
@@ -6,6 +6,66 @@
     background-size: cover;
     background-repeat: no-repeat;
     position: relative;
+    user-select: none;
+    &.theme{
+        .music-box {
+            .header,.aside,.footer {
+                background-color: rgba(0, 0, 0, 0.7) !important;
+            }
+            .aside {
+                background-color: rgba(0, 0, 0, 0.5) !important;
+                .music-info {
+                    color: @c-ccc;
+                    span:after {
+                        color: @c-ccc;
+                    }
+                    &:hover {
+                        color: @white;
+                        span:after {
+                            color: @white;
+                        }
+                    }
+                }
+            }
+            .aside-item {
+                .title {
+                    color: @c-ccc;
+                    .icon:after {
+                        color: @c-ccc;
+                    }
+                    &:hover {
+                        color: @white;
+                        .icon:after {
+                            color: @white;
+                        }
+                    }
+                }
+                .list-item {
+                    .name, .icon:after {
+                        color: @c-ccc;
+                    }
+                    &:hover .name, &:hover .icon:after {
+                        color: @white;
+                    }
+                    &.active {
+                        &:hover .name, &:hover .icon:after {
+                            color: @c-666;
+                        }
+                    }
+                }
+            }
+            .footer {
+                color: @white !important;
+                border-top-color: transparent;
+                .play-btn,.progress,.others,.volume  {
+                    i,i:after,i:before {
+                        color: @white !important;
+                        border-color: @white !important;
+                    }
+                }
+            }
+        }
+    }
     .main {
         // padding: 20px;
         // min-height: 560px;
@@ -108,7 +168,6 @@
         // border: 1px solid @primary;
         border-radius: @border-radius;
         overflow: hidden;
-        background-color: #F5F5F7;
         .header {
             height: 50px;
             padding: 0 15px;
@@ -143,7 +202,7 @@
             }
             .back-forward {
                 margin-left: 10px;
-                border: 1px solid #A82828;
+                border: 1px solid @primary;
                 border-radius: 3px;
                 overflow: hidden;
                 .back-btn,
@@ -159,7 +218,7 @@
                     }
                 }
                 .back-btn {
-                    border-right: 1px solid #A82828;
+                    border-right: 1px solid @primary;
                 }
             }
             .search-box {
@@ -228,7 +287,7 @@
                 }
             }
             .operation {
-                border-left: 1px solid #A82828;
+                border-left: 1px solid @primary;
                 padding-left: 10px;
                 i {
                     font-size: 14px;
@@ -253,6 +312,7 @@
             align-items: flex-start;
             overflow: hidden;
             .main {
+                background-color: #F5F5F7;
                 overflow: hidden;
                 overflow-y: auto;
                 transition: all 0.5s;
@@ -344,13 +404,13 @@
                 overflow: hidden;
                 overflow-y: auto;
                 height: calc(100% - 75px);
-                background-color: #F5F5F7;
+                // background-color: #F5F5F7;
             }
             .music-info {
                 padding: 8px;
                 box-sizing: border-box;
                 border-top: 1px solid @c-ddd;
-                background-color: #F5F5F7;
+                // background-color: #F5F5F7;
                 position: relative;
                 .mask {
                     position: absolute;
@@ -420,15 +480,6 @@
         .footer {
             height: 50px;
             border-top: 1px solid @c-ddd;
-            &.theme {
-                color: @white !important;
-                .play-btn,.progress,.others,.volume  {
-                    i,i:after,i:before {
-                        color: @white !important;
-                        border-color: @white !important;
-                    }
-                }
-            }
             .play-btn {
                 width: 200px;
                 padding: 0 15px;

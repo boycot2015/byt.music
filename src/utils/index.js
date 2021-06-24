@@ -202,23 +202,37 @@ function getStyle (ele, attr) {
 }
 /**
  * 更换主题
- * @param {*} $event
+ * @param {*} $event 事件
  */
 export const changeTheme = ($event) => {
-    const localBg = window.localStorage.getItem('bgUrl')
-    if (localBg && !$event) {
-        document.querySelector('.music-client').style.backgroundImage = `url(${localBg})`
-        document.querySelector('.music-client .header').style.backgroundImage = `url(${localBg})`
-        document.querySelector('.music-client .footer').style.backgroundImage = `url(${localBg})`
-        document.querySelector('.music-client .js-play-list .title').style.backgroundImage = `url(${localBg})`
-        document.querySelector('.music-client .js-aside-template').style.backgroundImage = `url(${localBg})`
-        document.querySelector('.music-client .footer').classList = 'footer flexbox-h  theme'
-
-        if (document.querySelector('.music-client .js-mini-music-list .wrap') !== null) {
-            document.querySelector('.music-client .js-mini-music-list .wrap').style.backgroundImage = `url(${localBg})`
-        }
+    let themeConfig = window.localStorage.getItem('themeConfig')
+    const root = document.querySelector(':root')
+    if ($event) {
+        const className = $event.target.className
+        $event && ($event.target.classList = className + ' active')
+        setTimeout(() => {
+            $event.target.classList = className
+        }, 200)
+    }
+    const musicClass = 'music-client flexbox-h align-c just-c theme'
+    if (themeConfig && !$event) {
+        themeConfig = JSON.parse(themeConfig)
+        document.querySelector('.music-client').style.backgroundImage = `url(${themeConfig.bgUrl})`
+        document.querySelector('.music-client').classList = musicClass
+        root.setAttribute('style', '--primary-color:' + themeConfig.themeColor.primary)
         return
     }
+    const colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f']
+    const themeColor = {
+        primary: '#',
+        second: '#'
+    }
+    for (let index = 0; index < 6; index++) {
+        themeColor.primary += colors[Math.floor(Math.random() * (colors.length - 1))]
+        themeColor.second += colors[Math.floor(Math.random() * (colors.length - 1))]
+    }
+
+    root.setAttribute('style', '--primary-color:' + themeColor.primary)
     const requireModule = require.context(
         '../assets/images/bgs/',
         false,
@@ -230,14 +244,7 @@ export const changeTheme = ($event) => {
     }
     let bgUrl = imagesNameArr[Math.floor(Math.random() * imagesNameArr.length)]
     bgUrl = require(`../assets/images/bgs/${bgUrl}`)
-    window.localStorage.setItem('bgUrl', bgUrl)
+    window.localStorage.setItem('themeConfig', JSON.stringify({ bgUrl, themeColor }))
     document.querySelector('.music-client').style.backgroundImage = `url(${bgUrl})`
-    document.querySelector('.music-client .header').style.backgroundImage = `url(${bgUrl})`
-    document.querySelector('.music-client .footer').style.backgroundImage = `url(${bgUrl})`
-    document.querySelector('.music-client .js-play-list .title').style.backgroundImage = `url(${bgUrl})`
-    document.querySelector('.music-client .js-aside-template').style.backgroundImage = `url(${bgUrl})`
-    document.querySelector('.music-client .footer').classList = 'footer flexbox-h theme'
-    if (document.querySelector('.music-client .js-mini-music-list .wrap') !== null) {
-        document.querySelector('.music-client .js-mini-music-list .wrap').style.backgroundImage = `url(${bgUrl})`
-    }
+    document.querySelector('.music-client').classList = musicClass
 }

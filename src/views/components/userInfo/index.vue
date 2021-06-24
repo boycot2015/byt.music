@@ -93,7 +93,7 @@
     </div>
 </template>
 <style lang="less" scoped>
-.container .music-box
+.music-client .music-box
 .header .user-dialog {
     width: 260px;
     min-height: 340px;
