@@ -1,5 +1,4 @@
 import Dexie from 'dexie'
-
 export const drag = (options) => {
     var obj = options.obj
     var target = options.target || obj
@@ -204,47 +203,82 @@ function getStyle (ele, attr) {
  * 更换主题
  * @param {*} $event 事件
  */
-export const changeTheme = ($event) => {
-    let themeConfig = window.localStorage.getItem('themeConfig')
+export const changeTheme = ($event, themeConfig) => {
+    const localTheme = store.get('themeConfig')
+    if (localTheme && localTheme !== null) {
+        themeConfig = { ...JSON.parse(localTheme), ...themeConfig }
+    }
+    const musicClass = 'music-client flexbox-h align-c just-c theme'
     const root = document.querySelector(':root')
-    if ($event) {
+    const imagesNameArr = getLocalBgUrls()
+    let { themeColor, colors } = getLocalColors()
+    let bgUrlIndex = (themeConfig && themeConfig.bgUrlIndex) || 0
+    const colorIndex = (themeConfig && themeConfig.colorIndex) || 0
+    if ($event && $event.target) {
         const className = $event.target.className
         $event && ($event.target.classList = className + ' active')
         setTimeout(() => {
             $event.target.classList = className
-        }, 200)
+        }, 300)
     }
-    const musicClass = 'music-client flexbox-h align-c just-c theme'
     if (themeConfig && !$event) {
-        themeConfig = JSON.parse(themeConfig)
+        if (typeof themeConfig === 'string') {
+            themeConfig = JSON.parse(themeConfig)
+        }
+        themeConfig.themeColor = themeConfig.themeColor || themeColor
+        themeConfig.colors = colors
         document.querySelector('.music-client').style.backgroundImage = `url(${themeConfig.bgUrl})`
         document.querySelector('.music-client').classList = musicClass
-        root.setAttribute('style', '--primary-color:' + themeConfig.themeColor.primary)
-        return
+        themeConfig.themeColor && root.setAttribute('style', '--primary-color:' + themeConfig.themeColor.primary)
+        themeConfig.bgUrlList = imagesNameArr
+        store.set('themeConfig', JSON.stringify(themeConfig))
+        return Promise.resolve(themeConfig)
     }
-    const colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f']
-    const themeColor = {
-        primary: '#',
-        second: '#'
-    }
-    for (let index = 0; index < 6; index++) {
-        themeColor.primary += colors[Math.floor(Math.random() * (colors.length - 1))]
-        themeColor.second += colors[Math.floor(Math.random() * (colors.length - 1))]
-    }
-
     root.setAttribute('style', '--primary-color:' + themeColor.primary)
+    bgUrlIndex = Math.floor(Math.random() * (imagesNameArr.length - 1))
+    const bgUrl = imagesNameArr[bgUrlIndex]
+    themeColor = colors[colorIndex]
+    themeConfig = { bgUrl, themeColor, bgUrlIndex, bgUrlList: imagesNameArr, colors, colorIndex }
+    store.set('themeConfig', JSON.stringify(themeConfig))
+    document.querySelector('.music-client').style.backgroundImage = `url(${bgUrl})`
+    document.querySelector('.music-client').classList = musicClass
+    return Promise.resolve(themeConfig)
+}
+
+export const getLocalBgUrls = () => {
     const requireModule = require.context(
         '../assets/images/bgs/',
         false,
         /(\.png|\.jpg|\.jpeg)$/
     )
     const imagesNameArr = []
+    const urlsArr = []
     for (var i = 0; i < requireModule.keys().length; i++) {
         imagesNameArr.push(requireModule.keys()[i].substr(2, requireModule.keys()[i].length))
     }
-    let bgUrl = imagesNameArr[Math.floor(Math.random() * imagesNameArr.length)]
-    bgUrl = require(`../assets/images/bgs/${bgUrl}`)
-    window.localStorage.setItem('themeConfig', JSON.stringify({ bgUrl, themeColor }))
-    document.querySelector('.music-client').style.backgroundImage = `url(${bgUrl})`
-    document.querySelector('.music-client').classList = musicClass
+    imagesNameArr.map(el => {
+        urlsArr.push(require(`../assets/images/bgs/${el}`))
+    })
+    return urlsArr
+}
+export const getLocalColors = () => {
+    const colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f']
+    let bgUrlIndex = 0
+    const colorsArr = []
+    const getColor = () => {
+        const themeColor = {
+            primary: '#',
+            second: '#'
+        }
+        for (let index = 0; index < 6; index++) {
+            bgUrlIndex = Math.floor(Math.random() * (colors.length - 1))
+            themeColor.primary += colors[bgUrlIndex]
+            themeColor.second += colors[bgUrlIndex]
+        }
+        return themeColor
+    }
+    for (let index = 0; index < 28; index++) {
+        colorsArr.push(getColor())
+    }
+    return { themeColor: colorsArr[0], colors: colorsArr }
 }

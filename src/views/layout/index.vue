@@ -1,5 +1,5 @@
 <template>
-<div class="container music-client flexbox-h align-c just-c">
+<div class="music-client flexbox-h align-c just-c" @click.prevent="showThemeDialog=false">
     <div
     :style="{
         width: isExtend ? '100%': '',
@@ -102,28 +102,60 @@
         <div class="more js-mini-music-list"
         :class="{'actived': showList}">
             <ul class="music-list js-music-list">
-                    <list
-                        @dblclick.stop="onListItemdbClick(item)"
-                        @click="() => activeIndex = index"
-                        v-for="(item, index) in playList.data"
-                        :class="{
-                            'active': activeIndex === index,
-                            'play': playIndex === index && !playData.paused,
-                            'pause': playIndex === index && playData.paused
-                            }"
-                        :data="item"
-                        isminiPlay
-                        :index="index"
-                        :operation="false"
-                        :order="false"
-                        :key="index"></list>
+                <list
+                @dblclick.stop="onListItemdbClick(item)"
+                @click="() => activeIndex = index"
+                v-for="(item, index) in playList.data"
+                :class="{
+                    'active': activeIndex === index,
+                    'play': playIndex === index && !playData.paused,
+                    'pause': playIndex === index && playData.paused
+                    }"
+                :data="item"
+                isminiPlay
+                :index="index"
+                :operation="false"
+                :order="false"
+                :key="index"></list>
             </ul>
         </div>
     </div>
     <!-- /src/source/前世今生-文武贝钢琴版.mp3 -->
     <!-- <audio id="play-audio" controls="controls"></audio> -->
     <video id="play-audio" controls="controls"></video>
-    <div class="change-theme-btn" ref="dragthemeBox" @click="changeTheme"></div>
+    <div class="theme-dialog" @click.stop :class="{active: showThemeDialog}">
+        <div class="theme-dialog-title">选择主题</div>
+        <div class="icon-close" @click="showThemeDialog = false">×</div>
+        <div class="theme-dialog-body">
+            <div class="sub-title">选择背景</div>
+            <div class="pic-list">
+                <div class="pic-list-item"
+                :style="{
+                    backgroundImage: `url(${pic})`
+                }"
+                :class="{active: picIndex === index}"
+                @click="() => {picIndex = index;changeTheme('', {bgUrl: pic, bgUrlIndex: index})}" v-for="(pic, index) in localBgUrls" :key="pic">
+                </div>
+            </div>
+            <div class="sub-title">选择主题颜色</div>
+            <div class="colors-list">
+                <div class="colors-list-item"
+                :style="{
+                    backgroundColor: color.primary
+                }"
+                :class="{active: colorIndex === index}"
+                @click="() => {colorIndex = index;changeTheme('', {themeColor: color, colorIndex: index})}" v-for="(color, index) in colors" :key="color">
+                </div>
+            </div>
+        </div>
+        <!-- <div class="theme-dialog-footer">
+            <div class="btns">
+                <span>确定</span>
+                <span>取消</span>
+            </div>
+        </div> -->
+    </div>
+    <div class="change-theme-btn" :class="{hide: showThemeDialog, show: !showThemeDialog}" @dblclick.stop="changeTheme" ref="dragthemeBox" @click.stop="showThemeDialog = !showThemeDialog"></div>
 </div>
 </template>
 
@@ -205,6 +237,11 @@ export default {
                 t: 0,
                 b: 0
             },
+            showThemeDialog: false,
+            picIndex: 0,
+            colorIndex: 0,
+            colors: [],
+            localBgUrls: [],
             progressPsition: '',
             playIndex: storeState.playData.playIndex,
             activeIndex: 0,
@@ -329,7 +366,12 @@ export default {
                     // console.log(pos, 'pos')
                 }
             })
-            changeTheme()
+            changeTheme().then(res => {
+                state.picIndex = res.bgUrlIndex
+                state.colorIndex = res.colorIndex
+                state.localBgUrls = res.bgUrlList
+                state.colors = res.colors
+            })
         })
         onUpdated(() => {
             // 处理
@@ -537,10 +579,17 @@ export default {
     font-size: 16px;
     color: @white;
     cursor: pointer;
+    transition: transform 0.3s;
     &.active {
          &:before {
             height: 50px;
          }
+    }
+    &.hide {
+        transform: translateY(-200px);
+    }
+    &.show {
+        transform: translateY(0px);
     }
     &:before {
         position: relative;
