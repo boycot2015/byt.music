@@ -3,7 +3,7 @@
     @dblclick="onExtend"
     class="header flexbox-h">
     <div class="logo">
-        <router-link to="/" class="flexbox-h">
+        <router-link to="/" @click="goHome" class="flexbox-h">
             <div class="logo-icon icon-music-logo-icon"></div>
             <h3 class="logo-title">{{headerData.title}}</h3>
         </router-link>
@@ -120,6 +120,14 @@ export default {
         const onBoxHide = () => {
             emit('on-hide', true)
         }
+        const goHome = () => {
+            router.push('/')
+            emit('on-click', true)
+            document.querySelector('#play-video').pause()
+            store.dispatch('video/setVideoPlayerShow', false)
+            store.dispatch('detail/setSongPlayerShow', false)
+        }
+
         const onExtend = () => {
             state.ismini = !state.ismini
             emit('on-extend', !state.ismini)
@@ -164,6 +172,7 @@ export default {
             loginForm,
             userDialog,
             onBoxHide,
+            goHome,
             onExtend,
             onMinifty,
             onLoginFormClose,

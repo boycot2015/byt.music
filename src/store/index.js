@@ -99,6 +99,8 @@ export default createStore({
                             playData[key] = urlData[key]
                         }
                         commit('setPlayData', playData)
+                        commit('detail/setSongPlayer', playData)
+
                         if (urlData.url === null) {
                             resolve({ code: 0 })
                             return
@@ -135,8 +137,8 @@ export default createStore({
                         id: state.playList.data[state.playIndex].id
                     }
                 })
-                dispatch('detail/getsongData', state.playList.data[state.playIndex])
             }
+            dispatch('detail/getsongData', state.playList.data[state.playIndex])
         },
         playNext ({ commit, dispatch }, state) {
             dispatch('setPlayData', { ...state.playList.data[state.playIndex], playIndex: state.playIndex })
@@ -147,8 +149,8 @@ export default createStore({
                         id: state.playList.data[state.playIndex].id
                     }
                 })
-                dispatch('detail/getsongData', state.playList.data[state.playIndex])
             }
+            dispatch('detail/getsongData', state.playList.data[state.playIndex])
         }
     },
     modules: {

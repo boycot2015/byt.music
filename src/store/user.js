@@ -12,10 +12,6 @@ export default {
             hotComments: [], // 精彩评论
             comments: [] // 所有评论
         },
-        currLyric: {
-            time: '00:01',
-            text: (store.get('playData') !== null && store.get('playData').name) || '纯音乐，请欣赏~'
-        },
         cookie: Cookies.get('cookie') || '',
         userInfo: (store.get('userInfo') !== null && store.get('userInfo')) || {
             account: {},
@@ -30,23 +26,6 @@ export default {
                 state.userInfo[key] = data[key]
             }
             store.set('userInfo', data)
-        },
-        setCurrentLyric (state, curStr) {
-            let currLyric = ''
-            state.lyricList.map(el => {
-                if (el.time === curStr) {
-                    currLyric = el
-                }
-            })
-            // 首次播放存第一行
-            if (!currLyric && store.get('currLyric') === null) {
-                currLyric = {
-                    time: '00:01',
-                    text: (store.get('playData') !== null && store.get('playData').name) || ''
-                }
-            }
-            currLyric && (state.currLyric = currLyric)
-            currLyric && store.set('currLyric', currLyric)
         },
         setCookie (state, data) {
             state.cookie = data

@@ -16,7 +16,8 @@ export default {
             currLyric: {
                 time: '00:01',
                 text: (store.get('playData') !== null && store.get('playData').name) || '纯音乐，请欣赏~'
-            }
+            },
+            songParams: (store.get('songParams') !== null && store.get('songParams')) || {}
         },
         videoDetail: {
             total: 0,
@@ -26,7 +27,8 @@ export default {
             hotComments: [], // 精彩评论
             comments: [], // 所有评论
             videos: []
-        }
+        },
+        showSongPlayer: false
     },
     mutations: {
         setSongData (state, data) {
@@ -67,6 +69,13 @@ export default {
             state.videoDetail.total = data.total
             state.videoDetail.hasMore = data.more
             state.videoDetail.comments = data.comments
+        },
+        setSongPlayer (state, val) {
+            val && (state.songParams = val)
+            val && store.set('songParams', val)
+        },
+        showSongPlayer (state, val) {
+            state.showSongPlayer = val
         }
     },
     actions: {
@@ -78,6 +87,7 @@ export default {
                 data: {}
             }
             const newArr = []
+            if (!params.id) return
             if (lyricRes.code === 200 && !lyricRes.nolyric && lyricRes.lrc && lyricRes.lrc.lyric) {
                 const tempArr = lyricRes.lrc.lyric.split('\n')
                 tempArr.map((el, i) => {
@@ -184,6 +194,13 @@ export default {
                 commit('updateVideoComment', videoCommentRes)
                 return Promise.resolve({ code: 200, success: true })
             }
+        },
+        setSongPlayer ({ commit, dispatch }, val) {
+            commit('setSongPlayer', val)
+            commit('showSongPlayer', val.show)
+        },
+        setSongPlayerShow ({ commit }, val) {
+            commit('showSongPlayer', val)
         }
     }
 }

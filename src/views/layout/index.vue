@@ -10,7 +10,9 @@
     class="music-box js-music-box flexbox-v"
     ref="dragBox" v-show="!showMiniBox && showBox">
         <music-header
-        @on-minify="() => showMiniBox = true"
+        @on-minify="() => {
+            showMiniBox = true;
+        }"
         @on-hide="() => {
             showBox = false
             showMiniBox = true
@@ -21,6 +23,7 @@
             :style="{
                 height: `calc(100% - ${showFooter ? 100 : 50}px)`
             }">
+                <!-- :class="{'isClose': !showMenu}" -->
                 <music-aside :class="{'isClose': !showMenu}" @hideMenu="goDetail"></music-aside>
             <div
             :style="{
@@ -35,8 +38,11 @@
                     </transition>
                 </router-view>
             </div>
+            <to-top selector=".main"></to-top>
+            <audio-player-box :class="{show: showSongPlayer, hide: !showSongPlayer}"></audio-player-box>
+            <video-player-box :class="{show: showVideoPlayer, hide: !showVideoPlayer}"></video-player-box>
         </div>
-        <music-footer v-show="showFooter"></music-footer>
+        <music-footer v-show="showFooter && !showVideoPlayer"></music-footer>
     </div>
     <div
     @dblclick="() => {
@@ -163,6 +169,8 @@
 import musicHeader from './header'
 import musicAside from './aside'
 import musicFooter from './footer'
+import videoPlayerBox from '../video/detail'
+import audioPlayerBox from '../songs/detail'
 import List from '@/views/components/List'
 import {
     ref,
@@ -180,15 +188,17 @@ import {
 import {
     useRouter
 } from 'vue-router'
-import { drag, changeTheme } from '@/utils'
-
+import { drag, changeTheme, store } from '@/utils'
+const localStore = store
 export default {
     name: 'layout',
     components: {
         musicHeader,
         musicAside,
         musicFooter,
-        List
+        List,
+        videoPlayerBox,
+        audioPlayerBox
     },
     emits: {
         hideMenu: val => {
@@ -254,7 +264,9 @@ export default {
             isBoxMoved: false,
             isMinBoxMoved: false,
             showVolume: false,
-            showFooter: true
+            showFooter: true,
+            showVideoPlayer: false,
+            showSongPlayer: false
         })
         const dragBox = ref(null)
         const dragMiniBox = ref(null)
@@ -286,6 +298,12 @@ export default {
         watch(() => storeState.showMenu, (value) => {
             state.showMenu = value
         })
+        watch(() => storeState.video.showVideoPlayer, (value) => {
+            state.showVideoPlayer = value
+        })
+        watch(() => storeState.detail.showSongPlayer, (value) => {
+            state.showSongPlayer = value
+        })
         watch(() => storeState.detail.songDetail.currLyric, (value) => {
             state.currLyric = value
             textMoveDom.value.style.left = 0
@@ -305,7 +323,7 @@ export default {
             state.playIndex = value || 0
         })
         onBeforeMount(() => {
-            state.showMenu = !router.currentRoute.value.meta.hideMenu
+            // state.showMenu = !router.currentRoute.value.meta.hideMenu
             state.showFooter = !router.currentRoute.value.meta.hideFooter
         })
         onMounted(() => {
@@ -372,6 +390,8 @@ export default {
                 state.localBgUrls = res.bgUrlList
                 state.colors = res.colors
             })
+            state.currLyric = localStore.get('currLyric')
+            console.log(state.currLyric, 'state.currLyric')
         })
         onUpdated(() => {
             // 处理
@@ -385,13 +405,8 @@ export default {
             }
         })
         const goDetail = (val) => {
-            state.showMenu = false
-            router.push({
-                path: '/songs/detail',
-                query: {
-                    id: storeState.playData.id
-                }
-            })
+            document.querySelector('#play-video').pause()
+            store.dispatch('detail/setSongPlayerShow', true)
         }
         const onExtend = (val) => {
             state.isExtend = val

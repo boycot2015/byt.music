@@ -202,15 +202,13 @@ export default {
             })
         }
         const onListClick = (item) => {
-            // getData(item.type)
-            // console.log(item.vid, 'item')
             state.loading = true
-            router.push({
-                path: '/video/detail',
-                query: {
-                    id: item.id || item.vid || item.mvid,
-                    type: (router.currentRoute.value.query.name === 'MV') ? 'mv' : 'video'
-                }
+            // const audio = document.getElementById('play-audio')
+            // audio.pause()
+            store.dispatch('video/setVideoPlayer', {
+                id: item.id || item.vid || item.mvid,
+                show: true,
+                type: (router.currentRoute.value.query.name === 'MV') ? 'mv' : 'video'
             })
         }
         return {

@@ -9,9 +9,13 @@ import * as directives from './directives'
 import MessageBox from './components/MessageBox'
 // 引入自定义toast组件
 import showToast from './components/toast/index'
+import components from './components/index'
 const VueInstance = createApp(App)
 Object.keys(directives).forEach(k => {
     VueInstance.directive(k, directives[k])
+})
+Object.keys(components).forEach(k => {
+    VueInstance.component(k, components[k])
 })
 VueInstance.use(api)
     .use(MessageBox)

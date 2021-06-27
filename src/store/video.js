@@ -20,7 +20,9 @@ export default {
             hotMV: [],
             exclusive: [],
             topMV: []
-        }
+        },
+        videoParams: {},
+        showVideoPlayer: false
     },
     mutations: {
         setTab1Data (state, data) {
@@ -40,6 +42,12 @@ export default {
             state.tab1Data.list = list
             const localData = store.get('videoTab1Data')
             store.set('videoTab1Data', { ...localData, list }, new Date().getTime() + 300 * 1000)
+        },
+        setVideoPlayer (state, val) {
+            state.videoParams = val
+        },
+        showVideoPlayer (state, val) {
+            state.showVideoPlayer = val
         }
     },
     actions: {
@@ -189,6 +197,13 @@ export default {
                     reject(err)
                 })
             })
+        },
+        setVideoPlayer ({ commit, dispatch }, val) {
+            commit('setVideoPlayer', val)
+            commit('showVideoPlayer', val.show)
+        },
+        setVideoPlayerShow ({ commit }, val) {
+            commit('showVideoPlayer', val)
         }
     }
 }

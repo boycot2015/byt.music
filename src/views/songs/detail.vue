@@ -86,7 +86,8 @@
         </div>
     </div>
     <!-- v-if="scrollTop > clientHeight"  -->
-    <div class="fix-top" :class="{show: scrollTop > clientHeight, hide: scrollTop <= clientHeight}" @click="scrollToTop">返回顶部</div>
+    <to-top selector=".scroll-view"></to-top>
+    <!-- <div class="fix-top" :class="{show: scrollTop > clientHeight, hide: scrollTop <= clientHeight}" @click="scrollToTop">返回顶部</div> -->
 </div>
 </template>
 
@@ -113,7 +114,7 @@ export default {
     components: {
         Comment
     },
-    setup () {
+    setup (props, { emit }) {
         const store = useStore()
         const rootStore = store.state
         const detailStore = rootStore.detail.songDetail
@@ -194,12 +195,12 @@ export default {
                 }
             })
         })
+        watch(() => detailStore.songParams, (value) => {
+            const params = { id: value.id, type: state.type, limit: state.limit, offset: state.offset }
+            getData(params)
+        })
         onMounted(() => {
-            getData({
-                id: router.currentRoute.value.query.id
-            })
-            // console.log(router, 'playlistRes')
-            const params = { id: router.currentRoute.value.query.id, type: state.type, limit: state.limit, offset: state.offset }
+            const params = { id: detailStore.songParams.id, type: state.type, limit: state.limit, offset: state.offset }
             getData(params)
             document.querySelector('.scroll-view').addEventListener('scroll', function (e) {
                 // 获取定义好的scroll盒子
@@ -212,7 +213,6 @@ export default {
                     getData({ ...params, offset: state.offset, limit: state.limit, type: state.type })
                 }
             })
-            store.commit('showMenu', false)
         })
         // methods
         const getData = async (params) => {
@@ -225,42 +225,26 @@ export default {
             }
             await store.dispatch('detail/getsongData', params).then(res => {
                 // initSwiper()
-                state.currLyric = state.lyricList[0]
+                state.currLyric = state.lyricList[0] || {}
                 lyricScrollDom.value.scrollTop = 0
                 scrollDom.value.scrollTop = 0
                 state.loading = false
             })
         }
         const onItemlistClick = (item, type) => {
-            const route = {
-                path: '/songs/detail',
-                query: {
-                    id: item.id
-                }
-            }
-            if (type === 1) {
-                route.path = '/songs/list'
-            }
-            router.push(route)
-            lyricScrollDom.value.scrollTop = 0
-            scrollDom.value.scrollTop = 0
-            state.offset = 0
-            getData(item)
             store.dispatch('setPlayData', item)
+            getData(item)
+            store.dispatch('detail/setSongPlayer', {
+                id: item.id || item.vid || item.mvid,
+                show: true
+            })
         }
         // const initSwiper = () => {
         //     /* eslint-disable */
         //     new Swiper('.lyric-swiper-container', state.swiperOption)
         // }
         const onTurnBack = () => {
-            const route = {
-                path: '/songs/list',
-                query: {
-                    id: state.playData.playListId
-                }
-            }
-            state.playData.playListId + '' === '0' && (route.query.isDaily = true)
-            router.push(route)
+            store.dispatch('detail/setSongPlayer', false)
         }
         const scrollToTop = () => {
             scrollDom.value.scrollTop = 0

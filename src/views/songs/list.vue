@@ -282,6 +282,7 @@ export default {
                         if (!state.coverDetail.tracks[state.playIndex]) return
                         store.dispatch('setPlayData', { ...state.coverDetail.tracks[state.playIndex], playListId: state.id, playIndex: state.playIndex })
                     }
+                    store.dispatch('detail/setSongPlayer', state.coverDetail.tracks[state.playIndex])
                 })
             })
         }

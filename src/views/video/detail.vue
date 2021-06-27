@@ -1,12 +1,12 @@
 <template>
 <div class="video-detail flexbox-v active">
-    <div class="scroll-view flexbox-h" ref="scrollDom">
+    <div class="scroll-view video-detail-scroll flexbox-h" ref="scrollDom">
         <div class="left flex-3 flexbox-v" >
             <h3 class="title flexbox-h">
-                <span class="back-btn icon-music-left" @click="router.back(-1)"></span>
+                <span class="back-btn icon-music-left" @click="turnBack"></span>
                 <span class="level red bd-red pad2 font12">{{playData.level === 'exhigh' ?'极高音质':'标准音质'}}</span>
                 <span v-if="playData.type" class="type red bd-red pad2 font12">{{playData.type.toUpperCase()}}</span>
-                {{playData.title || playData.name}}
+                <p class="name line-one">{{playData.title || playData.name}}</p>
                 <span class="singer" v-if="playData.creator">{{playData.creator.nickname}}</span>
             </h3>
             <div class="cover">
@@ -89,9 +89,8 @@
                 </div>
             </div>
         </div>
+        <to-top selector=".video-detail-scroll"></to-top>
     </div>
-    <!-- v-if="scrollTop > clientHeight"  -->
-    <div class="fix-top" :class="{show: scrollTop > clientHeight, hide: scrollTop <= clientHeight}" @click="scrollToTop">返回顶部</div>
 </div>
 </template>
 
@@ -118,10 +117,11 @@ export default {
     components: {
         Comment
     },
-    setup () {
+    setup (props) {
         const store = useStore()
         const rootStore = store.state
         const detailStore = rootStore.detail.videoDetail
+        const videoParams = rootStore.video.videoParams
         const router = useRouter()
         const lyricScrollDom = ref(null)
         const scrollDom = ref(null)
@@ -164,19 +164,28 @@ export default {
             state.videos = value[4]
             state.countData = value[5]
         })
-        onMounted(() => {
+        watch(() => rootStore.video.videoParams, (value) => {
+            console.log(rootStore.video.videoParams, 'videoParams2222')
             getData({
-                id: router.currentRoute.value.query.id,
-                type: router.currentRoute.value.query.type || 'video'
+                id: value.id,
+                type: value.type || 'video'
             })
+        })
+        onMounted(() => {
             // console.log(router, 'playlistRes')
             const params = {
-                id: router.currentRoute.value.query.id,
-                type: router.currentRoute.value.query.type || 'video',
+                id: videoParams.id,
+                type: videoParams.type || 'video',
                 limit: state.limit,
                 offset: state.offset
             }
-            getData(params)
+            if (videoParams.id) {
+                getData({
+                    id: videoParams.id,
+                    type: videoParams.type || 'video'
+                })
+                getData(params)
+            }
             document.querySelector('.scroll-view').addEventListener('scroll', function (e) {
                 // 获取定义好的scroll盒子
                 // const el = scrollDom.value
@@ -188,7 +197,6 @@ export default {
                     getData({ ...params, offset: state.offset, limit: state.limit })
                 }
             })
-            store.commit('showMenu', false)
         })
         // methods
         const getData = async (params) => {
@@ -204,17 +212,10 @@ export default {
             })
         }
         const onItemlistClick = (item, type) => {
-            const route = {
-                path: '/video/detail',
-                query: {
-                    id: item.id || item.vid || item.mvid
-                }
-            }
-            router.push(route)
-            scrollDom.value.scrollTop = 0
-            state.offset = 0
-            getData({
-                id: router.currentRoute.value.query.id
+            store.dispatch('video/setVideoPlayer', {
+                id: item.id || item.vid || item.mvid,
+                show: true,
+                type: (router.currentRoute.value.query.name === 'MV') ? 'mv' : 'video'
             })
         }
         // const initSwiper = () => {
@@ -224,12 +225,17 @@ export default {
         const scrollToTop = () => {
             scrollDom.value.scrollTop = 0
         }
+        const turnBack = () => {
+            document.querySelector('#play-video').pause()
+            store.dispatch('video/setVideoPlayer', false)
+        }
         return {
             ...toRefs(state),
             router,
             lyricScrollDom,
             onItemlistClick,
             scrollDom,
+            turnBack,
             scrollToTop
         }
     }

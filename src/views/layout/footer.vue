@@ -367,6 +367,10 @@ export default {
                 if (item.id === el.id) {
                     state.playIndex = index
                     playAll(item)
+                    store.dispatch('detail/setSongPlayer', {
+                        id: item.id || item.vid || item.mvid,
+                        show: true
+                    })
                 }
             })
 

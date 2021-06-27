@@ -215,13 +215,12 @@ export default {
             })
         }
         const onListClick = (item) => {
-            // getData(item.type)
-            router.push({
-                path: '/video/detail',
-                query: {
-                    id: item.id,
-                    type: 'mv'
-                }
+            // const audio = document.getElementById('play-audio')
+            // audio.pause()
+            store.dispatch('video/setVideoPlayer', {
+                id: item.id || item.vid || item.mvid,
+                show: true,
+                type: (router.currentRoute.value.query.name === 'MV') ? 'mv' : 'video'
             })
         }
         // 整理筛选条件
