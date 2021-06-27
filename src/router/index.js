@@ -170,6 +170,7 @@ const routes = [
         component: Layout,
         meta: {
             icon: 'right',
+            hideInMenu: true,
             title: '创建的歌单'
 
         },
@@ -194,6 +195,7 @@ const routes = [
         component: Layout,
         meta: {
             title: '收藏的歌单',
+            hideInMenu: true,
             login: true,
             icon: 'right'
 
@@ -334,7 +336,8 @@ const routes = [
         component: Layout,
         meta: {
             title: '更新日志',
-            hideInMenu: true
+            unfold: true,
+            hideInMenu: false
         },
         children: [{
             path: '/upgrade',
@@ -342,7 +345,7 @@ const routes = [
             component: () => import('../views/upgrade.vue'),
             meta: {
                 title: '更新日志',
-                hideInMenu: true
+                hideInMenu: false
             }
         }]
     },

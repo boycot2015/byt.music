@@ -122,7 +122,7 @@ export default {
         font-size: 30px;
         font-weight: 400;
         color: @c-333;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
     }
     .content {
         max-height: 413px;
@@ -149,7 +149,7 @@ export default {
         width: 220px;
         position: absolute;
         right: 50px;
-        top: 50%;
+        top: 58%;
         margin-top: -200px;
         z-index: 1000;
         max-height: 400px;

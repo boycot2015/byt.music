@@ -10,7 +10,7 @@
                 class="title flexbox-h just-b js-toggle-class"
                 :class="
                 (activeClass && $value.path === activeFindex || $value.meta.unfold) && 'active '"
-                @click="() => {activeClass = !activeClass; activeFindex = $value.path}"
+                @click.stop="() => {activeClass = !activeClass; activeFindex = $value.path}"
                 data-path="{{$value.path}}">
                     <p class="name">{{$value.meta.title}}</p>
                     <span class="icon" v-if="$value.children && $value.children.length" :class="`icon-music-${$value.meta.icon}`"></span>
@@ -23,7 +23,7 @@
                     v-for="(item) in $value.children"
                     :key="item.name"
                     data-path="{{$value.children[cIndex].path}}"
-                    @click="() => activeRoute = item.path"
+                    @click.stop="() => activeRoute = item.path"
                     :class="{'active': activeRoute === item.path }"
                     class="list-item js-list-item flexbox-h">
                         <router-link :to="item.path">
