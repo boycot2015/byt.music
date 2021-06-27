@@ -8839,3 +8839,59 @@ commitId: 0f0df5d77ef099d59cb2b6eb2f5a86e243e26bbc
 说明:Initial commit
 commitId: 7eca7e15d5015aef0875c9f2fcd5c1c5b7917b36
 
+
+1. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jun 27 22:54:20 2021 +0800
+说明:跳转更新日志页面
+commitId: 7c3146d3c217d33471670b842758d0a8c89b5657
+
+2. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jun 27 22:44:37 2021 +0800
+说明:自动提交版本json信息
+commitId: d85250289b91ae5b193876128b998e5e867d0bf3
+
+3. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jun 27 22:44:34 2021 +0800
+说明:自动提交版本信息
+commitId: 5fb1bd502b4c31a1b7b32e070395f948bcdd43ad
+
+4. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jun 27 22:40:19 2021 +0800
+说明:界面优化
+commitId: b63a699bc9fc3cd321e89aadc3ff0171d5ce73ff
+
+5. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jun 27 16:00:48 2021 +0800
+说明:替换详情跳转方式
+commitId: d5ec57a94af16dce1524674772eebcdb018554c9
+
+6. 作者:boycot<boycot2017@163.com>
+提交时间:Sat Jun 26 03:50:11 2021 +0800
+说明:新增主题更改弹框
+commitId: 2449195d5c5558082a661421728e5f248db93206
+
+7. 作者:boycot<boycot2017@163.com>
+提交时间:Fri Jun 25 01:23:25 2021 +0800
+说明:新增主题色更换
+commitId: 7737dd82d4e05a274b24eaa59075ac56317fd8b3
+
+8. 作者:boycot<boycot2017@163.com>
+提交时间:Thu Jun 24 01:45:20 2021 +0800
+说明:新增主题背景更换
+commitId: 07ac4c26cecdad0788375c2bbc191774845bdd39
+
+9. 作者:boycot<boycot2017@163.com>
+提交时间:Wed Jun 23 01:27:31 2021 +0800
+说明:处理历史问题
+commitId: bb40691ff325536caab9ce85f9319c96940603c0
+
+10. 作者:boycot<boycot2017@163.com>
+提交时间:Mon Jun 21 00:27:17 2021 +0800
+说明:项目初始化
+commitId: 0f0df5d77ef099d59cb2b6eb2f5a86e243e26bbc
+
+11. 作者:Gitee<noreply@gitee.com>
+提交时间:Mon Jun 21 00:14:45 2021 +0800
+说明:Initial commit
+commitId: 7eca7e15d5015aef0875c9f2fcd5c1c5b7917b36
+
