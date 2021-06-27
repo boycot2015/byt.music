@@ -200,15 +200,18 @@ function getStyle (ele, attr) {
     return ele.currentStyle[attr]
 }
 /**
+ * zch-2021-06-24
  * 更换主题
  * @param {*} $event 事件
+ * @param {*} themeConfig 主题配置
+ * @param {*} selector 需要设置主题的dom选择器
  */
-export const changeTheme = ($event, themeConfig) => {
+export const changeTheme = ($event, themeConfig, selector = '.music-client') => {
     const localTheme = store.get('themeConfig')
     if (localTheme && localTheme !== null) {
         themeConfig = { ...JSON.parse(localTheme), ...themeConfig }
     }
-    const musicClass = 'music-client flexbox-h align-c just-c theme'
+    const musicClass = document.querySelector(selector).className
     const root = document.querySelector(':root')
     const imagesNameArr = getLocalBgUrls()
     let { themeColor, colors } = getLocalColors()
@@ -227,8 +230,8 @@ export const changeTheme = ($event, themeConfig) => {
         }
         themeConfig.themeColor = themeConfig.themeColor || themeColor
         themeConfig.colors = colors
-        document.querySelector('.music-client').style.backgroundImage = `url(${themeConfig.bgUrl})`
-        document.querySelector('.music-client').classList = musicClass
+        document.querySelector(selector).style.backgroundImage = `url(${themeConfig.bgUrl})`
+        document.querySelector(selector).classList = musicClass + ' theme'
         themeConfig.themeColor && root.setAttribute('style', '--primary-color:' + themeConfig.themeColor.primary)
         themeConfig.bgUrlList = imagesNameArr
         store.set('themeConfig', JSON.stringify(themeConfig))
@@ -240,8 +243,8 @@ export const changeTheme = ($event, themeConfig) => {
     themeColor = colors[colorIndex]
     themeConfig = { bgUrl, themeColor, bgUrlIndex, bgUrlList: imagesNameArr, colors, colorIndex }
     store.set('themeConfig', JSON.stringify(themeConfig))
-    document.querySelector('.music-client').style.backgroundImage = `url(${bgUrl})`
-    document.querySelector('.music-client').classList = musicClass
+    document.querySelector(selector).style.backgroundImage = `url(${bgUrl})`
+    document.querySelector(selector).classList = musicClass
     return Promise.resolve(themeConfig)
 }
 

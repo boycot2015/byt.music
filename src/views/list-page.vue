@@ -94,6 +94,16 @@ export default {
             state.activeTab = value
         })
         const onListClick = (item) => {
+            if (state.targetPath === '/video/detail') {
+                const audio = document.getElementById('play-audio')
+                audio.pause()
+                store.dispatch('video/setVideoPlayer', {
+                    id: item.id || item.vid || item.mvid,
+                    show: true,
+                    type: 'mv'
+                })
+                return
+            }
             router.push({
                 path: state.targetPath,
                 query: {

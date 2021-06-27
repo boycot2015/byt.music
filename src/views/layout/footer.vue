@@ -215,7 +215,7 @@ export default {
             // audio = new AudioPlayer({ ...state, el: audio })
             document.addEventListener('click', (e) => {
                 const playListDom = document.querySelector('.js-footer-music-list')
-                if (!playListDom.contains(e.target)) {
+                if (playListDom !==null && !playListDom.contains(e.target)) {
                     state.showList = false
                 }
             })

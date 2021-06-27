@@ -21,7 +21,7 @@
         ></music-header>
             <div class="center flexbox-h"
             :style="{
-                height: `calc(100% - ${showFooter ? 100 : 50}px)`
+                height: `calc(100% - ${showFooter && !showVideoPlayer ? 100 : 50}px)`
             }">
                 <!-- :class="{'isClose': !showMenu}" -->
                 <music-aside :class="{'isClose': !showMenu}" @hideMenu="goDetail"></music-aside>
@@ -38,11 +38,11 @@
                     </transition>
                 </router-view>
             </div>
-            <to-top selector=".main"></to-top>
+            <to-top selector=".main" v-if="!showSongPlayer && !showVideoPlayer"></to-top>
             <audio-player-box :class="{show: showSongPlayer, hide: !showSongPlayer}"></audio-player-box>
             <video-player-box :class="{show: showVideoPlayer, hide: !showVideoPlayer}"></video-player-box>
         </div>
-        <music-footer v-show="showFooter && !showVideoPlayer"></music-footer>
+        <music-footer v-if="showFooter && !showVideoPlayer"></music-footer>
     </div>
     <div
     @dblclick="() => {
@@ -127,8 +127,8 @@
         </div>
     </div>
     <!-- /src/source/前世今生-文武贝钢琴版.mp3 -->
-    <!-- <audio id="play-audio" controls="controls"></audio> -->
-    <video id="play-audio" controls="controls"></video>
+    <audio id="play-audio" controls="controls"></audio>
+    <!-- <video id="play-audio" controls="controls"></video> -->
     <div class="theme-dialog" @click.stop :class="{active: showThemeDialog}">
         <div class="theme-dialog-title">选择主题</div>
         <div class="icon-close" @click="showThemeDialog = false">×</div>
@@ -405,7 +405,7 @@ export default {
             }
         })
         const goDetail = (val) => {
-            document.querySelector('#play-video').pause()
+            document.getElementById('play-video').pause()
             store.dispatch('detail/setSongPlayerShow', true)
         }
         const onExtend = (val) => {

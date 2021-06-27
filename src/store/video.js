@@ -44,7 +44,8 @@ export default {
             store.set('videoTab1Data', { ...localData, list }, new Date().getTime() + 300 * 1000)
         },
         setVideoPlayer (state, val) {
-            state.videoParams = val
+            val && (state.videoParams = val)
+            val && store.set('videoParams', val)
         },
         showVideoPlayer (state, val) {
             state.showVideoPlayer = val

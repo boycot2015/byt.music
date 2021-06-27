@@ -215,12 +215,12 @@ export default {
             })
         }
         const onListClick = (item) => {
-            // const audio = document.getElementById('play-audio')
-            // audio.pause()
+            const audio = document.getElementById('play-audio')
+            audio.pause()
             store.dispatch('video/setVideoPlayer', {
                 id: item.id || item.vid || item.mvid,
                 show: true,
-                type: (router.currentRoute.value.query.name === 'MV') ? 'mv' : 'video'
+                type: 'mv'
             })
         }
         // 整理筛选条件

@@ -21,8 +21,8 @@
                     <div class="info flexbox-h just-b">
                         <span class="time flex-1 tl">{{hotComment.time}}</span>
                         <div class="right flex-3 tr">
-                            <span class="star">
-                                <i class="icon-music-star" :class="{active: hotComment.liked}" @click="star(hotComment)"></i>
+                            <span class="star" @click="star(hotComment)">
+                                <i class="icon-music-star" :class="{active: hotComment.liked}"></i>
                                 <i class="num" v-if="hotComment.likedCount">({{hotComment.likedCount}})</i>
                             </span>
                             <span class="share">分享</span>

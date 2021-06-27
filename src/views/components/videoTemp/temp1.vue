@@ -134,7 +134,7 @@ export default {
                 // 获取定义好的scroll盒子
                 // const el = scrollDom.value
                 const condition = this.scrollHeight - this.scrollTop <= this.clientHeight
-                if (condition && router.currentRoute.value.query.id) {
+                if (condition) {
                     state.offset++
                     store.dispatch('video/getListByCate', { offset: state.offset, limit: state.limit, id: state.activedCate.id })
                 }
@@ -156,10 +156,10 @@ export default {
             state.tabData.tags = value[1]
             state.tabData.subs = value[2]
             if (state.offset !== 1) {
-                if (props.data) {
-                    state.tabData.list.data = [...state.tabData.list.data, ...props.data]
-                    return
-                }
+                // if (props.data) {
+                //     state.tabData.list.data = [...state.tabData.list.data, ...props.data]
+                //     return
+                // }
                 state.tabData.list.data = [...state.tabData.list.data, ...value[3]]
                 return
             }
@@ -177,7 +177,7 @@ export default {
             }
             state.loading = true
             store.dispatch('video/getTab1Data', type).then(res => {
-                store.dispatch('video/getListByCate', { offset: 1, id: state.activedCate.id || '' })
+                store.dispatch('video/getListByCate', { offset: 0, id: state.activedCate.id || '' })
                 state.loading = false
             })
         }
@@ -189,7 +189,7 @@ export default {
             state.offset = 1
             state.tabData.list.data = []
             state.loading = true
-            store.dispatch('video/getListByCate', { offset: 1, id: (item && item.id) || '' }).then(res => {
+            store.dispatch('video/getListByCate', { offset: 0, id: (item && item.id) || '' }).then(res => {
                 router.push({
                     path: router.currentRoute.value.path,
                     query: {
@@ -203,12 +203,12 @@ export default {
         }
         const onListClick = (item) => {
             state.loading = true
-            // const audio = document.getElementById('play-audio')
-            // audio.pause()
+            const audio = document.getElementById('play-audio')
+            audio.pause()
             store.dispatch('video/setVideoPlayer', {
                 id: item.id || item.vid || item.mvid,
                 show: true,
-                type: (router.currentRoute.value.query.name === 'MV') ? 'mv' : 'video'
+                type: 'video'
             })
         }
         return {

@@ -122,7 +122,6 @@ export default {
         }
         const goHome = () => {
             router.push('/')
-            emit('on-click', true)
             document.querySelector('#play-video').pause()
             store.dispatch('video/setVideoPlayerShow', false)
             store.dispatch('detail/setSongPlayerShow', false)

@@ -10,7 +10,7 @@
                 <span class="singer" v-if="playData.creator">{{playData.creator.nickname}}</span>
             </h3>
             <div class="cover">
-                <video id="play-video" autoplay :src="playData.url" controls="controls"></video>
+                <video id="play-video" volume="0.3" autoplay :src="playData.url" controls="controls"></video>
                 <div class="img">
                     <img :src="playData.picUrl" alt="">
                 </div>
@@ -165,8 +165,7 @@ export default {
             state.countData = value[5]
         })
         watch(() => rootStore.video.videoParams, (value) => {
-            console.log(rootStore.video.videoParams, 'videoParams2222')
-            getData({
+            value.id && getData({
                 id: value.id,
                 type: value.type || 'video'
             })
@@ -226,8 +225,8 @@ export default {
             scrollDom.value.scrollTop = 0
         }
         const turnBack = () => {
-            document.querySelector('#play-video').pause()
-            store.dispatch('video/setVideoPlayer', false)
+            document.getElementById('play-video').pause()
+            store.dispatch('video/setVideoPlayerShow', false)
         }
         return {
             ...toRefs(state),
