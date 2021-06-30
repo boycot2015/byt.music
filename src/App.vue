@@ -1,9 +1,27 @@
 <template>
     <div class="cloud_music">
         <router-view/>
+        <!-- docker导航菜单栏 -->
+        <!-- <docker></docker> -->
+        <!-- 桌面图标 -->
+        <desk-top></desk-top>
+        <!-- 桌面歌词 -->
+        <!-- <lyric></lyric>
+        <div class="lyric">
+            <color-picker @change="getColor" :config="{attr: {defaultValue: '#f54040'}}"></color-picker>
+        </div> -->
+        <!-- 自定义右键菜单 -->
+        <context-menu></context-menu>
     </div>
 </template>
 <script>
+export default {
+    methods: {
+        getColor (val) {
+            console.log(val, 'color')
+        }
+    }
+}
 </script>
 <style>
 #app, .cloud_music {
