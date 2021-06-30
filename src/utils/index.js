@@ -206,7 +206,7 @@ function getStyle (ele, attr) {
  * @param {*} themeConfig 主题配置
  * @param {*} selector 需要设置主题的dom选择器
  */
-export const changeTheme = ($event, themeConfig, selector = '.music-client') => {
+export const changeTheme = ($event, themeConfig, selector = '.cloud_music') => {
     const localTheme = store.get('themeConfig')
     if (localTheme && localTheme !== null) {
         themeConfig = { ...JSON.parse(localTheme), ...themeConfig }

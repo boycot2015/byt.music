@@ -201,6 +201,10 @@ export default {
         })
         onMounted(() => {
             const params = { id: detailStore.songParams.id, type: state.type, limit: state.limit, offset: state.offset }
+            if (!params.id) {
+                state.loading = false
+                return
+            }
             getData(params)
             document.querySelector('.scroll-view').addEventListener('scroll', function (e) {
                 // 获取定义好的scroll盒子

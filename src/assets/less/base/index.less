@@ -254,3 +254,69 @@ animation-delay: -1.0s;
         -webkit-transform: scaleY(1.0);
     }
 }
+.cloud_music {
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    &.theme{
+        .music-box {
+            .header,.aside,.footer {
+                background-color: rgba(0, 0, 0, 0.7) !important;
+            }
+            .aside {
+                background-color: rgba(0, 0, 0, 0.5) !important;
+                .music-info {
+                    color: @c-ccc;
+                    span:after {
+                        color: @c-ccc;
+                    }
+                    &:hover {
+                        color: @white;
+                        span:after {
+                            color: @white;
+                        }
+                    }
+                }
+            }
+            .aside-item {
+                .title {
+                    color: @c-ccc;
+                    .icon:after {
+                        color: @c-ccc;
+                    }
+                    &:hover {
+                        color: @white;
+                        .icon:after {
+                            color: @white;
+                        }
+                    }
+                }
+                .list-item {
+                    .name, .icon:after {
+                        color: @c-ccc;
+                    }
+                    &:hover .name, &:hover .icon:after {
+                        color: @white;
+                    }
+                    &.active {
+                        &:hover .name, &:hover .icon:after {
+                            color: @c-666;
+                        }
+                    }
+                }
+            }
+            .footer {
+                border-top-color: transparent;
+                .play-btn,.progress,.others,.volume  {
+                    i,i:after,i:before {
+                        color: @white !important;
+                        border-color: @white !important;
+                    }
+                }
+                .progress {
+                    color: @white;
+                }
+            }
+        }
+    }
+}
