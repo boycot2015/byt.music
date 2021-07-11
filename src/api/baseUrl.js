@@ -1,7 +1,7 @@
 // 根据不同的环境设定不同的baseUrl，
 
 // let baseUrl = 'http://music.api.boycot.top' // 本地代理
-let baseUrl = 'http://music.api.boycot.top/' // 本地代理
+let baseUrl = 'http://music.api.boycot.top' // 本地代理
 let loginUrl
 const env = process.env.NODE_ENV === 'development'
     ? 'development' : process.env.VUE_APP_TITLE === 'show'
@@ -20,7 +20,7 @@ case 'show':
     baseUrl = 'http://music.api.boycot.top'
     break
 case 'production':
-    baseUrl = 'https://boycot-music-api.vercel.app'
+    // baseUrl = 'https://boycot-music-api.vercel.app'
     break
 }
 export default baseUrl
