@@ -161,6 +161,8 @@
             </div>
         </div> -->
     </div>
+    <!-- 桌面图标 -->
+    <desk-top></desk-top>
     <div class="change-theme-btn" :class="{hide: showThemeDialog, show: !showThemeDialog}" @dblclick.stop="changeTheme" ref="dragthemeBox" @click.stop="showThemeDialog = !showThemeDialog"></div>
 </div>
 </template>

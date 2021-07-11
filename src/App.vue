@@ -1,10 +1,8 @@
 <template>
     <div class="cloud_music">
-        <router-view/>
+        <router-view class="cloud_music_main" />
         <!-- docker导航菜单栏 -->
         <!-- <docker></docker> -->
-        <!-- 桌面图标 -->
-        <desk-top></desk-top>
         <!-- 桌面歌词 -->
         <!-- <lyric></lyric>
         <div class="lyric">
