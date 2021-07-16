@@ -35,7 +35,7 @@
         <div class="others flex-3 flexbox-h just-b">
             <i class="type">标准</i>
             <i class="new icon-music-love" @click="collect"></i>
-            <i class="word">词</i>
+            <i class="word" @click="showLyirc = !showLyirc">词</i>
             <i class="icon js-play-list-btn icon-music-play-list" @click.stop="showList = !showList"></i>
             <div class="play-list js-play-list" v-show="showList">
                 <div class="title flexbox-h just-c">
@@ -76,6 +76,8 @@
                 </div>
             </div>
         </div>
+        <!-- 桌面歌词 -->
+        <lyric v-model:isShow="showLyirc"></lyric>
     </div>
 </template>
 
@@ -150,7 +152,8 @@ export default {
             progressPsition: '', // 进度条位置
             activeIndex: 0,
             playIndex: store.state.playData.playIndex || 0,
-            showList: false
+            showList: false,
+            showLyirc: true
         })
         let audio = null
         const progressTimeDom = ref(null)

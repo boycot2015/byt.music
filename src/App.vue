@@ -1,11 +1,9 @@
 <template>
-    <div class="cloud_music">
+    <div class="cloud_music flexbox-h align-c just-c">
         <router-view class="cloud_music_main" />
         <!-- docker导航菜单栏 -->
         <!-- <docker></docker> -->
-        <!-- 桌面歌词 -->
-        <!-- <lyric></lyric>
-        <div class="lyric">
+        <!-- <div class="lyric">
             <color-picker @change="getColor" :config="{attr: {defaultValue: '#f54040'}}"></color-picker>
         </div> -->
         <!-- 自定义右键菜单 -->

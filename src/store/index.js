@@ -46,7 +46,8 @@ export default createStore({
         },
         playList: (store.get('playList') !== null && store.get('playList')) || [],
         showMenu: true,
-        isExtend: false
+        isExtend: false,
+        showLyric: true
     },
     mutations: {
         setTitle (state, title) {

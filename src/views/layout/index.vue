@@ -60,7 +60,7 @@
             @mouseout.stop.prevent="showPlayer = false"
             @mouseover.stop.prevent="showPlayer = true"
             >
-                <div class="img tl">
+                <div class="img tl" @mouseover.stop>
                     <img :src="playData.picUrl" alt="">
                 </div>
                 <div class="name tc">
