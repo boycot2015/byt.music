@@ -14,41 +14,41 @@
             </div>
         </div>
         <div class="user-dialog-item flexbox-h  border-b">
-            <div class="flex-1  border-r">
+            <div class="flex-1  border-r" @click="toStore('https://music.163.com/#/user/event?id='+ userinfo.profile.userId)">
                 <div class="num">{{userinfo.profile.eventCount}}</div>
                 <span class="txt">动态</span>
             </div>
-            <div class="flex-1 border-r">
+            <div class="flex-1 border-r" @click="toStore('https://music.163.com/#/user/follows?id='+ userinfo.profile.userId)">
                 <div class="num">{{userinfo.profile.follows}}</div>
                 <span class="txt">关注</span>
             </div>
-            <div class="flex-1">
+            <div class="flex-1" @click="toStore('https://music.163.com/#/user/fans?id='+ userinfo.profile.userId)">
                 <div class="num">{{userinfo.profile.followeds}}</div>
                 <span class="txt">粉丝</span>
             </div>
         </div>
-        <div class="user-dialog-item flexbox-h align-c">
+        <div class="user-dialog-item flexbox-h align-c" @click="toStore('https://music.163.com/#/member?id='+ userinfo.profile.userId)">
             <div class="flex-2 tl">
                 <i class="icon-music-user icon flex-1"></i>
                 <span class="txt">会员中心</span>
             </div>
             <div class="flex-1 tr">
-                <span class="txt txt-right">未订购</span>
+                <span class="txt txt-right" v-if="!userinfo.profile.vipType">未订购</span>
                 <i class="icon-music-right icon"></i>
             </div>
         </div>
-        <div class="user-dialog-item flexbox-h align-c">
+        <div class="user-dialog-item flexbox-h align-c" @click="toStore('https://music.163.com/#/user/level?id='+ userinfo.profile.userId)">
             <div class="flex-2 tl">
                 <i class="icon-music-user icon flex-1"></i>
                 <span class="txt">等级</span>
             </div>
             <div class="flex-1 tr">
-                <span class="txt txt-right">Lv.9</span>
+                <span class="txt txt-right">Lv.{{userinfo.level}}</span>
                 <i class="icon-music-right icon"></i>
             </div>
         </div>
         <div class="user-dialog-item flexbox-h align-c border-b">
-            <div class="flex-2 tl" @click="toStore">
+            <div class="flex-2 tl" @click="toStore('https://music.163.com/store/product')">
                 <i class="icon-music-user icon flex-1"></i>
                 <span class="txt">商城</span>
                 <span class="icon-new">new</span>
@@ -57,8 +57,8 @@
                 <i class="icon-music-right icon"></i>
             </div>
         </div>
-        <div class="user-dialog-item flexbox-h align-c">
-            <div class="flex-2 tl">
+        <div class="user-dialog-item flexbox-h align-c" @click="toStore('https://music.163.com/#/user/update?id='+ userinfo.profile.userId)">
+            <div class="flex-2 tl" >
                 <i class="icon-music-user icon flex-1"></i>
                 <span class="txt">个人信息设置</span>
             </div>
@@ -66,8 +66,8 @@
                 <i class="icon-music-right icon"></i>
             </div>
         </div>
-        <div class="user-dialog-item flexbox-h align-c border-b">
-            <div class="flex-2 tl">
+        <div class="user-dialog-item flexbox-h align-c border-b" @click="toStore('https://music.163.com/#/user/binding/m/list?id='+ userinfo.profile.userId)">
+            <div class="flex-2 tl" >
                 <i class="icon-music-user icon flex-1"></i>
                 <span class="txt">绑定社交账号</span>
             </div>
@@ -337,8 +337,10 @@ export default {
         const onClose = () => {
             emit('on-close', true)
         }
-        const toStore = () => {
-            window.open('https://music.163.com/store/product')
+        const toStore = (url) => {
+            // https://music.163.com/#/user/home?id=+userinfo.profile.userId
+            // 'https://music.163.com/store/product'
+            window.open(url)
         }
         const onLogout = () => {
             store.dispatch('user/logout').then(res => {
@@ -355,11 +357,17 @@ export default {
             }
         }
         const MessageBox = inject('messageBox')
-
+        const showToast = inject('showToast')
         const onSign = () => {
             store.dispatch('user/sign').then(res => {
                 emit('on-sign', true)
-                this.$vlayer.message({ content: 'success closed', icon: 'success' })
+                // this.$vlayer.message({ content: '操作成功', icon: 'success' })
+                showToast({
+                    text: res.msg || '操作成功',
+                    showWrap: true, // 是否显示组件
+                    showContent: true // 作用:在隐藏组件之前,显示隐藏动画
+                })
+                getData()
             }).catch(() => {
                 const $el = MessageBox({
                     content: '签到失败，重复签到',

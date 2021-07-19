@@ -151,7 +151,7 @@ export default {
         right: 50px;
         top: 58%;
         margin-top: -200px;
-        z-index: 1000;
+        z-index: 100;
         max-height: 400px;
         border-radius: 5px;
         padding: 10px;

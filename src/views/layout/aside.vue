@@ -11,7 +11,7 @@
                 :class="
                 (activeClass && $value.path === activeFindex || $value.meta.unfold) && 'active '"
                 @click.stop="() => {activeClass = !activeClass; activeFindex = $value.path}"
-                data-path="{{$value.path}}">
+                :data-path="$value.path">
                     <p class="name">{{$value.meta.title}}</p>
                     <span class="icon" v-if="$value.children && $value.children.length" :class="`icon-music-${$value.meta.icon}`"></span>
                 </div>
@@ -22,11 +22,10 @@
                     <li
                     v-for="(item) in $value.children"
                     :key="item.name"
-                    data-path="{{$value.children[cIndex].path}}"
                     @click.stop="() => activeRoute = item.path"
                     :class="{'active': activeRoute === item.path }"
                     class="list-item js-list-item flexbox-h">
-                        <router-link :to="item.path">
+                        <router-link :to="{path: item.path, query: { tabName: item.path === '/index' ? 'home': undefined}}">
                             <span class="icon" :class="`icon-music-${item.meta.icon}`"></span>
                             <span class="name">{{item.meta.title}}</span>
                             <span class="icon flex-1 tr" :class="`icon-music-${item.meta.rightIcon}`"></span>

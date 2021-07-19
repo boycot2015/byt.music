@@ -121,7 +121,7 @@ export default {
             emit('on-hide', true)
         }
         const goHome = () => {
-            router.push('/')
+            router.push({ path: '/', query: { tabName: 'home' } })
             document.querySelector('#play-video').pause()
             store.dispatch('video/setVideoPlayerShow', false)
             store.dispatch('detail/setSongPlayerShow', false)
