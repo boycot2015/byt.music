@@ -208,7 +208,7 @@ export default {
             store.dispatch('video/setVideoPlayer', {
                 id: item.id || item.vid || item.mvid,
                 show: true,
-                type: 'video'
+                type: (router.currentRoute.value.query.name === 'MV') ? 'mv' : 'video'
             })
         }
         return {

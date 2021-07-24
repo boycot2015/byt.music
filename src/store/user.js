@@ -61,9 +61,9 @@ export default {
             return new Promise((resolve, reject) => {
                 user.detail(params).then(res => {
                     if (res.code === 200) {
-                        const { account, profile, bindings, pcSign } = res
-                        commit('setData', { account, profile, bindings })
-                        commit('setSign', pcSign)
+                        const { account, profile, bindings, pcSign, mobileSign, ...others } = res
+                        commit('setData', { account, profile, bindings, ...others })
+                        commit('setSign', pcSign || mobileSign)
                         resolve(res)
                     } else {
                         reject(res)
