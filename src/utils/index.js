@@ -141,7 +141,7 @@ export const store = {
          * @param {*} value 值
          * @param {*} time 过期时间，不设置为永久
          */
-    set (key, value, time) {
+    set (key, value, time = new Date().getTime() + 24 * 60 * 60 * 1000) {
         const data = { value, expirse: new Date(time).getTime() }
         localStorage.setItem(key, JSON.stringify(data))
     },
@@ -265,6 +265,8 @@ export const getLocalBgUrls = () => {
     return urlsArr
 }
 export const getLocalColors = () => {
+    // const localColor = store.get('colors')
+    // if (localColor && localColor !== null) return store.get('colors')
     const colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f']
     let bgUrlIndex = 0
     const colorsArr = []
@@ -276,6 +278,7 @@ export const getLocalColors = () => {
         for (let index = 0; index < 6; index++) {
             bgUrlIndex = Math.floor(Math.random() * (colors.length - 1))
             themeColor.primary += colors[bgUrlIndex]
+            bgUrlIndex = Math.floor(Math.random() * (colors.length - 1))
             themeColor.second += colors[bgUrlIndex]
         }
         return themeColor

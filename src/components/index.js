@@ -4,6 +4,7 @@ import lyric from './lyric'
 import docker from './docker'
 import deskTop from './deskTop'
 import contextMenu from './contextmenu'
+import weather from './weather'
 
 export default {
     toTop,
@@ -11,5 +12,6 @@ export default {
     lyric,
     docker,
     deskTop,
-    contextMenu
+    contextMenu,
+    weather
 }

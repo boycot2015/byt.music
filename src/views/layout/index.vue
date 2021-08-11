@@ -162,7 +162,8 @@
         </div> -->
     </div>
     <!-- 桌面图标 -->
-    <desk-top></desk-top>
+    <!-- <desk-top></desk-top> -->
+    <weather ref="weatherBox" />
     <div class="change-theme-btn" :class="{hide: showThemeDialog, show: !showThemeDialog}" @dblclick.stop="changeTheme" ref="dragthemeBox" @click.stop="showThemeDialog = !showThemeDialog"></div>
 </div>
 </template>
@@ -274,6 +275,7 @@ export default {
         const dragMiniBox = ref(null)
         const dragthemeBox = ref(null)
         const textMoveDom = ref(null)
+        const weatherBox = ref(null)
         let audio = null
         // const { ctx } = getCurrentInstance()
         watch(() => {
@@ -374,6 +376,10 @@ export default {
                     obj: [dragMiniBox.value],
                     cancelElem: ['.js-mini-music-list', '.volume']
                 })
+                drag({
+                    obj: [weatherBox.value.$el],
+                    target: [weatherBox.value.$el]
+                })
             })
             audio = document.getElementById('play-audio')
             textMove(textMoveDom.value)
@@ -384,6 +390,15 @@ export default {
                 cancelElem: [],
                 fn (pos) {
                     // console.log(pos, 'pos')
+                }
+            })
+            console.log(weatherBox.value, 'pos')
+            drag({
+                obj: [weatherBox.value.$el],
+                target: [weatherBox.value.$el],
+                fn (pos) {
+                    state.isBoxMoved = true
+                    state.boxPos.max = pos
                 }
             })
             changeTheme().then(res => {
@@ -562,6 +577,7 @@ export default {
             textMove,
             changeTheme,
             dragthemeBox,
+            weatherBox,
             // ...computed(() => storeState).value,
             ...toRefs(state)
         }

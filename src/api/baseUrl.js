@@ -2,6 +2,7 @@
 
 // let baseUrl = 'http://music.api.boycot.top' // 本地代理
 let baseUrl = 'http://music.api.boycot.top' // 本地代理
+const weatherUrl = 'http://api.boycot.top/api' // 本地代理
 let loginUrl
 const env = process.env.NODE_ENV === 'development'
     ? 'development' : process.env.VUE_APP_TITLE === 'show'
@@ -24,4 +25,4 @@ case 'production':
     break
 }
 export default baseUrl
-export { loginUrl }
+export { loginUrl, weatherUrl }

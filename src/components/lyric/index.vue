@@ -5,6 +5,7 @@
           <div class="operate-icon">
             <i class="font-min font-icon" @click.stop="setFontStyle('min')" title="减小字体">A-</i>
             <i class="font-plus font-icon" @click.stop="setFontStyle('plus')" title="加大字体">A+</i>
+            <i class="text icon font-icon theme icon-music-clothes" @click.stop="setFontStyle('color')"></i>
           </div>
       </div>
       <div class="content" :style="fontStyle">
@@ -31,9 +32,11 @@ import {
 //     useRouter
 // } from 'vue-router'
 import {
-    drag
+    drag,
+    store,
+    getLocalColors
 } from '@/utils'
-// const storage = store
+const storage = store
 export default {
     props: {
         isShow: {
@@ -107,16 +110,6 @@ export default {
         })
         watch(() => detailStore.currLyric, (value) => {
             state.currLyric = value
-            // state.lyricList.map((el, index) => {
-            //     if (value.time === el.time) {
-            //         if (index > 5 && index < state.lyricList.length - 5) {
-            //             const offsetHeight = lyricScrollDom.value.children[0].children[0].offsetHeight
-            //             animate(lyricScrollDom.value, offsetHeight * (index - 5), 'scrollTop', 1)
-            //         } else {
-            //             clearInterval(lyricScrollDom.value.timer)
-            //         }
-            //     }
-            // })
         })
         onMounted(() => {
             window.addEventListener('resize', (e) => {
@@ -135,7 +128,13 @@ export default {
                 }
             })
             // state.currLyric = localStore.get('currLyric')
-            console.log(state.currLyric, 'state.currLyric')
+            console.log(storage.get('fontStyles'), 'state.fontStyle')
+            if (storage.get('fontStyles') && storage.get('fontStyles') !== null) {
+                state.fontStyle = storage.get('fontStyles')
+                state.fontStyleList.map(el => {
+                    el.color = state.fontStyle.color
+                })
+            }
         })
         onUpdated(() => {
             // 处理
@@ -144,6 +143,7 @@ export default {
                 lyricBox.value.style.top = state.boxPos.min.top + 'px'
             }
         })
+        // 设置歌词样式
         const setFontStyle = (type) => {
             if (type === 'plus') {
                 state.fontStyle.id += 1
@@ -157,9 +157,16 @@ export default {
                     state.fontStyle.id = 1
                 }
             }
+            if (type === 'color') {
+                const colorObj = getLocalColors()
+                state.fontStyle.color = colorObj.themeColor.primary
+                state.fontStyleList.map(el => {
+                    el.color = state.fontStyle.color
+                })
+            }
             const fontStyle = state.fontStyleList.filter(el => el.id === state.fontStyle.id)[0]
             state.fontStyle = JSON.parse(JSON.stringify(fontStyle))
-            // console.log(fontStyle, 'state.fontStyle')
+            storage.set('fontStyles', state.fontStyle)
         }
         const onClose = () => {
             emit('update:isShow', false)
@@ -226,6 +233,9 @@ export default {
             .font-icon {
                 margin-right: 10px;
                 cursor: pointer;
+                &::after {
+                    color: @white;
+                }
             }
         }
     }

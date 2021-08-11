@@ -9,8 +9,8 @@
         </router-link>
     </div>
     <div class="back-forward tc flexbox-h">
-        <div class="back-btn" @click="router.back()">&lt;</div>
-        <div class="forward-btn" @click="router.forward()">&gt;</div>
+        <div class="back-btn" @click="goBack">&lt;</div>
+        <div class="forward-btn" @click="goForward">&gt;</div>
     </div>
     <div class="search-box flexbox-h">
         <input type="text" v-model="searchForm.key" @keyup="onSearch" :placeholder="searchForm.placeholder">
@@ -126,7 +126,16 @@ export default {
             store.dispatch('video/setVideoPlayerShow', false)
             store.dispatch('detail/setSongPlayerShow', false)
         }
-
+        const goBack = () => {
+            router.back()
+            store.dispatch('video/setVideoPlayerShow', false)
+            store.dispatch('detail/setSongPlayerShow', false)
+        }
+        const goForward = () => {
+            router.forward()
+            store.dispatch('video/setVideoPlayerShow', false)
+            store.dispatch('detail/setSongPlayerShow', false)
+        }
         const onExtend = () => {
             state.ismini = !state.ismini
             emit('on-extend', !state.ismini)
@@ -172,6 +181,8 @@ export default {
             userDialog,
             onBoxHide,
             goHome,
+            goBack,
+            goForward,
             onExtend,
             onMinifty,
             onLoginFormClose,
