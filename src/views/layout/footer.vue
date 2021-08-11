@@ -153,7 +153,7 @@ export default {
             activeIndex: 0,
             playIndex: store.state.playData.playIndex || 0,
             showList: false,
-            showLyirc: true
+            showLyirc: false
         })
         let audio = null
         const progressTimeDom = ref(null)

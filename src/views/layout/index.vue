@@ -392,14 +392,9 @@ export default {
                     // console.log(pos, 'pos')
                 }
             })
-            console.log(weatherBox.value, 'pos')
             drag({
                 obj: [weatherBox.value.$el],
-                target: [weatherBox.value.$el],
-                fn (pos) {
-                    state.isBoxMoved = true
-                    state.boxPos.max = pos
-                }
+                target: [weatherBox.value.$el]
             })
             changeTheme().then(res => {
                 state.picIndex = res.bgUrlIndex

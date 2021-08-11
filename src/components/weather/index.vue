@@ -22,9 +22,14 @@ export default {
     created () {
         this.init()
     },
+    mounted () {
+        setInterval(() => {
+            this.init()
+        }, 15 * 1000)
+    },
     methods: {
         init () {
-            axios.get(`${weatherUrl}/weather`, { location: '赣州' })
+            axios.get(`${weatherUrl}/weather`)
                 .then(res => {
                     if (!res.success) return
                     this.weathers = [res.data]

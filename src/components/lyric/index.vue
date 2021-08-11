@@ -41,7 +41,7 @@ export default {
     props: {
         isShow: {
             type: [Object, Boolean],
-            default: true
+            default: false
         }
     },
     emits: [
@@ -53,7 +53,7 @@ export default {
         const currLyric = store.state.detail.songDetail.currLyric || {}
         const detailStore = store.state.detail.songDetail
         const state = reactive({
-            isShow: true,
+            isShow: false,
             lyricList: [],
             fontStyle: {
                 id: 4,
