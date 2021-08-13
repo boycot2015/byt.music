@@ -71,19 +71,19 @@ export default {
     background: linear-gradient(-45deg, #496eaa, #944fa8, @primary, yellowgreen, #944fa8, #496eaa);
     background-size:1400% 300%;
     font-size: 18px;
-    animation:bgMove 30s ease infinite;
-    -webkit-animation: bgMove 30s ease infinite;
-    -moz-animation: bgMove 30s ease infinite;
+    animation:bgMove 20s ease infinite;
+    -webkit-animation: bgMove 20s ease infinite;
+    -moz-animation: bgMove 20s ease infinite;
 }
 @keyframes bgMove {
     0% {
         background-position: 0% 0%; }
     25% {
-        background-position: 25% 100%; }
+        background-position: 50% 50%; }
     50% {
         background-position: 50% 100%; }
     75% {
-        background-position: 75% 100%; }
+        background-position: 100% 50%; }
     100% {
         background-position: 100% 0%;
     }

@@ -1,11 +1,12 @@
 <template>
-    <div id="contextmenu" @click.stop>
+    <div id="contextmenu" @click.prevent>
         <div class="menu"
         v-for="menu in contextmenu"
-        :key="menu.name">{{menu.name}}</div>
+        :key="menu.name" @click.stop="(event) => onMenuClick(event, menu)">{{menu.name}}</div>
       </div>
 </template>
 <script>
+import html2canvas from 'html2canvas'
 export default {
     name: 'contextMenu',
     data () {
@@ -17,15 +18,18 @@ export default {
                 name: '刷新',
                 event: 'refresh'
             }, {
-                name: '删除',
-                event: 'delete'
-            }, {
-                name: '重命名',
-                event: 'rename'
-            }, {
-                name: '新建文件夹',
-                event: 'makedir'
-            }, {
+                name: '打印',
+                event: 'print'
+            },
+            {
+                name: '另存为',
+                event: 'saveHtml'
+            },
+            // {
+            //     name: '另存为',
+            //     event: 'saveAs'
+            // },
+            {
                 name: '属性',
                 event: 'prop'
             }]
@@ -34,6 +38,69 @@ export default {
     methods: {
         getColor (val) {
             console.log(val, 'color')
+        },
+        onMenuClick (event, menu) {
+            switch (menu.event) {
+            case 'refresh':
+                window.location.reload()
+                break
+            case 'print':
+                window.print()
+                break
+            case 'saveAs':
+                // 'Saveas'表示打开“文件另存为”对话框命令
+                console.log(event, 'event.target')
+                html2canvas(document.querySelector('.music-client .music-box'), { scale: 1, logging: false, useCORS: true }).then(canvas => {
+                    var url = canvas.toDataURL('png')
+                    // 以下代码为下载此图片功能
+                    // window.open(url)
+                    var triggerDownload = document.createElement('a')
+                    triggerDownload.setAttribute('href', url)
+                    triggerDownload.classList = 'html2-canvas'
+                    triggerDownload.setAttribute('download', 'img.png')
+                    document.body.appendChild(triggerDownload)
+                    document.querySelector('.html2-canvas').click()
+                    document.querySelector('.html2-canvas').remove()
+                })
+                break
+            case 'saveHtml':
+                this.exportHtml(document.title + '.html', document.getElementsByTagName('html')[0].outerHTML)
+                break
+            default:
+                break
+            }
+            document.querySelector('#contextmenu').style.display = 'none'
+        },
+        getBase64Image (imgurl) {
+            var img = new Image()
+            img.src = imgurl
+            img.setAttribute('crossOrigin', 'anonymous')
+            img.onload = function () {
+                var canvas = document.createElement('canvas')
+                canvas.width = 300// 这个设置不能丢，否者会成为canvas默认的300*150的大小
+                canvas.height = 300// 这个设置不能丢，否者会成为canvas默认的300*150的大小
+                var ctx = canvas.getContext('2d')
+                ctx.drawImage(img, 0, 0, 300, 300)
+                var dataURL = canvas.toDataURL('image/png')
+                console.log(dataURL)
+            }
+        },
+        fakeClick (obj) {
+            var ev = document.createEvent('MouseEvents')
+            ev.initMouseEvent(
+                'click', true, false, window, 0, 0, 0, 0, 0
+                , false, false, false, false, 0, null
+            )
+            obj.dispatchEvent(ev)
+        },
+
+        exportHtml (name, data) {
+            var urlObject = window.URL || window.webkitURL || window
+            var exportblob = new Blob([data])
+            var savelink = document.createElementNS('http://www.w3.org/1999/xhtml', 'a')
+            savelink.href = urlObject.createObjectURL(exportblob)
+            savelink.download = name
+            this.fakeClick(savelink)
         }
     },
     mounted () {
@@ -80,6 +147,7 @@ export default {
         color: @c-333;
         &:hover {
             background: @primary;
+            color: @white;
         }
     }
 }

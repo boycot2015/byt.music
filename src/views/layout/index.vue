@@ -64,7 +64,7 @@
                     <img :src="playData.picUrl" alt="">
                 </div>
                 <div class="name tc">
-                    <div class="text" ref="textMoveDom">{{playData.paused ? playData.name : currLyric.text }}</div>
+                    <div class="text" ref="textMoveDom" v-if="currLyric && currLyric!==null">{{playData.paused ? playData.name : currLyric.text }}</div>
                     <span v-show="playData.paused" class="name tc">{{playData.singer}}</span>
                 </div>
                 <div class="play-btn js-play-btn flexbox-h just-a"
@@ -310,14 +310,16 @@ export default {
         })
         watch(() => storeState.detail.songDetail.currLyric, (value) => {
             state.currLyric = value
-            textMoveDom.value.style.left = 0
             let w = state.currLyric.text.length * 12
             w = w < 100 ? 100 : w
-            textMoveDom.value.style.width = w + 'px'
-            setTimeout(() => {
-                clearInterval(textMoveDom.value._move)
-                textMove(textMoveDom.value)
-            }, 1000)
+            if (textMoveDom.value !== null) {
+                textMoveDom.value.style.left = 0
+                textMoveDom.value.style.width = w + 'px'
+                setTimeout(() => {
+                    clearInterval(textMoveDom.value._move)
+                    textMove(textMoveDom.value)
+                }, 1000)
+            }
         })
         watch(() => storeState.playList, (value) => {
             // console.log(value, 'storeStatestoreStatestoreState')
@@ -403,7 +405,7 @@ export default {
                 state.colors = res.colors
             })
             state.currLyric = localStore.get('currLyric')
-            console.log(state.currLyric, 'state.currLyric')
+            // console.log(state.currLyric, 'state.currLyric')
         })
         onUpdated(() => {
             // 处理
