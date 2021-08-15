@@ -62,7 +62,7 @@ export default {
                 if ((!params.isDaily && params.type === 1 && !params.keywords) || params.myfavorite) {
                     if (params.myfavorite) {
                         const likelist = await user.likelist()
-                        ids = likelist.ids
+                        ids = likelist.ids.reverse()
                     } else {
                         playlist.trackIds.forEach(function (item) {
                             ids.push(item.id)
@@ -77,7 +77,7 @@ export default {
                         state.tracks = []
                     }
                     if (params.myfavorite) {
-                        playlist.coverImgUrl = state.tracks[0].al.picUrl
+                        playlist.coverImgUrl = state.tracks[Math.floor(Math.random() * state.tracks.length)].al.picUrl
                         playlist.name = '我喜欢的音乐'
                         playlist.creator = store.get('userInfo').profile
                         playlist.cloudTrackCount = state.tracks.length

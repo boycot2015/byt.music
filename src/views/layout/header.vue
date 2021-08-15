@@ -30,7 +30,7 @@
         </div>
         <span class="text vip-text">{{headerData.vipTxt}}</span>
         <!--  @click="showDialog"  -->
-        <div class="text icon theme icon-music-clothes" @click="changeTheme"></div>
+        <div class="text icon theme icon-music-clothes" @click="onThemeChange"></div>
         <div class="text icon message icon-music-msg"></div>
         <div class="text icon setting icon-music-setting"></div>
     </div>
@@ -175,6 +175,10 @@ export default {
                 ]
             })
         }
+        const onThemeChange = (e) => {
+            changeTheme(e)
+            store.dispatch('themeChanged', !store.state.themeChanged)
+        }
         return {
             router,
             loginForm,
@@ -190,7 +194,7 @@ export default {
             onLogOut,
             onSearch,
             showDialog,
-            changeTheme,
+            onThemeChange,
             ...toRefs(state)
         }
     }

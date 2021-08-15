@@ -15,6 +15,8 @@
                     <img :src="playData.picUrl" alt="">
                 </div>
             </div>
+            <!-- 音乐跳动 -->
+            <music-byte class="music-dance"></music-byte>
             <div class="lyric-text-content">
                 <div class="info">
                     <div class="song-info flexbox-h">
@@ -283,5 +285,12 @@ export default {
     transform:scale(0.5);
     transform-origin: 80px 200px;
     opacity: 0;
+}
+.music-dance {
+    position:absolute;
+    bottom:0;
+    left:70px;
+    z-index: 1;
+    /* width: 100%; */
 }
 </style>

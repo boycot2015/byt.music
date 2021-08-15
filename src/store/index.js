@@ -47,7 +47,8 @@ export default createStore({
         playList: (store.get('playList') !== null && store.get('playList')) || [],
         showMenu: true,
         isExtend: false,
-        showLyric: true
+        showLyric: true,
+        themeChanged: false
     },
     mutations: {
         setTitle (state, title) {
@@ -71,6 +72,9 @@ export default createStore({
         },
         setExtend (state, isExtend) {
             state.isExtend = isExtend
+        },
+        themeChanged (state, isChanged) {
+            state.themeChanged = isChanged
         }
     },
     actions: {
@@ -152,6 +156,9 @@ export default createStore({
                 })
             }
             dispatch('detail/getsongData', state.playList.data[state.playIndex])
+        },
+        themeChanged ({ commit, dispatch }, data) {
+            commit('themeChanged', data)
         }
     },
     modules: {

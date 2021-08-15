@@ -127,7 +127,7 @@
         </div>
     </div>
     <!-- /src/source/前世今生-文武贝钢琴版.mp3 -->
-    <audio id="play-audio" controls="controls"></audio>
+    <audio id="play-audio" crossOrigin="anonymous" controls="controls"></audio>
     <!-- <video id="play-audio" controls="controls"></video> -->
     <div class="theme-dialog" @click.stop :class="{active: showThemeDialog}">
         <div class="theme-dialog-title">选择主题</div>
@@ -403,6 +403,7 @@ export default {
                 state.colorIndex = res.colorIndex
                 state.localBgUrls = res.bgUrlList
                 state.colors = res.colors
+                store.dispatch('themeChanged', !store.state.themeChanged)
             })
             state.currLyric = localStore.get('currLyric')
             // console.log(state.currLyric, 'state.currLyric')

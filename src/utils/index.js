@@ -264,7 +264,7 @@ export const getLocalBgUrls = () => {
     })
     return urlsArr
 }
-export const getLocalColors = () => {
+export const getLocalColors = (count = 28) => {
     // const localColor = store.get('colors')
     // if (localColor && localColor !== null) return store.get('colors')
     const colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f']
@@ -283,7 +283,7 @@ export const getLocalColors = () => {
         }
         return themeColor
     }
-    for (let index = 0; index < 28; index++) {
+    for (let index = 0; index < count; index++) {
         colorsArr.push(getColor())
     }
     return { themeColor: colorsArr[0], colors: colorsArr }

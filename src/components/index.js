@@ -5,6 +5,7 @@ import docker from './docker'
 import deskTop from './deskTop'
 import contextMenu from './contextmenu'
 import weather from './weather'
+import musicByte from './musicByte'
 
 export default {
     toTop,
@@ -13,5 +14,6 @@ export default {
     docker,
     deskTop,
     contextMenu,
-    weather
+    weather,
+    musicByte
 }
