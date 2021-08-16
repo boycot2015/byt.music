@@ -35,7 +35,7 @@
         <div class="others flex-3 flexbox-h just-b">
             <i class="type">标准</i>
             <i class="new icon-music-love" @click="collect"></i>
-            <i class="word" @click="showLyirc = !showLyirc">词</i>
+            <i class="word" @click="() => {showLyirc = !showLyirc;$emit('show-lyirc', !showLyirc)}">词</i>
             <i class="icon js-play-list-btn icon-music-play-list" @click.stop="showList = !showList"></i>
             <div class="play-list js-play-list" v-show="showList">
                 <div class="title flexbox-h just-c">
@@ -76,8 +76,6 @@
                 </div>
             </div>
         </div>
-        <!-- 桌面歌词 -->
-        <lyric v-model:isShow="showLyirc"></lyric>
     </div>
 </template>
 
@@ -99,6 +97,12 @@ import List from '@/views/components/List'
 import { song } from '@/api/apiList'
 export default {
     name: 'musicFooter',
+    // props: {
+    //     showLyirc: {
+    //         type: Boolean,
+    //         default: false
+    //     }
+    // },
     components: {
         List
     },

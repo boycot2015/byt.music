@@ -42,7 +42,7 @@
             <audio-player-box :class="{show: showSongPlayer, hide: !showSongPlayer}"></audio-player-box>
             <video-player-box :class="{show: showVideoPlayer, hide: !showVideoPlayer}"></video-player-box>
         </div>
-        <music-footer v-if="showFooter && !showVideoPlayer"></music-footer>
+        <music-footer v-if="showFooter && !showVideoPlayer" @show-lyirc="(val) => showLyirc = val"></music-footer>
     </div>
     <div
     @dblclick="() => {
@@ -164,6 +164,8 @@
     <!-- 桌面图标 -->
     <!-- <desk-top></desk-top> -->
     <weather ref="weatherBox" />
+    <!-- 桌面歌词 -->
+    <lyric v-model:isShow="showLyirc"></lyric>
     <div class="change-theme-btn" :class="{hide: showThemeDialog, show: !showThemeDialog}" @dblclick.stop="changeTheme" ref="dragthemeBox" @click.stop="showThemeDialog = !showThemeDialog"></div>
 </div>
 </template>
@@ -216,6 +218,7 @@ export default {
         const progressVolumeDom = ref(null)
         const mainDom = ref(null)
         const state = reactive({
+            showLyirc: false,
             playData: {
                 lyrc: '一诺千金到尽头',
                 name: '菩提偈',
