@@ -1,7 +1,7 @@
 <template>
     <div class="yzh-version-container" >
         <div class="title">更新日志</div>
-        <h3 class="sub-title">最近更新版本：<b>v{{ versionData.version }}</b> 时间：<span class="public-time">{{ versionData.publicTime }}</span></h3>
+        <h3 class="sub-title">最近更新版本：<b>v{{ versionData.version }}</b> 时间：<span class="public-time">{{ new Date(versionData.publicTime).toLocaleString() }}</span></h3>
         <div class="content clearfix">
             <div class="time-stamp list fl">
                 <div
@@ -17,7 +17,7 @@
                     >
                     <div class="el-card" v-if="!version.version">
                         <h4>{{ version.message }}</h4>
-                        <p>{{ version.name }} 提交于 {{ version.date }}</p>
+                        <p>{{ version.name }} 提交于 {{ new Date(version.date).toLocaleString() }}</p>
                     </div>
                     <h3 class="title" v-else>{{ version.name }}</h3>
                 </div>

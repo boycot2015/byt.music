@@ -1,10 +1,10 @@
 {
   "name": "cloud_music",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build & node ./version.js",
     "test": "vue-cli-service build --mode test",
     "show": "vue-cli-service build --mode show",
     "lint": "vue-cli-service lint"
