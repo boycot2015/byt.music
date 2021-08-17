@@ -1,7 +1,7 @@
 <template>
     <div class="comment">
+        <h2 class="title">{{title}}<span>(已有{{data.total}}条评论)</span></h2>
         <template v-if="data.hotComments && data.hotComments.length">
-            <h2 class="title">{{title}}<span>(已有{{data.total}}条评论)</span></h2>
             <h3 class="title">精彩评论({{data.hotComments.length}})</h3>
             <div v-for="hotComment in data.hotComments" :key="hotComment.id" class="comment-item clearfix">
                 <div class="avatar fl">

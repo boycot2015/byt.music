@@ -2,7 +2,7 @@
     <div ref="elRef" v-show="opened" class="message__box" :class="{'message__box-closed': closeCls}" :id="id">
         <!-- //蒙版 -->
         <div v-if="JSON.parse(shade)" :class="['anim-'+anim, type&&'popui__'+type, tipArrow]" class="message__box__overlay" @click="shadeClicked" :style="{opacity}"></div>
-        <div class="message__box__wrap" :class="['anim-'+anim, type&&'popui__'+type, tipArrow]" :style="[layerStyle]">
+        <div class="message__box__wrap" :class="['anim-'+anim, type&&'popui__'+type, tipArrow]" :style="{...layerStyle}">
             <div v-if="title && content" class="message__box__wrap-tit" v-html="title"></div>
             <div v-if="type=='toast'&&icon" class="message__box__toast-icon" :class="['message__box__toast-'+icon]" v-html="toastIcon[icon]"></div>
             <div class="message__box__wrap-cntbox">

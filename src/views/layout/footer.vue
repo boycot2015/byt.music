@@ -30,12 +30,12 @@
                 <span class="line js-line" :style="{width: audioVolumePos.w + 'px' || ''}"></span>
             </div>
             <!-- icon-music-beckoning-->
-            <i class="order-icon icon-music-loop flex-1" @click="toggleLoop()"></i>
+            <i class="order-icon icon-music-loop flex-1" @click="toggleLoop"></i>
         </div>
         <div class="others flex-3 flexbox-h just-b">
             <i class="type">标准</i>
             <i class="new icon-music-love" @click="collect"></i>
-            <i class="word" @click="() => {showLyirc = !showLyirc;$emit('show-lyirc', !showLyirc)}">词</i>
+            <i class="word" @click="() => {$emit('show-lyirc', !showLyirc);showLyirc = !showLyirc;}">词</i>
             <i class="icon js-play-list-btn icon-music-play-list" @click.stop="showList = !showList"></i>
             <div class="play-list js-play-list" v-show="showList">
                 <div class="title flexbox-h just-c">
@@ -310,6 +310,7 @@ export default {
 
         const toggleLoop = (val) => {
             state.playData.loop = val
+            let aduio = document.querySelector('#play-audio')
             aduio.loop = val
         }
 
@@ -432,6 +433,7 @@ export default {
             playPrev,
             playNext,
             collect,
+            toggleLoop,
             onListItemdbClick
         }
     }
