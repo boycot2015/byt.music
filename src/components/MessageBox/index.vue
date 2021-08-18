@@ -410,7 +410,7 @@ export default {
             if (!data.opened) return
             let oL, oT
             const pos = props.position
-            const isFixed = JSON.parse(props.fixed)
+            const isFixed = props.fixed && JSON.parse(props.fixed)
             const dom = elRef.value
             const vlayero = dom.querySelector('.message__box__wrap')
 
