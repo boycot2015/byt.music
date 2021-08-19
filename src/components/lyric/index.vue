@@ -87,6 +87,14 @@ export default {
                 color: '#fff'
             }, {
                 id: 6,
+                'font-size': '48px',
+                color: '#fff'
+            }, {
+                id: 7,
+                'font-size': '54px',
+                color: '#fff'
+            }, {
+                id: 8,
                 'font-size': '60px',
                 color: '#fff'
             }],

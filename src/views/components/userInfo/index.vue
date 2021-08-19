@@ -100,7 +100,7 @@
     background: @white;
     padding: 10px 0 0;
     z-index: 10000;
-    overflow: hidden;
+    // overflow: hidden;
     .btn-close {
         position: absolute;
         right: 20px;
@@ -367,7 +367,7 @@ export default {
                     showWrap: true, // 是否显示组件
                     showContent: true // 作用:在隐藏组件之前,显示隐藏动画
                 })
-                getData()
+                // getData()
             }).catch(() => {
                 const $el = MessageBox({
                     content: '签到失败，重复签到',
