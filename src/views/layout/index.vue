@@ -7,6 +7,7 @@
         left: isExtend ? '0px': '',
         top: isExtend ? '0px': '',
     }"
+    @dblclick.stop
     class="music-box js-music-box flexbox-v"
     ref="dragBox" v-show="!showMiniBox && showBox">
         <music-header
@@ -45,7 +46,7 @@
         <music-footer v-if="showFooter && !showVideoPlayer" @show-lyirc="(val) => showLyirc = val"></music-footer>
     </div>
     <div
-    @dblclick="() => {
+    @dblclick.stop="() => {
         showMiniBox = false
         showBox = true
     }"

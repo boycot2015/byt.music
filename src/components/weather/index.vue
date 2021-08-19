@@ -1,18 +1,19 @@
 
 <template>
-    <div class="weather-component" @mouseenter="viewMore = true"  @mouseleave="viewMore = false">
-        <div class="panels" @dblclick="showDialog" v-for="weather in weathers" :key="weather.location">
+    <div class="weather-component" v-show="showWeather">
+        <div class="panels now" @click.stop="viewMore = !viewMore" @dblclick.stop="showDialog" v-for="weather in weathers" :key="weather.location">
             <div class="location" v-if="weather && weather.location">{{weather.location.name}}市</div>
-            <div class="weather" :style="{'font-size': weather.now.text.length > 3 && '30px'}" v-if="weather && weather.now">{{weather.now.text}}</div>
+            <div class="weather" :style="{'font-size': weather.now.text.length > 3 && '28px'}" v-if="weather && weather.now">{{weather.now.text}}</div>
             <div class="temperature" v-if="weather && weather.now">{{weather.now.temperature}}℃</div>
             <div class="last_update" v-if="weather && weather.last_update">{{new Date(weather.last_update).toLocaleDateString()}}</div>
+            <span class="close" @click.stop="showWeather = false">×</span>
         </div>
         <div class="dialog-content" :class="viewMore && 'active'" ref="dialogRef">
             <div class="dialog-main">
                 <div class="top">
                     <div class="panels location">
                         <div class="location" v-if="weathers[0] && weathers[0].location">{{weathers[0].location.name}}市</div>
-                        <div class="weather" :style="{'font-size': weathers[0].now.text.length > 5 && '38px'}" v-if="weathers[0] && weathers[0].now">{{weathers[0].now.text}}</div>
+                        <div class="weather" :style="{'font-size': weathers[0].now.text.length > 5 && '34px'}" v-if="weathers[0] && weathers[0].now">{{weathers[0].now.text}}</div>
                         <div class="temperature" v-if="weathers[0] && weathers[0].now">{{weathers[0].now.temperature}}℃</div>
                         <div class="last_update" v-if="weathers[0] && weathers[0].last_update">{{new Date(weathers[0].last_update).toLocaleDateString()}}</div>
                     </div>
@@ -27,8 +28,9 @@
                     <div class="title" v-if="dailyWeather.location">{{dailyWeather.location.name}}市最近3天天气情况</div>
                     <div class="list">
                         <div class="panels" @dblclick="showDialog" v-for="weather in dailyWeather.daily" :key="weather.location">
-                            <div class="weather" :style="{'font-size': weather.text_day.length > 3 && '30px'}" v-if="weather && weather.text_day">{{weather.text_day}}</div>
+                            <div class="weather" :style="{'font-size': weather.text_day.length > 3 && '28px'}" v-if="weather && weather.text_day">{{weather.text_day}}</div>
                             <div class="temperature" v-if="weather && weather.high">{{weather.low}}~{{weather.high}}℃</div>
+                            <div class="wind" v-if="weather && weather.wind_direction">{{weather.wind_direction}}/{{weather.wind_scale}}级</div>
                             <div class="last_update" v-if="weather && weather.date">{{new Date(weather.date).toLocaleDateString()}}</div>
                         </div>
                     </div>
@@ -49,15 +51,11 @@ import {
 } from 'vue'
 import { weatherUrl } from '@/api/baseUrl'
 export default {
-    data () {
-        return {
-            weathers: [],
-            dailyWeather: {}
-        }
-    },
     setup (props) {
         const state = reactive({
+            weathers: [],
             dailyWeather: {},
+            showWeather: true,
             viewMore: false,
             life: {
                 location: {
@@ -69,11 +67,6 @@ export default {
                     timezone_offset: '+08:00'
                 },
                 suggestion: {
-                    car_washing: {
-                        brief: '不宜',
-                        title: '洗车',
-                        details: ''
-                    },
                     dressing: {
                         brief: '炎热',
                         title: '穿衣',
@@ -98,6 +91,11 @@ export default {
                         brief: '中等',
                         title: '紫外线',
                         details: ''
+                    },
+                    car_washing: {
+                        brief: '不宜',
+                        title: '洗车',
+                        details: ''
                     }
                 },
                 last_update: '2021-08-18T18:21:42+08:00'
@@ -105,7 +103,10 @@ export default {
         })
         const dialogRef = ref(null)
         const MessageBox = inject('messageBox')
+        const location = 'ip'
         const showDialog = () => {
+            state.viewMore = false
+            state.showWeather = false
             MessageBox({
                 content: dialogRef.value.innerHTML,
                 shadeClose: false,
@@ -113,7 +114,7 @@ export default {
                 drag: true,
                 layerStyle: {
                     width: '800px',
-                    height: '560px',
+                    height: '500px',
                     borderRadius: '15px',
                     padding: '20px 0 0 0',
                     background: 'rgba(0,0,0,0.8)'
@@ -126,17 +127,38 @@ export default {
         }
         onMounted(() => {
             initData()
+            initNow()
             setInterval(() => {
                 initData()
             }, 30 * 60 * 1000)
+            setInterval(() => {
+                initNow()
+            }, 15 * 1000)
+            window.addEventListener('dblclick', (e) => {
+                e.stopPropagation()
+                state.showWeather = !state.showWeather
+            }, false)
         })
+        const initNow = () => {
+            axios.get(`${weatherUrl}/weather`, { params: { location } })
+                .then(res => {
+                    if (!res.success) return
+                    state.weathers = [res.data]
+                })
+        }
         const initData = () => {
-            axios.get(`${weatherUrl}/weather/daily`)
+            axios.get(`${weatherUrl}/weather/daily`, { params: { location } })
                 .then(res => {
                     if (!res.success) return
                     state.dailyWeather = res.data
+                    state.dailyWeather.daily = res.data.daily.map(el => {
+                        return {
+                            ...el,
+                            wind_direction: !el.wind_direction.includes('风') ? el.wind_direction + '风' : el.wind_direction
+                        }
+                    })
                 })
-            axios.get(`${weatherUrl}/weather/life`)
+            axios.get(`${weatherUrl}/weather/life`, { params: { location } })
                 .then(res => {
                     if (!res.success) return
                     state.life.location = res.data.location
@@ -152,31 +174,14 @@ export default {
             dialogRef,
             showDialog
         }
-    },
-    created () {
-        this.init()
-    },
-    mounted () {
-        setInterval(() => {
-            this.init()
-        }, 15 * 1000)
-    },
-    methods: {
-        init () {
-            axios.get(`${weatherUrl}/weather`)
-                .then(res => {
-                    if (!res.success) return
-                    this.weathers = [res.data]
-                })
-        }
     }
 }
 </script>
 <style lang="less" scoped>
 .weather-component {
     font-size: 12px;
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
     display: flex;
     position: fixed;
     z-index: 10;
@@ -192,11 +197,11 @@ export default {
     cursor: pointer;
 }
 .panels {
-    width: 200px;
+    width: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 200px;
+    height: 180px;
     color: #fff;
     flex-direction: column;
     position: relative;
@@ -210,12 +215,15 @@ export default {
     animation:bgMove 20s ease infinite;
     -webkit-animation: bgMove 20s ease infinite;
     -moz-animation: bgMove 20s ease infinite;
+    &.now {
+        cursor: pointer;
+    }
 }
 .dialog-content {
     width: 0;
     left: -20px;
     top: -20px;
-    height: 200px;
+    height: 180px;
     border-radius: 15px;
     transition: all .5s;
     overflow: hidden;
@@ -227,8 +235,8 @@ export default {
     background: rgba(0, 0, 0, 0.7);
     padding: 20px;
     &.active {
-        padding-left: 220px;
-        width: 840px;
+        padding-left: 200px;
+        width: 760px;
         // transform: translateX(0);
         opacity: 1;
         .dialog-main {
@@ -302,6 +310,9 @@ export default {
         align-items: center;
         .panels {
             margin-right: 10px;
+            .weather {
+                margin-top: 0;
+            }
             &:nth-child(3n) {
                 margin-right: 0;
             }
@@ -321,11 +332,31 @@ export default {
         background-position: 100% 0%;
     }
 }
-.panels .weather{
-    font-size: 48px;
-    margin: 10px 0;
+.panels {
+     .weather {
+        font-size: 40px;
+        // margin: 10px 0;
+    }
+    .wind {
+        font-size: 16px;
+        margin-top: 10px;
+    }
+    .temperature,
+    .last_update {
+        margin-top: 10px;
+    }
 }
-.panels .last_update {
-    margin-top: 20px;
+.close {
+    position: absolute;
+    left: 12px;
+    top: 8px;
+    font-size: 24px;
+    color: @white;
+    transform: rotate(0deg);
+    transition: transform .3s;
+    &:hover {
+        color: @primary;
+        transform: rotate(-90deg);
+    }
 }
 </style>

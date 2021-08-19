@@ -1,5 +1,5 @@
 <template>
-    <div ref="elRef" v-show="opened" class="message__box" :class="{'message__box-closed': closeCls}" :id="id">
+    <div ref="elRef" v-show="opened" @dblclick.stop class="message__box" :class="{'message__box-closed': closeCls}" :id="id">
         <!-- //蒙版 -->
         <div v-if="JSON.parse(shade)" :class="['anim-'+anim, type&&'popui__'+type, tipArrow]" class="message__box__overlay" @click="shadeClicked" :style="{opacity}"></div>
         <div class="message__box__wrap" :class="['anim-'+anim, type&&'popui__'+type, tipArrow]" :style="{...layerStyle}">
@@ -115,17 +115,20 @@
         &::after {
             position: absolute;
             top: 5px;
-            right: 10px;
-            width: 15px;
-            height: 15px;
-            font-size: 20px;
+            right: 5px;
+            width: 28px;
+            height: 28px;
+            font-size: 28px;
             color: @c-666;
             z-index: 10000;
             content: '×';
             cursor: pointer;
+            transform: rotate(0deg);
+            transition: transform .3s;
         }
         &:hover::after {
             color: @primary;
+            transform: rotate(90deg);
         }
     }
 }
