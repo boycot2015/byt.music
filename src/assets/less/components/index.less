@@ -14,6 +14,18 @@
             &:nth-child(5n) {
                 margin-right: 0;
             }
+            >.img {
+                min-height: 138px;
+            }
+            &:hover {
+                .copy-writer {
+                    transform: translateY(0px);
+                }
+                .right {
+                    // display: none;
+                    opacity: 0;
+                }
+            }
         }
         .order {
             line-height: 42px;
@@ -42,15 +54,6 @@
                 width: 100%;
                 overflow: hidden;
             }
-            &:hover {
-                .copy-writer {
-                    transform: translateY(0px);
-                }
-                .right {
-                    // display: none;
-                    opacity: 0;
-                }
-            }
             .copy-writer,.right {
                 position: absolute;
                 top: 0px;
@@ -73,7 +76,7 @@
             .right {
                 right: 0;
                 top: 0;
-                max-width: 100px;
+                max-width: 120px;
                 line-height: 18px;
                 padding: 0px 10px;
                 opacity: 1;

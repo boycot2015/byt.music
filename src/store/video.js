@@ -169,6 +169,11 @@ export default {
                 }).then(res => {
                     const data = {}
                     if (res && res.code === 200) {
+                        res.data.map(el => {
+                            el.playTime = filterPlayCount(el.playTime)
+                            el.score = filterPlayCount(el.score)
+                            el.playCount = filterPlayCount(el.playCount)
+                        })
                         data[apiStr] = res.data
                         commit('setTab2Data', data)
                         resolve({ code: 200, success: true })

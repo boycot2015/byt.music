@@ -133,6 +133,9 @@ export default {
         watch(() => store.state.playData.paused, (value) => {
             if (!store.state.playData.paused) {
                 !state.ctx && drawGraphy()
+                setTitle()
+            } else {
+                clearTimeout(state.timer)
             }
         })
         watch(() => store.state.themeChanged, (value) => {
@@ -145,19 +148,23 @@ export default {
         })
         onMounted(() => {
             state.colors = getLocalColors(100).colors.map(el => el.primary)
-            window.onblur = function () {
-                var t = 0
-                function n () {
-                    var e = playData.name
-                    e = ' \u6B63\u5728\u64AD\u653E\uFF1A' + e + ' '
-                    document.title = e.substring(t, e.length) + e.substring(0, t)
-                    t++
-                    t > e.length && (t = 0)
-                    setTimeout(n, 300)
-                }
-                n()
-            }
+            // window.onblur = function () {
+            //     setTitle()
+            // }
         })
+        const setTitle = () => {
+            var t = 0
+            function n () {
+                var e = playData.name
+                e = ' \u6B63\u5728\u64AD\u653E\uFF1A' + e + ' '
+                document.title = e.substring(t, e.length) + e.substring(0, t)
+                t++
+                t > e.length && (t = 0)
+                state.timer = setTimeout(n, 300)
+            }
+            var audio = document.getElementById('play-audio')
+            !audio.paused && n()
+        }
         const drawGraphy = () => {
             window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext
             var audio = document.getElementById('play-audio')
