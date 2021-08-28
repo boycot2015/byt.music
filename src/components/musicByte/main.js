@@ -46,8 +46,9 @@ window.onload = function () {
     function renderFrame () {
         var array = new Uint8Array(analyser.frequencyBinCount)
         analyser.getByteFrequencyData(array)
-        var step = Math.round(array.length / meterNum) // sample limited data from the total array
+        var step = Math.round(array.length - 200 / meterNum) // sample limited data from the total array
         ctx.clearRect(0, 0, cwidth, cheight)
+        ctx.beginPath()
         for (var i = 0; i < meterNum; i++) {
             var value = array[i * step]
             if (capYPositionArray.length < Math.round(meterNum)) {
@@ -64,6 +65,7 @@ window.onload = function () {
             ctx.fillStyle = gradient // set the filllStyle to gradient for a better look
             ctx.fillRect(i * 12 /* meterWidth+gap */, cheight - value + capHeight, meterWidth, cheight) // the meter
         }
+        ctx.closePath()
         requestAnimationFrame(renderFrame)
     }
     renderFrame()

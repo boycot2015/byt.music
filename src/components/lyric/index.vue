@@ -1,5 +1,5 @@
 <template>
-  <div class="lyric flexbox-v" ref="lyricBox" v-show="isShow">
+  <div class="lyric flexbox-v" ref="lyricBox" @dblclick.stop v-show="isShow">
       <div class="header">
           <div class="close" @click="onClose">×</div>
           <div class="operate-icon">

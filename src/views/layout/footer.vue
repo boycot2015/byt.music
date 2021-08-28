@@ -168,7 +168,7 @@ export default {
             audio.src = value || null
             state.playData.url = value || null
             state.playData.paused = false
-            progressTimeDom.value.style.left = 0
+            progressTimeDom.value.style.left = '-3px'
             state.progressPsition = state.playData.volume * 100
             initPlayer(audio, setTimerStatus, setVolume)
             playAudio()
@@ -327,7 +327,7 @@ export default {
         }
         const setTimer = (obj) => {
             if (obj.offsetX) {
-                progressTimeDom.value.style.left = obj.offsetX + 'px'
+                progressTimeDom.value.style.left = obj.offsetX - 3 + 'px'
             }
             state.audioTimePos.w = obj.left || obj.offsetX || 0
         }

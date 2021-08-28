@@ -27,7 +27,19 @@ export default {
   color: #2c3e50;
   height: 100%;
 }
-
+#app.dark-mode-invert {
+    /* filter: invert(100%); */
+    overflow: hidden;
+}
+/* #app.dark-mode-invert >.cloud_music {
+    filter: invert(100%);
+} */
+#app.dark-mode-invert >.cloud_music .cloud_music_main {
+    filter: invert(100%);
+}
+#app.dark-mode-invert >.cloud_music .cloud_music_main img {
+    filter: invert(100%);
+}
 #nav {
   padding: 30px;
 }

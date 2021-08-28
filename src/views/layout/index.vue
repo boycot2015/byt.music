@@ -134,14 +134,12 @@
         <div class="theme-dialog-title">选择主题</div>
         <div class="icon-close" @click="showThemeDialog = false">×</div>
         <div class="theme-dialog-body">
-            <div class="sub-title">选择背景</div>
+            <div class="sub-title">选择背景<span>&nbsp;&nbsp;|&nbsp;&nbsp;夜间模式</span><span class="icon-night" :class="{'active': isNight}" @click="changeNight"></span></div>
             <div class="pic-list">
                 <div class="pic-list-item"
-                :style="{
-                    backgroundImage: `url(${pic})`
-                }"
                 :class="{active: picIndex === index}"
                 @click="() => {picIndex = index;changeTheme('', {bgUrl: pic, bgUrlIndex: index})}" v-for="(pic, index) in localBgUrls" :key="pic">
+                <img :src="pic" alt="">
                 </div>
             </div>
             <div class="sub-title">选择主题颜色</div>
@@ -220,6 +218,7 @@ export default {
         const mainDom = ref(null)
         const state = reactive({
             showLyirc: false,
+            isNight: false,
             playData: {
                 lyrc: '一诺千金到尽头',
                 name: '菩提偈',
@@ -562,6 +561,12 @@ export default {
         const onSetVolumeClick = (e) => {
             !state.isMove && setVolume(e)
         }
+
+        const changeNight = () => {
+            state.isNight = !state.isNight
+            state.isNight && (document.querySelector('#app').classList = 'dark-mode-invert')
+            !state.isNight && (document.querySelector('#app').classList = '')
+        }
         return {
             dragBox,
             dragMiniBox,
@@ -580,6 +585,7 @@ export default {
             changeTheme,
             dragthemeBox,
             weatherBox,
+            changeNight,
             // ...computed(() => storeState).value,
             ...toRefs(state)
         }

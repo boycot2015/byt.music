@@ -98,6 +98,7 @@ export default {
     },
     setup (props, { emit }) {
         const store = useStore()
+        const playData = store.state.playData
         // const MAX_BAR = 60
         // const MAX_BAR_HEIGHT = 18
         const state = reactive({
@@ -144,6 +145,18 @@ export default {
         })
         onMounted(() => {
             state.colors = getLocalColors(100).colors.map(el => el.primary)
+            window.onblur = function () {
+                var t = 0
+                function n () {
+                    var e = playData.name
+                    e = ' \u6B63\u5728\u64AD\u653E\uFF1A' + e + ' '
+                    document.title = e.substring(t, e.length) + e.substring(0, t)
+                    t++
+                    t > e.length && (t = 0)
+                    setTimeout(n, 300)
+                }
+                n()
+            }
         })
         const drawGraphy = () => {
             window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext
@@ -163,8 +176,8 @@ export default {
             var canvas = document.getElementById('music-bar-canvas')
             var cwidth = canvas.width
             var cheight = canvas.height - 2
-            var meterWidth = 2 // 频谱条宽度
-            var gap = 3 // 频谱条间距
+            var meterWidth = 4 // 频谱条宽度
+            var gap = 2 // 频谱条间距
             var capHeight = 2
             let barColor = document.querySelector(':root').getAttribute('style')
             barColor = (barColor && barColor.split(':')[1])
@@ -172,17 +185,17 @@ export default {
             var ctx = canvas.getContext('2d')
             const gradient = ctx.createLinearGradient(0, 0, 0, 300)
             const { analyser } = state
-            // we're ready to receive some data!
+            analyser.fftSize = 2048 // 快速傅里叶变换频谱大小 32 - 2048之间的2的幂次方数
             var array = new Uint8Array(analyser.frequencyBinCount)
-            // analyser.fftSize = 2048 // 快速傅里叶变换频谱大小 32 - 2048之间的2的幂次方数
             analyser.getByteFrequencyData(array)
-            var meterNum = Math.round(500 / (meterWidth + gap)) // 频谱条数量
+            var meterNum = Math.round(cwidth * 5 / (meterWidth + gap)) // 频谱条数量
             const styleConfig = setDrawStyles({ type: state.drawType, array, meterNum, meterWidth, gap, barColor })
             array = styleConfig.array
             meterNum = styleConfig.meterNum
             gradient.addColorStop(1, barColor || '#f00')
             gradient.addColorStop(0.5, barColor || '#f00')
-            var step = Math.round(array.length / meterNum) // 计算采样步长
+            // var step = Math.floor(array.length / meterNum) // 计算采样步长
+            var step = Math.floor(array.length / meterNum) // 计算采样步长
             ctx.clearRect(0, 0, cwidth, cheight)
             for (var i = 0; i < meterNum; i++) {
                 var value = array[i * step] // 获取当前能量值
@@ -206,21 +219,23 @@ export default {
         }
         const setDrawStyles = ({ type, array, meterNum, meterWidth, gap, barColor }) => {
             let colors = state.colors
+            var canvas = document.getElementById('music-bar-canvas')
+            var cwidth = canvas.width
             switch (type) {
             case 1:
                 array && (array = sortArray(array) || array)
-                meterNum = Math.round(300 / (meterWidth + gap)) // count of the meters
+                meterNum = Math.round(cwidth / (meterWidth + gap)) // count of the meters
                 break
             case 2:
                 colors = state.colors.map(el => { return barColor })
                 break
             case 3:
                 array && (array = sortArray(array) || array)
-                meterNum = Math.round(300 / (meterWidth + gap)) // count of the meters
+                meterNum = Math.round(cwidth / (meterWidth + gap)) // count of the meters
                 colors = state.colors.map(el => barColor)
                 break
             case 4:
-                meterNum = Math.round(500 / (meterWidth + gap)) // count of the meters
+                meterNum = Math.round(cwidth * 5 / (meterWidth + gap)) // count of the meters
                 colors = state.colors
                 break
             }
