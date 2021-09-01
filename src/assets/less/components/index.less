@@ -1,11 +1,24 @@
 .grid-list {
     position: relative;
-    overflow: hidden;
-    clear: both;
+    // overflow: hidden;
+    // clear: both;
+    display: flex;
+    flex-wrap: wrap;
+    // justify-content: flex-start;
+    justify-content: space-between;
+    // -moz-column-count:5; /* Firefox */
+    // -webkit-column-count:5; /* Safari 和 Chrome */
+    // column-count:5;
+    // -moz-column-gap: 20px;
+    // -webkit-column-gap: 20px;
+    // column-gap: 20px;
+    // display:inline-block;
     &-item {
         height: 185px;
         width: 138px;
-        margin-right: 20px;
+        // flex-basis: 138px;
+        // flex: 1;
+        // margin-right: 20px;
         margin-bottom: 30px;
         overflow: hidden;
         position: relative;
@@ -136,10 +149,10 @@
         &.type-2 {
             width: 380px;
             height: 150px;
-            margin-right: 10px;
-            &:nth-child(2n) {
-                margin-right: 0;
-            }
+            // margin-right: 10px;
+            // &:nth-child(2n) {
+            //     margin-right: 0;
+            // }
             // &:nth-child(5n) {
             //     margin-right: 10px;
             // }
@@ -208,7 +221,7 @@
             }
         }
         &.type-4 {
-            width: 385px;
+            width: 380px;
             height: 132px;
             margin-right: 0;
             padding: 20px;
@@ -257,7 +270,7 @@
             }
         }
         &.ftype-0 {
-            width: 385px;
+            width: 380px;
             margin-bottom: 0;
             height: auto;
             margin-right: 0;

@@ -50,7 +50,7 @@
                 </div>
             </div>
         </div>
-        <ul class="recommend-list clearfix" v-loading="loading">
+        <ul class="recommend-list grid-list clearfix" v-loading="loading">
             <!-- <li class="grid-list-item top js-list-detail fl">
                 <div class="img flexbox-v just-c tc">
                     <i class="icon icon-music-emoji"></i>

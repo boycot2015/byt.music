@@ -27,7 +27,7 @@
                     </div>
                 </div>
             </div>
-            <ul class="music-list" v-else v-loading="item.loading">
+            <ul class="music-list grid-list" v-else v-loading="item.loading">
                 <grid-list
                 v-for="(val, index) in item.data"
                 :item="val"

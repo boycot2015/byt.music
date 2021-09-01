@@ -1,5 +1,5 @@
 <template>
-<li class="grid-list-item fl clearfix js-list-detail"
+<li class="grid-list-item clearfix js-list-detail"
 v-if="(item.list && item.list.length) || item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl"
 :title="item.rcmdtext || item.name" :class="`type-${type || item.type} ftype-${item.ftype}`" data-url="{{item.mp3Url}}">
     <ul v-if="item.list" class="grid-list js-child-list fl">

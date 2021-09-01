@@ -5,7 +5,7 @@
                 <span class="text">{{activedCate.name || '全部视频'}}</span> <i class="icon-music-down"></i>
             </span>
             <p class="name">
-                热门标签：
+                热门标签：5
                 <span class="cates">
                     <span
                     v-for="(item, index) in tabData.tags"
@@ -38,7 +38,7 @@
                                         v-for="sub in subsItem"
                                         @click="onCateTagClick(sub)"
                                         :key="sub.id"
-                                        style="width: 97px;"
+                                        style="width: 71px;"
                                         :class="{'active': sub.id === activedCate.id}"
                                         class="cates-item js-cates-item tc fl">
                                             <i class="icon-hot" v-if="sub.hot">HOT</i>
@@ -51,7 +51,7 @@
                 </div>
             </div>
         </div>
-        <ul class="video-list clearfix" v-loading="loading">
+        <ul class="video-list grid-list clearfix" v-loading="loading">
             <grid-list
                 v-for="(item, index) in tabData.list.data"
                 :item="item.data || item"
