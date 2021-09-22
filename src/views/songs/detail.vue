@@ -299,7 +299,7 @@ export default {
 }
 .music-dance {
     position:absolute;
-    bottom:0;
+    bottom:0px;
     left:70px;
     z-index: 1;
     /* width: 100%; */

@@ -5,7 +5,7 @@
                 <span class="text">{{activedCate.name || '全部视频'}}</span> <i class="icon-music-down"></i>
             </span>
             <p class="name">
-                热门标签：5
+                热门标签：
                 <span class="cates">
                     <span
                     v-for="(item, index) in tabData.tags"
@@ -51,7 +51,7 @@
                 </div>
             </div>
         </div>
-        <ul class="video-list grid-list clearfix" v-loading="loading">
+        <ul class="video-list grid-list" v-loading="loading">
             <grid-list
                 v-for="(item, index) in tabData.list.data"
                 :item="item.data || item"

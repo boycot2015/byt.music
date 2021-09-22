@@ -21,7 +21,7 @@
                 <h3 class="name fl">{{obj.title || '推荐歌单'}}</h3>
                 <span class="fr more" @click="showMoreClick(obj)">更多<i class="icon-music-right"></i></span>
             </div>
-            <ul class="recommend-list grid-list clearfix" :style="{'marginBottom': findex === 2 ? '40px': ''}" v-loading="obj.loading">
+            <ul class="recommend-list grid-list" :style="{'marginBottom': findex === 2 ? '40px': ''}" v-loading="obj.loading">
                 <li class="grid-list-item date js-list-detail"
                 @click="onListClick({ id: 0 }, true)"
                 v-if="findex === 0">

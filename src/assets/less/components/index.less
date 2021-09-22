@@ -15,7 +15,8 @@
     // display:inline-block;
     &-item {
         height: 185px;
-        width: 138px;
+        // width: 138px;
+        width: 18%;
         // flex-basis: 138px;
         // flex: 1;
         // margin-right: 20px;
@@ -195,7 +196,8 @@
         }
         // 视频列表
         &.type-3 {
-            width: 244px;
+            // width: 244px;
+            width: 32%;
             height: 200px;
             &:nth-child(3n) {
                 margin-right: 0;
@@ -221,7 +223,7 @@
             }
         }
         &.type-4 {
-            width: 380px;
+            min-width: 50%;
             height: 132px;
             margin-right: 0;
             padding: 20px;
@@ -270,7 +272,8 @@
             }
         }
         &.ftype-0 {
-            width: 380px;
+            // width: 380px;
+            width: 100%;
             margin-bottom: 0;
             height: auto;
             margin-right: 0;
@@ -314,6 +317,9 @@
                 .grid-list-item {
                     border-right: 1px solid @c-e8;
                 }
+            }
+            &.type-1 {
+                width: 50%;
             }
         }
     }

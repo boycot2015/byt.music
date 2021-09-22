@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-        <ul class="recommend-list grid-list clearfix" v-loading="loading">
+        <ul class="recommend-list grid-list" v-loading="loading">
             <li class="grid-list-item top js-list-detail" v-if="showBegining">
                 <div class="img tc">
                     <!-- <img src="" alt=""> -->
