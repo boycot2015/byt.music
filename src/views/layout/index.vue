@@ -130,42 +130,13 @@
     <!-- /src/source/前世今生-文武贝钢琴版.mp3 -->
     <audio id="play-audio" crossOrigin="anonymous" controls="controls"></audio>
     <!-- <video id="play-audio" controls="controls"></video> -->
-    <div class="theme-dialog" @click.stop :class="{active: showThemeDialog}">
-        <div class="theme-dialog-title">选择主题</div>
-        <div class="icon-close" @click="showThemeDialog = false">×</div>
-        <div class="theme-dialog-body">
-            <div class="sub-title">选择背景<span>&nbsp;&nbsp;|&nbsp;&nbsp;夜间模式</span><span class="icon-night" :class="{'active': isNight}" @click="changeNight"></span></div>
-            <div class="pic-list">
-                <div class="pic-list-item"
-                :class="{active: picIndex === index}"
-                @click="() => {picIndex = index;changeTheme('', {bgUrl: pic, bgUrlIndex: index})}" v-for="(pic, index) in localBgUrls" :key="pic">
-                <img :src="pic" alt="">
-                </div>
-            </div>
-            <div class="sub-title">选择主题颜色</div>
-            <div class="colors-list">
-                <div class="colors-list-item"
-                :style="{
-                    backgroundColor: color.primary
-                }"
-                :class="{active: colorIndex === index}"
-                @click="() => {colorIndex = index;changeTheme('', {themeColor: color, colorIndex: index})}" v-for="(color, index) in colors" :key="color">
-                </div>
-            </div>
-        </div>
-        <!-- <div class="theme-dialog-footer">
-            <div class="btns">
-                <span>确定</span>
-                <span>取消</span>
-            </div>
-        </div> -->
-    </div>
+    <Theme ref="dialogRef" @close-modal="showThemeDialog = false" @click.prevent @click.stop :class="{active: showThemeDialog}"></Theme>
     <!-- 桌面图标 -->
     <!-- <desk-top></desk-top> -->
     <weather ref="weatherBox" />
     <!-- 桌面歌词 -->
     <lyric v-model:isShow="showLyirc"></lyric>
-    <div class="change-theme-btn" :class="{hide: showThemeDialog, show: !showThemeDialog}" @dblclick.stop="changeTheme" ref="dragthemeBox" @click.stop="showThemeDialog = !showThemeDialog"></div>
+    <div class="change-theme-btn" :class="{hide: showThemeDialog, show: !showThemeDialog}" @dblclick.stop="changeTheme" ref="dragthemeBox" @click.stop="onThemeShow"></div>
 </div>
 </template>
 
@@ -176,6 +147,7 @@ import musicFooter from './footer'
 import videoPlayerBox from '../video/detail'
 import audioPlayerBox from '../songs/detail'
 import List from '@/views/components/List'
+import Theme from '@/views/components/Theme'
 import {
     ref,
     computed,
@@ -202,7 +174,8 @@ export default {
         musicFooter,
         List,
         videoPlayerBox,
-        audioPlayerBox
+        audioPlayerBox,
+        Theme
     },
     emits: {
         hideMenu: val => {
@@ -561,11 +534,8 @@ export default {
         const onSetVolumeClick = (e) => {
             !state.isMove && setVolume(e)
         }
-
-        const changeNight = () => {
-            state.isNight = !state.isNight
-            state.isNight && (document.querySelector('#app').classList = 'dark-mode-invert')
-            !state.isNight && (document.querySelector('#app').classList = '')
+        const onThemeShow = () => {
+            state.showThemeDialog = !state.showThemeDialog
         }
         return {
             dragBox,
@@ -585,7 +555,7 @@ export default {
             changeTheme,
             dragthemeBox,
             weatherBox,
-            changeNight,
+            onThemeShow,
             // ...computed(() => storeState).value,
             ...toRefs(state)
         }
