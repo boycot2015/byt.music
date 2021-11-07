@@ -6,8 +6,6 @@
         <!-- <div class="lyric">
             <color-picker @change="getColor" :config="{attr: {defaultValue: '#f54040'}}"></color-picker>
         </div> -->
-        <!-- 自定义右键菜单 -->
-        <context-menu></context-menu>
     </div>
 </template>
 <script>

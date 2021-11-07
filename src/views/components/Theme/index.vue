@@ -5,7 +5,7 @@
             选择主题
         </div>
         <div class="theme-dialog-body">
-            <div class="sub-title">主题颜色</div>
+            <div class="sub-title">主题颜色<span>&nbsp;&nbsp;|&nbsp;&nbsp;夜间模式</span><span class="icon-night" :class="{'active': isNight}" @click="changeNight"></span></div>
             <div class="colors-list">
                 <div class="colors-list-item"
                 :style="{
@@ -15,16 +15,8 @@
                 @click="() => {colorIndex = index;changeTheme('', {themeColor: color, colorIndex: index})}" v-for="(color, index) in colors" :key="color">
                 </div>
             </div>
-            <div class="sub-title">精选壁纸<span>&nbsp;&nbsp;|&nbsp;&nbsp;夜间模式</span><span class="icon-night" :class="{'active': isNight}" @click="changeNight"></span></div>
-            <div class="pic-list">
-                <div class="pic-list-item"
-                :class="{active: picIndex === index}"
-                @click="() => {picIndex = index;changeTheme('', {bgUrl: pic, bgUrlIndex: index})}" v-for="(pic, index) in localBgUrls" :key="pic">
-                <img :src="pic" alt="">
-                </div>
-            </div>
             <div class="sub-title">在线壁纸</div>
-            <ul class="cate-list flexbox-h">
+            <ul class="cate-list flexbox-h" v-loading="loading">
                 <li class="cate-list-item"
                 :class="{active: cateIndex === item.old_id}"
                 @click="onCateChange(item)"
@@ -33,7 +25,7 @@
                     {{item.show_name}}
                 </li>
             </ul>
-            <div class="pic-list">
+            <div class="pic-list" v-loading="loading">
                 <div class="pic-list-item"
                 :class="{active: picIndex === pic.id}"
                 @click="() => {picIndex = pic.id;changeTheme('', {bgUrl: pic.url, bgUrlIndex: pic.id})}"
@@ -42,17 +34,27 @@
                 </div>
             </div>
             <div class="more-btn" v-if="total > picData.length" @click="loadingMore">加载更多 ></div>
+            <div class="sub-title">精选壁纸</div>
+            <div class="pic-list" v-loading="loading">
+                <div class="pic-list-item"
+                :class="{active: picIndex === index}"
+                @click="() => {picIndex = index;changeTheme('', {bgUrl: pic, bgUrlIndex: index})}" v-for="(pic, index) in localBgUrls" :key="pic">
+                <img :src="pic" alt="">
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+/* eslint-disable no-unused-vars */
+
 import {
     // ref,
-    // computed,
-    // watch,
+    computed,
+    watch,
     reactive,
-    // onMounted,
+    onMounted,
     // onUpdated,
     toRefs,
     onBeforeMount
@@ -66,14 +68,11 @@ import {
 } from '@/utils'
 import { wallpaper } from '@/api/apiList'
 export default {
-    emits: {
-        closeModal: val => {
-            console.log(val, 'valvalvalval')
-            return true
-        }
-    },
     setup (props, context) {
+        const store = useStore()
+        const themeData = store.state.theme
         const state = reactive({
+            loading: true,
             isNight: false,
             picIndex: 0,
             cateIndex: 0,
@@ -85,30 +84,35 @@ export default {
             pageno: 1,
             count: 15,
             total: 0,
-            progressPsition: '',
             activeIndex: 0
+            // ...computed(() => themeData)
         })
-        onBeforeMount(async () => {
-            const cateList = await wallpaper.getCategory()
-            const newestList = await wallpaper.newestList({ pageno: state.pageno, count: state.count })
-            state.cateList = [{
-                category: '最新',
-                hot_tag: [],
-                old_id: 0,
-                position: '',
-                show_name: '最新'
-            }, ...cateList.data]
-            state.picData = newestList.data.list
-            state.total = newestList.data.total_count
+        watch(() => [
+            themeData.picData,
+            themeData.cateList,
+            themeData.total
+        ], (value) => {
+            // console.log(value, 'theme')
+            state.picData = value[0]
+            state.cateList = value[1]
+            state.total = value[2]
+            state.loading = false
         })
-        changeTheme().then(res => {
-            const store = useStore()
-            state.picIndex = res.bgUrlIndex
-            state.colorIndex = res.colorIndex
-            state.localBgUrls = res.bgUrlList
-            state.colors = res.colors
-            store.dispatch('themeChanged', !store.state.themeChanged)
+        onMounted(async () => {
+            changeTheme().then(res => {
+                state.picIndex = res.bgUrlIndex
+                state.colorIndex = res.colorIndex
+                state.localBgUrls = res.bgUrlList
+                state.colors = res.colors
+                store.dispatch('themeChanged', !store.state.themeChanged)
+            })
+            getData()
         })
+        const getData = async () => {
+            store.dispatch('theme/getData', { pageno: state.pageno, count: state.count }).then(res => {
+                state.loading = false
+            })
+        }
         const toggleModal = () => {
             context.emit('close-modal', true)
         }
@@ -118,34 +122,23 @@ export default {
             !state.isNight && (document.querySelector('#app').classList = '')
         }
         const onCateChange = async (item) => {
-            let newestList = []
+            if (state.cateIndex === item.old_id) return
             state.pageno = 1
             state.cateIndex = item.old_id
-            if (item.old_id) {
-                newestList = await wallpaper.GetListByCategory({ cids: item.old_id, count: state.count })
-            } else {
-                newestList = await wallpaper.newestList({ pageno: state.pageno, count: state.count })
-            }
-            state.picData = newestList.data.list
-            state.total = newestList.data.total_count
+
+            store.dispatch('theme/getListByCategory', {
+                old_id: item.old_id,
+                pageno: state.pageno,
+                count: state.count
+            }).then(res => {})
         }
         const loadingMore = async () => {
             state.pageno++
-            let newestList = []
-            if (state.cateIndex) {
-                newestList = await wallpaper.GetListByCategory({
-                    pageno: state.pageno,
-                    cids: state.cateIndex,
-                    count: state.count
-                })
-            } else {
-                newestList = await wallpaper.newestList({
-                    pageno: state.pageno,
-                    count: state.count
-                })
-            }
-            state.picData = [...state.picData, ...newestList.data.list]
-            state.total = newestList.data.total_count
+            store.dispatch('theme/loadingMore', {
+                old_id: state.cateIndex,
+                pageno: state.pageno,
+                count: state.count
+            }).then(res => {})
         }
         return {
             changeTheme,
@@ -153,7 +146,7 @@ export default {
             toggleModal,
             onCateChange,
             loadingMore,
-            // ...computed(() => storeState).value,
+            // ...computed(() => themeData).value,
             ...toRefs(state)
         }
     }
@@ -166,11 +159,11 @@ export default {
     right: 0;
     top: 0;
     width: 640px;
-    transition: all 0.3s;
-    transform: translateX(460px);
+    height: 100%;
+    transition: all .3s;
+    transform: translateX(640px);
     opacity: 0;
     z-index: 1000;
-    height: 100%;
     &.active {
         opacity: 1;
         transform: translateX(0px);
@@ -178,9 +171,9 @@ export default {
     .sub-title {
         color: @white;
         font-size: 16px;
-        line-height: 24px;
-        margin-bottom: 10px;
-        padding: 0 20px;
+        line-height: 16px;
+        margin: 10px 0 20px;
+        padding-left: 10px;
         display: flex;
         align-items: center;
         border-left: 4px solid @primary;
@@ -295,13 +288,14 @@ export default {
         flex-wrap: wrap;
         // justify-content: space-between;
         &-item {
-            width: 40px;
-            height: 40px;
+            width: 41px;
+            height: 41px;
             border-radius: 3px;
             margin-right: 14px;
             margin-bottom: 18px;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
             &:nth-child(11n) {
                 margin-right: 0;
             }
@@ -309,11 +303,11 @@ export default {
                 content: '';
                 display: block;
                 position: absolute;
-                bottom: -14px;
-                right: -14px;
+                bottom: -10px;
+                right: -10px;
                 width: 0;
                 height: 0;
-                border-width: 14px;
+                border-width: 10px;
                 border-color: var(--white);
                 border-style: solid;
                 transform: rotateZ(45deg);
@@ -361,7 +355,7 @@ export default {
     .more-btn {
         text-align: center;
         line-height: 32px;
-        color: @c-666;
+        color: @white;
         &:hover {
             color: @primary;
             cursor: pointer;

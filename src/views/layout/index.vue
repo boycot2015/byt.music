@@ -136,6 +136,8 @@
     <weather ref="weatherBox" />
     <!-- 桌面歌词 -->
     <lyric v-model:isShow="showLyirc"></lyric>
+    <!-- 自定义右键菜单 -->
+    <context-menu @on-menu-click="(type) => type === 'setting' && (showThemeDialog = true)"></context-menu>
     <div class="change-theme-btn" :class="{hide: showThemeDialog, show: !showThemeDialog}" @dblclick.stop="changeTheme" ref="dragthemeBox" @click.stop="onThemeShow"></div>
 </div>
 </template>
@@ -179,6 +181,10 @@ export default {
     },
     emits: {
         hideMenu: val => {
+            console.log(val, 'valvalvalval')
+            return true
+        },
+        closeModal: val => {
             console.log(val, 'valvalvalval')
             return true
         }

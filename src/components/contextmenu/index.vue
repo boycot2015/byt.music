@@ -11,28 +11,31 @@ export default {
     name: 'contextMenu',
     data () {
         return {
-            contextmenu: [{
-                name: '查看',
-                event: 'view'
-            }, {
-                name: '刷新',
-                event: 'refresh'
-            }, {
-                name: '打印',
-                event: 'print'
-            },
-            {
-                name: '另存为',
-                event: 'saveHtml'
-            },
-            // {
-            //     name: '另存为',
-            //     event: 'saveAs'
-            // },
-            {
-                name: '属性',
-                event: 'prop'
-            }]
+            contextmenu: [
+                // {
+                //     name: '查看',
+                //     event: 'view'
+                // },
+                {
+                    name: '刷新',
+                    event: 'refresh'
+                },
+                {
+                    name: '打印',
+                    event: 'print'
+                },
+                {
+                    name: '另存为',
+                    event: 'saveHtml'
+                },
+                {
+                    name: '属性',
+                    event: 'prop'
+                },
+                {
+                    name: '换主题',
+                    event: 'setting'
+                }]
         }
     },
     methods: {
@@ -69,6 +72,7 @@ export default {
             default:
                 break
             }
+            this.$emit('on-menu-click', menu.event)
             document.querySelector('#contextmenu').style.display = 'none'
         },
         getBase64Image (imgurl) {
