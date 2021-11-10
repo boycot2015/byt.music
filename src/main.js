@@ -1,4 +1,6 @@
 import { createApp } from 'vue'
+// import ElementPlus from 'element-plus'
+// import 'element-plus/dist/index.css'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -18,6 +20,7 @@ Object.keys(components).forEach(k => {
     VueInstance.component(k, components[k])
 })
 VueInstance.use(api)
+    // .use(ElementPlus)
     .use(MessageBox)
     .use(showToast)
     .use(store)

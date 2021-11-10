@@ -257,12 +257,12 @@ export default {
     .pic-list {
         display: flex;
         flex-wrap: wrap;
-        // justify-content: space-between;
+        justify-content: space-between;
         &-item {
             margin-bottom: 15px;
-            margin-right: 20px;
+            margin-right: 15px;
             height: 100px;
-            width: 180px;
+            width: 175px;
             cursor: pointer;
             overflow: hidden;
             background-size: cover;
@@ -286,17 +286,17 @@ export default {
     .colors-list {
         display: flex;
         flex-wrap: wrap;
-        // justify-content: space-between;
+        justify-content: space-between;
         &-item {
-            width: 41px;
-            height: 41px;
+            width: 42px;
+            height: 42px;
             border-radius: 3px;
-            margin-right: 14px;
-            margin-bottom: 18px;
+            margin-right: 16px;
+            margin-bottom: 16px;
             position: relative;
             overflow: hidden;
             cursor: pointer;
-            &:nth-child(11n) {
+            &:nth-child(10n) {
                 margin-right: 0;
             }
             &.active::after {
@@ -316,7 +316,7 @@ export default {
     }
     .icon-close {
         position: absolute;
-        left: -41px;
+        left: -40px;
         padding: 0 12px;
         background: rgba(0,0,0,0.5);
         top: 0px;
@@ -331,7 +331,9 @@ export default {
         }
     }
     .cate-list {
+        display: flex;
         flex-wrap: wrap;
+        justify-content: space-between;
         margin-bottom: 10px;
         &-item {
             margin-right: 20px;
@@ -342,6 +344,9 @@ export default {
             line-height: 24px;
             transition: all 0.3s;
             border-bottom: 2px solid transparent;
+            &:nth-child(11n) {
+                margin-right: 0;
+            }
             &:hover {
                 color: @primary;
             }

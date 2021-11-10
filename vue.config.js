@@ -20,8 +20,22 @@ module.exports = {
             }
         }
     },
+    chainWebpack: config => {
+        // ...other chains
+        config.module // fixes https://github.com/graphql/graphql-js/issues/1272
+            .rule('mjs$')
+            .test(/\.mjs$/)
+            .include
+            .add(/node_modules/)
+            .end()
+            .type('javascript/auto')
+    },
     configureWebpack: (config) => {
         return {
+            resolve: {
+                // .mjs needed for https://github.com/graphql/graphql-js/issues/1272
+                extensions: ['*', '.mjs', '.js', '.vue', '.json']
+            },
             plugins: [
                 new ManifestPlugin({
                     fileName: 'p-' + new Date().getFullYear() + (new Date().getMonth() + 1) + new Date().getDate() + '-zch.json'
