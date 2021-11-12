@@ -17,6 +17,14 @@ module.exports = {
                 pathRewrite: {
                     '^/api': ''
                 }
+            },
+            '/unsplash': {
+                target: 'https://unsplash.com/napi/photos',
+                // target: 'https://boycot-music-api.vercel.app',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/unsplash': ''
+                }
             }
         }
     },

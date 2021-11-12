@@ -5,6 +5,6 @@ export default {
     binglist: baseUrl + '/bing/list', // 必应每日壁纸
     getCategory: baseUrl + '/birdpaper/intf/getCategory', // 热门分类
     newestList: baseUrl + '/birdpaper/intf/newestList', // 最新360壁纸
-    GetListByCategory: baseUrl + '/birdpaper/intf/GetListByCategory' // 根据分类获取360壁纸
-
+    GetListByCategory: baseUrl + '/birdpaper/intf/GetListByCategory', // 根据分类获取360壁纸
+    unsplashList: '/unsplash/napi/photos' // unsplashList壁纸
 }

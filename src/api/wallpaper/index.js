@@ -1,6 +1,8 @@
 import axios from '@/api/axios'
 import urls from './urls'
+// import { serveUrl } from '../baseUrl'
 // const headers = {}
+// const HttpsProxyAgent = require('https-proxy-agent')
 export default {
     /**
      * 参数
@@ -45,6 +47,12 @@ export default {
     GetListByCategory (params) {
         params = { pageno: 0, count: 20, cids: 0, ...params }
         return axios.get(urls.GetListByCategory, {
+            params
+        })
+    },
+    unsplashList (params) {
+        params = { per_page: params.count || 20, page: params.pageno || 1 }
+        return axios.get(urls.unsplashList, {
             params
         })
     }

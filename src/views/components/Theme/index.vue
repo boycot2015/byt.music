@@ -127,7 +127,7 @@ export default {
             state.cateIndex = item.old_id
 
             store.dispatch('theme/getListByCategory', {
-                old_id: item.old_id,
+                ...item,
                 pageno: state.pageno,
                 count: state.count
             }).then(res => {})
