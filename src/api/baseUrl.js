@@ -2,7 +2,7 @@
 
 // let baseUrl = 'http://music.api.boycot.top' // 本地代理
 let baseUrl = 'http://music.api.boycot.top' // 本地代理
-const weatherUrl = 'http://api.boycot.top/api' // 本地代理
+let apiUrl = 'http://api.boycot.top/api' // 本地代理
 let loginUrl, serveUrl
 const env = process.env.NODE_ENV === 'development'
     ? 'development' : process.env.VUE_APP_TITLE === 'show'
@@ -13,6 +13,7 @@ const env = process.env.NODE_ENV === 'development'
 switch (env) {
 case 'development':
     baseUrl = '/api'
+    apiUrl = 'http://localhost:8090/api' // 本地代理
     serveUrl = 'http://192.168.31.107:8080'
     break
 case 'test':
@@ -30,4 +31,4 @@ case 'production':
     break
 }
 export default baseUrl
-export { loginUrl, weatherUrl, serveUrl }
+export { loginUrl, apiUrl, serveUrl }

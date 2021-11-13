@@ -136,6 +136,7 @@ export default {
             state.pageno++
             store.dispatch('theme/loadingMore', {
                 old_id: state.cateIndex,
+                category: state.cateIndex || 'unsplash',
                 pageno: state.pageno,
                 count: state.count
             }).then(res => {})

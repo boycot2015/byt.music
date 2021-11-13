@@ -29,10 +29,10 @@ export default {
             const state = {}
             const newestList = await wallpaper.newestList(params)
             const customCate = [{
-                category: 'unsplashList',
+                category: 'unsplash',
                 hot_tag: [],
                 position: '',
-                show_name: 'unsplashList'
+                show_name: 'unsplash'
             }]
             state.cateList = [{
                 category: '最新',
@@ -51,7 +51,7 @@ export default {
             const state = {}
             if (params.old_id) {
                 newestList = await wallpaper.GetListByCategory({ cids: params.old_id, count: params.count })
-            } else if (params.category === 'unsplashList') {
+            } else if (params.category === 'unsplash') {
                 newestList = await wallpaper.unsplashList({ cids: params.old_id, count: params.count })
             } else {
                 newestList = await wallpaper.newestList({ pageno: params.pageno, count: params.count })
@@ -70,7 +70,7 @@ export default {
                     cids: params.old_id,
                     count: params.count
                 })
-            } else if (params.category === 'unsplashList') {
+            } else if (params.category === 'unsplash') {
                 newestList = await wallpaper.unsplashList({
                     pageno: params.pageno,
                     count: params.count

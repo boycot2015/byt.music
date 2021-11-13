@@ -49,7 +49,7 @@ import {
     ref,
     onMounted
 } from 'vue'
-import { weatherUrl } from '@/api/baseUrl'
+import { apiUrl } from '@/api/baseUrl'
 export default {
     setup (props) {
         const state = reactive({
@@ -140,14 +140,14 @@ export default {
             }, false)
         })
         const initNow = () => {
-            axios.get(`${weatherUrl}/weather`, { params: { location } })
+            axios.get(`${apiUrl}/weather`, { params: { location } })
                 .then(res => {
                     if (!res.success) return
                     state.weathers = [res.data]
                 })
         }
         const initData = () => {
-            axios.get(`${weatherUrl}/weather/daily`, { params: { location } })
+            axios.get(`${apiUrl}/weather/daily`, { params: { location } })
                 .then(res => {
                     if (!res.success) return
                     state.dailyWeather = res.data
@@ -158,7 +158,7 @@ export default {
                         }
                     })
                 })
-            axios.get(`${weatherUrl}/weather/life`, { params: { location } })
+            axios.get(`${apiUrl}/weather/life`, { params: { location } })
                 .then(res => {
                     if (!res.success) return
                     state.life.location = res.data.location
