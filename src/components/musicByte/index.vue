@@ -186,7 +186,8 @@ export default {
             var meterWidth = 4 // 频谱条宽度
             var gap = 2 // 频谱条间距
             var capHeight = 2
-            let barColor = document.querySelector(':root').getAttribute('style')
+            const root = document.querySelector(':root')
+            let barColor = root !== null && root.getAttribute('style')
             barColor = (barColor && barColor.split(':')[1])
             var capStyle = barColor || '#fff'
             var ctx = canvas.getContext('2d')

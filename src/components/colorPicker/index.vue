@@ -42,7 +42,8 @@ export default {
             target = e.target
             // console.log(target.value, 'e')
             document.querySelector('.color-picker-btn').innerHTML = target.value
-            document.querySelector(':root').setAttribute('style', '--color-picker:' + target.value)
+            const root = document.querySelector(':root')
+            root !== null && root.setAttribute('style', '--color-picker:' + target.value)
             this.$emit('change', e.target.value)
         })
     }

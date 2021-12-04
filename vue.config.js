@@ -1,4 +1,5 @@
 var ManifestPlugin = require('webpack-manifest-plugin')
+const { name } = require('./package.json')
 module.exports = {
     css: {
         sourceMap: true,
@@ -9,6 +10,10 @@ module.exports = {
         }
     },
     devServer: {
+        headers: {
+            'Access-Control-Allow-Origin': '*'
+        },
+        port: 3008,
         proxy: {
             '/api': {
                 target: 'http://music.api.boycot.top',
@@ -43,6 +48,11 @@ module.exports = {
             resolve: {
                 // .mjs needed for https://github.com/graphql/graphql-js/issues/1272
                 extensions: ['*', '.mjs', '.js', '.vue', '.json']
+            },
+            output: {
+                library: 'micro-music', // 子应用的name就是<micro-app name='子应用的name'></micro-app>中name属性的值
+                libraryTarget: 'umd',
+                jsonpFunction: `webpackJsonp_${name}`
             },
             plugins: [
                 new ManifestPlugin({

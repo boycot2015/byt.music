@@ -130,15 +130,17 @@
     <!-- /src/source/前世今生-文武贝钢琴版.mp3 -->
     <audio id="play-audio" crossOrigin="anonymous" controls="controls"></audio>
     <!-- <video id="play-audio" controls="controls"></video> -->
-    <Theme ref="dialogRef" @close-modal="showThemeDialog = false" @click.prevent @click.stop :class="{active: showThemeDialog}"></Theme>
     <!-- 桌面图标 -->
     <!-- <desk-top></desk-top> -->
-    <weather ref="weatherBox" />
     <!-- 桌面歌词 -->
     <lyric v-model:isShow="showLyirc"></lyric>
-    <!-- 自定义右键菜单 -->
-    <context-menu @on-menu-click="(type) => type === 'setting' && (showThemeDialog = true)"></context-menu>
-    <div class="change-theme-btn" :class="{hide: showThemeDialog, show: !showThemeDialog}" @dblclick.stop="changeTheme" ref="dragthemeBox" @click.stop="onThemeShow"></div>
+    <template v-if="!microApp">
+        <Theme ref="dialogRef" @close-modal="showThemeDialog = false" @click.prevent @click.stop :class="{active: showThemeDialog}"></Theme>
+        <weather ref="weatherBox" />
+        <!-- 自定义右键菜单 -->
+        <context-menu @on-menu-click="(type) => type === 'setting' && (showThemeDialog = true)"></context-menu>
+        <div class="change-theme-btn" :class="{hide: showThemeDialog, show: !showThemeDialog}" @dblclick.stop="changeTheme" ref="dragthemeBox" @click.stop="onThemeShow"></div>
+    </template>
 </div>
 </template>
 
@@ -196,6 +198,7 @@ export default {
         const progressVolumeDom = ref(null)
         const mainDom = ref(null)
         const state = reactive({
+            microApp: false,
             showLyirc: false,
             isNight: false,
             playData: {
@@ -388,6 +391,7 @@ export default {
                 store.dispatch('themeChanged', !store.state.themeChanged)
             })
             state.currLyric = localStore.get('currLyric')
+            state.microApp = window.microApp
             // console.log(state.currLyric, 'state.currLyric')
         })
         onUpdated(() => {

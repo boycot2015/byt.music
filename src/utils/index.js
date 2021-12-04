@@ -215,6 +215,7 @@ export const changeTheme = ($event, themeConfig, selector = '.cloud_music') => {
     }
     const musicClass = document.querySelector(selector).className
     const root = document.querySelector(':root')
+    if (root === null) return Promise.resolve(themeConfig)
     const imagesNameArr = getLocalBgUrls()
     let { themeColor, colors } = getLocalColors(30)
     let bgUrlIndex = (themeConfig && themeConfig.bgUrlIndex) || 0
