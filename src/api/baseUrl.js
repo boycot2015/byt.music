@@ -12,7 +12,8 @@ const env = process.env.NODE_ENV === 'development'
                     ? 'app.test' : 'production'
 switch (env) {
 case 'development':
-    baseUrl = 'http://music.api.boycot.top'
+    // baseUrl = 'http://music.api.boycot.top'
+    baseUrl = 'http://localhost:3000'
     break
 case 'test':
     baseUrl = 'http://music.api.boycot.top'

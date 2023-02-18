@@ -5,6 +5,10 @@ import store from './store'
 import './assets/less/index.less'
 import api from './api/install'
 import * as directives from './directives'
+
+import $http from './api/axios'
+import $baseUrl from './api/baseUrl'
+
 // 引入弹窗组件MessageBox
 import MessageBox from './components/MessageBox'
 // 引入自定义toast组件
@@ -17,6 +21,8 @@ Object.keys(directives).forEach(k => {
 Object.keys(components).forEach(k => {
     VueInstance.component(k, components[k])
 })
+VueInstance.config.globalProperties.$http = $http
+VueInstance.config.globalProperties.$baseUrl = $baseUrl
 VueInstance.use(api)
     .use(MessageBox)
     .use(showToast)

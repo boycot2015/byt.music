@@ -23,7 +23,7 @@ export default {
     mutations: {
         setData (state, data) {
             for (const key in data) {
-                state.userInfo[key] = data[key]
+                state.userInfo[key] = data[key] || {}
             }
             store.set('userInfo', data)
         },
@@ -47,7 +47,7 @@ export default {
             return new Promise((resolve, reject) => {
                 user.cellphone(params).then(res => {
                     if (res.code === 200) {
-                        const { account, profile, bindings } = res
+                        const { account = {}, profile = {}, bindings = {} } = res
                         commit('setCookie', res.cookie)
                         commit('setData', { account, profile, bindings })
                         resolve(res)
@@ -55,6 +55,18 @@ export default {
                         reject(res)
                     }
                 }).catch(err => reject(err))
+            })
+        },
+        async loginByQR ({ commit }, res) {
+            return new Promise((resolve, reject) => {
+                if (res.code === 803) {
+                    const { account, profile, bindings } = res
+                    commit('setCookie', res.cookie)
+                    commit('setData', { account, profile, bindings })
+                    resolve(res)
+                } else {
+                    reject(res)
+                }
             })
         },
         getUserInfo ({ commit }, params) {

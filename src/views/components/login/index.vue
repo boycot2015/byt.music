@@ -4,7 +4,7 @@
         <div class="logo">
             <img src="@/assets/images/platform.png" alt="">
         </div>
-        <div class="wrap">
+        <div class="wrap" v-if="!qrurl">
             <div class="login-form-item flexbox-h" :class="{'err': errorMsg && !form.phone}">
                 <label for="phone" class="phone">
                     <i class="icon-music-phone"></i>
@@ -19,6 +19,9 @@
                 <input type="password" id="password" class="password flex-2" v-model="form.password" placeholder="请输入密码">
                 <span class="reset flex-1" @click="form.password = ''">重设密码</span>
             </div>
+        </div>
+        <div class="wrap tc" v-else>
+            <img :src="qrurl" alt=""/>
         </div>
         <div class="login-form-item flexbox-h align-c">
             <input id="remember" type="checkbox" v-model="form.remember">
@@ -140,8 +143,10 @@ import {
     // computed,
     // watch,
     reactive,
-    toRefs
-    // getCurrentInstance
+    onMounted,
+    onBeforeUnmount,
+    toRefs,
+    getCurrentInstance
 } from 'vue'
 import {
     useStore
@@ -167,8 +172,12 @@ export default {
                 remember: false,
                 showClose: props.showClose
             },
+            qrurl: '',
+            unikey: '',
+            timer: null,
             errorMsg: ''
         })
+        const ctx = getCurrentInstance().appContext.config.globalProperties
         const router = useRouter()
         const onClose = () => {
             emit('on-close', true)
@@ -213,6 +222,44 @@ export default {
                 resolve({ code: 200, success: true })
             })
         }
+        const getQrCode = () => {
+            ctx.$http.get(`${ctx.$baseUrl}/login/qr/key`, { params: { timestamp: new Date().getTime() } }).then(res => {
+                state.unikey = res.data.unikey
+                ctx.$http.get(`${ctx.$baseUrl}/login/qr/create`, { params: { timestamp: new Date().getTime(), key: res.data.unikey, qrimg: true } }).then(data => {
+                    console.log(data.data.qrurl, '/login/qr/create')
+                    state.qrurl = data.data.qrimg
+                    checkCode(res.data)
+                })
+            })
+        }
+        const checkCode = (params) => {
+            ctx.$http.get(`${ctx.$baseUrl}/login/qr/check`, { params: { timestamp: new Date().getTime(), key: params.unikey } }).then(data => {
+                console.log(data.data, '/login/qr/check')
+                if (data.code === 803) {
+                    clearInterval(state.timer)
+                    state.timer = null
+                    store.dispatch('user/loginByQR', data).then(res => {
+                        emit('on-close', true)
+                        emit('on-success', true)
+                        if (router.currentRoute.value.path === '/error') {
+                            router.push('/')
+                        }
+                    }).catch(res => {
+                        state.errorMsg = res.message
+                    })
+                }
+            })
+        }
+        onMounted(() => {
+            getQrCode()
+            state.timer = setInterval(() => {
+                checkCode({ unikey: state.unikey })
+            }, 2000)
+        })
+        onBeforeUnmount(() => {
+            clearInterval(state.timer)
+            state.timer = null
+        })
         return {
             router,
             onClose,
