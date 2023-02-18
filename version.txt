@@ -9475,3 +9475,201 @@ commitId: 0f0df5d77ef099d59cb2b6eb2f5a86e243e26bbc
 说明:Initial commit
 commitId: 7eca7e15d5015aef0875c9f2fcd5c1c5b7917b36
 
+
+1. 作者:boycot2015<boycot2017@163.com>
+提交时间:Sat Feb 18 11:03:52 2023 +0800
+说明:调整登录接口
+commitId: 6351e2d408bdb3e6c386b20c51a5d91cef875688
+
+2. 作者:boycot<boycot2017@163.com>
+提交时间:Tue Aug 17 00:55:49 2021 +0800
+说明:自动提交版本json信息
+commitId: 9d00d03b9f449c12fa9b6a765cc98d62f0355d32
+
+3. 作者:boycot<boycot2017@163.com>
+提交时间:Tue Aug 17 00:55:46 2021 +0800
+说明:自动提交版本信息
+commitId: 1c9da8a6dcb0f83b575e2f732e64743290dbc344
+
+4. 作者:boycot<boycot2017@163.com>
+提交时间:Tue Aug 17 00:55:22 2021 +0800
+说明:处理日志时间展示
+commitId: c5c6ffa4671be128fcf488b218d2e9e716141454
+
+5. 作者:boycot<boycot2017@163.com>
+提交时间:Tue Aug 17 00:48:25 2021 +0800
+说明:自动提交版本json信息
+commitId: 80a6c06bb84474584a34bfa42d7d825ee684469f
+
+6. 作者:boycot<boycot2017@163.com>
+提交时间:Tue Aug 17 00:48:21 2021 +0800
+说明:自动提交版本信息
+commitId: 72cbdb68fe5349423bf59c221d08a1cf4dceb53d
+
+7. 作者:boycot<boycot2017@163.com>
+提交时间:Tue Aug 17 00:34:48 2021 +0800
+说明:自动提交版本json信息
+commitId: 5582680e09adc376ace3a7a618a2aa1c936ab4c6
+
+8. 作者:boycot<boycot2017@163.com>
+提交时间:Tue Aug 17 00:34:45 2021 +0800
+说明:自动提交版本信息
+commitId: 8d14314b5309aa86b0fc464ddf7ad1427a215468
+
+9. 作者:boycot<boycot2017@163.com>
+提交时间:Tue Aug 17 00:31:07 2021 +0800
+说明:解决桌面歌词定位问题
+commitId: f9d22f78ee83664d8f3e903741570d08939e3dd9
+
+10. 作者:boycot<boycot2017@163.com>
+提交时间:Mon Aug 16 00:12:41 2021 +0800
+说明:详情新增音乐频谱，可以有多种样式切换
+commitId: 078692b9c0b04a3c8028ee25ca9af7590f09f1a5
+
+11. 作者:boycot<boycot2017@163.com>
+提交时间:Sat Aug 14 01:08:54 2021 +0800
+说明:新增保存页面插件
+commitId: 63b8e40bc41025a5eec8db53950a6d98c9b19c36
+
+12. 作者:boycot<boycot2017@163.com>
+提交时间:Thu Aug 12 00:20:38 2021 +0800
+说明:修复bug
+commitId: f38a5b6d1aa6f3558070509969275aab9886511a
+
+13. 作者:boycot<boycot2017@163.com>
+提交时间:Wed Aug 11 23:43:26 2021 +0800
+说明:新增天气插件
+commitId: ebd6960a5ab521b978bd9da0dfe721524e2d348d
+
+v1.0.3
+commitId: f1c9cad0f0eb613091e3f0699f1924f2828c9562
+***********************************************************
+
+v1.0.2
+commitId: 4c9be78cf4f129971c89397a21c2c7494bef36ed
+***********************************************************
+
+1. 作者:boycot<boycot2017@163.com>
+提交时间:Tue Jul 20 01:20:14 2021 +0800
+说明:调整样式
+commitId: 4bd816a00694d60a770a9477e8a477a97e8e47b7
+
+2. 作者:Gitee<noreply@gitee.com>
+提交时间:Fri Jul 16 13:47:56 2021 +0000
+说明:add LICENSE.
+commitId: e46531e8194668c0af1516b3b0d02a73473d4e15
+
+3. 作者:boycot<boycot2017@163.com>
+提交时间:Fri Jul 16 21:30:29 2021 +0800
+说明:调整布局
+commitId: a761d6a4d58bcfee1a743139afa978db9ea20c31
+
+v1.0.1
+commitId: 7d659aa0775ffb8f65007217804429a856f3023b
+***********************************************************
+
+1. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jul 11 20:05:11 2021 +0800
+说明:更换生产api
+commitId: 1cb21da3dc047c5b0c328776c7112758db9688a6
+
+2. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jul 11 20:00:57 2021 +0800
+说明:调整布局
+commitId: 88f2449a5ecf30b52316dd301319eaf7ae0c7a17
+
+3. 作者:boycot<boycot2017@163.com>
+提交时间:Thu Jul 1 00:34:24 2021 +0800
+说明:去除多余代码
+commitId: 6f25b0779b61213e1091eeffc892f2516a480689
+
+4. 作者:boycot<boycot2017@163.com>
+提交时间:Thu Jul 1 00:09:02 2021 +0800
+说明:提交需求
+commitId: 33355c54bbaa762b29af05119f18f3efb5ab379f
+
+5. 作者:boycot<boycot2017@163.com>
+提交时间:Thu Jul 1 00:04:26 2021 +0800
+说明:处理样式问题
+commitId: 7bbfb984ab577ced988d95a3399d9c9c3da9f439
+
+6. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jun 27 23:08:32 2021 +0800
+说明:自动提交版本json信息
+commitId: e5e9b88ae6a3ecb9c5cf38d8ea3ea5147db32a63
+
+7. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jun 27 23:08:29 2021 +0800
+说明:自动提交版本信息
+commitId: cbd2ad4c6b7615ac59599581a3eef38783131653
+
+8. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jun 27 23:06:09 2021 +0800
+说明:处理首页显示问题
+commitId: ce30c3000f01e7c2381f596656bc7f7f78401a04
+
+9. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jun 27 22:54:48 2021 +0800
+说明:自动提交版本json信息
+commitId: eff31194f4f5723669a95e5434ceac622ff2f86c
+
+10. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jun 27 22:54:44 2021 +0800
+说明:自动提交版本信息
+commitId: 822c40d77622cc1a611989081f92a98568a50b51
+
+11. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jun 27 22:54:20 2021 +0800
+说明:跳转更新日志页面
+commitId: 7c3146d3c217d33471670b842758d0a8c89b5657
+
+12. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jun 27 22:44:37 2021 +0800
+说明:自动提交版本json信息
+commitId: d85250289b91ae5b193876128b998e5e867d0bf3
+
+13. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jun 27 22:44:34 2021 +0800
+说明:自动提交版本信息
+commitId: 5fb1bd502b4c31a1b7b32e070395f948bcdd43ad
+
+14. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jun 27 22:40:19 2021 +0800
+说明:界面优化
+commitId: b63a699bc9fc3cd321e89aadc3ff0171d5ce73ff
+
+15. 作者:boycot<boycot2017@163.com>
+提交时间:Sun Jun 27 16:00:48 2021 +0800
+说明:替换详情跳转方式
+commitId: d5ec57a94af16dce1524674772eebcdb018554c9
+
+16. 作者:boycot<boycot2017@163.com>
+提交时间:Sat Jun 26 03:50:11 2021 +0800
+说明:新增主题更改弹框
+commitId: 2449195d5c5558082a661421728e5f248db93206
+
+17. 作者:boycot<boycot2017@163.com>
+提交时间:Fri Jun 25 01:23:25 2021 +0800
+说明:新增主题色更换
+commitId: 7737dd82d4e05a274b24eaa59075ac56317fd8b3
+
+18. 作者:boycot<boycot2017@163.com>
+提交时间:Thu Jun 24 01:45:20 2021 +0800
+说明:新增主题背景更换
+commitId: 07ac4c26cecdad0788375c2bbc191774845bdd39
+
+19. 作者:boycot<boycot2017@163.com>
+提交时间:Wed Jun 23 01:27:31 2021 +0800
+说明:处理历史问题
+commitId: bb40691ff325536caab9ce85f9319c96940603c0
+
+20. 作者:boycot<boycot2017@163.com>
+提交时间:Mon Jun 21 00:27:17 2021 +0800
+说明:项目初始化
+commitId: 0f0df5d77ef099d59cb2b6eb2f5a86e243e26bbc
+
+21. 作者:Gitee<noreply@gitee.com>
+提交时间:Mon Jun 21 00:14:45 2021 +0800
+说明:Initial commit
+commitId: 7eca7e15d5015aef0875c9f2fcd5c1c5b7917b36
+
