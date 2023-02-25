@@ -17,7 +17,7 @@ export default {
                 time: '00:01',
                 text: (store.get('playData') !== null && store.get('playData').name) || '纯音乐，请欣赏~'
             },
-            songParams: (store.get('songParams') !== null && store.get('songParams')) || {}
+            songParams: (store.get('songParams') !== null && store.get('songParams')) || ''
         },
         videoDetail: {
             total: 0,
@@ -197,7 +197,9 @@ export default {
         },
         setSongPlayer ({ commit, dispatch }, val) {
             commit('setSongPlayer', val)
-            commit('showSongPlayer', val.show)
+            dispatch('getsongData', val)
+            dispatch('getCommentByPage', val)
+            // commit('showSongPlayer', val.show)
         },
         setSongPlayerShow ({ commit }, val) {
             commit('showSongPlayer', val)

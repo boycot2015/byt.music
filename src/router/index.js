@@ -370,14 +370,16 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHistory(process.env.BASE_URL),
+    history: createWebHistory(window.__MICRO_APP_BASE_ROUTE__ || process.env.BASE_URL),
     routes
 })
 router.beforeEach((to, from, next) => {
     document.title = '网抑云音乐-' + to.meta.title
     const isLogin = store.get('userInfo') && Cookies.get('cookie')
-    if (to.matched.length === 0) { // 匹配不到页面跳转错误页面
-        next({ path: '/error' })
+    // console.log(to.matched, 'to.matched')
+
+    if (to.matched.length === 0) { // 匹配不到页面跳转首页
+        next({ path: '/' })
         return
     }
     if (!isLogin && to.meta.login && to.path !== '/error') { // 跳转登录页面

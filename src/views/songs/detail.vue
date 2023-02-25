@@ -49,34 +49,36 @@
             </div>
         </div>
         <div class="bottom flexbox-h">
-            <div class="comment-content" v-loading="loading">
+            <div class="comment-content flex-2" v-loading="loading">
                 <comment :data="data"></comment>
             </div>
-            <div class="same-content">
-                <div class="same-play-list grid-list" v-if="data.playLists && data.playLists.length">
+            <div class="same-content flex-1">
+                <div class="same-play-list grid-list">
                     <h2 class="title">包含这首歌的歌单</h2>
-                    <div v-for="item in data.playLists" :key="item.id" @click="onItemlistClick(item, 1)" class="grid-list-item ftype-0 " data-id="{{item.id}}" data-type="{{item.type}}">
-                        <div class="same-play-list-item grid-list-item js-list-detail ftype-0" data-id="{{item.id}}" data-type="{{item.type}}">
-                            <div class="img fl">
-                                <span class="icon icon-music-pause"></span>
-                                <img :src="item.coverImgUrl" alt="">
-                            </div>
-                            <div class="text fl" title="{{item.rcmdtext || item.name}}">
-                                <p class="name line-one">{{item.name}}</p>
-                                <span class="play-count singer">播放：{{item.playCount}}</span>
+                    <template v-if="data.playLists && data.playLists.length">
+                        <div v-for="item in data.playLists" :key="item.id" @click="onItemlistClick(item, 1)" class="grid-list-item ftype-0 ">
+                            <div class="same-play-list-item grid-list-item js-list-detail ftype-0" data-id="{{item.id}}" data-type="{{item.type}}">
+                                <div class="img fl">
+                                    <span class="icon icon-music-pause"></span>
+                                    <img :src="item.coverImgUrl" alt="">
+                                </div>
+                                <div class="text fl" :title="item.rcmdtext || item.name">
+                                    <p class="name line-one">{{item.name}}</p>
+                                    <span class="play-count singer">播放：{{item.playCount}}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </template>
                 </div>
                 <div class="same-music-list grid-list" v-if="data.songs && data.songs.length">
                     <h2 class="title">相似歌曲</h2>
-                    <div v-for="item in data.songs" @click="onItemlistClick(item, 2)" :key="item.id" class="grid-list-item ftype-0" data-id="{{item.id}}" data-url="{{item.mp3Url}}" data-type="{{item.type}}">
-                        <div class="same-play-list-item grid-list-item js-list-detail ftype-0" data-id="{{item.id}}" data-type="{{item.type}}" data-url="{{item.mp3Url}}">
+                    <div v-for="item in data.songs" @click="onItemlistClick(item, 2)" :key="item.id" class="grid-list-item ftype-0">
+                        <div class="same-play-list-item grid-list-item js-list-detail ftype-0">
                             <div class="img fl">
                                 <span class="icon icon-music-pause"></span>
                                 <img :src="item.album.picUrl" alt="">
                             </div>
-                            <div class="text fl" title="{{item.rcmdtext || item.name}}">
+                            <div class="text fl" :title="item.rcmdtext || item.name">
                                 <p class="name line-one">{{item.name}}</p>
                                 <span v-for="(singer, index) in item.album.artists" :key="singer.id" class="singer" v-html="singer.name + (index < item.album.artists.length - 1 ? '/': '')">
                                 </span>
@@ -238,19 +240,28 @@ export default {
             })
         }
         const onItemlistClick = (item, type) => {
-            store.dispatch('setPlayData', item)
-            getData(item)
-            store.dispatch('detail/setSongPlayer', {
-                id: item.id || item.vid || item.mvid,
-                show: true
-            })
+            if (type === 2) {
+                store.dispatch('setPlayData', item)
+                getData(item)
+                store.dispatch('detail/setSongPlayer', {
+                    id: item.id || item.vid || item.mvid,
+                    show: true
+                })
+            } else {
+                router.push({
+                    path: '/songs/list',
+                    query: {
+                        id: item.id
+                    }
+                })
+            }
         }
         // const initSwiper = () => {
         //     /* eslint-disable */
         //     new Swiper('.lyric-swiper-container', state.swiperOption)
         // }
         const onTurnBack = () => {
-            store.dispatch('detail/setSongPlayer', false)
+            store.dispatch('detail/setSongPlayerShow', false)
         }
         const scrollToTop = () => {
             scrollDom.value.scrollTop = 0
@@ -288,7 +299,7 @@ export default {
 }
 .music-dance {
     position:absolute;
-    bottom:0;
+    bottom:0px;
     left:70px;
     z-index: 1;
     /* width: 100%; */

@@ -60,11 +60,6 @@ service.interceptors.request.use(
                 ...config.params,
                 cookie: token
             }
-            // if (config.params) {
-            //     config.params.cookie = token
-            //     // if (!config.params.keywords) {
-            //     // }
-            // }
         }
         // 登录流程控制中，根据本地是否存在token判断用户的登录情况
         // 但是即使token存在，也有可能token是过期的，所以在每次的请求头中携带token
@@ -72,22 +67,7 @@ service.interceptors.request.use(
         // 而后我们可以在响应拦截器中，根据状态码进行一些统一的操作。
         // const token = store.state.user.token
         // token && (config.headers.Authorization = 'Bearer ' + token)
-        // router.beforeEach((to, from, next) => {
-        //     config.headers.OperationCode = (to.meta.roles && to.meta.roles[0]) || ''
-        //     // 本地存储权限code，刷新使用
-        //     localStorage.setItem('OperationCode', (to.meta.roles && to.meta.roles[0]) || '')
-        //     next()
-        // })
-        // let OperationCode = localStorage.getItem('OperationCode')
-        // if (config.params && config.params.token) {
-        //     OperationCode = 'operation_center'
-        // }
-        // // config.headers.OperationCode = OperationCode
-        // !config.headers.OperationCode && OperationCode && (config.headers.OperationCode = OperationCode)
-
-        // config.headers.OperationCode = 'to.meta.code'
         // console.log('添加请求拦截器config', config)
-        // console.log('config', config)
         return config
     },
     (error) => {

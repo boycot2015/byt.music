@@ -10,7 +10,8 @@ import video from './video'
 import MV from './MV'
 import user from './user'
 import dj from './dj'
-export default {
+import wallpaper from './wallpaper'
+const apis = {
     comment,
     song,
     home,
@@ -21,7 +22,11 @@ export default {
     video,
     user,
     MV,
-    dj
+    dj,
+    wallpaper
+}
+export default {
+    ...apis
 }
 export {
     comment,
@@ -34,5 +39,6 @@ export {
     video,
     user,
     MV,
-    dj
+    dj,
+    wallpaper
 }

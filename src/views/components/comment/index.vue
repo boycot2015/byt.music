@@ -1,13 +1,13 @@
 <template>
     <div class="comment">
+        <h2 class="title">{{title}}<span>(已有{{data.total}}条评论)</span></h2>
         <template v-if="data.hotComments && data.hotComments.length">
-            <h2 class="title">{{title}}<span>(已有{{data.total}}条评论)</span></h2>
             <h3 class="title">精彩评论({{data.hotComments.length}})</h3>
-            <div v-for="hotComment in data.hotComments" :key="hotComment.id" class="comment-item clearfix">
-                <div class="avatar fl">
+            <div v-for="hotComment in data.hotComments" :key="hotComment.id" class="comment-item flexbox-h">
+                <div class="avatar">
                     <img :src="hotComment.user.avatarUrl" alt="">
                 </div>
-                <div class="text fl">
+                <div class="text flex-4">
                     <p class="name">
                         {{hotComment.user.nickname}}:
                         <span class="desc">{{hotComment.content}}</span>
@@ -34,11 +34,11 @@
         </template>
         <template v-if="data.comments && data.comments.length">
             <h3 class="title">最新评论({{data.total - data.hotComments.length}})</h3>
-            <div v-for="comment in data.comments" :key="comment.id" class="comment-item clearfix">
-                <div class="avatar fl">
+            <div v-for="comment in data.comments" :key="comment.id" class="comment-item flexbox-h">
+                <div class="avatar">
                     <img :src="comment.user.avatarUrl" alt="">
                 </div>
-                <div class="text fl">
+                <div class="text flex-4">
                     <p class="name">
                         {{comment.user.nickname}}：
                         <span class="desc">{{comment.content}}</span>
@@ -140,6 +140,83 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="less" scoped>
+.comment {
+    // padding: 0 50px;
+    // padding-right: 50px;
+    h2.title {
+        font-size: 18px;
+        color: #333333;
+        font-family: 微软雅黑;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e8e8e8;
+        span {
+            padding-left: 10px;
+            font-size: 12px;
+            color: @c-999;
+        }
+    }
+    h3.title {
+        font-size: 14px;
+        line-height: 36px;
+        margin-top: 30px;
+        border-bottom: 1px solid @c-e8;
+    }
+    &-item {
+        padding: 20px 0;
+        align-items: flex-start;
+        border-bottom: 1px solid @c-e8;
+        &:last-child {
+            border-bottom: 0;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 40px;
+            overflow: hidden;
+            margin-right: 10px;
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+        .text {
+            // width: 500px;
+            .name {
+                // min-width: 120px;
+                font-size: 12px;
+                line-height: 20px;
+                text-align: justify;
+                color: #0C73C2;
+                user-select: text;
+                .desc {
+                    color: @c-333;
+                }
+                &.reply {
+                    margin-top: 10px;
+                    background-color: #F1F1F4;
+                    padding: 5px 10px;
+                    border-radius: 3px;
+                }
+            }
+            .info {
+                margin-top: 5px;
+                color: @c-999;
+                .right {
+                    span {
+                        cursor: pointer;
+                        padding: 0 6px;
+                        border-right: 1px solid @c-ccc;
+                        &:last-child {
+                            border-right: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .icon-music-star.active::after {
+        color: @primary;
+    }
+}
 </style>

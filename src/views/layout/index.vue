@@ -7,6 +7,7 @@
         left: isExtend ? '0px': '',
         top: isExtend ? '0px': '',
     }"
+    @dblclick.stop
     class="music-box js-music-box flexbox-v"
     ref="dragBox" v-show="!showMiniBox && showBox">
         <music-header
@@ -45,7 +46,7 @@
         <music-footer v-if="showFooter && !showVideoPlayer" @show-lyirc="(val) => showLyirc = val"></music-footer>
     </div>
     <div
-    @dblclick="() => {
+    @dblclick.stop="() => {
         showMiniBox = false
         showBox = true
     }"
@@ -129,44 +130,17 @@
     <!-- /src/source/前世今生-文武贝钢琴版.mp3 -->
     <audio id="play-audio" crossOrigin="anonymous" controls="controls"></audio>
     <!-- <video id="play-audio" controls="controls"></video> -->
-    <div class="theme-dialog" @click.stop :class="{active: showThemeDialog}">
-        <div class="theme-dialog-title">选择主题</div>
-        <div class="icon-close" @click="showThemeDialog = false">×</div>
-        <div class="theme-dialog-body">
-            <div class="sub-title">选择背景</div>
-            <div class="pic-list">
-                <div class="pic-list-item"
-                :style="{
-                    backgroundImage: `url(${pic})`
-                }"
-                :class="{active: picIndex === index}"
-                @click="() => {picIndex = index;changeTheme('', {bgUrl: pic, bgUrlIndex: index})}" v-for="(pic, index) in localBgUrls" :key="pic">
-                </div>
-            </div>
-            <div class="sub-title">选择主题颜色</div>
-            <div class="colors-list">
-                <div class="colors-list-item"
-                :style="{
-                    backgroundColor: color.primary
-                }"
-                :class="{active: colorIndex === index}"
-                @click="() => {colorIndex = index;changeTheme('', {themeColor: color, colorIndex: index})}" v-for="(color, index) in colors" :key="color">
-                </div>
-            </div>
-        </div>
-        <!-- <div class="theme-dialog-footer">
-            <div class="btns">
-                <span>确定</span>
-                <span>取消</span>
-            </div>
-        </div> -->
-    </div>
     <!-- 桌面图标 -->
     <!-- <desk-top></desk-top> -->
-    <weather ref="weatherBox" />
     <!-- 桌面歌词 -->
     <lyric v-model:isShow="showLyirc"></lyric>
-    <div class="change-theme-btn" :class="{hide: showThemeDialog, show: !showThemeDialog}" @dblclick.stop="changeTheme" ref="dragthemeBox" @click.stop="showThemeDialog = !showThemeDialog"></div>
+    <template v-if="!microApp">
+        <Theme ref="dialogRef" @close-modal="showThemeDialog = false" @click.prevent @click.stop :class="{active: showThemeDialog}"></Theme>
+        <weather ref="weatherBox" />
+        <!-- 自定义右键菜单 -->
+        <context-menu @on-menu-click="(type) => type === 'setting' && (showThemeDialog = true)"></context-menu>
+        <div class="change-theme-btn" :class="{hide: showThemeDialog, show: !showThemeDialog}" @dblclick.stop="changeTheme" ref="dragthemeBox" @click.stop="onThemeShow"></div>
+    </template>
 </div>
 </template>
 
@@ -177,6 +151,7 @@ import musicFooter from './footer'
 import videoPlayerBox from '../video/detail'
 import audioPlayerBox from '../songs/detail'
 import List from '@/views/components/List'
+import Theme from '@/views/components/Theme'
 import {
     ref,
     computed,
@@ -203,10 +178,15 @@ export default {
         musicFooter,
         List,
         videoPlayerBox,
-        audioPlayerBox
+        audioPlayerBox,
+        Theme
     },
     emits: {
         hideMenu: val => {
+            console.log(val, 'valvalvalval')
+            return true
+        },
+        closeModal: val => {
             console.log(val, 'valvalvalval')
             return true
         }
@@ -218,7 +198,9 @@ export default {
         const progressVolumeDom = ref(null)
         const mainDom = ref(null)
         const state = reactive({
+            microApp: false,
             showLyirc: false,
+            isNight: false,
             playData: {
                 lyrc: '一诺千金到尽头',
                 name: '菩提偈',
@@ -409,6 +391,7 @@ export default {
                 store.dispatch('themeChanged', !store.state.themeChanged)
             })
             state.currLyric = localStore.get('currLyric')
+            state.microApp = window.microApp
             // console.log(state.currLyric, 'state.currLyric')
         })
         onUpdated(() => {
@@ -561,6 +544,9 @@ export default {
         const onSetVolumeClick = (e) => {
             !state.isMove && setVolume(e)
         }
+        const onThemeShow = () => {
+            state.showThemeDialog = !state.showThemeDialog
+        }
         return {
             dragBox,
             dragMiniBox,
@@ -579,6 +565,7 @@ export default {
             changeTheme,
             dragthemeBox,
             weatherBox,
+            onThemeShow,
             // ...computed(() => storeState).value,
             ...toRefs(state)
         }

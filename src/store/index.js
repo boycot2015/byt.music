@@ -5,6 +5,7 @@ import list from './list'
 import detail from './detail'
 import videoStore from './video'
 import user from './user'
+import theme from './theme'
 import { song } from '@/api/apiList'
 // filterDruationTime
 import {
@@ -166,6 +167,7 @@ export default createStore({
         list,
         detail,
         video: videoStore,
-        user
+        user,
+        theme
     }
 })

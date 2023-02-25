@@ -165,7 +165,10 @@ export default {
             data.categories = djCatelistRes.categories
             data.djCatelist = djCatelistRes.djCatelist
             data.djPaygift = djPaygiftRes.data.list
-            console.log(dj3DRes, djRapRes, 'value')
+            // console.log(dj3DRes, djRapRes, 'value')
+            data.djrecommend.map(el => {
+                el.playCount = filterPlayCount(el.playCount)
+            })
             commit('setTab3Data', data)
             return Promise.resolve({ code: 200, success: true })
         },

@@ -19,7 +19,7 @@
                 </div>
                 <span class="flex-1 tr more" @click="onMoreClick(obj)">更多<i class="icon-music-right"></i></span>
             </div>
-            <ul class="grid-list clearfix" :style="{...obj.styles}" v-loading="obj.loading">
+            <ul class="grid-list" :style="{...obj.styles}" v-loading="obj.loading">
                 <grid-list
                 v-for="(item, index) in obj.data"
                 :item="item"

@@ -93,7 +93,9 @@ export const closest = (el, selector) => {
     return el
 }
 export const filterPlayCount = (num) => {
-    num = num > 100000 ? parseInt(num / 10000) + '万' : num
+    num = num >= 100000000
+        ? parseFloat(num / 100000000).toFixed(2) + '亿' : num >= 10000
+            ? parseFloat(num / 10000).toFixed(2) + '万' : num
     return num
 }
 export const filterDruationTime = (dt) => {
@@ -213,8 +215,9 @@ export const changeTheme = ($event, themeConfig, selector = '.cloud_music') => {
     }
     const musicClass = document.querySelector(selector).className
     const root = document.querySelector(':root')
+    if (root === null) return Promise.resolve(themeConfig)
     const imagesNameArr = getLocalBgUrls()
-    let { themeColor, colors } = getLocalColors()
+    let { themeColor, colors } = getLocalColors(30)
     let bgUrlIndex = (themeConfig && themeConfig.bgUrlIndex) || 0
     const colorIndex = (themeConfig && themeConfig.colorIndex) || 0
     if ($event && $event.target) {

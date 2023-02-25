@@ -3,7 +3,7 @@
         <div class="title clearfix">
             <h3 class="name fl">{{data.title}}</h3>
         </div>
-        <ul class="list">
+        <ul class="list grid-list">
             <grid-list
             v-for="(item, index) in data.list"
             :item="item"

@@ -1,4 +1,7 @@
+import './public-path'
 import { createApp } from 'vue'
+// import ElementPlus from 'element-plus'
+// import 'element-plus/dist/index.css'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -24,6 +27,7 @@ Object.keys(components).forEach(k => {
 VueInstance.config.globalProperties.$http = $http
 VueInstance.config.globalProperties.$baseUrl = $baseUrl
 VueInstance.use(api)
+    // .use(ElementPlus)
     .use(MessageBox)
     .use(showToast)
     .use(store)

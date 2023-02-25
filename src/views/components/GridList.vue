@@ -1,5 +1,5 @@
 <template>
-<li class="grid-list-item fl clearfix js-list-detail"
+<li class="grid-list-item clearfix js-list-detail"
 v-if="(item.list && item.list.length) || item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl"
 :title="item.rcmdtext || item.name" :class="`type-${type || item.type} ftype-${item.ftype}`" data-url="{{item.mp3Url}}">
     <ul v-if="item.list" class="grid-list js-child-list fl">
@@ -21,10 +21,11 @@ v-if="(item.list && item.list.length) || item.img1v1Url || item.coverImgUrl || i
     </ul>
     <template v-else>
         <span class="order fl" v-if="type === 4" v-html="index < 9 ? '0' + (index + 1) : index + 1"></span>
-        <div class="img" :class="`${item.ftype == 0 ? 'fl': ''}`"
-        :style="{
-            background: `url(${item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl
-        }) no-repeat center/cover`}">
+        <div class="img" :class="`${item.ftype == 0 ? 'fl': ''}`">
+            <!-- :style="{
+                background: `url(${item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl
+            }) no-repeat center/cover`}" -->
+            <!-- <img :src="item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl" alt=""> -->
             <span class="copy-writer" v-if="(item.type == 0 || category == 3) && item.copywriter">{{item.copywriter}}</span>
             <div class="right" v-if="item.playCount || item.playTime">
                 <span class="icon" v-if="type !== 4" :class="`icon-music-${item.type == 5 || type == 3 ? 'video':'erphone'}`"></span>
@@ -35,7 +36,7 @@ v-if="(item.list && item.list.length) || item.img1v1Url || item.coverImgUrl || i
                 <span class="icon icon-music-video"></span>
             </div>
             <p class="desc line-one" v-if="item.rcmdtext">{{item.name}}</p>
-            <img v-if="type!==3" :src="item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl" alt="">
+            <img :src="item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl" alt="">
             <p class="time" v-if="type === 2">{{ new Date().toLocaleDateString().split('/').join('-') }}</p>
             <span class="creator" v-if="item.creator && type !== 3"><i class="icon-music-user"></i>{{item.creator.nickname}}</span>
         </div>

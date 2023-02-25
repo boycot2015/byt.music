@@ -38,7 +38,7 @@
                                         v-for="sub in subsItem"
                                         @click="onCateTagClick(sub)"
                                         :key="sub.id"
-                                        style="width: 97px;"
+                                        style="width: 71px;"
                                         :class="{'active': sub.id === activedCate.id}"
                                         class="cates-item js-cates-item tc fl">
                                             <i class="icon-hot" v-if="sub.hot">HOT</i>
@@ -51,7 +51,7 @@
                 </div>
             </div>
         </div>
-        <ul class="video-list clearfix" v-loading="loading">
+        <ul class="video-list grid-list" v-loading="loading">
             <grid-list
                 v-for="(item, index) in tabData.list.data"
                 :item="item.data || item"

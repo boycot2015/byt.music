@@ -31,12 +31,12 @@
         <div class="login-form-item tc">
             <input type="button" @click="onSubmit" value="登录">
         </div>
-        <div class="login-form-item tc">
+        <!-- <div class="login-form-item tc">
             <router-link to="/register">注册</router-link>
-        </div>
+        </div> -->
         <div class="login-form-item tc flexbox-h align-c">
             <input id="proxy" type="checkbox" v-model="form.aggress">
-            <label for="proxy">
+            <label for="proxy" class="proxy">
                 同意<router-link to="/register">《服务条款》</router-link>
                 <router-link to="/register">《隐私政策》</router-link>
                 <router-link to="/register">《儿童隐私政策》</router-link>
@@ -47,7 +47,7 @@
 <style lang="less" scoped>
 .login {
     &-form {
-        width: 282px;
+        width: 305px;
         min-height: 400px;
         padding: 20px;
         background: @white;
@@ -67,6 +67,9 @@
                     height: 40px;
                     line-height: 40px;
                     border-right: 1px solid @c-e8;
+                    &.proxy {
+                        font-size: 12px;
+                    }
                 }
                 label.password {
                     padding-right: 0;
