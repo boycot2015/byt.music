@@ -1,6 +1,6 @@
 // 根据不同的环境设定不同的baseUrl，
 
-// let baseUrl = 'http://music.api.boycot.top' // 本地代理
+// let baseUrl = 'http://music-api.boycot.top' // 本地代理
 let baseUrl = 'http://119.29.254.62:3000' // 本地代理
 const apiUrl = 'http://api.boycot.top/api' // 本地代理
 // const apiUrl = 'http://119.29.254.62:4000/api' // 本地代理
@@ -18,15 +18,15 @@ case 'development':
     serveUrl = 'http://192.168.31.107:8080'
     break
 case 'test':
-    baseUrl = 'http://music.api.boycot.top'
+    baseUrl = 'http://music-api.boycot.top'
     serveUrl = 'http://music.boycot.top'
     break
 case 'show':
-    baseUrl = 'http://music.api.boycot.top'
+    baseUrl = 'http://music-api.boycot.top'
     serveUrl = 'http://music.boycot.top'
     break
 case 'production':
-    baseUrl = 'http://music.api.boycot.top'
+    baseUrl = 'http://music-api.boycot.top'
     serveUrl = 'http://music.boycot.top'
     break
 }
