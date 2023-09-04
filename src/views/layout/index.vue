@@ -9,6 +9,7 @@
     }"
     @dblclick.stop
     class="music-box js-music-box flexbox-v"
+    :class="{'is-micro-app': microApp}"
     ref="dragBox" v-show="!showMiniBox && showBox">
         <music-header
         @on-minify="() => {
@@ -21,6 +22,10 @@
         @on-extend="(val) => onExtend(val)"
         ></music-header>
             <div class="center flexbox-h"
+            @dblclick.stop="microApp && (() => {
+                showMiniBox = true
+                showBox = false
+            })"
             :style="{
                 height: `calc(100% - ${showFooter && !showVideoPlayer ? 100 : 50}px)`
             }">
@@ -391,8 +396,11 @@ export default {
                 store.dispatch('themeChanged', !store.state.themeChanged)
             })
             state.currLyric = localStore.get('currLyric')
-            state.microApp = window.microApp
+            state.microApp = window.microApp || !!window.electron
             // console.log(state.currLyric, 'state.currLyric')
+            if (state.microApp) {
+                document.body.style.overflow = 'hidden'
+            }
         })
         onUpdated(() => {
             // 处理
@@ -638,5 +646,15 @@ export default {
         border-radius: 3px;
         display: block;
     }
+}
+.music-box.is-micro-app {
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    position: fixed!important;
+    top: 0!important;
+    left: 0!important;
+    right: 0!important;
+    bottom: 0!important;
 }
 </style>

@@ -15,6 +15,7 @@ switch (env) {
 case 'development':
     // baseUrl = '/api'
     // apiUrl = 'http://localhost:8090/api' // 本地代理
+    baseUrl = 'http://music-api.boycot.top'
     serveUrl = 'http://192.168.31.107:8080'
     break
 case 'test':

@@ -23,25 +23,27 @@
         <div class="wrap tc" v-else>
             <img :src="qrurl" alt=""/>
         </div>
-        <div class="login-form-item flexbox-h align-c">
-            <input id="remember" type="checkbox" v-model="form.remember">
-            <label for="remember">自动登录</label>
-            <span class="err-txt flex-2 tr">{{errorMsg}}</span>
-        </div>
-        <div class="login-form-item tc">
-            <input type="button" @click="onSubmit" value="登录">
-        </div>
-        <!-- <div class="login-form-item tc">
-            <router-link to="/register">注册</router-link>
-        </div> -->
-        <div class="login-form-item tc flexbox-h align-c">
-            <input id="proxy" type="checkbox" v-model="form.aggress">
-            <label for="proxy" class="proxy">
-                同意<router-link to="/register">《服务条款》</router-link>
-                <router-link to="/register">《隐私政策》</router-link>
-                <router-link to="/register">《儿童隐私政策》</router-link>
-            </label>
-        </div>
+        <template v-if="!microApp">
+            <div class="login-form-item flexbox-h align-c">
+                <input id="remember" type="checkbox" v-model="form.remember">
+                <label for="remember">自动登录</label>
+                <span class="err-txt flex-2 tr">{{errorMsg}}</span>
+            </div>
+            <div class="login-form-item tc" >
+                <input type="button" @click="onSubmit" value="登录">
+            </div>
+            <!-- <div class="login-form-item tc">
+                <router-link to="/register">注册</router-link>
+            </div> -->
+            <div class="login-form-item tc flexbox-h align-c">
+                <input id="proxy" type="checkbox" v-model="form.aggress">
+                <label for="proxy" class="proxy">
+                    同意<router-link to="/register">《服务条款》</router-link>
+                    <router-link to="/register">《隐私政策》</router-link>
+                    <router-link to="/register">《儿童隐私政策》</router-link>
+                </label>
+            </div>
+        </template>
     </div>
 </template>
 <style lang="less" scoped>
@@ -175,9 +177,10 @@ export default {
                 remember: false,
                 showClose: props.showClose
             },
-            qrurl: '',
+            qrurl: '111',
             unikey: '',
             timer: null,
+            microApp: false,
             errorMsg: ''
         })
         const ctx = getCurrentInstance().appContext.config.globalProperties
@@ -258,6 +261,7 @@ export default {
             state.timer = setInterval(() => {
                 checkCode({ unikey: state.unikey })
             }, 2000)
+            window.electron && (state.microApp = true)
         })
         onBeforeUnmount(() => {
             clearInterval(state.timer)

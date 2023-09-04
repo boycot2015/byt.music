@@ -10,6 +10,12 @@
 </template>
 <script>
 export default {
+    mounted () {
+        window.addEventListener('contextmenu', (e) => {
+            e.preventDefault()
+            window.electron && window.electron.showContextMenu({})
+        })
+    },
     methods: {
         getColor (val) {
             console.log(val, 'color')

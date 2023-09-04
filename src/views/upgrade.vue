@@ -22,7 +22,7 @@
                     <h3 class="title" v-else>{{ version.name }}</h3>
                 </div>
             </div>
-            <div class="time-stamp category fl" style="height: 100%;">
+            <!-- <div class="time-stamp category fl" style="height: 100%;">
                 <h3 class="category-title">目录导航</h3>
                 <div>
                     <template
@@ -42,7 +42,7 @@
                         </div>
                     </template>
                 </div>
-            </div>
+            </div> -->
         </div>
         <!-- {{ versionData }} -->
     </div>
@@ -102,8 +102,8 @@ export default {
 </script>
 <style lang="less">
 .yzh-version-container {
-    // background: @white;
-    margin: 10px;
+    background: transparent;
+    // margin: 10px;
     padding: 20px 10px 20px 20px;
     font-size: 16px;
     position: relative;
@@ -125,13 +125,13 @@ export default {
         margin-bottom: 10px;
     }
     .content {
-        max-height: 413px;
+        // max-height: 413px;
         padding: 10px;
-        overflow: hidden;
-        overflow-y: auto;
+        // overflow: hidden;
+        // overflow-y: auto;
     }
     .time-stamp {
-        width: 60%;
+        width: 100%;
         h4 {
             font-size: 16px;
             color: @c-333;

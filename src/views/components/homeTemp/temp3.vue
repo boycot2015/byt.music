@@ -41,7 +41,7 @@
                 <span class="fr more" v-if="obj.hasMore" @click="onMoreClick(obj)">更多<i class="icon-music-right"></i></span>
             </div>
             <ul class="recommend-list grid-list" v-loading="loading" :style="{'marginBottom': findex === 2 ? '40px': ''}">
-                <grid-list v-for="(item, index) in obj.data" :item="item" :type="obj.type" :index="index" @click="onListClick(item)" :key="item.id"></grid-list>
+                <grid-list :class="obj.type ==2 && 'flexbox-h just-b'" v-for="(item, index) in obj.data" :item="item" :type="obj.type" :index="index" @click="onListClick(item)" :key="item.id"></grid-list>
             </ul>
         </div>
     </div>

@@ -2,6 +2,15 @@
     margin: 0;
     padding: 0;
 }
+body {
+    -webkit-app-region: drag; 
+}
+body a,
+body i,
+body span,
+body img {
+    -webkit-app-region: no-drag;
+}
 html,body {
     margin: 0;
     padding: 0;
@@ -49,6 +58,15 @@ ul,ol {
 .align-s {
     align-items: flex-start;
 }
+.just-b {
+    justify-content: space-between;
+}
+.just-a {
+    justify-content: space-around;
+}
+.just-c {
+    justify-content: center;
+}
 .flex-1 {
     flex: 1;
 }
@@ -64,15 +82,6 @@ ul,ol {
 .tl {text-align: left;}
 .tc {text-align: center;}
 .tr {text-align: right;}
-.just-c {
-    justify-content: center;
-}
-.just-b {
-    justify-content: space-between;
-}
-.just-a {
-    justify-content: space-around;
-}
 .fl {float: left;}
 .fr {float: right;}
 .clearfix::after {

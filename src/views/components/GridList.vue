@@ -10,7 +10,7 @@ v-if="(item.list && item.list.length) || item.img1v1Url || item.coverImgUrl || i
                 <img :src="child.album && child.album.picUrl" alt="">
             </div>
             <div class="text" :class="`${child.ftype == 0 ? 'fl': ''}`" :title="child.rcmdtext || child.name">
-                <p class="name tl">{{child.name}}</p>
+                <p class="name line-two tl">{{child.name}}</p>
                 <p class="desc tl" v-if="child.album">
                     <i class="icon-play-video"></i>
                     <span class="singer" v-for="(singer, index) in child.album.artists" :key="index" v-html="singer.name + (index < child.album.artists.length - 1 ? '/': '')">
@@ -41,7 +41,7 @@ v-if="(item.list && item.list.length) || item.img1v1Url || item.coverImgUrl || i
             <span class="creator" v-if="item.creator && type !== 3"><i class="icon-music-user"></i>{{item.creator.nickname}}</span>
         </div>
         <div class="text" :class="`${item.ftype == 0 ? 'fl': ''}`">
-            <p class="name tl" :class="{'line-one': type === 3 || type === 4}">{{item.rcmdtext || item.name || item.title}}</p>
+            <p class="name line-two tl" :class="{'line-one': type === 3 || type === 4}">{{item.rcmdtext || item.name || item.title}}</p>
             <span class="rcmdText line-one" v-if="item.rcmdText">{{item.rcmdText}}</span>
             <span class="lastProgramName line-one" v-if="item.lastProgramName">{{item.lastProgramName}}</span>
             <div class="price red" v-if="item.originalPrice">￥{{item.originalPrice / 100}}</div>
