@@ -97,7 +97,7 @@ export default {
             data.personalized.map(el => {
                 el.playCount = filterPlayCount(el.playCount)
             })
-            data.privatecontent = (privatecontentRes && privatecontentRes.result) || []
+            data.privatecontent = (privatecontentRes && privatecontentRes.result.slice(0, 2)) || []
             data.privatecontentList = (privatecontentListRes && privatecontentListRes.result) || []
             let res = (topSongRes && topSongRes.data) || []
             res = topSongRes.data.slice(0, 10)
