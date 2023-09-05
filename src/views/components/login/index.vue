@@ -229,18 +229,18 @@ export default {
             })
         }
         const getQrCode = () => {
-            ctx.$http.get(`${ctx.$baseUrl}/login/qr/key`, { params: { timestamp: new Date().getTime() } }).then(res => {
+            ctx.$http.get(`${ctx.$baseUrl}/login/qr/key`, { params: { timestamp: new Date().getTime(), noCookie: true } }).then(res => {
                 state.unikey = res.data.unikey
-                ctx.$http.get(`${ctx.$baseUrl}/login/qr/create`, { params: { timestamp: new Date().getTime(), key: res.data.unikey, qrimg: true } }).then(data => {
-                    console.log(data.data.qrurl, '/login/qr/create')
+                ctx.$http.get(`${ctx.$baseUrl}/login/qr/create`, { params: { timestamp: new Date().getTime(), key: res.data.unikey, qrimg: true, noCookie: true } }).then(data => {
+                    // console.log(data.data.qrurl, '/login/qr/create')
                     state.qrurl = data.data.qrimg
                     checkCode(res.data)
                 })
             })
         }
         const checkCode = (params) => {
-            ctx.$http.get(`${ctx.$baseUrl}/login/qr/check`, { params: { timestamp: new Date().getTime(), key: params.unikey } }).then(data => {
-                console.log(data.data, '/login/qr/check')
+            ctx.$http.get(`${ctx.$baseUrl}/login/qr/check`, { params: { timestamp: new Date().getTime(), key: params.unikey, noCookie: true } }).then(data => {
+                // console.log(data.data, '/login/qr/check')
                 if (data.code === 803) {
                     clearInterval(state.timer)
                     state.timer = null

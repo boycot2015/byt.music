@@ -57,12 +57,13 @@ export default {
                 }).catch(err => reject(err))
             })
         },
-        async loginByQR ({ commit }, res) {
+        async loginByQR ({ commit, dispatch }, res) {
             return new Promise((resolve, reject) => {
                 if (res.code === 803) {
-                    const { account, profile, bindings } = res
                     commit('setCookie', res.cookie)
-                    commit('setData', { account, profile, bindings })
+                    // const { account, profile, bindings } = res
+                    // commit('setData', { account, profile, bindings })
+                    dispatch('getUserInfo', res)
                     resolve(res)
                 } else {
                     reject(res)
@@ -71,17 +72,19 @@ export default {
         },
         getUserInfo ({ commit }, params) {
             return new Promise((resolve, reject) => {
-                user.detail(params).then(res => {
-                    if (res.code === 200) {
-                        const { account, profile, bindings, pcSign, mobileSign, ...others } = res
-                        commit('setData', { account, profile, bindings, ...others })
-                        commit('setSign', pcSign || mobileSign)
-                        resolve(res)
-                    } else {
-                        reject(res)
-                    }
-                }).catch(err => {
-                    reject(err)
+                user.account().then((params) => {
+                    params.account && user.detail({ uid: params.account.id }).then(res => {
+                        if (res.code === 200) {
+                            const { account, profile, bindings, pcSign, mobileSign, ...others } = res
+                            commit('setData', { account, profile, bindings, ...others })
+                            commit('setSign', pcSign || mobileSign)
+                            resolve(res)
+                        } else {
+                            reject(res)
+                        }
+                    }).catch(err => {
+                        reject(err)
+                    })
                 })
             })
         },

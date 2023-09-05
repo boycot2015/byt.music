@@ -13,10 +13,10 @@
             <div class="back-btn" @click="goBack">&lt;</div>
             <div class="forward-btn" @click="goForward">&gt;</div>
         </div>
-        <div class="search-box flexbox-h">
-            <input type="text" v-model="searchForm.key" @keyup="onSearch" :placeholder="searchForm.placeholder">
-            <div class="input-icon icon-music-search" ></div>
-        </div>
+    </div>
+    <div class="search-box flexbox-h">
+        <input type="text" v-model="searchForm.key" @keyup="onSearch" :placeholder="searchForm.placeholder">
+        <div class="input-icon icon-music-search" ></div>
     </div>
     <div class="flexbox-h">
         <div class="user-info flex-4 tc just-c flexbox-h">
@@ -38,10 +38,10 @@
             <div class="text icon setting icon-music-setting"></div>
         </div>
         <div class="operation flex-1 align-c flexbox-h tc just-c">
-            <i class="full-sreen-btn flex-1 icon-music-min js-music-min" @click="onMinifty"></i>
-            <i class="full-sreen-btn flex-1 fa icon-music-minus js-music-minus" @click="onBoxHide"></i>
-            <i class="min-btn flex-1 icon-music-rectangle js-music-rectangle" @click="onExtend"></i>
-            <i class="close-btn flex-1 icon-music-close js-music-close" @click="onBoxHide"></i>
+            <i class="full-sreen-btn flex-1 fa icon-music-minus js-music-minus" title="最小化窗口" @click="onMinifty"></i>
+            <i class="min-btn flex-1 icon-music-rectangle js-music-rectangle" title="全屏" v-if="ismini" @click="onExtend"></i>
+            <i class="full-sreen-btn flex-1 icon-music-min js-music-min" title="退出全屏" v-else @click="onExtend"></i>
+            <i class="close-btn flex-1 icon-music-close js-music-close" title="关闭窗口" @click="onBoxHide"></i>
         </div>
     </div>
 </div>
@@ -144,11 +144,7 @@ export default {
         }
         const onExtend = () => {
             state.ismini = !state.ismini
-            if (window.electron) {
-                !state.ismini && window.electron.maximize()
-                state.ismini && window.electron.minimize()
-                return
-            }
+            if (window.electron) return window.electron.toggleFullScreen(!state.ismini)
             emit('on-extend', !state.ismini)
         }
         const onLoginFormClose = (val) => {

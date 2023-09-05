@@ -38,6 +38,9 @@ export default {
     subcount (data) {
         return axios.post(urls.subcount, data)
     },
+    account (data) {
+        return axios.post(urls.account, data)
+    },
     update (data) {
         return axios.post(urls.update, data)
     },
@@ -45,7 +48,7 @@ export default {
         return axios.post(urls.dailySignin, data)
     },
     detail (data) {
-        return axios.post(urls.detail, data)
+        return axios.get(urls.detail, { params: data })
     },
     likelist (params) {
         return axios.get(urls.likelist, {

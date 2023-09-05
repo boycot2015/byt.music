@@ -1,5 +1,5 @@
 <template>
-    <div class="footer flexbox-h just-a">
+    <div class="footer flexbox-h just-b">
         <div class="play-btn flexbox-h just-a">
             <i class="icon-music-play-left" @click="playPrev"></i>
             <i class="js-play"
@@ -10,29 +10,31 @@
             @click="toggleAudioPlay"></i>
             <i class="icon-music-play-right" @click="playNext"></i>
         </div>
-        <div class="progress flex-2 flexbox-h just-b">
-            <span class="start-time tl">{{playData.curStr}}</span>
-            <div class="progress-bar tc flex-4" @click="onSetTimerClick">
-                 <!-- @click.stop="setTimer" -->
-                <span class="point" ref="progressTimeDom"></span>
-                <span class="line js-line" :style="{width: audioTimePos.w + 'px' || ''}"></span>
+        <div class="flexbox-h flex-1 just-b">
+            <div class="progress flex-3 flexbox-h just-c">
+                <span class="start-time tl">{{playData.curStr}}</span>
+                <div class="progress-bar tc flex-4" @click="onSetTimerClick">
+                     <!-- @click.stop="setTimer" -->
+                    <span class="point" ref="progressTimeDom"></span>
+                    <span class="line js-line" :style="{width: audioTimePos.w + 'px' || ''}"></span>
+                </div>
+                <span class="end-time tr">{{playData.endStr}}</span>
             </div>
-            <span class="end-time tr">{{playData.endStr}}</span>
-        </div>
-        <div
-        class="volume flex-2 flexbox-h just-b tc"
-        @mouseleave="showVolumeBtn = false"
-        @mouseenter="showVolumeBtn = true">
-            <i class="icon-music-volume js-music-volume flex-1" :class="{'close': playData.muted}" @click="toggleAudioMouted"></i>
-            <div class="progress-bar flex-4" @click="onSetVolumeClick">
-                <!-- @click.stop="setVolume" -->
-                <span class="point" v-show="showVolumeBtn" ref="progressVolumeDom"></span>
-                <span class="line js-line" :style="{width: audioVolumePos.w + 'px' || ''}"></span>
+            <div
+            class="volume flex-1 flexbox-h just-c tc"
+            @mouseleave="showVolumeBtn = false"
+            @mouseenter="showVolumeBtn = true">
+                <i class="icon-music-volume js-music-volume" :class="{'close': playData.muted}" @click="toggleAudioMouted"></i>
+                <div class="progress-bar flex-4" @click="onSetVolumeClick">
+                    <!-- @click.stop="setVolume" -->
+                    <span class="point" v-show="showVolumeBtn" ref="progressVolumeDom"></span>
+                    <span class="line js-line" :style="{width: audioVolumePos.w + 'px' || ''}"></span>
+                </div>
+                <!-- icon-music-beckoning-->
+                <i class="order-icon icon-music-loop" @click="toggleLoop"></i>
             </div>
-            <!-- icon-music-beckoning-->
-            <i class="order-icon icon-music-loop flex-1" @click="toggleLoop"></i>
         </div>
-        <div class="others flex-3 flexbox-h just-b">
+        <div class="others flex-1 flexbox-h just-b">
             <i class="type">标准</i>
             <i class="new icon-music-love" @click="collect"></i>
             <i class="word" @click="() => {$emit('show-lyirc', !showLyirc);showLyirc = !showLyirc;}">词</i>

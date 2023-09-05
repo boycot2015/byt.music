@@ -31,7 +31,7 @@
         height: 20px;
         padding-left: 5px;
         &-bar {
-            max-width: 380px;
+            // max-width: 380px;
             min-width: 120px;
             height: 4px;
             margin: 0 14px;
@@ -80,7 +80,7 @@
     .volume {
         margin: 0 5px 0 7px;
         .progress-bar {
-            max-width: 100px;
+            // max-width: 100px;
             min-width: 50px;
             height: 4px;
             margin: 0 8px;
@@ -177,15 +177,20 @@
                 border-radius: 30px;
                 margin-left: 10px;
                 overflow: hidden;
-                max-width: 210px;
-                min-width: 100px;
+                max-width: 400px;
+                min-width: 200px;
                 padding-right: 10px;
                 // background-color: #A82828;
                 -webkit-app-region: no-drag;
                 background-color: rgba(0, 0, 0, 0.15);
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                &:active,
+                &:hover {
+                    border: 1px solid rgba(255, 255, 255, 0.7);
+                }
                 input {
-                    max-width: 210px;
-                    min-width: 100px;
+                    width: 100%;
+                    min-width: 180px;
                     height: 22px;
                     color: @white;
                     opacity: 0.6;
@@ -279,6 +284,8 @@
                 background-color: #F5F5F7;
                 overflow: hidden;
                 overflow-y: auto;
+                max-width: 820px;
+                margin: 0 auto;
                 transition: all 0.5s;
             }
         }
