@@ -23,7 +23,7 @@
         <div class="wrap tc" v-else>
             <img :src="qrurl" alt=""/>
         </div>
-        <template v-if="!microApp">
+        <!-- <template v-if="!microApp">
             <div class="login-form-item flexbox-h align-c">
                 <input id="remember" type="checkbox" v-model="form.remember">
                 <label for="remember">自动登录</label>
@@ -32,9 +32,9 @@
             <div class="login-form-item tc" >
                 <input type="button" @click="onSubmit" value="登录">
             </div>
-            <!-- <div class="login-form-item tc">
+            <div class="login-form-item tc">
                 <router-link to="/register">注册</router-link>
-            </div> -->
+            </div>
             <div class="login-form-item tc flexbox-h align-c">
                 <input id="proxy" type="checkbox" v-model="form.aggress">
                 <label for="proxy" class="proxy">
@@ -43,7 +43,7 @@
                     <router-link to="/register">《儿童隐私政策》</router-link>
                 </label>
             </div>
-        </template>
+        </template> -->
     </div>
 </template>
 <style lang="less" scoped>
@@ -58,6 +58,7 @@
             border-radius: 3px;
             margin-bottom: 20px;
             width: 100%;
+            margin-right: 0 !important;
             .login-form-item {
                 margin-bottom: 0;
                 input {

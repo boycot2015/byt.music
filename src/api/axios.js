@@ -3,7 +3,8 @@
  * 请求拦截、响应拦截、错误统一处理
  */
 import axios from 'axios'
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
+import { store } from '@/utils'
 // import store from '@/store'
 // import router from '@/router'
 const errorHandle = (status, response) => {
@@ -49,7 +50,7 @@ service.defaults.headers.put['Content-Type'] = 'application/json'
 
 service.interceptors.request.use(
     (config) => {
-        const token = Cookies.get('cookie')
+        const token = store.get('cookie')
         if ((config.method === 'post' || config.method === 'put') && config.headers['Content-Type'] === 'application/json') {
             token && (config.data.cookie = token)
             // post、put 提交时，将对象转换为string, 为处理Java后台解析问题

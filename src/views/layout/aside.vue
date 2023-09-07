@@ -9,7 +9,7 @@
                 <div
                 class="title flexbox-h just-b js-toggle-class"
                 :class="
-                (activeClass && $value.path === activeFindex || $value.meta.unfold) && 'active '"
+                (activeClass && ($value.path === activeFindex || $value.meta.unfold)) && 'active '"
                 @click.stop="() => {activeClass = !activeClass; activeFindex = $value.path}"
                 :data-path="$value.path">
                     <p class="name">{{$value.meta.title}}</p>
@@ -18,7 +18,7 @@
                 <ul
                 class="list"
                 v-if="$value.children && $value.children.length"
-                :class="{'active': activeClass && $value.path === activeFindex || $value.meta.unfold}">
+                :class="{'active': activeClass && ($value.path === activeFindex || $value.meta.unfold)}">
                     <li
                     v-for="(item) in $value.children"
                     :key="item.name"
@@ -74,8 +74,8 @@ export default {
         const router = useRouter()
         const store = useStore()
         const state = reactive({
-            activeFindex: router.currentRoute.value.path,
-            activeRoute: router.currentRoute.value.path,
+            activeFindex: router.currentRoute.value.meta.activePath || router.currentRoute.value.path,
+            activeRoute: router.currentRoute.value.meta.activePath || router.currentRoute.value.path,
             activeClass: false,
             isStar: false,
             playData: {
@@ -88,6 +88,7 @@ export default {
             }
         })
         watch(() => router.currentRoute.value.path, (value) => {
+            if (router.currentRoute.value.meta.hideInMenu) return
             state.activeFindex = value
             state.activeRoute = value
         })

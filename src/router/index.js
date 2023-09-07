@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 // import store from '@/store'
 import Layout from '../views/layout/index.vue'
 import { store } from '@/utils'
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 const routes = [
     // {
     //     path: '/',
@@ -208,6 +208,7 @@ const routes = [
         meta: {
             icon: 'right',
             hideInMenu: true,
+            activePath: '/index',
             title: '歌单详情列表'
 
         },
@@ -234,6 +235,7 @@ const routes = [
         meta: {
             icon: '',
             title: '歌单详情',
+            activePath: '/index',
             hideMenu: true,
             hideInMenu: true
 
@@ -259,6 +261,7 @@ const routes = [
         component: Layout,
         meta: {
             icon: 'right',
+            activePath: '/index',
             hideInMenu: true,
             title: '歌单详情列表'
 
@@ -286,6 +289,7 @@ const routes = [
         meta: {
             icon: '',
             title: '视频详情',
+            activePath: '/video/index',
             hideMenu: true,
             hideInMenu: true
 
@@ -375,13 +379,17 @@ const router = createRouter({
 })
 router.beforeEach((to, from, next) => {
     document.title = '网抑云音乐-' + to.meta.title
-    const isLogin = store.get('userInfo') && Cookies.get('cookie')
+    const isLogin = store.get('userInfo') && store.get('cookie')
     // console.log(to.matched, 'to.matched')
-
     if (to.matched.length === 0) { // 匹配不到页面跳转首页
         next({ path: '/' })
         return
     }
+    // if (to.path === '/common/page') {
+    //     debugger
+    //     next({ ...to, query: { ...to.query, activePath: from.path } })
+    //     return
+    // }
     if (!isLogin && to.meta.login && to.path !== '/error') { // 跳转登录页面
         if (to.path === '/songs/list' && !to.query.isDaily) {
             next()

@@ -1,6 +1,6 @@
 import { user } from '@/api/apiList'
 import { store } from '@/utils'
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 export default {
     namespaced: true,
     state: {
@@ -12,7 +12,7 @@ export default {
             hotComments: [], // 精彩评论
             comments: [] // 所有评论
         },
-        cookie: Cookies.get('cookie') || '',
+        cookie: store.get('cookie') || '',
         userInfo: (store.get('userInfo') !== null && store.get('userInfo')) || {
             account: {},
             profile: {},
@@ -29,12 +29,13 @@ export default {
         },
         setCookie (state, data) {
             state.cookie = data
-            Cookies.set('cookie', data)
+            store.set('cookie', data)
+            // console.log(store.get('cookie'), 'state.cookie')
         },
         removeToken (state, data) {
             state.cookie = ''
             state.userInfo = {}
-            Cookies.remove('cookie')
+            store.remove('cookie')
             store.remove('userInfo')
         },
         setSign (state, data) {
@@ -63,8 +64,7 @@ export default {
                     commit('setCookie', res.cookie)
                     // const { account, profile, bindings } = res
                     // commit('setData', { account, profile, bindings })
-                    dispatch('getUserInfo', res)
-                    resolve(res)
+                    resolve(dispatch('getUserInfo', res))
                 } else {
                     reject(res)
                 }
@@ -73,18 +73,21 @@ export default {
         getUserInfo ({ commit }, params) {
             return new Promise((resolve, reject) => {
                 user.account().then((params) => {
-                    params.account && user.detail({ uid: params.account.id }).then(res => {
-                        if (res.code === 200) {
-                            const { account, profile, bindings, pcSign, mobileSign, ...others } = res
-                            commit('setData', { account, profile, bindings, ...others })
-                            commit('setSign', pcSign || mobileSign)
-                            resolve(res)
-                        } else {
-                            reject(res)
-                        }
-                    }).catch(err => {
-                        reject(err)
-                    })
+                    // params.account && user.detail({ uid: params.account.id }).then(res => {
+                    //     const { account, profile, bindings, pcSign, mobileSign, ...others } = res || { account: params.account }
+                    //     commit('setData', { account, profile, bindings, ...others })
+                    //     commit('setSign', pcSign || mobileSign)
+                    // }).catch(err => {
+                    //     reject(err)
+                    // })
+                    if (params.account) {
+                        const { account, profile, bindings, pcSign, mobileSign, ...others } = params
+                        commit('setData', { account, profile, bindings, ...others })
+                        commit('setSign', pcSign || mobileSign)
+                        resolve(params)
+                    } else {
+                        reject(params)
+                    }
                 })
             })
         },

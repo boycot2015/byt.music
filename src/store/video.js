@@ -11,7 +11,7 @@ export default {
             list: []
         },
         tab2Data: {
-            personalized: [], // 推荐歌单列表
+            personalized: store.get('videoTab2Data') !== null ? store.get('videoTab2Data').personalized : [], // 推荐歌单列表
             // privatecontent: [], // 独家放送列表
             // topSong: [], // 新歌速递列表
             // mv: [], // 推荐 mv

@@ -159,7 +159,7 @@ export default {
     position: fixed;
     right: 0;
     top: 0;
-    width: 640px;
+    width: 500px;
     height: 100%;
     transition: all .3s;
     transform: translateX(640px);
@@ -262,8 +262,8 @@ export default {
         &-item {
             margin-bottom: 15px;
             margin-right: 15px;
-            height: 100px;
-            width: 175px;
+            height: 80px;
+            width: 135px;
             cursor: pointer;
             overflow: hidden;
             background-size: cover;
@@ -287,7 +287,7 @@ export default {
     .colors-list {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
+        // justify-content: space-between;
         &-item {
             width: 42px;
             height: 42px;
@@ -297,7 +297,7 @@ export default {
             position: relative;
             overflow: hidden;
             cursor: pointer;
-            &:nth-child(10n) {
+            &:nth-child(8n) {
                 margin-right: 0;
             }
             &.active::after {
@@ -334,10 +334,10 @@ export default {
     .cate-list {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
+        // justify-content: space-between;
         margin-bottom: 10px;
         &-item {
-            margin-right: 20px;
+            margin-right: 10px;
             margin-bottom: 5px;
             cursor: pointer;
             color: @white;

@@ -24,14 +24,14 @@
                 <div class="avatar ">
                     <img :src="headerData.avatar" alt="">
                 </div>
-                <div class="text name">
+                <div class="text name line-one">
                     <span class="name">{{headerData.username}}</span>
                     <i class="icon-music-drop-down"></i>
                 </div>
             </div>
             <login-form class="login-box" @mousedown.stop ref="loginForm" v-if="showLogin && !hasLogin" @on-success="onLogin" @on-close="onLoginFormClose"></login-form>
             <user-info ref="userDialog" class="user-box" @mousedown.stop v-if="showLogin && hasLogin" @on-logout="onLogOut"></user-info>
-            <span class="text vip-text">{{headerData.vipTxt}}</span>
+            <!-- <span class="text vip-text">{{headerData.vipTxt}}</span> -->
             <!--  @click="showDialog"  -->
             <div class="text icon theme icon-music-clothes" @click="onThemeChange"></div>
             <div class="text icon message icon-music-msg"></div>
