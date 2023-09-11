@@ -295,7 +295,7 @@
             box-sizing: border-box;
             overflow: hidden;
             opacity:1;
-            border-right: 1px solid @c-ddd;
+            // border-right: 1px solid @white;
             background-color: #F5F5F7;
             transition: all 0.3s 0.6s;
             &-item {
@@ -381,10 +381,11 @@
             .music-info {
                 padding: 8px;
                 box-sizing: border-box;
-                border-top: 1px solid @c-ddd;
-                // background-color: #F5F5F7;
+                // border-top: 1px solid @white;
+                background-color:rgba(0, 0, 0, 0.3);
                 cursor: pointer;
                 position: relative;
+                -webkit-app-region: no-drag;
                 .mask {
                     position: absolute;
                     display: none;
@@ -581,13 +582,18 @@
         min-height: 42px;
         width: 296px;
         top: 60px;
-        align-self: flex-start;
         position: absolute;
+        align-self: flex-start;
         z-index: 100;
         letter-spacing: 0px;
         box-shadow: 0 0 10px @c-666;
         background-color: @white;
         user-select: initial;
+        &.is-micro-app {
+            left: 50%;
+            margin-left: -148px;
+            position: fixed;
+        }
         .wrap {
             z-index: 10;
             position: relative;

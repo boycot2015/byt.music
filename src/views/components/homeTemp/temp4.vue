@@ -2,8 +2,8 @@
     <div class="top-list">
         <div v-for="item in tabData.list" :key="item.title">
             <div class="title" style="font-size: 20px;">{{item.title}}</div>
-            <div v-if="item.type === 0" class="main" v-loading="item.loading">
-                <div class="main-item" v-for="plist in item.data" :key="plist.id">
+            <div v-if="item.type === 0" class="body" v-loading="item.loading">
+                <div class="body-item" v-for="plist in item.data" :key="plist.id">
                     <h3 class="top"
                     :class="'color-' + plist.ToplistType">
                         <p class="name">{{plist.name}}</p>
@@ -27,8 +27,11 @@
                     </div>
                 </div>
             </div>
-            <ul class="music-list grid-list" v-else v-loading="item.loading">
+            <ul class="music-list clearfix" v-else v-loading="item.loading">
                 <grid-list
+                style="width: 18.3%;height: 185px;margin-bottom: 10px;"
+                :style="{marginRight: (index + 1) % 5 != 0 ? '2%' : 0}"
+                class="fl"
                 v-for="(val, index) in item.data"
                 :item="val"
                 :type="item.type"

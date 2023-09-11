@@ -51,10 +51,13 @@
                 </div>
             </div>
         </div>
-        <ul class="video-list grid-list" v-loading="loading">
+        <ul class="video-list grid-list clearfix" style="display:block;" v-loading="loading">
             <grid-list
                 v-for="(item, index) in tabData.list.data"
                 :item="item.data || item"
+                style="width: 32%;margin-bottom: 10px;height: 200px;"
+                :style="{marginRight: (index + 1) % 3 != 0 ? '2%' : 0}"
+                class="fl"
                 :category="tabData.list.category"
                 :index="index"
                 :type="tabData.list.type"

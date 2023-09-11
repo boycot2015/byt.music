@@ -33,9 +33,7 @@ export default {
         })
     },
     detail (params) {
-        return axios.get(urls.detail, {
-            params
-        })
+        return axios.post(urls.detail, params)
     },
     topPlaylist (params) {
         return axios.get(urls.topPlaylist, {

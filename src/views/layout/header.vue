@@ -183,6 +183,10 @@ export default {
             })
         }
         const onThemeChange = (e) => {
+            if (window.electron) {
+                emit('on-theme-change', true)
+                return
+            }
             changeTheme(e)
             store.dispatch('themeChanged', !store.state.themeChanged)
         }

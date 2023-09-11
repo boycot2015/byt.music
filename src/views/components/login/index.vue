@@ -54,7 +54,7 @@
         padding: 20px;
         background: @white;
         .wrap {
-            border: 1px solid @c-e8;
+            // border: 1px solid @c-e8;
             border-radius: 3px;
             margin-bottom: 20px;
             width: 100%;

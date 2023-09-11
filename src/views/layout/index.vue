@@ -1,5 +1,5 @@
 <template>
-<div class="music-client flexbox-h align-c just-c" @click.prevent="showThemeDialog=false">
+<div class="music-client flexbox-h align-c just-c" @click.prevent="!microApp && (showThemeDialog=false)">
     <div
     :style="{
         width: isExtend ? '100%': '',
@@ -20,12 +20,13 @@
             showMiniBox = true
         }"
         @on-extend="(val) => onExtend(val)"
+        @on-theme-change="onThemeShow"
         ></music-header>
-            <div class="center flexbox-h"
-            @dblclick.stop="microApp && (() => {
+        <div class="center flexbox-h"
+            @dblclick.stop="() => {
                 showMiniBox = true
                 showBox = false
-            })"
+            }"
             :style="{
                 height: `calc(100% - ${showFooter && !showVideoPlayer ? 100 : 50}px)`
             }">
@@ -58,6 +59,7 @@
     :style="{
         top: !showBox ? 0: ''
     }"
+    :class="{'is-micro-app': microApp}"
     class="mini-music-box js-mini-music-box flexbox-v"
     @click.prevent
     v-show="showMiniBox" ref="dragMiniBox">
@@ -139,8 +141,9 @@
     <!-- <desk-top></desk-top> -->
     <!-- 桌面歌词 -->
     <lyric v-model:isShow="showLyirc"></lyric>
+    {{ showThemeDialog }}
+    <Theme ref="dialogRef" @close-modal="showThemeDialog = false" @click.prevent @click.stop :class="{active: showThemeDialog}"></Theme>
     <template v-if="!microApp">
-        <Theme ref="dialogRef" @close-modal="showThemeDialog = false" @click.prevent @click.stop :class="{active: showThemeDialog}"></Theme>
         <weather ref="weatherBox" />
         <!-- 自定义右键菜单 -->
         <context-menu @on-menu-click="(type) => type === 'setting' && (showThemeDialog = true)"></context-menu>
@@ -188,11 +191,11 @@ export default {
     },
     emits: {
         hideMenu: val => {
-            console.log(val, 'valvalvalval')
+            // console.log(val, 'valvalvalval')
             return true
         },
         closeModal: val => {
-            console.log(val, 'valvalvalval')
+            // console.log(val, 'valvalvalval')
             return true
         }
     },
@@ -323,6 +326,7 @@ export default {
             state.showFooter = !router.currentRoute.value.meta.hideFooter
         })
         onMounted(() => {
+            state.microApp = window.microApp || !!window.electron
             drag({
                 obj: [dragBox.value.children[0]],
                 target: [dragBox.value],
@@ -333,7 +337,7 @@ export default {
                     state.boxPos.max = pos
                 }
             })
-            drag({
+            !state.microApp && drag({
                 obj: [dragMiniBox.value],
                 cancelElem: ['.js-mini-music-list', '.volume'],
                 fn (pos) {
@@ -364,7 +368,7 @@ export default {
                     target: [dragBox.value],
                     cancelElem: ['.search-box']
                 })
-                drag({
+                !state.microApp && drag({
                     obj: [dragMiniBox.value],
                     cancelElem: ['.js-mini-music-list', '.volume']
                 })
@@ -396,7 +400,6 @@ export default {
                 store.dispatch('themeChanged', !store.state.themeChanged)
             })
             state.currLyric = localStore.get('currLyric')
-            state.microApp = window.microApp || !!window.electron
             // console.log(state.currLyric, 'state.currLyric')
             if (state.microApp) {
                 document.body.style.overflow = 'hidden'
@@ -408,7 +411,7 @@ export default {
                 dragBox.value.style.left = state.boxPos.max.left + 'px'
                 dragBox.value.style.top = state.boxPos.max.top + 'px'
             }
-            if (state.isMinBoxMoved) {
+            if (state.isMinBoxMoved && !state.microApp) {
                 dragMiniBox.value.style.left = state.boxPos.min.left + 'px'
                 dragMiniBox.value.style.top = state.boxPos.min.top + 'px'
             }

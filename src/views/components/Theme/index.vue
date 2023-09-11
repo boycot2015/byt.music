@@ -219,6 +219,7 @@ export default {
         font-size: 18px;
         color: @white;
         text-align: center;
+        -webkit-app-region: drag;
         background-color: rgba(0, 0, 0, 0.9);
         // border-bottom: 1px solid @c-ccc;
     }
@@ -227,6 +228,7 @@ export default {
         overflow: hidden;
         overflow-y: auto;
         height: calc(100% - 80px);
+        -webkit-app-region: no-drag;
         background-color: rgba(0, 0, 0, 0.8);
     }
     &-footer {
@@ -326,6 +328,7 @@ export default {
         color: @white;
         transition: all 0.3s;
         border-radius: 5px 0 0 5px;
+        -webkit-app-region: no-drag;
         &:hover {
             // transform: rotateZ(90deg);
             color: @primary;

@@ -38,10 +38,17 @@ export default {
 /* #app.dark-mode-invert >.cloud_music {
     filter: invert(100%);
 } */
-#app.dark-mode-invert >.cloud_music .cloud_music_main {
+#app.dark-mode-invert >.cloud_music {
+    background: #000 !important;
+}
+#app.dark-mode-invert >.cloud_music .cloud_music_main .main {
     filter: invert(100%);
 }
 #app.dark-mode-invert >.cloud_music .cloud_music_main img {
+    filter: invert(100%);
+}
+#app.dark-mode-invert .song-detail,
+#app.dark-mode-invert .theme-dialog .pic-list {
     filter: invert(100%);
 }
 #nav {
