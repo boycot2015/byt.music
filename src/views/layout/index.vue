@@ -141,7 +141,6 @@
     <!-- <desk-top></desk-top> -->
     <!-- 桌面歌词 -->
     <lyric v-model:isShow="showLyirc"></lyric>
-    {{ showThemeDialog }}
     <Theme ref="dialogRef" @close-modal="showThemeDialog = false" @click.prevent @click.stop :class="{active: showThemeDialog}"></Theme>
     <template v-if="!microApp">
         <weather ref="weatherBox" />
