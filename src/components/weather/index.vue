@@ -55,7 +55,7 @@ export default {
         const state = reactive({
             weathers: [],
             dailyWeather: {},
-            showWeather: true,
+            showWeather: false,
             viewMore: false,
             life: {
                 location: {
@@ -103,10 +103,12 @@ export default {
         })
         const dialogRef = ref(null)
         const MessageBox = inject('messageBox')
-        const location = 'ip'
+        const location = undefined
         const showDialog = () => {
             state.viewMore = false
             state.showWeather = false
+            initData()
+            initNow()
             MessageBox({
                 content: dialogRef.value.innerHTML,
                 shadeClose: false,
@@ -291,7 +293,7 @@ export default {
                 .cont {
                     font-size: 20px;
                     padding-bottom: 10px;
-                    border-bottom: 1px solid #e8e8e8;
+                    // border-bottom: 1px solid #e8e8e8;
                 }
             }
         }
@@ -302,7 +304,7 @@ export default {
         text-align: left;
         color: @white;
         padding-bottom: 10px;
-        border-bottom: 1px solid #e8e8e8;
+        // border-bottom: 1px solid #e8e8e8;
     }
     .bottom .list {
         display: flex;

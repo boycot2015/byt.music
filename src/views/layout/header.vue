@@ -14,6 +14,11 @@
             <div class="forward-btn" @click="goForward">&gt;</div>
         </div>
     </div>
+    <div class="weather flexbox-h just-b" style="cursor: pointer;" v-if="weathers.location" @click="() => $refs.weatherBox.showDialog()">
+        <div class="city">{{weathers.location.name}}</div>
+        <div class="text" v-if="weathers.now" style="margin:0 5px;">{{weathers.now.text}}</div>
+        <div class="temperature" v-if="weathers.now">{{weathers.now.temperature}}℃</div>
+    </div>
     <div class="search-box flexbox-h">
         <input type="text" v-model="searchForm.key" @keyup="onSearch" :placeholder="searchForm.placeholder">
         <div class="input-icon icon-music-search" ></div>
@@ -44,6 +49,7 @@
             <i class="close-btn flex-1 icon-music-close js-music-close" title="关闭窗口" @click="onBoxHide"></i>
         </div>
     </div>
+    <weather ref="weatherBox" />
 </div>
 </template>
 
@@ -67,6 +73,8 @@ import {
 import loginForm from '@/views/components/login'
 import userInfo from '@/views/components/userInfo'
 import { changeTheme } from '@/utils'
+import { apiUrl } from '@/api/baseUrl'
+import axios from '@/api/axios'
 export default {
     name: 'musicHeader',
     components: {
@@ -81,6 +89,7 @@ export default {
         const userInfo = store.state.user.userInfo
         const { profile = {}, account = {} } = userInfo
         const state = reactive({
+            weathers: {},
             headerData: {
                 title: '网抑云音乐',
                 account,
@@ -97,7 +106,16 @@ export default {
             showLogin: false,
             hasLogin: store.state.user.cookie || false
         })
+        const getWeather = () => {
+            axios.get(`${apiUrl}/weather`, { params: { location: '深圳' } })
+                .then(res => {
+                    if (!res.success) return
+                    state.weathers = res.data
+                    console.log(state.weathers, 'state.weathers')
+                })
+        }
         onMounted(() => {
+            getWeather()
             document.addEventListener('click', (e) => {
                 if (loginForm.value !== null && !loginForm.value.$el.contains(e.target)) {
                     state.showLogin = false

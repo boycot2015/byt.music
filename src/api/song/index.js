@@ -33,7 +33,10 @@ export default {
         })
     },
     detail (params) {
-        return axios.post(urls.detail, params)
+        let ids = params.ids.split(',')
+        if (ids.length > 300) ids = ids.slice(0, 300)
+        params.ids = ids.join(',')
+        return axios.get(urls.detail, { params })
     },
     topPlaylist (params) {
         return axios.get(urls.topPlaylist, {

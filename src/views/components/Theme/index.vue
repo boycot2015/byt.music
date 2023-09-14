@@ -12,7 +12,7 @@
                     backgroundColor: color.primary
                 }"
                 :class="{active: colorIndex === index}"
-                @click="() => {colorIndex = index;changeTheme('', {themeColor: color, colorIndex: index})}" v-for="(color, index) in colors" :key="color">
+                @click="() => {colorIndex = index;changeTheme('', {themeColor: color, colorIndex: index}).then($store.dispatch('themeChanged', !$store.state.themeChanged))}" v-for="(color, index) in colors" :key="color">
                 </div>
             </div>
             <div class="sub-title">在线壁纸</div>

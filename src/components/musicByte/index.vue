@@ -103,6 +103,7 @@ export default {
         // const MAX_BAR_HEIGHT = 18
         const state = reactive({
             activeClass: false,
+            requestTimer: null,
             timer: null,
             isStar: false,
             drawType: Math.ceil((Math.random() * 4)),
@@ -142,6 +143,7 @@ export default {
             if (state.ctx) {
                 state.capYPositionArray = []
                 state.drawType = Math.ceil((Math.random() * 4))
+                cancelAnimationFrame(state.requestTimer)
                 renderDrawMaster()
                 // console.log(state.drawType, 'state.drawType')
             }
@@ -223,7 +225,7 @@ export default {
                 ctx.fillStyle = gradient // set the filllStyle to gradient for a better look
                 ctx.fillRect(i * (meterWidth + gap) /* meterWidth+gap */, Math.abs(cheight - value + capHeight), meterWidth, cheight) // the meter
             }
-            requestAnimationFrame(renderDrawMaster)
+            state.requestTimer = requestAnimationFrame(renderDrawMaster)
         }
         const setDrawStyles = ({ type, array, meterNum, meterWidth, gap, barColor }) => {
             let colors = state.colors

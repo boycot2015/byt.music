@@ -143,7 +143,7 @@
     <lyric v-model:isShow="showLyirc"></lyric>
     <Theme ref="dialogRef" @close-modal="showThemeDialog = false" @click.prevent @click.stop :class="{active: showThemeDialog}"></Theme>
     <template v-if="!microApp">
-        <weather ref="weatherBox" />
+        <!-- <weather ref="weatherBox" /> -->
         <!-- 自定义右键菜单 -->
         <context-menu @on-menu-click="(type) => type === 'setting' && (showThemeDialog = true)"></context-menu>
         <div class="change-theme-btn" :class="{hide: showThemeDialog, show: !showThemeDialog}" @dblclick.stop="changeTheme" ref="dragthemeBox" @click.stop="onThemeShow"></div>
@@ -205,6 +205,7 @@ export default {
         const progressVolumeDom = ref(null)
         const mainDom = ref(null)
         const state = reactive({
+            weathers: {},
             microApp: false,
             showLyirc: false,
             isNight: false,
@@ -267,7 +268,7 @@ export default {
         const dragMiniBox = ref(null)
         const dragthemeBox = ref(null)
         const textMoveDom = ref(null)
-        const weatherBox = ref(null)
+        // const weatherBox = ref(null)
         let audio = null
         // const { ctx } = getCurrentInstance()
         watch(() => {
@@ -371,10 +372,10 @@ export default {
                     obj: [dragMiniBox.value],
                     cancelElem: ['.js-mini-music-list', '.volume']
                 })
-                drag({
-                    obj: [weatherBox.value.$el],
-                    target: [weatherBox.value.$el]
-                })
+                // drag({
+                //     obj: [weatherBox.value.$el],
+                //     target: [weatherBox.value.$el]
+                // })
             })
             audio = document.getElementById('play-audio')
             textMove(textMoveDom.value)
@@ -387,10 +388,10 @@ export default {
                     // console.log(pos, 'pos')
                 }
             })
-            drag({
-                obj: [weatherBox.value.$el],
-                target: [weatherBox.value.$el]
-            })
+            // drag({
+            //     obj: [weatherBox.value.$el],
+            //     target: [weatherBox.value.$el]
+            // })
             changeTheme().then(res => {
                 state.picIndex = res.bgUrlIndex
                 state.colorIndex = res.colorIndex
@@ -574,7 +575,7 @@ export default {
             textMove,
             changeTheme,
             dragthemeBox,
-            weatherBox,
+            // weatherBox,
             onThemeShow,
             // ...computed(() => storeState).value,
             ...toRefs(state)

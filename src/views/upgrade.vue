@@ -1,9 +1,14 @@
 <template>
     <div class="yzh-version-container" >
         <div class="title">更新日志</div>
-        <h3 class="sub-title">最近更新版本：<b>v{{ versionData.version }}</b> 时间：<span class="public-time">{{ new Date(versionData.publicTime).toLocaleString() }}</span></h3>
+        <h3 class="sub-title">最近更新版本：<b>{{getVersion}}</b> 时间：<span class="public-time">{{ formatTime(versionData.publicTime) }}</span></h3>
         <div class="content clearfix">
             <div class="time-stamp list fl">
+                <div class="el-time-item">
+                    <div class="title">
+                        {{getVersion}} ({{ formatTime(versionData.publicTime) }})
+                    </div>
+                </div>
                 <div
                 class="el-time-item"
                     v-for="(version, index) in versionData.data"
@@ -13,13 +18,16 @@
                     :size="version.size || 'large'"
                     :timestamp="version.date"
                     placement="top"
+                    :class="!version.version && 'bg'"
                     :ref="version.version ? 'version-' + version.version : ''"
                     >
                     <div class="el-card" v-if="!version.version">
-                        <h4>{{ version.message }}</h4>
-                        <p>{{ version.name }} 提交于 {{ new Date(version.date).toLocaleString() }}</p>
+                        <h4>* {{ version.message }}</h4>
+                        <!-- <p>{{ version.name }} 提交于 {{ new Date(version.date).toLocaleString() }}</p> -->
                     </div>
-                    <h3 class="title" v-else>{{ version.name }}</h3>
+                    <h3 class="title" v-else>
+                        {{ version.name }} ({{ formatTime(version.date) }})
+                    </h3>
                 </div>
             </div>
             <!-- <div class="time-stamp category fl" style="height: 100%;">
@@ -52,11 +60,23 @@ import version from '@/assets/js/version.json'
 export default {
     name: 'upgrade',
     data () {
+        console.log(version.data, 'version.data')
         return {
-            versionData: version
+            versionData: {
+                ...version,
+                data: [
+                    ...version.data.filter(val => !val.message || (val.message && !val.message.includes('自动提交版本') && !val.message.includes('111'))).sort((a, b) => b.date - a.date)
+                ]
+            }
         }
     },
-    components: {
+    computed: {
+        getVersion () {
+            if (this.versionData && this.versionData.version) {
+                return 'v' + this.versionData.version.slice(0, 4) + (Number(this.versionData.version.split('.')[2]) + 1)
+            }
+            return ''
+        }
     },
     mounted () {
         this.versionData.data.map(el => {
@@ -67,7 +87,7 @@ export default {
                 if (key.indexOf('version-title') > -1 &&
                 this.$refs[key][0] &&
                 e.target.scrollTop === this.$refs[key][0].$el.offsetTop) {
-                    console.log(e.target.scrollTop, this.versionData.data, 'this.versionData.data')
+                    // console.log(e.target.scrollTop, this.versionData.data, 'this.versionData.data')
                     this.versionData.data.map(el => {
                         if (key.includes(el.version)) {
                             el.active = true
@@ -81,7 +101,7 @@ export default {
     },
     methods: {
         onVersionClick (version) {
-            console.dir(this.$refs['version-title' + version.version], 'this.versionData.data')
+            // console.dir(this.$refs['version-title' + version.version], 'this.versionData.data')
             const versonDom = this.$refs['version-' + version.version]
             const clickDom = this.$refs['version-title' + version.version]
             const offsetTop = versonDom.offsetTop
@@ -96,6 +116,9 @@ export default {
             })
             document.querySelector('.yzh-version-container').scrollTo(0, offsetTop)
             document.querySelector('.yzh-version-container .time-stamp').scrollTo(0, clickDomOffsetTop)
+        },
+        formatTime (time) {
+            return new Date(time).toLocaleString().replace(/\//g, '-').split(' ')[0]
         }
     }
 }
@@ -110,19 +133,18 @@ export default {
     .el-scrollbar__wrap {
         overflow-x: hidden;
     }
-    .el-card {
-        border-radius: 5px;
-        padding: 20px;
-        box-shadow: 0 0px 10px @c-e8;
-    }
     .el-time-item {
-        margin-bottom: 20px;
+        &.bg {
+            padding: 5px 0;
+            // background-color: @c-ddd;
+        }
+        margin-bottom: 0px;
     }
     .title {
         font-size: 30px;
         font-weight: 400;
         color: @c-333;
-        margin-bottom: 10px;
+        margin-bottom: 30px;
     }
     .content {
         // max-height: 413px;
@@ -135,13 +157,19 @@ export default {
         h4 {
             font-size: 16px;
             color: @c-333;
-            margin-bottom: 10px;
+            margin-bottom: 0;
+            line-height: 16px;
         }
         p {
             font-size: 14px;
             color: @c-666;
         }
         .title {
+            border-left: 3px solid @primary;
+            margin-top: 30px;
+            line-height: 16px;
+            margin-bottom: 15px;
+            padding-left: 10px;
             font-size: 20px;
         }
     }
@@ -175,7 +203,7 @@ export default {
         }
     }
     .sub-title {
-        margin-bottom: 30px;
+        margin-bottom: 10px;
         .public-time {
             color: @c-999;
         }
