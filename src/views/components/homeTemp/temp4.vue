@@ -1,5 +1,5 @@
 <template>
-    <div class="top-list">
+    <div class="top-list" v-loading="{loading, fullScreen: true}">
         <div v-for="item in tabData.list" :key="item.title">
             <div class="title" style="font-size: 20px;">{{item.title}}</div>
             <div v-if="item.type === 0" class="body" v-loading="item.loading">
@@ -134,6 +134,7 @@ export default {
         // methods
         const getData = async () => {
             store.dispatch('home/getTab4Data').then(res => {
+                state.loading = false
                 state.tabData.list.map(el => {
                     el.loading = false
                 })

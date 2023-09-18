@@ -1,13 +1,13 @@
 
 <template>
     <div class="weather-component" v-show="showWeather">
-        <div class="panels now" @click.stop="showDialog" @dblclick.stop="showDialog" v-for="weather in weathers" :key="weather.location">
+        <!-- <div class="panels now" @click.stop="showDialog" @dblclick.stop="showDialog" v-for="weather in weathers" :key="weather.location">
             <div class="location" v-if="weather && weather.location">{{weather.location.name}}市</div>
             <div class="weather" :style="{'font-size': weather.now.text.length > 3 && '28px'}" v-if="weather && weather.now">{{weather.now.text}}</div>
             <div class="temperature" v-if="weather && weather.now">{{weather.now.temperature}}℃</div>
             <div class="last_update" v-if="weather && weather.last_update">{{new Date(weather.last_update).toLocaleDateString()}}</div>
             <span class="close" @click.stop="showWeather = false">×</span>
-        </div>
+        </div> -->
         <div class="dialog-content" :class="viewMore && 'active'" ref="dialogRef">
             <div class="dialog-main">
                 <div class="top">

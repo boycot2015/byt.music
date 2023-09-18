@@ -1,23 +1,12 @@
 <template>
-<div class="tab-content tab-home-content" v-loading="loading">
-    <div class="swiper-container dj-swiper">
-        <div class="swiper-wrapper">
-            <div
-            v-for="item in tabData.banner"
-            @click="onBannerClick(item)"
-            :key="item.targetId"
-            class="swiper-slide">
-                <img :src="item.pic || item.imageUrl" alt="">
-                <div class="title" :class="{'blue': item.titleColor === 'blue'}">{{item.typeTitle}}</div>
-            </div>
-        </div>
-        <!-- 如果需要分页器 -->
-        <div class="swiper-pagination"></div>
-        <!-- 如果需要导航按钮 -->
-        <div class="button-prev icon-music-left"></div>
-        <div class="button-next icon-music-right"></div>
-    </div>
-    <div class="dj-cate">
+<div class="tab-content tab-home-content" v-loading="{loading, fullScreen: true}">
+    <Slider
+    ref="slider"
+    :data-w="width"
+    :list="tabData.banner"
+    v-if="!loading"
+    @sliderClick="onSliderClick"/>
+    <div class="dj-cate" v-if="tabData.categories.length">
         <div class="swiper-container dj-cate-swiper">
             <div class="swiper-wrapper">
                 <div
@@ -34,7 +23,7 @@
         <div class="button-prev icon-music-left"></div>
         <div class="button-next icon-music-right"></div>
     </div>
-    <div class="list-container">
+    <div class="list-container" v-if="!loading">
         <div class="recommend" v-for="(obj, findex) in tabData.list" :key="obj.title">
             <div class="title clearfix">
                 <h3 class="name fl">{{obj.title || '推荐歌单'}}</h3>
@@ -69,12 +58,14 @@ import {
 import '@/plugins/swiper/swiper.min.css'
 import Swiper from '@/plugins/swiper/swiper.min.js'
 import GridList from '@/views/components/GridList'
+import Slider from '@/components/Slider'
 export default {
     name: 'homeTemp1',
     components: {
         // Swiper,
         // SwiperSlide,
-        GridList
+        GridList,
+        Slider
     },
     // directives: {
     //     swiper: directive
@@ -261,6 +252,42 @@ export default {
             onListClick,
             onBannerClick,
             onMoreClick
+        }
+    },
+    data () {
+        return {
+            width: 1000
+        }
+    },
+    deactivated () {
+        this.$refs.slider.pause()
+        window.removeEventListener('resize', this.handleResize)
+    },
+    activated () {
+        this.$nextTick(() => {
+            var dom = this.$refs.slider.$el.parentNode
+            this.width = dom.clientWidth || 1000
+        })
+        window.addEventListener('resize', this.handleResize)
+    },
+    mounted () {
+        this.$nextTick(() => {
+            this.handleResize()
+            window.addEventListener('resize', this.handleResize)
+        })
+    },
+    methods: {
+        onSliderClick (i, item) {
+            if (item.url) {
+                this.$electron.remote.shell.openExternal(item.url)
+            }
+        },
+        handleResize () {
+            if (!this.$refs.slider) return
+            this.$nextTick(() => {
+                var dom = this.$refs.slider.$el.parentNode
+                this.width = dom.clientWidth
+            })
         }
     }
 }

@@ -1,7 +1,7 @@
 <template>
 <li class="grid-list-item clearfix js-list-detail"
 v-if="(item.list && item.list.length) || item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl"
-:title="item.rcmdtext || item.name" :class="`type-${type || item.type} ftype-${item.ftype}`" data-url="{{item.mp3Url}}">
+:title="item.rcmdtext || item.name" :class="`type-${type || item.type} ftype-${item.ftype}`">
     <ul v-if="item.list" class="grid-list js-child-list fl">
         <li class="grid-list-item clearfix js-list-detail" :class="`type-${child.type} ftype-${child.ftype}`" :title="child.name" v-for="(child, cindex) in item.list" :key="cindex" data-url="{{child.mp3Url}}">
             <span class="order fl" v-html="index * (item.list.length) + (cindex + 1) < 10 ? '0' + (index * (item.list.length) + (cindex + 1)) : index * (item.list.length) + (cindex + 1)"></span>

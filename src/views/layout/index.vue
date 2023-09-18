@@ -38,7 +38,7 @@
                 flex: isExtend ? 'none': '',
                 margin: isExtend ? '0 auto': ''
             }"
-            class="main flex-1 flexbox-v" ref="mainDom">
+            class="main flex-1 flexbox-v" ref="mainDom" @dblclick.stop>
                 <router-view v-slot="{ Component }">
                     <transition name="slide-fade" mode="out-in">
                         <component :is="Component" />
@@ -61,7 +61,6 @@
     }"
     :class="{'is-micro-app': microApp}"
     class="mini-music-box js-mini-music-box flexbox-v"
-    @click.prevent
     v-show="showMiniBox" ref="dragMiniBox">
         <div class="wrap flexbox-h just-b">
             <div class="left flex-2 flexbox-h just-b"
@@ -99,6 +98,7 @@
             </div>
             <div class="right flex-1 flexbox-h just-b">
                 <span class="js-love-icon love-icon icon-music-love"></span>
+                <span class="js-love-clothes clothes-icon icon-music-clothes" @click.stop="onThemeShow"></span>
                 <span class="volume-icon icon-music-volume js-min-music-volume" @click="showVolume = !showVolume"></span>
                 <span class="list-icon icon-music-list js-list-icon" @click="showList = !showList"></span>
                 <div class="volume flex-2 flexbox-h just-b tc" v-show="showVolume" @click="onSetVolumeClick">
@@ -141,7 +141,7 @@
     <!-- <desk-top></desk-top> -->
     <!-- 桌面歌词 -->
     <lyric v-model:isShow="showLyirc"></lyric>
-    <Theme ref="dialogRef" @close-modal="showThemeDialog = false" @click.prevent @click.stop :class="{active: showThemeDialog}"></Theme>
+    <Theme ref="dialogRef" @close-modal="showThemeDialog = false" :class="{active: showThemeDialog}"></Theme>
     <template v-if="!microApp">
         <!-- <weather ref="weatherBox" /> -->
         <!-- 自定义右键菜单 -->

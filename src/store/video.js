@@ -129,8 +129,8 @@ export default {
         },
         // 根据分类标签获取列表数据
         getVideoByParams ({ commit }, {
-            offset = 1,
-            limit = 39,
+            offset = 0,
+            limit = 9,
             ctype = 1,
             order = 1,
             type = '全部',
@@ -162,7 +162,7 @@ export default {
                 }
                 MV[api]({
                     limit,
-                    offset,
+                    offset: offset * limit,
                     type,
                     order,
                     ...ohters
@@ -184,13 +184,13 @@ export default {
             })
         },
         // 根据分类标签获取列表数据
-        getListByCate ({ commit }, { offset, id }) {
+        getListByCate ({ commit }, { offset = 0, id }) {
             return new Promise((resolve, reject) => {
                 let api = 'group'
                 if (!id) {
                     api = 'all'
                 }
-                video[api]({ limit: 39, order: 'hot', id, offset }).then(res => {
+                video[api]({ limit: 9, order: 'hot', id, offset: offset * 9 }).then(res => {
                     if (res && res.code === 200) {
                         res.datas.map(el => {
                             el.data.playTime = filterPlayCount(el.data.playTime)

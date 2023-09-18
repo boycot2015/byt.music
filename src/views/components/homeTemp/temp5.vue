@@ -126,8 +126,8 @@ export default {
                         'V', 'W', 'X', 'Y', 'Z', '#']
                 }
             },
-            offset: 1,
-            limit: 39,
+            offset: 0,
+            limit: 40,
             showBegining: true
         })
         onMounted(async () => {
@@ -137,7 +137,7 @@ export default {
                 // 获取定义好的scroll盒子
                 // const el = scrollDom.value
                 const condition = this.scrollHeight - this.scrollTop <= this.clientHeight
-                if (condition && router.currentRoute.value.query.tabName === 'singer') {
+                if (!state.loading && condition && router.currentRoute.value.query.tabName === 'singer') {
                     state.offset++
                     state.loading = true
                     getData({ ...sortData(), offset: state.offset, limit: state.limit })
@@ -145,7 +145,7 @@ export default {
             })
         })
         watch(() => tabData.topList, (value) => {
-            if (state.offset !== 1) {
+            if (state.offset !== 0) {
                 state.tabData.list.data = [...state.tabData.list.data, ...value]
                 return
             }
@@ -183,7 +183,7 @@ export default {
         const onCateTagClick = (item, formItem, key) => {
             // console.log(item, formItem, key, 'item, formItem, key')
             formItem.value = item.code !== undefined ? item.code : item
-            state.offset = 1
+            state.offset = 0
             state.tabData.list.data = []
             state.loading = true
             const data = sortData()

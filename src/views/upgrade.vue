@@ -60,7 +60,6 @@ import version from '@/assets/js/version.json'
 export default {
     name: 'upgrade',
     data () {
-        console.log(version.data, 'version.data')
         return {
             versionData: {
                 ...version,

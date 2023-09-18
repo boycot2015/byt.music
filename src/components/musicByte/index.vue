@@ -18,12 +18,6 @@
     width: 350px;
     height: 50px;
 }
-.equalizer-box {
-    /* display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%; */
-}
 .equalizer {
   display: flex;
   justify-content: center;

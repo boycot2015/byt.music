@@ -1,6 +1,6 @@
 <template>
     <div class="tab-content tab-cate-content">
-        <div class="tags">
+        <div class="tags" v-if="tabData.tags.length">
             <span class="btn-cate js-toggle-cate" :class="{'active': showAllCate}" @click.stop="showAllCate = !showAllCate">
                 <span class="text">{{activedCate || '全部歌单'}}</span> <i class="icon-music-down"></i>
             </span>
@@ -115,8 +115,8 @@ export default {
                     data: []
                 }
             },
-            offset: 1,
-            limit: 39
+            offset: 0,
+            limit: 40
         })
         onMounted(async () => {
             getData()
@@ -124,10 +124,12 @@ export default {
                 // 获取定义好的scroll盒子
                 // const el = scrollDom.value
                 const condition = this.scrollHeight - this.scrollTop <= this.clientHeight
-                if (condition && router.currentRoute.value.query.tabName === 'cate') {
+                if (!state.loading && condition && router.currentRoute.value.query.tabName === 'cate') {
                     state.offset++
                     state.loading = true
-                    store.dispatch('home/getListByCate', { offset: state.offset, limit: state.limit, cat: state.activedCate })
+                    store.dispatch('home/getListByCate', { offset: state.offset, limit: state.limit, cat: state.activedCate }).then(() => {
+                        state.loading = false
+                    })
                 }
             })
             document.addEventListener('click', (e) => {
@@ -148,7 +150,7 @@ export default {
             state.tabData.categories = value[1]
             state.tabData.tags = value[2]
             state.tabData.subs = value[3]
-            if (state.offset !== 1) {
+            if (state.offset !== 0) {
                 state.tabData.list.data = [...state.tabData.list.data, ...value[4]]
                 return
             }
@@ -168,7 +170,7 @@ export default {
             // getData(item.type)
             state.activedCate = (item && item.name) || '全部歌单'
             state.showAllCate = false
-            state.offset = 1
+            state.offset = 0
             state.tabData.list.data = []
             state.loading = true
             store.dispatch('home/getListByCate', { current: 1, cat: (item && item.name) || '全部歌单' }).then(res => {
@@ -179,7 +181,7 @@ export default {
                         cate: state.activedCate
                     }
                 })
-                state.loading = true
+                state.loading = false
             })
         }
         const onListClick = (item) => {

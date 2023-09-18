@@ -1,5 +1,5 @@
 <template>
-    <div class="tab-content tab-cate-content">
+    <div class="tab-content tab-cate-content" v-loading="{loading: pageLoading, fullScreen: true}">
         <div class="tags" v-if="showCate" >
             <span class="btn-cate js-toggle-cate" :class="{'active': showAllCate}" @click.stop="showAllCate = !showAllCate">
                 <span class="text">{{activedCate.name || '全部视频'}}</span> <i class="icon-music-down"></i>
@@ -103,6 +103,7 @@ export default {
         const router = useRouter()
         const state = reactive({
             loading: true,
+            pageLoading: true,
             showAllCate: false,
             activedCate: {
                 id: router.currentRoute.value.query.id || '',
@@ -128,8 +129,8 @@ export default {
                     data: []
                 }
             },
-            offset: 1,
-            limit: 39
+            offset: 0,
+            limit: 9
         })
         onMounted(async () => {
             getData()
@@ -137,9 +138,12 @@ export default {
                 // 获取定义好的scroll盒子
                 // const el = scrollDom.value
                 const condition = this.scrollHeight - this.scrollTop <= this.clientHeight
-                if (condition) {
+                if (!state.loading && condition) {
                     state.offset++
-                    store.dispatch('video/getListByCate', { offset: state.offset, limit: state.limit, id: state.activedCate.id })
+                    state.loading = true
+                    store.dispatch('video/getListByCate', { offset: state.offset, limit: state.limit, id: state.activedCate.id }).then(res => {
+                        state.loading = false
+                    })
                 }
             })
             document.addEventListener('click', (e) => {
@@ -158,7 +162,7 @@ export default {
             state.tabData.categories = value[0]
             state.tabData.tags = value[1]
             state.tabData.subs = value[2]
-            if (state.offset !== 1) {
+            if (state.offset !== 0) {
                 // if (props.data) {
                 //     state.tabData.list.data = [...state.tabData.list.data, ...props.data]
                 //     return
@@ -180,8 +184,10 @@ export default {
             }
             state.loading = true
             store.dispatch('video/getTab1Data', type).then(res => {
-                store.dispatch('video/getListByCate', { offset: 0, id: state.activedCate.id || '' })
-                state.loading = false
+                store.dispatch('video/getListByCate', { offset: 0, id: state.activedCate.id || '' }).then(() => {
+                    state.loading = false
+                    state.pageLoading = false
+                })
             })
         }
         // 点击分类标签获取对应数据

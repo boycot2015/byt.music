@@ -209,14 +209,14 @@ export default {
             }
         },
         async getTab5Data ({ commit },
-            { offset = 1, limit = 39, type = -1, initial = -1, area = -1, refresh = false }) {
+            { offset = 0, limit = 40, type = -1, initial = -1, area = -1, refresh = false }) {
             const localData = store.get('homeTab5Data')
-            if (localData !== null && offset === 1 && !refresh) {
+            if (localData !== null && offset === 0 && !refresh) {
                 commit('setTab5Data', localData)
                 return Promise.resolve({ code: 200, success: true })
             }
             const data = {}
-            const res = await artist.list({ offset, limit, type, initial, area })
+            const res = await artist.list({ offset: offset * limit, limit, type, initial, area })
             if (res && res.code === 200) {
                 data.topList = res.artists
                 commit('setTab5Data', data)
@@ -224,11 +224,11 @@ export default {
             }
         },
         // 根据分类标签获取列表数据
-        getSingerByParams ({ commit }, { offset = 1, limit = 39, ...ohters }) {
+        getSingerByParams ({ commit }, { offset = 0, limit = 40, ...ohters }) {
             return new Promise((resolve, reject) => {
                 artist.list({
                     limit,
-                    offset,
+                    offset: offset * limit,
                     ...ohters
                 }).then(res => {
                     const data = {}
@@ -243,9 +243,9 @@ export default {
             })
         },
         // 根据分类标签获取列表数据
-        getListByCate ({ commit }, { offset, cat }) {
+        getListByCate ({ commit }, { offset = 0, cat }) {
             return new Promise((resolve, reject) => {
-                song.topPlaylist({ limit: 39, order: 'hot', cat, offset }).then(res => {
+                song.topPlaylist({ limit: 40, order: 'hot', cat, offset: offset * 40 }).then(res => {
                     if (res && res.code === 200) {
                         res.playlists.map(el => {
                             el.playCount = filterPlayCount(el.playCount)

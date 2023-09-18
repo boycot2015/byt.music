@@ -111,7 +111,6 @@ export default {
                 .then(res => {
                     if (!res.success) return
                     state.weathers = res.data
-                    console.log(state.weathers, 'state.weathers')
                 })
         }
         onMounted(() => {
@@ -162,8 +161,8 @@ export default {
         }
         const onExtend = () => {
             state.ismini = !state.ismini
-            if (window.electron) return window.electron.toggleFullScreen(!state.ismini)
             emit('on-extend', !state.ismini)
+            if (window.electron) window.electron.toggleFullScreen(!state.ismini)
         }
         const onLoginFormClose = (val) => {
             state.showLogin = false

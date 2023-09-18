@@ -1,5 +1,5 @@
 <template>
-    <div class="tab-content tab-cate-content tab-singer-content">
+    <div class="tab-content tab-cate-content tab-singer-content" v-loading="{loading, fullScreen: true}">
         <div class="recommend" v-for="(obj) in tabData.list" :key="obj.title">
             <div class="title flexbox-h algin-c">
                 <h3 class="name " style="margin-right: 20px;">{{obj.title || '推荐歌单'}}</h3>
@@ -61,6 +61,7 @@ export default {
         const tabData = store.state.video.tab2Data
         const router = useRouter()
         const state = reactive({
+            loading: true,
             tabData: {
                 dayData: {
                     weeks: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
@@ -208,7 +209,7 @@ export default {
         const getData = async () => {
             state.loading = true
             store.dispatch('video/getTab2Data').then(res => {
-                // state.loading = false
+                state.loading = false
                 state.tabData.list.map(el => {
                     el.loading = false
                 })
