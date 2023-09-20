@@ -7,7 +7,7 @@
                 'icon-music-play': !playData.paused,
                 'icon-music-pause': playData.paused
                 }"
-            @click="toggleAudioPlay"></i>
+            @click="toggleAudioPlay()"></i>
             <i class="icon-music-play-right" @click="playNext"></i>
         </div>
         <div class="flexbox-h flex-1 just-b">
@@ -182,7 +182,9 @@ export default {
             state.playList.data = value
             state.playList.data.total = value.length
         })
-
+        watch(() => state.playData.paused, (value) => {
+            window.electron && window.electron.thumbarButtons({ value: !value })
+        })
         onMounted(() => {
             drag({
                 obj: [progressTimeDom.value],
@@ -227,6 +229,21 @@ export default {
                 if (playListDom !==null && !playListDom.contains(e.target)) {
                     state.showList = false
                 }
+            })
+            window.addEventListener('message', (e) => {
+                console.log(e);
+            })
+            window.electronAPI && window.electronAPI.onPrevPlay((e, data) => {
+                playPrev()
+            })
+            window.electronAPI && window.electronAPI.onNextPlay((e, data) => {
+                playNext()
+            })
+            window.electronAPI && window.electronAPI.onTogglePlay((e, data) => {
+                toggleAudioPlay(data.value)
+            })
+            window.electronAPI && window.electronAPI.onPlaySong((e, data) => {
+                playAudio()
             })
         })
         const getAudioInfo = (_audio, call) => {
@@ -284,7 +301,7 @@ export default {
             state.playData.paused = false
             audio.play()
         }
-        const toggleAudioPlay = () => {
+        const toggleAudioPlay = (value) => {
             if (!state.playData.url) return
             store.dispatch('toggleAudioPlay', { audio, state })
         }

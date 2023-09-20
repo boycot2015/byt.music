@@ -6,22 +6,23 @@
             <i class="font-min font-icon" @click.stop="setFontStyle('min')" title="减小字体">A-</i>
             <i class="font-plus font-icon" @click.stop="setFontStyle('plus')" title="加大字体">A+</i>
             <i class="text icon font-icon theme icon-music-clothes" @click.stop="setFontStyle('color')"></i>
+            <i class="text icon font-icon theme icon-music-link"></i>
           </div>
       </div>
       <div class="content" :style="fontStyle">
-          {{currLyric.text || '纯音乐，请欣赏'}}
+          {{storage.get('currLyric')?.text || '纯音乐，请欣赏'}}
       </div>
   </div>
 </template>
 <script>
 import {
     ref,
-    // computed,
     watch,
     reactive,
     onMounted,
     onUpdated,
-    toRefs
+    toRefs,
+    computed
     // onBeforeMount
     // getCurrentInstance
 } from 'vue'
@@ -50,55 +51,47 @@ export default {
     setup (props, { emit }) {
         const store = useStore()
         const lyricBox = ref(null)
-        const currLyric = store.state.detail.songDetail.currLyric || {}
         const detailStore = store.state.detail.songDetail
         const state = reactive({
             isShow: false,
             lyricList: [],
             fontStyle: {
-                id: 4,
+                id: 3,
                 'font-size': '32px',
                 'line-height': '40px',
                 color: '#fff'
             },
             fontStyleList: [{
                 id: 1,
-                'font-size': '16px',
-                'line-height': '32px',
-                color: '#fff'
-            }, {
-                id: 2,
                 'font-size': '20px',
                 'line-height': '32px',
                 color: '#fff'
             }, {
-                id: 3,
+                id: 2,
                 'font-size': '24px',
                 'line-height': '32px',
                 color: '#fff'
             }, {
-                id: 4,
+                id: 3,
                 'font-size': '32px',
-                'line-height': '32px',
+                'line-height': '40px',
+                color: '#fff'
+            }, {
+                id: 4,
+                'font-size': '40px',
+                'line-height': '48px',
                 color: '#fff'
             }, {
                 id: 5,
-                'font-size': '40px',
+                'font-size': '48px',
+                'line-height': '54px',
                 color: '#fff'
             }, {
                 id: 6,
-                'font-size': '48px',
-                color: '#fff'
-            }, {
-                id: 7,
                 'font-size': '54px',
                 color: '#fff'
-            }, {
-                id: 8,
-                'font-size': '60px',
-                color: '#fff'
             }],
-            currLyric,
+            currLyric: computed(() => storage.get('currLyric') || {}),
             boxPos: {
                 min: {
                     left: 0,
@@ -116,7 +109,7 @@ export default {
         ], (value) => {
             state.lyricList = value[0]
         })
-        watch(() => detailStore.currLyric, (value) => {
+        watch(() => storage.get('currLyric'), (value) => {
             state.currLyric = value
         })
         onMounted(() => {
@@ -135,14 +128,19 @@ export default {
                 end (pos) {
                 }
             })
-            // state.currLyric = localStore.get('currLyric')
-            console.log(storage.get('fontStyles'), 'state.fontStyle')
+            state.currLyric = storage.get('currLyric')
+            // console.log(storage.get('fontStyles'), 'state.fontStyle')
             if (storage.get('fontStyles') && storage.get('fontStyles') !== null) {
                 state.fontStyle = storage.get('fontStyles')
                 state.fontStyleList.map(el => {
                     el.color = state.fontStyle.color
                 })
             }
+            state.isShow = props.isShow
+            // setInterval(() => {
+            //     state.currLyric = detailStore.currLyric
+            //     console.log(state.currLyric)
+            // }, 3000)
         })
         onUpdated(() => {
             // 处理
@@ -177,6 +175,7 @@ export default {
             storage.set('fontStyles', state.fontStyle)
         }
         const onClose = () => {
+            if (window.electron) return window.electron.toggleLyric(false)
             emit('update:isShow', false)
         }
         // 监听弹层v-model
@@ -187,6 +186,7 @@ export default {
             lyricBox,
             setFontStyle,
             onClose,
+            storage,
             ...toRefs(state)
         }
     }
@@ -238,6 +238,9 @@ export default {
         .operate-icon {
             text-align: center;
             font-size: 16px;
+            width: 150px;
+            margin: 0 auto;
+            -webkit-app-region: no-drag;
             .font-icon {
                 margin-right: 10px;
                 cursor: pointer;

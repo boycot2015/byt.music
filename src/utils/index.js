@@ -10,6 +10,7 @@ export const drag = (options) => {
     site = site || {}
     obj = obj[0]
     target = target[0]
+    if (!target) return
     var adsorb = site.n || 0 // 磁性吸附的吸附范围
     var l = site.l || 0
     var r = (site.r || site.r === 0) ? site.r : dmW - target.offsetWidth
@@ -213,7 +214,7 @@ export const changeTheme = ($event, themeConfig, selector = '.cloud_music') => {
     if (localTheme && localTheme !== null) {
         themeConfig = { ...JSON.parse(localTheme), ...themeConfig }
     }
-    const musicClass = document.querySelector(selector).className
+    const musicClass = selector.split('.')[1]
     const root = document.querySelector(':root')
     if (root === null) return Promise.resolve(themeConfig)
     const imagesNameArr = getLocalBgUrls()
@@ -231,6 +232,7 @@ export const changeTheme = ($event, themeConfig, selector = '.cloud_music') => {
         if (typeof themeConfig === 'string') {
             themeConfig = JSON.parse(themeConfig)
         }
+        document.querySelector(selector).classList = musicClass
         themeConfig.themeColor = themeConfig.themeColor || themeColor
         themeConfig.colors = colors
         document.querySelector(selector).style.backgroundImage = `url(${themeConfig.bgUrl})`

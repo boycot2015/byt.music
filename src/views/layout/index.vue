@@ -477,6 +477,7 @@ export default {
             textMoveDom.value.style.width = '100px'
             textMoveDom.value.style.left = '0px'
             store.dispatch('toggleAudioPlay', { audio, state })
+            window && window.electron.playSong({ playData: state.playData, currentLyric: state.currLyric })
         }
         const toggleAudioMouted = () => {
             store.dispatch('toggleAudioMouted', { audio, state }).then(res => {})
@@ -488,6 +489,7 @@ export default {
                 return
             }
             store.dispatch('playPrev', state)
+            window && window.electron.playSong({ playData: state.playData, currentLyric: state.currLyric })
         }
         const playNext = () => {
             state.playIndex++
@@ -496,6 +498,7 @@ export default {
                 return
             }
             store.dispatch('playNext', state)
+            window && window.electron.playSong({ playData: state.playData, currentLyric: state.currLyric })
         }
         const textMove = (oCon) => {
             if (oCon && oCon !== null) {

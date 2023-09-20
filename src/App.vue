@@ -1,5 +1,5 @@
 <template>
-    <div class="cloud_music flexbox-h align-c just-c">
+    <div class="cloud_music">
         <router-view class="cloud_music_main" />
         <!-- docker导航菜单栏 -->
         <!-- <docker></docker> -->

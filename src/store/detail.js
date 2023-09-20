@@ -59,6 +59,8 @@ export default {
             }
             currLyric && (state.songDetail.currLyric = currLyric)
             currLyric && store.set('currLyric', currLyric)
+            window && window.electron.playSong({ playData: state, currentLyric: currLyric })
+            return Promise.resolve({ code: 200, success: true })
         },
         updateComment (state, data) {
             state.songDetail.data.total = data.total

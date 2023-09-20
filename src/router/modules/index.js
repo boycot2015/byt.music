@@ -351,6 +351,24 @@ const routes = [
         }]
     },
     {
+        path: '/desktop-lyric',
+        name: 'lyricPage',
+        component: () => import('@/views/lyric.vue'),
+        meta: {
+            title: '音乐歌词',
+            hideInMenu: false
+        }
+    },
+    {
+        path: '/mini',
+        name: 'mini',
+        component: () => import('@/views/mini-box.vue'),
+        meta: {
+            title: '音乐盒子',
+            hideInMenu: true
+        }
+    },
+    {
         path: '/error',
         name: 'error',
         component: Layout,
