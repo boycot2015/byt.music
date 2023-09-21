@@ -30,9 +30,9 @@
                 <div class="more js-more text"
                 :class="{'active': showPlayer}">
                     <div class="wrap flexbox-h tc just-c">
-                        <p class="name line-one">{{playData.name}}</p>
+                        <p class="name line-one">{{playData.name || '--'}}</p>
                         <span class="line"> - </span>
-                        <span class="singer line-one">{{playData.singer}}</span>
+                        <span class="singer line-one">{{playData.singer || '--'}}</span>
                     </div>
                 </div>
             </div>
@@ -59,7 +59,12 @@
 export default {
     data () {
         return {
-            playData: {},
+            playData: {
+                lyrc: '一诺千金到尽头',
+                name: '菩提偈',
+                singer: '刘惜君',
+                picUrl: require('@/assets/images/avatar.jpg')
+            },
             currLyric: {},
             showList: false,
             showVolume: false,
@@ -84,8 +89,8 @@ export default {
         // console.log(window, 'window')
         this.microApp = !!window.electronAPI
         window.electronAPI && window.electronAPI.onPlaySong((e, { playData, currLyric }) => {
-            console.log(JSON.parse(playData), 'JSON.parse(playData)')
-            this.playData = JSON.parse(playData)
+            // console.log(JSON.parse(playData), 'JSON.parse(playData)')
+            this.playData = { ...this.playData, ...JSON.parse(playData) }
             this.currLyric = JSON.parse(currLyric)
         })
         document.body.style.overflow = 'hidden'

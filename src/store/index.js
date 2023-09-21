@@ -82,7 +82,7 @@ export default createStore({
         setPlayData ({ commit }, data) {
             return new Promise((resolve, reject) => {
                 song.playUrl({ id: data.id }).then(urlData => {
-                    console.log(data, 'data')
+                    // console.log(data, 'data')
                     const playData = store.get('playData') !== null ? store.get('playData') : {}
                     data.al = data.al || data.album
                     data.ar = data.ar || data.artists
