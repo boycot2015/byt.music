@@ -59,8 +59,7 @@ export default {
             }
             currLyric && (state.songDetail.currLyric = currLyric)
             currLyric && store.set('currLyric', currLyric)
-            window && window.electron.playSong({ playData: state, currentLyric: currLyric })
-            return Promise.resolve({ code: 200, success: true })
+            return Promise.resolve({ code: 200, success: true, data: currLyric })
         },
         updateComment (state, data) {
             state.songDetail.data.total = data.total
@@ -205,6 +204,25 @@ export default {
         },
         setSongPlayerShow ({ commit }, val) {
             commit('showSongPlayer', val)
+        },
+        setCurrentLyric ({ state, commit }, curStr) {
+            let currLyric = ''
+            state.songDetail.lyricList.map(el => {
+                if (el.time === curStr) {
+                    currLyric = el
+                }
+            })
+            // 首次播放存第一行
+            if (!currLyric && store.get('currLyric') === null) {
+                currLyric = {
+                    time: '00:01',
+                    text: (store.get('playData') !== null && store.get('playData').name) || ''
+                }
+            }
+            currLyric && (state.songDetail.currLyric = currLyric)
+            currLyric && store.set('currLyric', currLyric)
+            commit('setCurrentLyric', currLyric)
+            return Promise.resolve({ code: 200, success: true, data: currLyric })
         }
     }
 }

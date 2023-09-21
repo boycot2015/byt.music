@@ -230,9 +230,6 @@ export default {
                     state.showList = false
                 }
             })
-            window.addEventListener('message', (e) => {
-                console.log(e);
-            })
             window.electronAPI && window.electronAPI.onPrevPlay((e, data) => {
                 playPrev()
             })
@@ -243,7 +240,7 @@ export default {
                 toggleAudioPlay(data.value)
             })
             window.electronAPI && window.electronAPI.onPlaySong((e, data) => {
-                playAudio()
+                !data.playData && playAudio()
             })
         })
         const getAudioInfo = (_audio, call) => {
@@ -317,6 +314,7 @@ export default {
                 return
             }
             store.dispatch('playPrev', state)
+            window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData) })
         }
         const playNext = () => {
             state.playIndex++
@@ -325,6 +323,7 @@ export default {
                 return
             }
             store.dispatch('playNext', state)
+            window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData) })
         }
 
         const toggleLoop = (val) => {
@@ -342,7 +341,9 @@ export default {
             left = Math.abs(left)
             left = left > w - 8 ? w - 8 : left
             setTimer({ left, offsetX: left })
-            store.commit('detail/setCurrentLyric', curStr)
+            store.dispatch('detail/setCurrentLyric', curStr).then(data => {
+                window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData) })
+            })
         }
         const setTimer = (obj) => {
             if (obj.offsetX) {

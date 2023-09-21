@@ -136,6 +136,7 @@ export default {
             }
         })
         const onMinifty = () => {
+            window.electron && window.electron.toggleMini({ value: true })
             if (window.electron) return window.electron.toggleMinMax(true)
             emit('on-minify', true)
         }

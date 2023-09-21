@@ -10,7 +10,7 @@
           </div>
       </div>
       <div class="content" :style="fontStyle">
-          {{storage.get('currLyric')?.text || '纯音乐，请欣赏'}}
+          {{currLyric.text || '纯音乐，请欣赏'}}
       </div>
   </div>
 </template>
@@ -21,8 +21,8 @@ import {
     reactive,
     onMounted,
     onUpdated,
-    toRefs,
-    computed
+    toRefs
+    // computed
     // onBeforeMount
     // getCurrentInstance
 } from 'vue'
@@ -89,9 +89,11 @@ export default {
             }, {
                 id: 6,
                 'font-size': '54px',
+                'line-height': '60px',
                 color: '#fff'
             }],
-            currLyric: computed(() => storage.get('currLyric') || {}),
+            currLyric: detailStore.currLyric || {},
+            // currLyric: computed(() => detailStore.currLyric || {}),
             boxPos: {
                 min: {
                     left: 0,
@@ -109,8 +111,8 @@ export default {
         ], (value) => {
             state.lyricList = value[0]
         })
-        watch(() => storage.get('currLyric'), (value) => {
-            state.currLyric = value
+        watch(() => detailStore.currLyric, (value) => {
+            !window.electronAPI && (state.currLyric = value)
         })
         onMounted(() => {
             window.addEventListener('resize', (e) => {
@@ -128,7 +130,7 @@ export default {
                 end (pos) {
                 }
             })
-            state.currLyric = storage.get('currLyric')
+            // state.currLyric = storage.get('currLyric')
             // console.log(storage.get('fontStyles'), 'state.fontStyle')
             if (storage.get('fontStyles') && storage.get('fontStyles') !== null) {
                 state.fontStyle = storage.get('fontStyles')
@@ -137,10 +139,10 @@ export default {
                 })
             }
             state.isShow = props.isShow
-            // setInterval(() => {
-            //     state.currLyric = detailStore.currLyric
-            //     console.log(state.currLyric)
-            // }, 3000)
+            window.electronAPI && window.electronAPI.onPlaySong((e, { playData, currLyric }) => {
+                state.currLyric = JSON.parse(currLyric)
+                // console.log(state.currLyric, JSON.parse(currLyric), 'currLyric')
+            })
         })
         onUpdated(() => {
             // 处理
@@ -186,7 +188,6 @@ export default {
             lyricBox,
             setFontStyle,
             onClose,
-            storage,
             ...toRefs(state)
         }
     }

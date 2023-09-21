@@ -1,5 +1,6 @@
 <template>
-        <div :class="{'is-micro-app': microApp}"
+        <div v-if="microApp"
+        @dblclick.prevent="toggleMini"
         class="mini-music-box js-mini-music-box flexbox-v" ref="dragMiniBox">
         <div class="wrap flexbox-h just-b">
             <div class="left flex-2 flexbox-h just-b"
@@ -13,18 +14,18 @@
                     <div class="text" ref="textMoveDom" v-if="currLyric && currLyric!==null">{{playData.paused ? playData.name : currLyric.text }}</div>
                     <span v-show="playData.paused" class="name tc">{{playData.singer}}</span>
                 </div>
-                <div class="play-btn js-play-btn flexbox-h just-a"
+                <div @dblclick.stop class="play-btn js-play-btn flexbox-h just-a"
                 :class="{'active': showPlayer}">
                     <i class="icon-music-play-left"
-                    @click.stop="playPrev"></i>
+                    @click="playPrev"></i>
                     <i class="icon-play js-play"
                     :class="{
                         'icon-music-pause': playData.paused,
                         'icon-music-play': !playData.paused,
                         }"
-                        @click.stop="toggleAudioPlay"></i>
+                        @click="toggleAudioPlay"></i>
                     <i class="icon-music-play-right"
-                    @click.stop="playNext"></i>
+                    @click="playNext"></i>
                 </div>
                 <div class="more js-more text"
                 :class="{'active': showPlayer}">
@@ -52,32 +53,14 @@
             <!-- <div class="text flex-3 flexbox-h just-b">
                 </div> -->
         </div>
-        <!-- <div class="more js-mini-music-list"
-        :class="{'actived': showList}">
-            <ul class="music-list js-music-list">
-                <list
-                @dblclick.stop="onListItemdbClick(item)"
-                @click="() => activeIndex = index"
-                v-for="(item, index) in playList.data"
-                :class="{
-                    'active': activeIndex === index,
-                    'play': playIndex === index && !playData.paused,
-                    'pause': playIndex === index && playData.paused
-                    }"
-                :data="item"
-                isminiPlay
-                :index="index"
-                :operation="false"
-                :order="false"
-                :key="index"></list>
-            </ul>
-        </div> -->
     </div>
 </template>
 <script>
 export default {
     data () {
         return {
+            playData: {},
+            currLyric: {},
             showList: false,
             showVolume: false,
             showPlayer: false,
@@ -90,30 +73,65 @@ export default {
         }
     },
     computed: {
-        playData () {
-            return this.$store.state.playData || {}
-        },
-        currLyric () {
-            return this.$store.state.detail.songDetail.currLyric || {}
-        }
+        // playData () {
+        //     return this.$store.state.playData || {}
+        // },
+        // currLyric () {
+        //     return this.$store.state.detail.songDetail.currLyric || {}
+        // }
     },
     mounted () {
-        console.log(window, 'window')
-        window.electronAPI && window.electronAPI.onPlaySong(({ playData, currentLyric }) => {
-            console.log(playData, currentLyric, '1232')
+        // console.log(window, 'window')
+        this.microApp = !!window.electronAPI
+        window.electronAPI && window.electronAPI.onPlaySong((e, { playData, currLyric }) => {
+            console.log(JSON.parse(playData), 'JSON.parse(playData)')
+            this.playData = JSON.parse(playData)
+            this.currLyric = JSON.parse(currLyric)
         })
+        document.body.style.overflow = 'hidden'
+        this.textMove(this.$refs.textMoveDom)
     },
     methods: {
+        textMove (oCon) {
+            if (oCon && oCon !== null) {
+                oCon._move = null
+                const step = -1
+                if (oCon.textContent.length <= 8) {
+                    clearInterval(oCon._move)
+                    return
+                } else {
+                    // oCon.textContent += '' + oCon.textContent
+                    this.autoRoll(oCon, step)
+                }
+                oCon._move = setInterval(() => {
+                    this.autoRoll(oCon, step)
+                }, 30)
+            }
+        },
+        autoRoll (oCon, step) {
+            if (oCon.offsetLeft < -oCon.offsetWidth + 100) {
+                oCon.style.left = -oCon.offsetWidth + 100
+                clearInterval(oCon._move)
+            }
+            if (oCon.offsetLeft > 0) {
+                oCon.style.left = -oCon.offsetWidth / 2 + 'px'
+            }
+            oCon.style.left = oCon.offsetLeft + step + 'px'
+        },
         toggleAudioPlay () {
+            window.electron && window.electron.togglePlay({ value: true })
         },
-        onSetVolumeClick () {
-
+        playNext () {
+            window.electron && window.electron.nextPlay({ value: true })
         },
-        onThemeShow () {
-
+        playPrev () {
+            window.electron && window.electron.prevPlay({ value: true })
         },
-        playNext () {},
-        playPrev () {}
+        toggleMini () {
+            window.electron && window.electron.toggleMini({ value: false })
+        },
+        onSetVolumeClick () {},
+        onThemeShow () {}
     }
 }
 </script>
@@ -129,11 +147,6 @@ export default {
     box-shadow: 0 0 10px @c-666;
     background-color: @white;
     user-select: initial;
-    &.is-micro-app {
-        left: 50%;
-        margin-left: -148px;
-        position: fixed;
-    }
     .wrap {
         z-index: 10;
         position: relative;
@@ -200,9 +213,11 @@ export default {
             .icon-play::after {
                 padding: 4px;
                 border: 1px solid @primary;
+                cursor: pointer;
                 border-radius: 30px;
             }
             i.play::after {
+                cursor: pointer;
                 content: '\e6a5';
             }
         }

@@ -34,11 +34,14 @@ export const loading = {
         loadingEles.push(loadingEl)
         if (data.loading) {
             if (data.fullScreen) {
+                el.style.position = 'relative'
                 loadingEl.$el.loadingMask.style.position = 'absolute'
                 loadingEl.$el.loadingMask.style.width = '100%'
                 loadingEl.$el.loadingMask.style.height = '100%'
+                loadingEl.$el.loadingMask.style.minHeight = '500px'
                 loadingEl.$el.loadingMask.style.top = '0'
                 loadingEl.$el.loadingMask.style.left = '0'
+                loadingEl.$el.loadingMask.style.zIndex = '100'
                 loadingEl.$el.loadingMask.style.margin = '0'
                 loadingEl.$el.loadingMask.style.backgroundColor = 'rgba(255,255,255,0.7)'
                 document.querySelector('.main').style.height = '100%'
@@ -53,6 +56,7 @@ export const loading = {
             loadingEl = loadingEles.filter(el => el.id === +id)[0] || {}
             document.querySelector('.main').style.height = ''
             document.querySelector('.main').style.overflow = 'auto'
+            el.style.height = 'auto'
             loadingEl.$el && el.removeChild(loadingEl.$el.loadingMask)
         }
     },
@@ -72,6 +76,7 @@ export const loading = {
         if (data.loading) {
             loadingEl.$el.loadingMask.style.display = 'flex'
             if (data.fullScreen) {
+                el.style.position = 'relative'
                 document.querySelector('.main').style.height = '100%'
                 document.querySelector('.main').style.overflow = 'hidden'
             }

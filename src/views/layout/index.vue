@@ -49,7 +49,7 @@
             <audio-player-box :class="{show: showSongPlayer, hide: !showSongPlayer}"></audio-player-box>
             <video-player-box :class="{show: showVideoPlayer, hide: !showVideoPlayer}"></video-player-box>
         </div>
-        <music-footer v-if="showFooter && !showVideoPlayer" @show-lyirc="(val) => showLyirc = val"></music-footer>
+        <music-footer v-if="showFooter && !showVideoPlayer" @show-lyirc="toggleLyirc"></music-footer>
     </div>
     <div
     @dblclick.stop="() => {
@@ -404,6 +404,7 @@ export default {
             if (state.microApp) {
                 document.body.style.overflow = 'hidden'
             }
+            window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData) })
         })
         onUpdated(() => {
             // 处理
@@ -477,7 +478,7 @@ export default {
             textMoveDom.value.style.width = '100px'
             textMoveDom.value.style.left = '0px'
             store.dispatch('toggleAudioPlay', { audio, state })
-            window && window.electron.playSong({ playData: state.playData, currentLyric: state.currLyric })
+            // window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData) })
         }
         const toggleAudioMouted = () => {
             store.dispatch('toggleAudioMouted', { audio, state }).then(res => {})
@@ -489,7 +490,7 @@ export default {
                 return
             }
             store.dispatch('playPrev', state)
-            window && window.electron.playSong({ playData: state.playData, currentLyric: state.currLyric })
+            // window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData) })
         }
         const playNext = () => {
             state.playIndex++
@@ -498,7 +499,7 @@ export default {
                 return
             }
             store.dispatch('playNext', state)
-            window && window.electron.playSong({ playData: state.playData, currentLyric: state.currLyric })
+            // window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData) })
         }
         const textMove = (oCon) => {
             if (oCon && oCon !== null) {
@@ -561,6 +562,10 @@ export default {
         const onThemeShow = () => {
             state.showThemeDialog = !state.showThemeDialog
         }
+        const toggleLyirc = (val) => {
+            if (window.electron) return window.electron.toggleLyric(val)
+            state.showLyirc = val
+        }
         return {
             dragBox,
             dragMiniBox,
@@ -580,6 +585,7 @@ export default {
             dragthemeBox,
             // weatherBox,
             onThemeShow,
+            toggleLyirc,
             // ...computed(() => storeState).value,
             ...toRefs(state)
         }
