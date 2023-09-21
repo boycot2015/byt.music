@@ -11,8 +11,8 @@
                     <img :src="playData.picUrl" alt="">
                 </div>
                 <div class="name tc">
-                    <div class="text" ref="textMoveDom" v-if="currLyric && currLyric!==null">{{playData.paused ? playData.name : currLyric.text }}</div>
-                    <span v-show="playData.paused" class="name tc">{{playData.singer}}</span>
+                    <div class="text" ref="textMoveDom" v-if="currLyric && currLyric!==null">{{playData.paused ? playData.name|| '--' : currLyric.text|| '--' }}</div>
+                    <span v-show="playData.paused" class="name tc">{{playData.singer || '--'}}</span>
                 </div>
                 <div @dblclick.stop class="play-btn js-play-btn flexbox-h just-a"
                 :class="{'active': showPlayer}">
