@@ -1,5 +1,5 @@
 <template>
-  <div class="song-detail-list">
+  <div class="song-detail-list" v-loading="{loading: pageLoading, fullScreen: true}">
         <div
         v-if="!router.currentRoute.value.query.keywords"
         class="cover"
@@ -15,7 +15,7 @@
                         <span class="desc">根据你的音乐口味生成,每日6:00更新</span>
                     </div>
                 </template>
-                <img v-else :src="coverDetail.coverImgUrl || coverDetail.picUrl" alt="">
+                <img v-else style="max-width: 210px;" :src="coverDetail.coverImgUrl || coverDetail.picUrl" alt="">
             </div>
             <div class="text">
                 <div class="top clearfix" v-if="!isDaily">
@@ -191,6 +191,7 @@ export default {
         const router = useRouter()
         const state = reactive({
             loading: true,
+            pageLoading: true,
             dayData: {
                 weeks: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
                 day: new Date().getDate(),
@@ -247,6 +248,12 @@ export default {
                 state.activeIndex = state.playIndex
             }
         })
+        watch(() => router.currentRoute.value.query.id, (id) => {
+            state.loading = true
+            state.pageLoading = true
+            state.offset = 1
+            getData({ id, limit: 30, offset: 1, type: 1 })
+        })
         watch(() => router.currentRoute.value.query.keywords, (keywords) => {
             getData({ keywords, limit: 30, offset: 1, type: 1018 })
         })
@@ -267,6 +274,7 @@ export default {
             state.loading = true
             await store.dispatch('list/getData', params).then(() => {
                 state.loading = false
+                // state.pageLoading = false
             })
         }
         const onListItemdbClick = (item) => {

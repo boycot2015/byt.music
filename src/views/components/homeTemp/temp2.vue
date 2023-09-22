@@ -1,5 +1,5 @@
 <template>
-    <div class="tab-content tab-cate-content">
+    <div class="tab-content tab-cate-content" v-loading="{loading: pageLoading, fullScreen: true}">
         <div class="tags" v-if="tabData.tags.length">
             <span class="btn-cate js-toggle-cate" :class="{'active': showAllCate}" @click.stop="showAllCate = !showAllCate">
                 <span class="text">{{activedCate || '全部歌单'}}</span> <i class="icon-music-down"></i>
@@ -82,6 +82,7 @@ import {
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import GridList from '@/views/components/GridList'
+import { debounce } from '@/utils'
 export default {
     name: 'homeTemp2',
     components: {
@@ -95,6 +96,7 @@ export default {
         const router = useRouter()
         const state = reactive({
             loading: true,
+            pageLoading: true,
             showAllCate: false,
             activedCate: router.currentRoute.value.query.cate || '全部歌单',
             tabData: {
@@ -120,16 +122,15 @@ export default {
         })
         onMounted(async () => {
             getData()
-            document.querySelector('.music-box .main').addEventListener('scroll', function (e) {
+            document.querySelector('.music-box .main').addEventListener('scroll', (e) => {
                 // 获取定义好的scroll盒子
-                // const el = scrollDom.value
-                const condition = this.scrollHeight - this.scrollTop <= this.clientHeight
+                const condition = e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight
                 if (!state.loading && condition && router.currentRoute.value.query.tabName === 'cate') {
                     state.offset++
                     state.loading = true
-                    store.dispatch('home/getListByCate', { offset: state.offset, limit: state.limit, cat: state.activedCate }).then(() => {
+                    debounce(store.dispatch('home/getListByCate', { offset: state.offset, limit: state.limit, cat: state.activedCate }).then(() => {
                         state.loading = false
-                    })
+                    }))
                 }
             })
             document.addEventListener('click', (e) => {
@@ -163,6 +164,7 @@ export default {
             store.dispatch('home/getTab2Data', type).then(res => {
                 store.dispatch('home/getListByCate', { current: 1, cat: state.activedCate || '' })
                 state.loading = false
+                // state.pageLoading = false
             })
         }
         // 点击分类标签获取对应数据

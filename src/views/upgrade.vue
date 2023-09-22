@@ -56,17 +56,13 @@
     </div>
 </template>
 <script type="text/javascript">
-import version from '@/assets/js/version.json'
+// import version from '~dist/js/version.json'
+import axios from 'axios'
 export default {
     name: 'upgrade',
     data () {
         return {
-            versionData: {
-                ...version,
-                data: [
-                    ...version.data.filter(val => !val.message || (val.message && !val.message.includes('自动提交版本') && !val.message.includes('111'))).sort((a, b) => b.date - a.date)
-                ]
-            }
+            versionData: {}
         }
     },
     computed: {
@@ -78,27 +74,39 @@ export default {
         }
     },
     mounted () {
-        this.versionData.data.map(el => {
-            el.active = false
-        })
-        document.querySelector('.yzh-version-container').addEventListener('scroll', (e) => {
-            for (const key in this.$refs) {
-                if (key.indexOf('version-title') > -1 &&
-                this.$refs[key][0] &&
-                e.target.scrollTop === this.$refs[key][0].$el.offsetTop) {
-                    // console.log(e.target.scrollTop, this.versionData.data, 'this.versionData.data')
-                    this.versionData.data.map(el => {
-                        if (key.includes(el.version)) {
-                            el.active = true
-                        } else {
-                            el.active = false
-                        }
-                    })
-                }
-            }
-        })
+        this.getData()
     },
     methods: {
+        getData () {
+            axios.get('/version.json').then(({ data }) => {
+                console.log(data, 'data')
+                this.versionData = {
+                    ...data,
+                    data: [
+                        ...data.data.filter(val => !val.message || (val.message && !val.message.includes('自动提交版本') && !val.message.includes('111'))).sort((a, b) => b.date - a.date)
+                    ]
+                }
+                this.versionData.data.map(el => {
+                    el.active = false
+                })
+                document.querySelector('.yzh-version-container').addEventListener('scroll', (e) => {
+                    for (const key in this.$refs) {
+                        if (key.indexOf('version-title') > -1 &&
+                        this.$refs[key][0] &&
+                        e.target.scrollTop === this.$refs[key][0].$el.offsetTop) {
+                            // console.log(e.target.scrollTop, this.versionData.data, 'this.versionData.data')
+                            this.versionData.data.map(el => {
+                                if (key.includes(el.version)) {
+                                    el.active = true
+                                } else {
+                                    el.active = false
+                                }
+                            })
+                        }
+                    }
+                })
+            })
+        },
         onVersionClick (version) {
             // console.dir(this.$refs['version-title' + version.version], 'this.versionData.data')
             const versonDom = this.$refs['version-' + version.version]

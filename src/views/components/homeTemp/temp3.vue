@@ -29,7 +29,7 @@
                 <h3 class="name fl">{{obj.title || '推荐歌单'}}</h3>
                 <span class="fr more" v-if="obj.hasMore" @click="onMoreClick(obj)">更多<i class="icon-music-right"></i></span>
             </div>
-            <ul class="recommend-list grid-list" v-loading="loading" :style="{'marginBottom': findex === 2 ? '40px': ''}">
+            <ul class="recommend-list grid-list" :style="{'marginBottom': findex === 2 ? '40px': ''}">
                 <grid-list :class="obj.type ==2 && 'flexbox-h just-b'" v-for="(item, index) in obj.data" :item="item" :type="obj.type" :index="index" @click="onListClick(item)" :key="item.id"></grid-list>
             </ul>
         </div>
@@ -60,7 +60,7 @@ import Swiper from '@/plugins/swiper/swiper.min.js'
 import GridList from '@/views/components/GridList'
 import Slider from '@/components/Slider'
 export default {
-    name: 'homeTemp1',
+    name: 'homeTemp3',
     components: {
         // Swiper,
         // SwiperSlide,
@@ -190,14 +190,12 @@ export default {
         const getData = async () => {
             store.dispatch('home/getTab3Data').then(res => {
                 initSwiper()
-                setTimeout(() => {
-                    state.loading = false
-                }, 400)
+                state.loading = false
             })
         }
         const onListClick = (item) => {
             // getData(item.type)
-            console.log(item.id, 'item.id')
+            // console.log(item.id, 'item.id')
             router.push({
                 path: '/songs/list',
                 query: {

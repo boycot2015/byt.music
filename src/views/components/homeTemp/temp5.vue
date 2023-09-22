@@ -1,5 +1,5 @@
 <template>
-    <div class="tab-content tab-cate-content tab-singer-content" ref="scrollDom">
+    <div class="tab-content tab-cate-content tab-singer-content" ref="scrollDom" v-loading="{loading: pageLoading, fullScreen: true}">
         <div class="tags">
             <div class="name top clearfix" v-for="(formItem, key) in form" :key="formItem.title">
                 <h3 class="ctitle fl">{{formItem.title}}：</h3>
@@ -17,7 +17,7 @@
         </div>
         <ul class="recommend-list grid-list" v-loading="loading">
             <li class="grid-list-item top js-list-detail" v-if="showBegining">
-                <div class="img tc">
+                <div class="img tc" v-if="!loading">
                     <!-- <img src="" alt=""> -->
                     <!-- <i class="icon icon-music-emoji"></i> -->
                     <div class="top-text">
@@ -51,8 +51,9 @@ import {
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import GridList from '@/views/components/GridList'
+import { debounce } from '@/utils'
 export default {
-    name: 'homeTemp2',
+    name: 'homeTemp5',
     components: {
         // Swiper,
         // SwiperSlide,
@@ -65,6 +66,7 @@ export default {
         const router = useRouter()
         const state = reactive({
             loading: true,
+            pageLoading: true,
             tabData: {
                 dayData: {
                     name: '歌手榜',
@@ -133,14 +135,12 @@ export default {
         onMounted(async () => {
             setBegining(router.currentRoute.value.query)
             getData({ ...sortData(), refresh: true })
-            document.querySelector('.music-box .main').addEventListener('scroll', function (e) {
-                // 获取定义好的scroll盒子
-                // const el = scrollDom.value
-                const condition = this.scrollHeight - this.scrollTop <= this.clientHeight
+            document.querySelector('.music-box .main').addEventListener('scroll', (e) => {
+                const condition = e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight
                 if (!state.loading && condition && router.currentRoute.value.query.tabName === 'singer') {
                     state.offset++
                     state.loading = true
-                    getData({ ...sortData(), offset: state.offset, limit: state.limit })
+                    debounce(getData({ ...sortData(), offset: state.offset, limit: state.limit }))
                 }
             })
         })
@@ -159,6 +159,7 @@ export default {
         const getData = async (data) => {
             store.dispatch('home/getTab5Data', { ...data, limit: state.showBegining ? 39 : 40 }).then(res => {
                 state.loading = false
+                state.pageLoading = false
             })
         }
         const setBegining = async (data) => {

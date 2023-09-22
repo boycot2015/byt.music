@@ -111,7 +111,7 @@ export default {
             data.topSong = res
             data.mv = (mvRes && mvRes.result.slice(0, 3)) || {}
             data.djrecommend = (djprogramRes && djprogramRes.result.slice(0, 5)) || []
-            console.log(djprogramRes, 'value')
+            // console.log(djprogramRes, 'value')
             commit('setTab1Data', data)
             return Promise.resolve({ code: 200, success: true })
         },

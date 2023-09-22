@@ -1,5 +1,5 @@
 <template>
-  <div class="aside js-aside">
+  <div class="aside js-aside" @dblclick.stop>
         <div class="aside-list js-aside-template">
             <div
             v-for="($value) in menu"
@@ -25,7 +25,7 @@
                     @click.stop="() => activeRoute = item.path"
                     :class="{'active': activeRoute === item.path }"
                     class="list-item js-list-item flexbox-h">
-                        <router-link :to="{path: item.path, query: { tabName: item.path === '/index' ? 'home': undefined}}">
+                        <router-link :to="{path: item.path, query: { tabName: item.path === '/index' ? 'home': undefined, ...item.query || {} }}">
                             <span class="icon" :class="`icon-music-${item.meta.icon}`"></span>
                             <span class="name">{{item.meta.title}}</span>
                             <span class="icon flex-1 tr" :class="`icon-music-${item.meta.rightIcon}`"></span>

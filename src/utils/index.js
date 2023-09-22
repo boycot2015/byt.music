@@ -293,3 +293,18 @@ export const getLocalColors = (count = 28) => {
     }
     return { themeColor: colorsArr[0], colors: colorsArr }
 }
+// 事件防抖函数
+export const debounce = (func, wait, immediate) => {
+    let timeout = null
+    return function () {
+        const args = arguments
+        const later = function () {
+            timeout = null
+            if (!immediate) func.apply(this, args)
+        }
+        const callNow = immediate && !timeout
+        clearTimeout(timeout)
+        timeout = setTimeout(later, wait)
+        if (callNow) func.apply(this, args)
+    }
+}

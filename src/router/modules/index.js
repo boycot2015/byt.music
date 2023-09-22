@@ -188,15 +188,41 @@ const routes = [
     },
     {
         name: '收藏的歌单',
-        path: '/index',
+        path: '/fav/playlist',
         component: Layout,
+        request: {
+            id: 1,
+            key: 'id',
+            apiUrl: '/user/playlist',
+            name: 'list',
+            path: '/songs/list',
+            meta: {
+                login: true,
+                title: '歌单详情列表'
+            },
+            rightIcon: 'beckoning'
+        },
         meta: {
             title: '收藏的歌单',
-            hideInMenu: true,
+            hideInMenu: false,
             login: true,
             icon: 'right'
+        },
+        children: [
+            {
+                id: 1,
+                name: 'list',
+                path: '/songs/list',
+                component: () => import('@/views/songs/list.vue'),
+                meta: {
+                    icon: 'right',
+                    login: true,
+                    title: '歌单详情列表'
 
-        }
+                },
+                rightIcon: 'beckoning'
+            }
+        ]
     },
     {
         name: 'list',
@@ -356,7 +382,7 @@ const routes = [
         component: () => import('@/views/lyric.vue'),
         meta: {
             title: '音乐歌词',
-            hideInMenu: false
+            hideInMenu: true
         }
     },
     {

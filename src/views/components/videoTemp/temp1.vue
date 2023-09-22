@@ -130,7 +130,8 @@ export default {
                 }
             },
             offset: 0,
-            limit: 9
+            limit: 9,
+            hasMore: true
         })
         onMounted(async () => {
             getData()
@@ -138,11 +139,13 @@ export default {
                 // 获取定义好的scroll盒子
                 // const el = scrollDom.value
                 const condition = this.scrollHeight - this.scrollTop <= this.clientHeight
-                if (!state.loading && condition) {
+                if (!state.loading && condition && state.hasMore) {
                     state.offset++
                     state.loading = true
+                    state.hasMore = true
                     store.dispatch('video/getListByCate', { offset: state.offset, limit: state.limit, id: state.activedCate.id }).then(res => {
                         state.loading = false
+                        state.hasMore = res.hasmore
                     })
                 }
             })
@@ -198,6 +201,7 @@ export default {
             state.offset = 1
             state.tabData.list.data = []
             state.loading = true
+            state.hasMore = true
             store.dispatch('video/getListByCate', { offset: 0, id: (item && item.id) || '' }).then(res => {
                 router.push({
                     path: router.currentRoute.value.path,

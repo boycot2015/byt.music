@@ -63,7 +63,7 @@ import {
     useRouter
 } from 'vue-router'
 export default {
-    name: 'homeTemp1',
+    name: 'homeTemp4',
     components: {
         playList,
         GridList
