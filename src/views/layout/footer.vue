@@ -30,11 +30,15 @@
                     <span class="point" v-show="showVolumeBtn" ref="progressVolumeDom"></span>
                     <span class="line js-line" :style="{width: audioVolumePos.w + 'px' || ''}"></span>
                 </div>
-                <!-- icon-music-beckoning-->
-                <i class="order-icon icon-music-loop" @click="toggleLoop"></i>
             </div>
         </div>
         <div class="others flex-1 flexbox-h just-b">
+            <!-- icon-music-beckoning-->
+            <i class="order-icon" :class="{
+                'icon-music-loop-one': playData.loop,
+                'icon-music-loop': !playData.loop,
+                'icon-music-loop-random': !!playData.random,
+            }" @click="toggleLoop()"></i>
             <i class="type">标准</i>
             <i class="new icon-music-love" @click="collect"></i>
             <i class="word" @click="() => {$emit('show-lyirc', !showLyirc);showLyirc = !showLyirc;}">词</i>
@@ -49,20 +53,20 @@
                 </div>
                 <div class="list-header flexbox-h just-b">
                     <div class="total tl">
-                        <span class="num">总<i>{{playList.total}}</i>首</span>
-                        <i class="icon-music-info"></i>
+                        <span class="num">总<span>{{playList.total}}</span>首</span>
+                        <span class="icon-music-info"></span>
                     </div>
                     <div class="operation">
-                        <i class="icon-music-collect">收藏全部</i>
+                        <span class="icon-music-collect">收藏全部</span>
                         <span class="line">|</span>
-                        <i class="icon-music-delete">清空</i>
+                        <span class="icon-music-delete">清空</span>
                     </div>
                 </div>
-                <div class="wrap">
-                    <ul class="music-list js-footer-music-list song-list">
+                <div class="wrap" >
+                    <ul class="music-list js-footer-music-list song-list" @dblclick.prevent @dblclick.stop>
                         <list
-                        @dblclick="onListItemdbClick(item)"
-                        @click="() => activeIndex = index"
+                        @click.stop
+                        @dblclick="() => {onListItemdbClick(item);activeIndex = index}"
                         v-for="(item, index) in playList.data"
                         :class="{
                             'active': activeIndex === index,
@@ -125,6 +129,7 @@ export default {
                 ended: false,
                 muted: false,
                 loop: false,
+                random: false,
                 curStr: '00:00',
                 endStr: '00:00',
                 duration: 0,
@@ -152,14 +157,14 @@ export default {
                 b: -4,
                 w: 20
             },
-            onPlayCount: 0,
             isMove: false, // 拖动与点击事件隔离
             showVolumeBtn: false,
             progressPsition: '', // 进度条位置
             activeIndex: 0,
             playIndex: store.state.playData.playIndex || 0,
             showList: false,
-            showLyirc: false
+            showLyirc: false,
+            changeTimes: 0
         })
         let audio = null
         const progressTimeDom = ref(null)
@@ -275,16 +280,16 @@ export default {
             audioPlayer.addEventListener('loadedmetadata', function () {
                 setVolume()
                 getAudioInfo(audioPlayer, setStatus)
-                state.onPlayCount = 0
             })
             // 结束事件监听
             audioPlayer.addEventListener('ended', function () {
                 getAudioInfo(audioPlayer, setStatus)
                 clearInterval(state.playData.timer)
                 if (audio.ended) {
-                    state.onPlayCount++
-                    if (!state.playData.loop && state.onPlayCount === 1) {
+                    if (!state.playData.loop && state.playIndex < state.playList.data.length - 1) {
                         playNext()
+                    } else {
+                        state.playData.paused = true
                     }
                 }
             })
@@ -309,6 +314,10 @@ export default {
         }
         const playPrev = () => {
             state.playIndex--
+            state.onPlayCount--
+            if (state.playData.random) {
+                state.playIndex = Math.floor(Math.random() * state.playList.data.length - 1)
+            }
             if (state.playIndex < 1) {
                 state.playIndex = 0
                 return
@@ -317,19 +326,31 @@ export default {
             window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData) })
         }
         const playNext = () => {
-            state.playIndex++
-            if (state.playIndex > state.playList.data.length - 1) {
+            if (state.playIndex >= state.playList.data.length - 1) {
                 state.playIndex = state.playList.data.length - 1
                 return
+            }
+            state.playIndex++
+            if (state.playData.random) {
+                state.playIndex = Math.floor(Math.random() * state.playList.data.length - 1)
             }
             store.dispatch('playNext', state)
             window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData) })
         }
 
-        const toggleLoop = (val) => {
-            state.playData.loop = val
+        const toggleLoop = () => {
+            state.playData.random = false
+            state.changeTimes++
+            if (state.changeTimes > 2) {
+                state.changeTimes = 0
+                state.playData.random = true
+                state.playData.loop = false
+            } else {
+                state.playData.loop = !state.playData.loop
+            }
             let aduio = document.querySelector('#play-audio')
-            aduio.loop = val
+            aduio.loop = state.playData.loop
+            store.commit('setAudio', { loop: state.playData.loop, random: state.playData.random })
         }
 
         const setTimerStatus = ({ currentTime, curStr, endStr, duration }) => {

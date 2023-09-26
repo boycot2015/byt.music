@@ -37,17 +37,19 @@ const createLoading = (el, data) => {
         document.querySelector('.main').style.height = '100%'
         document.querySelector('.main').style.overflow = 'hidden'
     }
+    loadingEl.loadingMask.setAttribute('data-class', el.classList)
     el.appendChild(loadingEl.loadingMask)
 }
 
 const hideLoading = (el) => {
-    const loadingEl = el.querySelector('.loading-dialog')
-    if (loadingEl && loadingEl.parentNode.classList.value === el.classList.value) {
-        // console.log(loadingEl.parentNode.classList.value, el.classList.value, 'parentNode')
-        el.removeChild(loadingEl)
-        document.querySelector('.main').style.height = ''
-        document.querySelector('.main').style.overflow = 'auto'
-    }
+    el.querySelectorAll('.loading-dialog').forEach(ele => {
+        if (ele && el.classList.value === ele.getAttribute('data-class')) {
+            el.removeChild(ele)
+            document.querySelector('.main').style.height = ''
+            document.querySelector('.main').style.overflow = 'auto'
+        }
+        return ele.getAttribute('data-class')
+    })
 }
 const hasLoading = (el) => {
     return !!el.querySelector('.loading-dialog')

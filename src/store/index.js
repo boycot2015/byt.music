@@ -55,6 +55,8 @@ export default createStore({
             type: '标准',
             isHot: 'new',
             lyrcTxt: '词',
+            random: false,
+            loop: false,
             ended: false,
             muted: false,
             curStr: '00:00',
