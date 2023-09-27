@@ -70,7 +70,7 @@ export default {
                 }
             })
         },
-        getUserInfo ({ commit }, params) {
+        getUserInfo ({ commit }, data) {
             return new Promise((resolve, reject) => {
                 user.account().then((params) => {
                     // params.account && user.detail({ uid: params.account.id }).then(res => {
@@ -84,6 +84,10 @@ export default {
                         const { account, profile, bindings, pcSign, mobileSign, ...others } = params
                         commit('setData', { account, profile, bindings, ...others })
                         commit('setSign', pcSign || mobileSign)
+                        if (data.cookie) {
+                            commit('setMenu', null, { root: true })
+                            window.location.reload()
+                        }
                         resolve(params)
                     } else {
                         reject(params)
@@ -96,6 +100,7 @@ export default {
                 user.logout().then(res => {
                     if (res.code === 200) {
                         commit('removeToken')
+                        commit('setMenu', null, { root: true })
                         resolve(res)
                     } else {
                         reject(res)

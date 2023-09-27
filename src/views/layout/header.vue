@@ -2,7 +2,7 @@
 <div
     @dblclick="onExtend"
     class="header flexbox-h just-b">
-    <div class="flexbox-h">
+    <div class="flexbox-h" @dblclick.prevent @dblclick.stop>
         <div class="logo">
             <router-link to="/" @click="goHome" class="flexbox-h">
                 <div class="logo-icon icon-music-logo-icon"></div>
@@ -14,7 +14,7 @@
             <div class="forward-btn" @click="goForward">&gt;</div>
         </div>
     </div>
-    <div class="weather flexbox-h just-b" style="cursor: pointer;" v-if="weathers.location" @click="() => $refs.weatherBox.showDialog()">
+    <div class="weather flexbox-h just-b" style="cursor: pointer;" v-if="weathers.location" @click="() => $refs.weatherBox.showDialog()" @dblclick.prevent @dblclick.stop>
         <div class="city">{{weathers.location.name}}</div>
         <div class="text" v-if="weathers.now" style="margin:0 5px;">{{weathers.now.text}}</div>
         <div class="temperature" v-if="weathers.now">{{weathers.now.temperature}}℃</div>
@@ -23,7 +23,7 @@
         <input type="text" v-model="searchForm.key" @keyup="onSearch" :placeholder="searchForm.placeholder">
         <div class="input-icon icon-music-search" ></div>
     </div>
-    <div class="flexbox-h">
+    <div class="flexbox-h" @dblclick.prevent @dblclick.stop>
         <div class="user-info flex-4 tc just-c flexbox-h">
             <div class="wrap flexbox-h flex-1" @click.stop="showLogin = !showLogin">
                 <div class="avatar ">

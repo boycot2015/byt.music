@@ -3,19 +3,6 @@
 import Layout from '@/views/layout/index.vue'
 // import Cookies from 'js-cookie'
 const routes = [
-    // {
-    //     path: '/',
-    //     name: 'Home',
-    //     component: Home
-    // },
-    // {
-    //     path: '/about',
-    //     name: 'About',
-    //     component: () => import('@/views/About.vue'),
-    //     meta: {
-    //         title: ''
-    //     }
-    // },
     {
         name: '推荐',
         path: '/',
@@ -103,7 +90,7 @@ const routes = [
                 id: 1,
                 name: 'myMusicIndex',
                 path: '/myMusic/index',
-                component: () => import('@/views//myMusic/index.vue'),
+                component: () => import('@/views/myMusic/index.vue'),
                 meta: {
                     title: '本地音乐',
                     login: true,
@@ -162,67 +149,54 @@ const routes = [
         ]
     },
     {
-        name: 'record',
-        path: '/index',
+        name: 'myCreate',
+        path: '/myCreate',
         component: Layout,
         meta: {
-            icon: 'right',
-            hideInMenu: true,
+            // rightIcon: 'right',
+            unfold: true,
+            hideInMenu: false,
             title: '创建的歌单'
 
         },
-        children: [
-            {
-                id: 1,
-                name: 'songs',
-                path: '/songs/index',
-                component: () => import('@/views/songs/index.vue'),
-                meta: {
-                    icon: 'love',
-                    login: true,
-                    title: '我喜欢的音乐'
-
-                },
-                rightIcon: 'beckoning'
-            }]
-    },
-    {
-        name: '收藏的歌单',
-        path: '/fav/playlist',
-        component: Layout,
         request: {
             id: 1,
             key: 'id',
+            sort: (arr, { uid }) => arr.slice(1).filter(_ => _.userId === uid),
             apiUrl: '/user/playlist',
             name: 'list',
             path: '/songs/list',
             meta: {
                 login: true,
                 title: '歌单详情列表'
-            },
-            rightIcon: 'beckoning'
+            }
+        },
+        children: []
+    },
+    {
+        name: 'favCollect',
+        path: '/favCollect',
+        component: Layout,
+        request: {
+            id: 1,
+            key: 'id',
+            sort: (arr, { uid }) => arr.slice(1).filter(_ => _.userId !== uid),
+            apiUrl: '/user/playlist',
+            name: 'list',
+            path: '/songs/list',
+            meta: {
+                login: true,
+                title: '歌单详情列表'
+            }
         },
         meta: {
+            // rightIcon: 'right',
             title: '收藏的歌单',
+            unfold: true,
             hideInMenu: false,
-            login: true,
-            icon: 'right'
+            login: true
         },
-        children: [
-            {
-                id: 1,
-                name: 'list',
-                path: '/songs/list',
-                component: () => import('@/views/songs/list.vue'),
-                meta: {
-                    icon: 'right',
-                    login: true,
-                    title: '歌单详情列表'
-
-                },
-                rightIcon: 'beckoning'
-            }
-        ]
+        children: []
     },
     {
         name: 'list',
@@ -409,6 +383,49 @@ const routes = [
             meta: {
                 title: '网页不存在！',
                 hideInMenu: true
+            }
+        }]
+    }
+]
+export const dymicRoutes = [
+    {
+        name: 'myCreate',
+        path: '/myCreate',
+        component: Layout,
+        meta: {
+            rightIcon: 'right',
+            // unfold: true,
+            hideInMenu: false,
+            title: '创建的歌单'
+        },
+        children: [{
+            name: 'myCreateList',
+            path: '/myCreate/playlist',
+            component: () => import('@/views/songs/list.vue'),
+            meta: {
+                login: true,
+                title: '歌单详情列表'
+            }
+        }]
+    },
+    {
+        name: 'favCollect',
+        path: '/favCollect',
+        component: Layout,
+        meta: {
+            rightIcon: 'right',
+            title: '收藏的歌单',
+            // unfold: true,
+            hideInMenu: false,
+            login: true
+        },
+        children: [{
+            name: 'favCollectList',
+            component: () => import('@/views/songs/list.vue'),
+            path: '/favCollect/playlist',
+            meta: {
+                login: true,
+                title: '歌单详情列表'
             }
         }]
     }

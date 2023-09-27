@@ -7,44 +7,12 @@ import videoStore from './video'
 import user from './user'
 import theme from './theme'
 import { song } from '@/api/apiList'
-// filterDruationTime
-import {
-    store
-    // db
-} from '@/utils'
-import baseUrl from '@/api/baseUrl'
-import axios from '@/api/axios'
-const getMenu = () => {
-    const routes = router.options.routes
-    routes.map(async el => {
-        el.children && (el.children = el.children.filter(val => !val.meta.hideInMenu))
-        if (el.request) {
-            el.children = []
-            if (store.get('cookie')) {
-                const arr = await axios.get(baseUrl + el.request.apiUrl, { params: { uid: store.get('userInfo').account.id } })
-                el.children = arr.playlist.map(item => ({
-                    name: el.request.name,
-                    meta: {
-                        ...item,
-                        title: item.name
-                    },
-                    query: {
-                        [el.request.key]: item[el.request.key]
-                    },
-                    path: `${el.request.path}?${el.request.key}=${item[el.request.key]}`
-                }))
-                console.log(el.children, 'arr')
-            } else {
-                el.meta.hideInMenu = true
-            }
-        }
-    })
-    return routes.filter(_ => !_.meta.hideInMenu)
-}
+import { store, getMenu } from '@/utils'
+
 export default createStore({
     state: {
         metaTitle: '网易云音乐',
-        menu: getMenu(),
+        menu: getMenu(router.options.routes),
         playData: (store.get('playData') !== null && store.get('playData')) || {
             lyrc: '一诺千金到尽头',
             name: '菩提偈',
@@ -100,6 +68,10 @@ export default createStore({
         },
         themeChanged (state, isChanged) {
             state.themeChanged = isChanged
+        },
+        setMenu (state) {
+            state.menu = []
+            state.menu = getMenu(router.options.routes)
         }
     },
     actions: {

@@ -230,7 +230,7 @@ export default {
                 const condition = this.scrollHeight - this.scrollTop <= this.clientHeight
                 if (condition && !state.loading && router.currentRoute.value.query.keywords && state.coverDetail.more) {
                     state.offset++
-                    getData({ keywords: state.keywords, offset: state.offset, limit: state.limit, type: state.type })
+                    getData({ keywords: state.keywords, offset: state.offset * state.limit, limit: state.limit, type: state.type })
                 }
             })
         })
@@ -274,7 +274,7 @@ export default {
             state.loading = true
             await store.dispatch('list/getData', params).then(() => {
                 state.loading = false
-                // state.pageLoading = false
+                state.pageLoading = false
             })
         }
         const onListItemdbClick = (item) => {

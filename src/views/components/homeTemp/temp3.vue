@@ -1,5 +1,5 @@
 <template>
-<div class="tab-content tab-home-content" v-loading="{loading, fullScreen: true}">
+<div class="tab-content tab-home-content temp3" v-loading="{loading, fullScreen: true}">
     <Slider
     ref="slider"
     :data-w="width"

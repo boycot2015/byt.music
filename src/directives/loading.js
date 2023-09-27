@@ -17,42 +17,62 @@ class LoadingInterface {
         this.loadingMask.classList = 'loading-dialog flexbox-h just-c'
         this.loadingText.innerHTML = '加载中...'
     }
-}
-const createLoading = (el, data) => {
-    const loadingEl = new LoadingInterface()
-    loadingEl.loadingMask.appendChild(loadingEl.spinner)
-    loadingEl.loadingMask.appendChild(loadingEl.loadingText)
-    if (data.fullScreen) {
-        el.style.position = 'relative'
-        loadingEl.loadingMask.style.position = 'absolute'
-        loadingEl.loadingMask.style.width = '100%'
-        loadingEl.loadingMask.style.height = '100%'
-        loadingEl.loadingMask.style.minHeight = '500px'
-        loadingEl.loadingMask.style.maxHeight = '80vh'
-        loadingEl.loadingMask.style.top = '0'
-        loadingEl.loadingMask.style.left = '0'
-        loadingEl.loadingMask.style.zIndex = '100'
-        loadingEl.loadingMask.style.margin = '0'
-        loadingEl.loadingMask.style.backgroundColor = 'rgba(245, 245, 245,0.7)'
+
+    setFullScreenStyle = (ele, styles) => {
+        for (const key in styles) {
+            ele.style[key] = styles[key]
+        }
         document.querySelector('.main').style.height = '100%'
+        document.querySelector('.main').scrollTop = 0
         document.querySelector('.main').style.overflow = 'hidden'
     }
+}
+
+const createLoading = (el, data) => {
+    const loadingEl = new LoadingInterface()
+    if (data.fullScreen) {
+        el.style.position = 'relative'
+        loadingEl.setFullScreenStyle(
+            loadingEl.loadingMask,
+            {
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                minHeight: '500px',
+                maxHeight: '100vh',
+                top: '0',
+                left: '0',
+                zIndex: '100',
+                margin: '0',
+                backgroundColor: 'rgba(245, 245, 245,0.7)'
+            })
+    }
+    loadingEl.loadingMask.appendChild(loadingEl.spinner)
+    loadingEl.loadingMask.appendChild(loadingEl.loadingText)
     loadingEl.loadingMask.setAttribute('data-class', el.classList)
     el.appendChild(loadingEl.loadingMask)
 }
 
-const hideLoading = (el) => {
+const hideLoading = (el, { all }) => {
     el.querySelectorAll('.loading-dialog').forEach(ele => {
-        if (ele && el.classList.value === ele.getAttribute('data-class')) {
+        if (all) {
+            ele.parentNode.removeChild(ele)
+        } else if (ele && el.classList.value === ele.getAttribute('data-class')) {
             el.removeChild(ele)
-            document.querySelector('.main').style.height = ''
-            document.querySelector('.main').style.overflow = 'auto'
         }
-        return ele.getAttribute('data-class')
+        document.querySelector('.main').style.height = ''
+        document.querySelector('.main').style.overflow = 'auto'
+        return ele
     })
 }
 const hasLoading = (el) => {
-    return !!el.querySelector('.loading-dialog')
+    let has = false
+    el.querySelectorAll('.loading-dialog').forEach(ele => {
+        if (ele && el.classList.value === ele.getAttribute('data-class')) {
+            has = true
+        }
+    })
+    return has
 }
 export default {
     mounted (el, binding) {
@@ -66,6 +86,17 @@ export default {
         }
         if (!hasLoading(el)) createLoading(el, data)
     },
+    beforeUpdate (el, binding) {
+        let data = {
+            loading: binding.value
+        }
+        if (typeof binding.value === 'object') {
+            data = {
+                ...binding.value
+            }
+        }
+        hideLoading(el, { all: true, ...data })
+    },
     updated (el, binding) {
         let data = {
             loading: binding.value
@@ -75,14 +106,25 @@ export default {
                 ...binding.value
             }
         }
-        if (data.loading && !data.fullScreen) {
+        if (data.loading) {
             if (!hasLoading(el)) {
                 createLoading(el, data)
             } else {
-                hideLoading(el)
+                hideLoading(el, { all: false, ...data })
             }
         } else {
-            hideLoading(el)
+            hideLoading(el, { all: false, ...data })
         }
+    },
+    beforeUnmount (el, binding) {
+        let data = {
+            loading: binding.value
+        }
+        if (typeof binding.value === 'object') {
+            data = {
+                ...binding.value
+            }
+        }
+        hideLoading(el, { all: true, ...data })
     }
 }

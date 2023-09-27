@@ -1,5 +1,5 @@
 <template>
-    <div class="tab-content tab-cate-content" v-loading="{loading: pageLoading, fullScreen: true}">
+    <div class="tab-content tab-cate-content temp2" v-loading="{loading: pageLoading, fullScreen: true}">
         <div class="tags" v-if="tabData.tags.length">
             <span class="btn-cate js-toggle-cate" :class="{'active': showAllCate}" @click.stop="showAllCate = !showAllCate">
                 <span class="text">{{activedCate || '全部歌单'}}</span> <i class="icon-music-down"></i>
@@ -164,7 +164,7 @@ export default {
             store.dispatch('home/getTab2Data', type).then(res => {
                 store.dispatch('home/getListByCate', { current: 1, cat: state.activedCate || '' })
                 state.loading = false
-                // state.pageLoading = false
+                state.pageLoading = false
             })
         }
         // 点击分类标签获取对应数据

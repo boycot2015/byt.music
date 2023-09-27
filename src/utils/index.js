@@ -1,4 +1,6 @@
 import Dexie from 'dexie'
+import baseUrl from '@/api/baseUrl'
+import axios from '@/api/axios'
 export const drag = (options) => {
     var obj = options.obj
     var target = options.target || obj
@@ -307,4 +309,34 @@ export const debounce = (func, wait, immediate) => {
         timeout = setTimeout(later, wait)
         if (callNow) func.apply(this, args)
     }
+}
+export const getMenu = (routes) => {
+    routes.map(async el => {
+        el.children && (el.children = el.children.filter(val => !val.meta.hideInMenu))
+        if (el.request) {
+            if (store.get('cookie') && store.get('userInfo')) {
+                const arr = await axios.get(baseUrl + el.request.apiUrl, { params: { uid: store.get('userInfo').account.id } })
+                if (el.request.sort && el.request.sort instanceof Function) {
+                    arr.playlist = el.request.sort(arr.playlist, { uid: store.get('userInfo').account.id })
+                }
+                el.children = arr.playlist.map(item => ({
+                    name: el.request.name,
+                    meta: {
+                        ...item,
+                        title: item.name
+                    },
+                    query: {
+                        activePath: `${el.request.path}?${el.request.key}=${item[el.request.key]}`,
+                        [el.request.key]: item[el.request.key]
+                    },
+                    path: `${el.request.path}?${el.request.key}=${item[el.request.key]}`
+                }))
+                el.meta.hideInMenu = false
+            } else {
+                el.meta.hideInMenu = true
+            }
+        }
+    })
+    // console.log(routes, 'routes')
+    return routes.filter(_ => !_.meta.hideInMenu)
 }

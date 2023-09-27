@@ -59,7 +59,7 @@ export default {
             if ((playlistRes && playlistRes.code === 200) || params.myfavorite) {
                 let ids = []
                 const playlist = playlistRes.playlist || playlistRes.data || djDetailRes.djRadio || {}
-                console.log(params, 'playlistRes')
+                // console.log(params, 'playlistRes')
                 if ((!params.isDaily && params.type === 1 && !params.keywords) || params.myfavorite) {
                     if (params.myfavorite) {
                         const likelist = await user.likelist()

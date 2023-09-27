@@ -10,10 +10,10 @@
                 class="title flexbox-h just-b js-toggle-class"
                 :class="
                 (activeClass && ($value.path === activeFindex || $value.meta.unfold)) && 'active '"
-                @click.stop="() => {activeClass = !activeClass; activeFindex = $value.path}"
+                @click.stop="onMenuClick($value)"
                 :data-path="$value.path">
-                    <p class="name">{{$value.meta.title}}</p>
-                    <span class="icon" v-if="$value.children && $value.children.length" :class="`icon-music-${$value.meta.icon}`"></span>
+                    <p class="name line-one">{{$value.meta.title}}</p>
+                    <span class="icon" v-if="$value.meta.rightIcon" :class="`icon-music-${$value.meta.rightIcon}`"></span>
                 </div>
                 <ul
                 class="list"
@@ -27,7 +27,7 @@
                     class="list-item js-list-item flexbox-h">
                         <router-link :to="{path: item.path, query: { tabName: item.path === '/index' ? 'home': undefined, ...item.query || {} }}">
                             <span class="icon" :class="`icon-music-${item.meta.icon}`"></span>
-                            <span class="name">{{item.meta.title}}</span>
+                            <span class="name line-one">{{item.meta.title}}</span>
                             <span class="icon flex-1 tr" :class="`icon-music-${item.meta.rightIcon}`"></span>
                         </router-link>
                     </li>
@@ -73,14 +73,21 @@ export default {
     setup (props, { emit }) {
         const router = useRouter()
         const store = useStore()
+        let { activePath } = router.currentRoute.value.query
+        if (!activePath) activePath = router.currentRoute.value.meta.activePath
+        if (!activePath) activePath = router.currentRoute.value.path
         const state = reactive({
-            activeFindex: router.currentRoute.value.meta.activePath || router.currentRoute.value.path,
-            activeRoute: router.currentRoute.value.meta.activePath || router.currentRoute.value.path,
-            activeClass: false,
+            activeFindex: activePath,
+            activeRoute: activePath,
+            activeClass: activePath === router.currentRoute.value.path,
             isStar: false,
+            menu: store.state.menu,
             playData: {
                 ...computed(() => store.state.playData)
             }
+        })
+        watch(() => store.state.menu, (value) => {
+            state.menu = value
         })
         watch(() => store.state.playData, (value) => {
             for (const key in value) {
@@ -92,7 +99,6 @@ export default {
             state.activeFindex = value
             state.activeRoute = value
         })
-        const menu = store.state.menu
         /* eslint-disable */
         const onStar = (e) => {
             state.isStar = !state.isStar
@@ -100,10 +106,19 @@ export default {
         const onInfoMaskClick = () => {
             emit('hideMenu', true)
         }
+        const onMenuClick = (route) => {
+            if (route.path === state.activeFindex) {
+               state.activeClass = !state.activeClass
+            }
+            if (route.path !== state.activeFindex) {
+               state.activeClass = true
+            }
+            state.activeFindex = route.path
+        }
         return {
             ...toRefs(state),
-            menu,
             onStar,
+            onMenuClick,
             onInfoMaskClick
         }
     }
