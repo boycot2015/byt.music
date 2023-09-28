@@ -18,15 +18,16 @@ export default {
         position: static;
         font-size: 32px;
         min-width: auto;
-        width: 100vw;
-        height: 100vh;
+        max-width: 1000px;
+        width: fit-content;
+        height: auto;
         display: block;
-        min-height: 80px;
         line-height: 40px;
         color: @white;
         border-radius: @border-radius;
         background: transparent;
         overflow: hidden;
+        white-space: wrap;
         transition: opacity 0.5s;
         &:hover {
             background: rgba(0, 0, 0, 0.5);
@@ -34,13 +35,13 @@ export default {
                 opacity: 1;
             }
         }
-        .header {
+        ::v-deep(.header) {
             height: 30px;
             line-height: 30px;
             opacity: 0;
             padding: 0;
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             user-select: none;
             overflow: hidden;
         }
