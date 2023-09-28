@@ -39,8 +39,8 @@
                 'icon-music-loop': !playData.loop,
                 'icon-music-loop-random': !!playData.random,
             }" @click="toggleLoop()"></i>
-            <i class="type">标准</i>
-            <i class="new icon-music-love" @click="collect"></i>
+            <!-- <i class="type">标准</i> -->
+            <i class="new love-icon icon-music-love" :class="playData.liked && 'icon-music-love-full'" @click="collect"></i>
             <i class="word" @click="() => {$emit('show-lyirc', !showLyirc);showLyirc = !showLyirc;}">词</i>
             <i class="icon js-play-list-btn icon-music-play-list" @click.stop="showList = !showList"></i>
             <div class="play-list js-play-list" v-show="showList">
@@ -449,17 +449,12 @@ export default {
         const collect = () => {
             song.like({ id: state.playData.id }).then(res => {
                 showToast({
-                    text: res.message || `${state.liked ? '取消':'收藏'}${res.code === 200 ? '成功':'失败'}！`,
+                    text: res.message || `${state.playData.liked ? '取消':'收藏'}${res.code === 200 ? '成功':'失败'}！`,
                     showWrap: true, // 是否显示组件
                     showContent: true // 作用:在隐藏组件之前,显示隐藏动画
                 })
-            }).catch(err => {
-                showToast({
-                    text: err.message || `${(state.liked ? '/取消':'收藏')}`,
-                    showWrap: true, // 是否显示组件
-                    showContent: true // 作用:在隐藏组件之前,显示隐藏动画
-                })
-            })
+                state.playData.liked = !state.playData.liked
+            }).catch(err => {})
         }
         return {
             ...toRefs(state),

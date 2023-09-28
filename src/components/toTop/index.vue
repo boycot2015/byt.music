@@ -39,22 +39,23 @@ export default {
     bottom: 20px;
     font-size: 14px;
     cursor: pointer;
-    background-color: @c-ccc;
+    background-color: @primary;
     color: @white;
     padding: 5px 10px;
     border-radius: 3px;
+    opacity: 0.8;
     right: 30px;
     transition: all 0.3s;
     &.hide {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(100px);
     }
     &.show {
         opacity: 1;
         transform: translateY(0px);
     }
     &:hover {
-        background-color: @c-999;
+        opacity: 0.8;
     }
 }
 </style>

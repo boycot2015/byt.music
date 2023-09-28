@@ -218,7 +218,7 @@ export default {
             const data = {}
             const res = await artist.list({ offset: offset * limit, limit, type, initial, area })
             if (res && res.code === 200) {
-                data.topList = res.artists
+                data.topList = res.artists.map(el => ({ ...el, img1v1Url: el.img1v1Url + '?param=200y200' }))
                 commit('setTab5Data', data)
                 return Promise.resolve({ code: 200, success: true })
             }
@@ -233,7 +233,7 @@ export default {
                 }).then(res => {
                     const data = {}
                     if (res && res.code === 200) {
-                        data.topList = res.artists
+                        data.topList = res.artists.map(el => ({ ...el, img1v1Url: el.img1v1Url + '?param=200y200' }))
                         commit('setTab5Data', data)
                         resolve({ code: 200, success: true })
                     }

@@ -22,7 +22,7 @@
                     :ref="version.version ? 'version-' + version.version : ''"
                     >
                     <div class="el-card" v-if="!version.version">
-                        <h4>* {{ version.message }}</h4>
+                        <h4 v-if="version.message" v-html="'* '+version.message.split(' ').join(`<br/><span style='margin-left:13px;'></span>`)"></h4>
                         <!-- <p>{{ version.name }} 提交于 {{ new Date(version.date).toLocaleString() }}</p> -->
                     </div>
                     <h3 class="title" v-else>
@@ -165,7 +165,8 @@ export default {
             font-size: 16px;
             color: @c-333;
             margin-bottom: 0;
-            line-height: 16px;
+            line-height: 22px;
+            user-select: text;
         }
         p {
             font-size: 14px;
@@ -210,6 +211,7 @@ export default {
         }
     }
     .sub-title {
+        user-select: text;
         margin-bottom: 10px;
         .public-time {
             color: @c-999;

@@ -15,12 +15,12 @@
                         <span class="desc">根据你的音乐口味生成,每日6:00更新</span>
                     </div>
                 </template>
-                <img v-else style="max-width: 210px;" :src="coverDetail.coverImgUrl || coverDetail.picUrl" alt="">
+                <img v-else style="max-width: 210px;" :src="coverDetail.img1v1Url || coverDetail.coverImgUrl || coverDetail.picUrl || coverDetail.coverUrl" alt="">
             </div>
             <div class="text">
                 <div class="top clearfix" v-if="!isDaily">
                     <span class="type fl" :class="{'full': type === 2}">{{type === 2? '电台':'歌单'}}</span>
-                    <p class="name fl">{{coverDetail.name}}</p>
+                    <p class="name fl">{{coverDetail.name || coverDetail.mainTitle}}</p>
                     <div class="count fr flexbox-h just-b" v-if="!type">
                         <div class="play-count tr">
                             <p class="name">歌曲数</p>
@@ -54,7 +54,7 @@
                             <i class="icon-music-collect"></i>
                             <span>订阅({{coverDetail.subCount}})</span>
                         </div>
-                        <div class="play-btn share">
+                        <div class="play-btn share" v-if="coverDetail.shareCount">
                             <i class="icon-music-share"></i>
                             <span>分享({{coverDetail.shareCount}})</span>
                         </div>
@@ -81,14 +81,15 @@
                 </div>
                 <div class="desc"
                 :class="{
-                    'line-two': !showMore,
+                    'line-four': !showMore,
                     'active': showMore
                     }"
                     v-if="(coverDetail.description && coverDetail.description !== null) ||
-                    (coverDetail.desc && coverDetail.desc !== null)">
-                    <p>{{coverDetail.description || coverDetail.desc}}</p>
+                    (coverDetail.desc && coverDetail.desc !== null) ||
+                    (coverDetail.briefDesc && coverDetail.briefDesc !== null)">
+                    <p>{{coverDetail.description || coverDetail.desc || coverDetail.briefDesc}}</p>
                     <i class="icon-music-down js-more" :class="{'active': showMore}" @click="showMore = !showMore"
-                    v-if="(coverDetail.description && coverDetail.description.length > 80) || (coverDetail.desc && coverDetail.desc.length > 80)"></i>
+                    v-if="(coverDetail.description && coverDetail.description.length > 160) || (coverDetail.desc && coverDetail.desc.length > 160) || (coverDetail.briefDesc && coverDetail.briefDesc.length > 160)"></i>
                 </div>
             </div>
         </div>
@@ -117,7 +118,7 @@
                         操作
                     </div>
                     <div class="opera flex-4">
-                        音乐标题
+                        标题
                     </div>
                     <div class="opera flex-2">
                         歌手
@@ -130,7 +131,7 @@
                     </div>
                 </template>
                 <template class="dj-header" v-else>
-                    <div class="flex-1 title tl bdr0">共{{coverDetail.count}}期</div>
+                    <div class="flex-1 title tl bdr0">共{{coverDetail.count || coverDetail.tracks && coverDetail.tracks.length}}首</div>
                     <div class="flex-1 title tr pdr10">排序<i class="icon-music-sort"></i></div>
                 </template>
             </div>
@@ -230,7 +231,7 @@ export default {
                 const condition = this.scrollHeight - this.scrollTop <= this.clientHeight
                 if (condition && !state.loading && router.currentRoute.value.query.keywords && state.coverDetail.more) {
                     state.offset++
-                    getData({ keywords: state.keywords, offset: state.offset * state.limit, limit: state.limit, type: state.type })
+                    getData({ keywords: state.keywords, offset: state.offset, limit: state.limit, type: state.type })
                 }
             })
         })
@@ -272,7 +273,7 @@ export default {
         // methods
         const getData = async (params) => {
             state.loading = true
-            await store.dispatch('list/getData', params).then(() => {
+            await store.dispatch('list/getData', { ...params, offset: state.offset * state.limit }).then(() => {
                 state.loading = false
                 state.pageLoading = false
             })

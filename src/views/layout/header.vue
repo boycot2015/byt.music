@@ -19,7 +19,7 @@
         <div class="text" v-if="weathers.now" style="margin:0 5px;">{{weathers.now.text}}</div>
         <div class="temperature" v-if="weathers.now">{{weathers.now.temperature}}℃</div>
     </div>
-    <div class="search-box flexbox-h">
+    <div class="search-box flexbox-h" @dblclick.prevent @dblclick.stop>
         <input type="text" v-model="searchForm.key" @keyup="onSearch" :placeholder="searchForm.placeholder">
         <div class="input-icon icon-music-search" ></div>
     </div>

@@ -8,7 +8,7 @@
     >
         <div ref="content" class="slider-content" :class="mask ? 'mask' : ''">
             <div
-                ref="slider"
+                :ref="'slider'+index"
                 class="slider"
                 v-for="(item, index) in list"
                 :key="index"
@@ -49,7 +49,6 @@ export default {
     data () {
         return {
             currentIndex: 0,
-            sliderDomList: [],
             timer: null
         }
     },
@@ -93,7 +92,7 @@ export default {
         },
         color: {
             type: String,
-            default: 'rgb(248, 85, 85)'
+            default: 'var(--primary-color)'
         }
     },
     computed: {
@@ -117,9 +116,6 @@ export default {
     },
     mounted () {
         this.play()
-        this.$nextTick(() => {
-            this.sliderDomList = this.$refs.slider
-        })
     },
     methods: {
         setClass (i) {
@@ -180,10 +176,7 @@ export default {
             if (i === this.currentIndex) {
                 this.$emit('slider-click', i, item)
             } else {
-                if (!this.sliderDomList) {
-                    this.sliderDomList = this.$refs.slider
-                }
-                const currentClickClassName = this.sliderDomList[i].classList[1]
+                const currentClickClassName = this.$refs['slider' + i].classList[1]
                 if (currentClickClassName === 'next') {
                     this.next()
                 } else {
@@ -230,10 +223,12 @@ export default {
             background-position: center;
             background-size: inherit;
             transform: translate3d(-50%, 1px, -80px) scale3d(0.9, 0.9, 1);
-            transform-origin: center bottom;
+            transform-origin: center;
             z-index: 1;
-            filter: brightness(0.3);
+            filter: brightness(0.6);
             cursor: pointer;
+            border-radius: var(--box-radius);
+            // box-shadow: 0 0 10px var(--c-ccc);
             .badge {
                 position: absolute;
                 right: -2px;

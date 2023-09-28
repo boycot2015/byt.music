@@ -26,5 +26,21 @@ export default {
         return axios.get(urls.song, {
             params
         })
+    },
+    desc (params) {
+        return axios.get(urls.desc, {
+            params
+        })
+    },
+    album (params) {
+        return axios.get(urls.album, {
+            params
+        })
+    },
+    artists (params) {
+        return axios.get(urls.artists, {
+            params
+        })
     }
+
 }

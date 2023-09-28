@@ -16,17 +16,15 @@
             </div>
         </div>
         <ul class="recommend-list grid-list" v-loading="loading">
-            <li class="grid-list-item top js-list-detail" v-if="showBegining">
+            <!-- <li class="grid-list-item top js-list-detail" v-if="showBegining&&!loading">
                 <div class="img tc" v-if="!loading">
-                    <!-- <img src="" alt=""> -->
-                    <!-- <i class="icon icon-music-emoji"></i> -->
                     <div class="top-text">
                         <p>{{tabData.dayData.name}}</p>
                         <span>SINGER LIST</span>
                     </div>
                 </div>
                 <div class="name tl">{{tabData.dayData.copywriter}}</div>
-            </li>
+            </li> -->
             <grid-list
                 v-for="(item, index) in tabData.list.data"
                 :item="item"
@@ -208,6 +206,7 @@ export default {
             router.push({
                 path: '/songs/list',
                 query: {
+                    type: 5,
                     id: item.id
                 }
             })

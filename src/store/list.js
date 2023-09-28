@@ -1,4 +1,4 @@
-import { song, dj, search, user } from '@/api/apiList'
+import { song, dj, search, user, artist } from '@/api/apiList'
 import { filterDruationTime, filterPlayCount, store } from '@/utils'
 export default {
     namespaced: true,
@@ -28,7 +28,7 @@ export default {
             playlist && (state.playlistData = playlist)
             playlist && (state.tracks = playlist.tracks)
             searchData && (state.searchData = searchData)
-            // console.log(state, 'state')
+            // console.log(state.playlistData, 'state')
             myfavorite && store.set('playlist', { playlist }, new Date().getTime() + 3000 * 1000)
         }
     },
@@ -47,6 +47,8 @@ export default {
             } else if (params.type === 3) {
                 playlistRes = await dj.djprogramList({ ...params, rid: params.id })
                 djDetailRes = await dj.djDetail({ ...params, rid: params.id })
+            } else if (params.type === 5) {
+                playlistRes = await artist.artists({ ...params })
             } else if (params.keywords) {
                 playlistRes = await search.search(params)
             } else {
@@ -58,7 +60,7 @@ export default {
             }
             if ((playlistRes && playlistRes.code === 200) || params.myfavorite) {
                 let ids = []
-                const playlist = playlistRes.playlist || playlistRes.data || djDetailRes.djRadio || {}
+                let playlist = playlistRes.playlist || playlistRes.data || djDetailRes.djRadio || {}
                 // console.log(params, 'playlistRes')
                 if ((!params.isDaily && params.type === 1 && !params.keywords) || params.myfavorite) {
                     if (params.myfavorite) {
@@ -90,6 +92,12 @@ export default {
                     playlist.tracks = playlistRes.programs
                     playlist.more = playlistRes.more
                     playlist.count = playlistRes.count
+                } else if (params.type === 5) {
+                    playlist = {
+                        ...playlistRes.artist,
+                        img1v1Url: playlistRes.artist.img1v1Url + '?param=200y200',
+                        tracks: playlistRes.hotSongs
+                    }
                 } else if (params.keywords) {
                     if (params.type === 1018) {
                         const arr = []

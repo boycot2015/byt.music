@@ -133,13 +133,13 @@ export default {
             limit = 9,
             ctype = 1,
             order = 1,
-            type = '全部',
+            type = '游戏',
             ...ohters
         }) {
             return new Promise((resolve, reject) => {
                 let api = 'first'
                 let apiStr = 'personalized'
-                console.log(ctype)
+                // console.log(ctype)
                 switch (ctype) {
                 case 1:
                     api = 'first'

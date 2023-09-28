@@ -77,7 +77,11 @@ export default createStore({
     actions: {
         setPlayData ({ commit }, data) {
             return new Promise((resolve, reject) => {
-                song.playUrl({ id: data.id }).then(urlData => {
+                song.playUrl({ id: data.id }).then(async urlData => {
+                    if (data.playIndex === undefined) {
+                        const songDetailRes = await song.detail({ ids: [data.id].join(',') })
+                        data = songDetailRes.songs[0]
+                    }
                     // console.log(data, 'data')
                     const playData = store.get('playData') !== null ? store.get('playData') : {}
                     data.al = data.al || data.album

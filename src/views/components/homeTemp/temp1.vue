@@ -5,7 +5,7 @@
         :data-w="width"
         :list="tabData.banner"
         v-if="!loading"
-        @sliderClick="onSliderClick"/>
+        @slider-click="onSliderClick"/>
         <div v-show="!loading" class="recommend" v-for="(obj, findex) in tabData.list" :key="obj.title">
             <div class="title clearfix">
                 <h3 class="name fl">{{obj.title || '推荐歌单'}}</h3>
@@ -231,9 +231,25 @@ export default {
         })
     },
     methods: {
-        onSliderClick (i, item) {
+        async onSliderClick (i, item) {
+            // console.log(item, 'item')
+            if (item.targetType === 1) {
+                this.$store.dispatch('setPlayData', { id: item.targetId }).then(res => {
+                    const audio = document.getElementById('play-audio')
+                    audio.play()
+                })
+            } else if (item.targetType === 2) {
+                this.$router.push({
+                    path: '/songs/list',
+                    query: {
+                        id: item.targetId
+                    }
+                })
+            } else if (item.url !== null) {
+                window.open(item.url)
+            }
             if (item.url) {
-                this.$electron.remote.shell.openExternal(item.url)
+                this.$electron && this.$electron.remote.shell.openExternal(item.url)
             }
         },
         handleResize () {
