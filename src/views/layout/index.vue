@@ -404,7 +404,7 @@ export default {
             if (state.microApp) {
                 document.body.style.overflow = 'hidden'
             }
-            window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData) })
+            window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData), lyricStyle: JSON.stringify(localStore.get('fontStyles')) })
         })
         onUpdated(() => {
             // 处理

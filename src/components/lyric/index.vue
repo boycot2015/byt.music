@@ -175,6 +175,7 @@ export default {
             const fontStyle = state.fontStyleList.filter(el => el.id === state.fontStyle.id)[0]
             state.fontStyle = JSON.parse(JSON.stringify(fontStyle))
             storage.set('fontStyles', state.fontStyle)
+            window.electron && window.electron.playSong({ currLyric: JSON.stringify(state.currLyric), playData: JSON.stringify(storage.get('playData')), lyricStyle: JSON.stringify(storage.get('fontStyles')) })
         }
         const onClose = () => {
             if (window.electron) return window.electron.toggleLyric(false)

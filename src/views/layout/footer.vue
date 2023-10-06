@@ -98,7 +98,7 @@ import {
 } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import { drag } from '@/utils'
+import { drag, store as storage } from '@/utils'
 import List from '@/views/components/List'
 import { song } from '@/api/apiList'
 export default {
@@ -323,7 +323,7 @@ export default {
                 return
             }
             store.dispatch('playPrev', state)
-            window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData) })
+            window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData), lyricStyle: JSON.stringify(storage.get('fontStyles')) })
         }
         const playNext = () => {
             if (state.playIndex >= state.playList.data.length - 1) {
@@ -335,7 +335,7 @@ export default {
                 state.playIndex = Math.floor(Math.random() * state.playList.data.length - 1)
             }
             store.dispatch('playNext', state)
-            window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData) })
+            window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData), lyricStyle: JSON.stringify(storage.get('fontStyles')) })
         }
 
         const toggleLoop = () => {
@@ -363,7 +363,7 @@ export default {
             left = left > w - 8 ? w - 8 : left
             setTimer({ left, offsetX: left })
             store.dispatch('detail/setCurrentLyric', curStr).then(data => {
-                window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData) })
+                window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData), lyricStyle: JSON.stringify(storage.get('fontStyles')) })
             })
         }
         const setTimer = (obj) => {
