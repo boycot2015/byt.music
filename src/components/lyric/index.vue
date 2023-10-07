@@ -9,8 +9,8 @@
             <i class="text icon font-icon theme icon-music-link"></i>
           </div>
       </div>
-      <div class="content" :style="fontStyle">
-          {{currLyric.text || '纯音乐，请欣赏'}}
+      <div class="content" :class="{'paused': playData.paused, 'load': !isChange }" :style="{...fontStyle}">
+            {{currLyric.text || '纯音乐，请欣赏'}}
       </div>
   </div>
 </template>
@@ -104,7 +104,9 @@ export default {
                     top: 0
                 }
             },
-            isMinBoxMoved: false
+            playData: storage.get('playData'),
+            isMinBoxMoved: false,
+            isChange: false
         })
         watch(() => [
             detailStore.lyricList
@@ -140,8 +142,16 @@ export default {
             }
             state.isShow = props.isShow
             window.electronAPI && window.electronAPI.onPlaySong((e, { playData, currLyric }) => {
+                state.isChange = false
+                if (state.currLyric.text !== JSON.parse(currLyric).text) {
+                    const time1 = state.currLyric.time.split(':')[1]
+                    const time2 = JSON.parse(currLyric).time.split(':')[1]
+                    const time = Number(time2) - Number(time1)
+                    document.documentElement.style.setProperty('--lyirc-time', (time > 0 ? time : 1) + 's')
+                    state.isChange = true
+                }
                 state.currLyric = JSON.parse(currLyric)
-                // console.log(state.currLyric, JSON.parse(currLyric), 'currLyric')
+                state.playData = JSON.parse(playData)
             })
         })
         onUpdated(() => {
@@ -172,6 +182,7 @@ export default {
                     el.color = state.fontStyle.color
                 })
             }
+            document.documentElement.style.setProperty('--lyirc-color', state.fontStyle.color)
             const fontStyle = state.fontStyleList.filter(el => el.id === state.fontStyle.id)[0]
             state.fontStyle = JSON.parse(JSON.stringify(fontStyle))
             storage.set('fontStyles', state.fontStyle)
@@ -228,6 +239,19 @@ export default {
         }
         .content {
             padding: 0 20px 20px;
+            background: #fff -webkit-linear-gradient(left, var(--lyirc-color), var(--lyirc-color)) no-repeat 0 0;
+            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            background-size: 0 100%;
+            text-shadow: 2px 2px 20px var(--c-000);
+            &.load {
+                background-size:100% 100%;
+                animation: scan var(--lyirc-time) cubic-bezier(0, 0.2, 0.3, 0.1);
+            }
+            &.paused {
+                animation-play-state: paused;
+                -webkit-animation-play-state: paused;
+            }
         }
         .close {
             position: absolute;
@@ -250,6 +274,14 @@ export default {
                     color: @white;
                 }
             }
+        }
+    }
+    @keyframes scan {
+        0% {
+            background-size:0 100%;
+        }
+        100% {
+            background-size:100% 100%;
         }
     }
 </style>
