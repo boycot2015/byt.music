@@ -32,7 +32,7 @@
                 </div>
             </div>
         </div>
-        <div class="others flex-1 flexbox-h just-b">
+        <div class="others flex-1 flexbox-h just-b" @click.stop>
             <!-- icon-music-beckoning-->
             <i class="order-icon" :class="{
                 'icon-music-loop-one': playData.loop,
@@ -46,10 +46,9 @@
             <div class="play-list js-play-list" v-show="showList">
                 <div class="title flexbox-h just-c">
                     <div class="btn tc flex-1 flexbox-h just-c">
-                        <span class="active js-list-btn list-btn">播放列表</span>
-                        <span class="js-history-btn history-btn">历史记录</span>
+                        播放列表
                     </div>
-                    <i class="tr js-list-close icon-close icon-music-close" @click="showList = false"></i>
+                    <span class="tr js-list-close icon-close icon-music-close" @click="showList = false"></span>
                 </div>
                 <div class="list-header flexbox-h just-b">
                     <div class="total tl">
@@ -65,7 +64,6 @@
                 <div class="wrap" >
                     <ul class="music-list js-footer-music-list song-list" @dblclick.prevent @dblclick.stop>
                         <list
-                        @click.stop
                         @dblclick="() => {onListItemdbClick(item);activeIndex = index}"
                         v-for="(item, index) in playList.data"
                         :class="{
@@ -164,7 +162,7 @@ export default {
             playIndex: store.state.playData.playIndex || 0,
             showList: false,
             showLyirc: false,
-            changeTimes: 0
+            changeTimes: store.state.playData.random ? 0 : 1
         })
         let audio = null
         const progressTimeDom = ref(null)
@@ -177,7 +175,6 @@ export default {
             state.playData.paused = false
             progressTimeDom.value.style.left = '-3px'
             state.progressPsition = state.playData.volume * 100
-            initPlayer(audio, setTimerStatus, setVolume)
             playAudio()
         })
         watch(() => store.state.playData.playIndex, (value) => {
@@ -286,7 +283,7 @@ export default {
                 getAudioInfo(audioPlayer, setStatus)
                 clearInterval(state.playData.timer)
                 if (audio.ended) {
-                    if (!state.playData.loop && state.playIndex < state.playList.data.length - 1) {
+                    if ((!state.playData.loop && state.playIndex < state.playList.data.length - 1) || state.playData.random) {
                         playNext()
                     } else {
                         state.playData.paused = true
@@ -314,7 +311,6 @@ export default {
         }
         const playPrev = () => {
             state.playIndex--
-            state.onPlayCount--
             if (state.playData.random) {
                 state.playIndex = Math.floor(Math.random() * state.playList.data.length - 1)
             }
@@ -326,13 +322,14 @@ export default {
             window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData), lyricStyle: JSON.stringify(storage.get('fontStyles')) })
         }
         const playNext = () => {
-            if (state.playIndex >= state.playList.data.length - 1) {
+            if (state.playIndex >= state.playList.data.length - 1 && !state.playData.random) {
                 state.playIndex = state.playList.data.length - 1
                 return
             }
-            state.playIndex++
             if (state.playData.random) {
                 state.playIndex = Math.floor(Math.random() * state.playList.data.length - 1)
+            } else {
+                state.playIndex++
             }
             store.dispatch('playNext', state)
             window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData), lyricStyle: JSON.stringify(storage.get('fontStyles')) })
