@@ -221,6 +221,7 @@ export default {
             audio = document.getElementById('play-audio')
             audio.src = state.playData.url || null
             state.playData.paused = true
+            audio.loop = state.playData.loop
             state.progressPsition = store.state.playData.volume * 100
             // store.commit('setAudio', { paused: true, currentTime: 0 })
             initPlayer(audio, setTimerStatus, setVolume)
@@ -345,8 +346,8 @@ export default {
             } else {
                 state.playData.loop = !state.playData.loop
             }
-            let aduio = document.querySelector('#play-audio')
-            aduio.loop = state.playData.loop
+            let audio = document.querySelector('#play-audio')
+            audio.loop = state.playData.loop
             store.commit('setAudio', { loop: state.playData.loop, random: state.playData.random })
         }
 

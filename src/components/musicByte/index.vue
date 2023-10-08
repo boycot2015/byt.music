@@ -184,7 +184,8 @@ export default {
             var capHeight = 2
             const root = document.querySelector(':root')
             let barColor = root !== null && root.getAttribute('style')
-            barColor = (barColor && barColor.split(':')[1])
+            barColor = (barColor && barColor.split(';')[0].split(':')[1])
+            // console.log(barColor, 'barColor')
             var capStyle = barColor || '#fff'
             var ctx = canvas.getContext('2d')
             const gradient = ctx.createLinearGradient(0, 0, 0, 300)

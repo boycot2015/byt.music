@@ -5,6 +5,7 @@
           <div class="operate-icon">
             <i class="font-min font-icon" @click.stop="setFontStyle('min')" title="减小字体">A-</i>
             <i class="font-plus font-icon" @click.stop="setFontStyle('plus')" title="加大字体">A+</i>
+            <i class="font-font font-icon" @click.stop="setFontStyle('font')" title="字体">A</i>
             <i class="text icon font-icon theme icon-music-clothes" @click.stop="setFontStyle('color')"></i>
             <i class="text icon font-icon theme icon-music-link"></i>
           </div>
@@ -59,37 +60,44 @@ export default {
                 id: 3,
                 'font-size': '32px',
                 'line-height': '40px',
+                fontFamily: '宋体',
                 color: '#fff'
             },
             fontStyleList: [{
                 id: 1,
                 'font-size': '20px',
                 'line-height': '32px',
+                fontFamily: '宋体',
                 color: '#fff'
             }, {
                 id: 2,
                 'font-size': '24px',
                 'line-height': '32px',
+                fontFamily: '宋体',
                 color: '#fff'
             }, {
                 id: 3,
                 'font-size': '32px',
                 'line-height': '40px',
+                fontFamily: '宋体',
                 color: '#fff'
             }, {
                 id: 4,
                 'font-size': '40px',
                 'line-height': '48px',
+                fontFamily: '宋体',
                 color: '#fff'
             }, {
                 id: 5,
                 'font-size': '48px',
                 'line-height': '54px',
+                fontFamily: '宋体',
                 color: '#fff'
             }, {
                 id: 6,
                 'font-size': '54px',
                 'line-height': '60px',
+                fontFamily: '宋体',
                 color: '#fff'
             }],
             currLyric: detailStore.currLyric || {},
@@ -104,7 +112,7 @@ export default {
                     top: 0
                 }
             },
-            playData: storage.get('playData'),
+            playData: storage.get('playData') || {},
             isMinBoxMoved: false,
             isChange: false
         })
@@ -144,14 +152,18 @@ export default {
             window.electronAPI && window.electronAPI.onPlaySong((e, { playData, currLyric }) => {
                 state.isChange = false
                 if (state.currLyric.text !== JSON.parse(currLyric).text) {
-                    const time1 = state.currLyric.time.split(':')[1]
-                    const time2 = JSON.parse(currLyric).time.split(':')[1]
-                    const time = Number(time2) - Number(time1)
-                    document.documentElement.style.setProperty('--lyirc-time', (time > 0 ? time : 1) + 's')
+                    const arr1 = state.currLyric.time.split(':')
+                    const time1 = Number(arr1[0]) * 60 + Number(arr1[1])
+                    const arr2 = JSON.parse(currLyric).time.split(':')
+                    const time2 = Number(arr2[0]) * 60 + Number(arr2[1])
+                    let time = Number(time2) - Number(time1)
+                    time = time > 0 && time < 20 ? time : time >= 20 ? 3 : 1
+                    // console.log(time, JSON.parse(currLyric).time, state.currLyric.time, 'time')
+                    lyricBox.value && lyricBox.value.style.setProperty('--lyirc-time', time + 's')
                     state.isChange = true
                 }
                 state.currLyric = JSON.parse(currLyric)
-                state.playData = JSON.parse(playData)
+                state.playData = JSON.parse(playData) || {}
             })
         })
         onUpdated(() => {
@@ -178,15 +190,22 @@ export default {
             if (type === 'color') {
                 const colorObj = getLocalColors()
                 state.fontStyle.color = colorObj.themeColor.primary
-                state.fontStyleList.map(el => {
+                state.fontStyleList.map((el, index) => {
                     el.color = state.fontStyle.color
                 })
             }
-            document.documentElement.style.setProperty('--lyirc-color', state.fontStyle.color)
+            if (type === 'font') {
+                const family = ['宋体', '楷体', '黑体']
+                state.fontStyle.fontFamily = family[Math.floor(Math.random() * family.length)]
+                state.fontStyleList.map((el, index) => {
+                    el.fontFamily = state.fontStyle.fontFamily
+                })
+            }
             const fontStyle = state.fontStyleList.filter(el => el.id === state.fontStyle.id)[0]
             state.fontStyle = JSON.parse(JSON.stringify(fontStyle))
             storage.set('fontStyles', state.fontStyle)
-            window.electron && window.electron.playSong({ currLyric: JSON.stringify(state.currLyric), playData: JSON.stringify(storage.get('playData')), lyricStyle: JSON.stringify(storage.get('fontStyles')) })
+            lyricBox.value && lyricBox.value.style.setProperty('--lyirc-color', state.fontStyle.color)
+            window.electron && window.electron.playSong({ currLyric: JSON.stringify(state.currLyric), playData: JSON.stringify(state.playData || {}), lyricStyle: JSON.stringify(state.fontStyle) })
         }
         const onClose = () => {
             if (window.electron) return window.electron.toggleLyric(false)
@@ -222,6 +241,7 @@ export default {
         background: transparent;
         overflow: hidden;
         transition: opacity 0.5s;
+        --lyirc-time: 4s;
         &:hover {
             background: rgba(0, 0, 0, 0.5);
             .header {
@@ -240,13 +260,17 @@ export default {
         .content {
             padding: 0 20px 20px;
             background: #fff -webkit-linear-gradient(left, var(--lyirc-color), var(--lyirc-color)) no-repeat 0 0;
+            font-weight: bold;
+            font-family: '宋体';
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
             background-size: 0 100%;
-            text-shadow: 2px 2px 20px var(--c-000);
+            // letter-spacing: 2px;
+            // text-shadow: 2px 2px 20px var(--c-000);
             &.load {
                 background-size:100% 100%;
-                animation: scan var(--lyirc-time) cubic-bezier(0, 0.2, 0.3, 0.1);
+                // cubic-bezier(0, 0.38, 0.28, 0.1)
+                animation: scan var(--lyirc-time) ease-out;
             }
             &.paused {
                 animation-play-state: paused;
