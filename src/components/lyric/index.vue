@@ -263,7 +263,7 @@ export default {
             font-weight: bold;
             font-family: '宋体';
             -webkit-text-fill-color: transparent;
-            -webkit-background-clip: text;
+            background-clip: text;
             background-size: 0 100%;
             // letter-spacing: 2px;
             // text-shadow: 2px 2px 20px var(--c-000);

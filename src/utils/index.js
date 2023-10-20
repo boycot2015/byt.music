@@ -167,9 +167,7 @@ export const store = {
 export const db = new Dexie('musicdatebase', { keyPath: '2222' })
 
 export const animate = (ele, target, attr, type) => {
-    // 先清定时器
-    clearInterval(ele.timer)
-    ele.timer = setInterval(function () {
+    const renderScroll = () => {
         // 四部
         // 1.获取步长
         var leader = 0
@@ -178,7 +176,7 @@ export const animate = (ele, target, attr, type) => {
         } else {
             leader = parseInt(getStyle(ele, attr)) || 0// 获取值可能含有px，我们只取数字部分parseInt()
         }
-        var step = (target - leader) / 50
+        var step = (target - leader) / 30
         // 2.二次加工步长
         step = step > 0 ? Math.ceil(step) : Math.floor(step)
         leader = leader + step
@@ -191,9 +189,13 @@ export const animate = (ele, target, attr, type) => {
         if (target === leader) {
             !type && (ele.style[attr] = target + 'px')
             type === 1 && (ele[attr] = target)
-            clearInterval(ele.timer)
+            cancelAnimationFrame(ele.timer)
         }
-    }, 10)
+        ele.timer = requestAnimationFrame(renderScroll)
+    }
+    // 先清定时器
+    cancelAnimationFrame(ele.timer)
+    renderScroll()
 }
 
 // 兼容方法获取元素样式
