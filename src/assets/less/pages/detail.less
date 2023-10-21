@@ -245,6 +245,7 @@
                 overflow-y: auto;
             }
             .info {
+                position: relative;
                 .song-info {
                     margin-bottom: 10px;
                    .name {
@@ -269,13 +270,17 @@
                     }
                 }
                 .icon-minify {
-                        position: absolute;
-                        top: 30px;
-                        right: 0;
-                        border: 1px solid @c-ccc;
-                        border-radius: 3px;
-                        padding: 0 5px;
-                        cursor: pointer;
+                    position: absolute;
+                    top: 0px;
+                    right: -30px;
+                    // border: 1px solid var(--c-ccc);
+                    border-radius: 3px;
+                    padding: 0 5px;
+                    cursor: pointer;
+                    &::after {
+                        color: var(--white);
+                        font-size: 38px;
+                    }
                 }
             }
             .lyric-text {

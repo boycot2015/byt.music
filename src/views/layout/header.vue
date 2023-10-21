@@ -43,7 +43,8 @@
             <div class="text icon setting icon-music-setting"></div>
         </div>
         <div class="operation flex-1 align-c flexbox-h tc just-c">
-            <i class="full-sreen-btn flex-1 fa icon-music-minus js-music-minus" title="最小化窗口" @click="onMinifty"></i>
+            <i class="icon-music flex-1 icon-music-min-box js-music-min-box" title="小窗口显示" @click="onMinifty(true)"></i>
+            <i class="full-sreen-btn flex-1 fa icon-music-minus js-music-minus" title="最小化窗口" @click="onMinifty()"></i>
             <i class="min-btn flex-1 icon-music-rectangle js-music-rectangle" title="全屏" v-if="ismini" @click="onExtend"></i>
             <i class="full-sreen-btn flex-1 icon-music-min js-music-min" title="退出全屏" v-else @click="onExtend"></i>
             <i class="close-btn flex-1 icon-music-close js-music-close" title="关闭窗口" @click="onBoxHide"></i>
@@ -135,8 +136,8 @@ export default {
                 state.hasLogin = true
             }
         })
-        const onMinifty = () => {
-            window.electron && window.electron.toggleMini({ value: true })
+        const onMinifty = (minify) => {
+            if (minify) return window.electron && window.electron.toggleMini({ value: true })
             if (window.electron) return window.electron.toggleMinMax(true)
             emit('on-minify', true)
         }

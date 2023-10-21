@@ -34,6 +34,9 @@
                     @click="toggleAudioPlay"></i>
                 <i class="icon-music-play-right"
                 @click="playNext"></i>
+                <i class="icon-lyirc word"
+                :class="showLyirc&&'is-active'"
+                @click="toggleLyirc">词</i>
             </div>
         </div>
     </div>
@@ -57,7 +60,8 @@ export default {
             },
             showBox: false,
             microApp: false,
-            showMiniBox: true
+            showMiniBox: true,
+            showLyirc: false
         }
     },
     watch: {
@@ -73,21 +77,21 @@ export default {
                 if (textMoveDom !== null) {
                     textMoveDom.style.left = 0
                     textMoveDom.style.width = w + 'px'
-                    setTimeout(() => {
-                        clearInterval(textMoveDom._move)
-                        this.textMove(textMoveDom)
-                    }, 1000)
+                    clearInterval(textMoveDom._move)
+                    this.textMove(textMoveDom)
                 }
             },
             deep: true
         }
     },
     mounted () {
-        // console.log(window, 'window')
         this.microApp = !!window.electronAPI
         window.electronAPI && window.electronAPI.onPlaySong((e, { playData, currLyric }) => {
             this.playData = { ...this.playData, ...JSON.parse(playData) }
             this.currLyric = JSON.parse(currLyric)
+        })
+        window.electronAPI && window.electronAPI.onToggleLyric((e, data) => {
+            this.showLyirc = data.value
         })
         document.body.style.overflow = 'hidden'
         this.textMove(this.$refs.textMoveDom)
@@ -101,7 +105,6 @@ export default {
                     clearInterval(oCon._move)
                     return
                 } else {
-                    // oCon.textContent += '' + oCon.textContent
                     this.autoRoll(oCon, step)
                 }
                 oCon._move = setInterval(() => {
@@ -110,12 +113,14 @@ export default {
             }
         },
         autoRoll (oCon, step) {
-            if (oCon.offsetLeft < -oCon.offsetWidth + 100) {
-                oCon.style.left = -oCon.offsetWidth + 100
+            if (oCon.offsetLeft < -oCon.offsetWidth + oCon.parentNode.offsetWidth) {
+                oCon.style.left = -oCon.offsetWidth + oCon.parentNode.offsetWidth + 'px'
+                if (oCon.offsetLeft > 0) oCon.style.left = 0
                 clearInterval(oCon._move)
+                return
             }
-            if (oCon.offsetLeft > 0) {
-                oCon.style.left = -oCon.offsetWidth / 2 + 'px'
+            if (oCon.offsetLeft >= 0) {
+                oCon.style.left = 0
             }
             oCon.style.left = oCon.offsetLeft + step + 'px'
         },
@@ -130,6 +135,10 @@ export default {
         },
         toggleMini () {
             window.electron && window.electron.toggleMini({ value: false })
+        },
+        toggleLyirc () {
+            this.showLyirc = !this.showLyirc
+            if (window.electron) window.electron.toggleLyric(this.showLyirc)
         },
         onSetVolumeClick () {},
         onThemeShow () {}
@@ -193,7 +202,7 @@ export default {
         .more {
             position: absolute;
             height: 100%;
-            width: 180px;
+            width: 160px;
             top: -42px;
             left: 42px;
             z-index: 10;
@@ -279,29 +288,38 @@ export default {
         }
     }
     .play-btn {
-            padding: 0 20px;
-            box-sizing: border-box;
-            background-color: @white;
-            // display: none;
+        padding: 0 10px;
+        box-sizing: border-box;
+        background-color: @white;
+        // display: none;
+        opacity: 1;
+        transition: all 0.5s;
+        &.active {
             opacity: 1;
-            transition: all 0.5s;
-            &.active {
-                opacity: 1;
+        }
+        i::after {
+            background-color: @white;
+            color: @primary;
+        }
+        .icon-play::after {
+            padding: 4px;
+            border: 1px solid @primary;
+            cursor: pointer;
+            border-radius: 30px;
+        }
+        i.play::after {
+            cursor: pointer;
+            content: '\e6a5';
+        }
+        i.word {
+            font-size: 16px;
+            line-height: 16px;
+            cursor: pointer;
+            &.is-active {
+                color: var(--primary-color);
+                border-color: var(--primary-color);
             }
-            i::after {
-                background-color: @white;
-                color: @primary;
-            }
-            .icon-play::after {
-                padding: 4px;
-                border: 1px solid @primary;
-                cursor: pointer;
-                border-radius: 30px;
-            }
-            i.play::after {
-                cursor: pointer;
-                content: '\e6a5';
-            }
+        }
     }
 }
 </style>

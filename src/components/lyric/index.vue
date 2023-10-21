@@ -1,13 +1,15 @@
 <template>
   <div class="lyric flexbox-v" ref="lyricBox" @dblclick.stop v-show="isShow">
       <div class="header">
-          <div class="close" @click="onClose">×</div>
           <div class="operate-icon">
-            <i class="font-min font-icon" @click.stop="setFontStyle('min')" title="减小字体">A-</i>
-            <i class="font-plus font-icon" @click.stop="setFontStyle('plus')" title="加大字体">A+</i>
-            <i class="font-font font-icon" @click.stop="setFontStyle('font')" title="字体">A</i>
-            <i class="text icon font-icon theme icon-music-clothes" @click.stop="setFontStyle('color')"></i>
-            <i class="text icon font-icon theme icon-music-link"></i>
+              <template v-if="!isLock">
+                <i class="font-min font-icon" @click.stop="setFontStyle('min')" title="减小字体">A-</i>
+                <i class="font-plus font-icon" @click.stop="setFontStyle('plus')" title="加大字体">A+</i>
+                <i class="font-font font-icon" @click.stop="setFontStyle('font')" title="字体">A</i>
+                <i class="text icon font-icon theme icon-music-clothes" @click.stop="setFontStyle('color')"></i>
+            </template>
+            <i class="text icon font-icon theme icon-lock" @click="toggleLock" :class="!isLock ?  'icon-music-unlock':'icon-music-lock'"></i>
+            <i class="close font-icon icon-music-close" v-if="!isLock" @click="onClose"></i>
           </div>
       </div>
       <div class="content" :class="{'paused': playData.paused, 'load': !isChange }" :style="{...fontStyle}">
@@ -114,7 +116,8 @@ export default {
             },
             playData: storage.get('playData') || {},
             isMinBoxMoved: false,
-            isChange: false
+            isChange: false,
+            isLock: false
         })
         watch(() => [
             detailStore.lyricList
@@ -211,6 +214,10 @@ export default {
             if (window.electron) return window.electron.toggleLyric(false)
             emit('update:isShow', false)
         }
+        const toggleLock = () => {
+            state.isLock = !state.isLock
+            if (window.electron) return window.electron.fixedLyric(state.isLock)
+        }
         // 监听弹层v-model
         watch(() => props.isShow, (val) => {
             state.isShow = val
@@ -219,6 +226,7 @@ export default {
             lyricBox,
             setFontStyle,
             onClose,
+            toggleLock,
             ...toRefs(state)
         }
     }
@@ -278,9 +286,9 @@ export default {
             }
         }
         .close {
-            position: absolute;
-            right: 10px;
             cursor: pointer;
+            color: #fff;
+            font-size: 22px;
             &:hover {
                 color: @primary;
             }
@@ -297,6 +305,14 @@ export default {
                 &::after {
                     color: @white;
                 }
+            }
+            .icon-lock {
+                &::after {
+                    font-size: 18px;
+                }
+                &.icon-music-lock::after {
+                font-size: 24px;
+            }
             }
         }
     }

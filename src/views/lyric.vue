@@ -48,14 +48,14 @@ export default {
         .content {
             padding: 0 20px 20px;
         }
-        /deep/.close {
-            display: none;
-        }
+        // /deep/.close {
+        //     display: none;
+        // }
         /deep/.operate-icon {
             text-align: center;
             font-size: 16px;
             user-select: none;
-            width: 150px;
+            width: 180px;
             margin: 0 auto;
             -webkit-app-region: no-drag;
             .font-icon {

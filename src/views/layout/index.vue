@@ -405,6 +405,9 @@ export default {
                 document.body.style.overflow = 'hidden'
             }
             window.electron && window.electron.playSong({ currLyric: JSON.stringify(store.state.detail.songDetail.currLyric), playData: JSON.stringify(state.playData), lyricStyle: JSON.stringify(localStore.get('fontStyles')) })
+            window.electron && window.electronAPI.onRestore((e, data) => {
+                window.electron && window.electron.toggleMini({ value: false })
+            })
         })
         onUpdated(() => {
             // 处理
@@ -518,9 +521,11 @@ export default {
             }
         }
         const autoRoll = (oCon, step) => {
-            if (oCon.offsetLeft < -oCon.offsetWidth + 100) {
-                oCon.style.left = -oCon.offsetWidth + 100
+            if (oCon.offsetLeft < -oCon.offsetWidth + oCon.parentNode.offsetWidth) {
+                oCon.style.left = -oCon.offsetWidth + oCon.parentNode.offsetWidth + 'px'
+                if (oCon.offsetLeft > 0) oCon.style.left = 0
                 clearInterval(oCon._move)
+                return
             }
             if (oCon.offsetLeft > 0) {
                 oCon.style.left = -oCon.offsetWidth / 2 + 'px'

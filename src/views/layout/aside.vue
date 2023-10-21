@@ -36,7 +36,7 @@
         </div>
         <div class="music-info flexbox-h" data-id="">
             <div class="mask" @click="onInfoMaskClick">
-                <i class="icon icon-music-max"></i>
+                <i class="icon icon-music-down"></i>
             </div>
             <div class="img tl">
                 <img :src="playData.picUrl" alt="">

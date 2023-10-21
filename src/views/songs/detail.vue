@@ -31,7 +31,7 @@
                         <span class="al-name line-one flex-1" title="{{playData.singer}}">歌手：<i>{{playData.singer}}</i></span>
                         <span class="al-name line-one flex-1" title="{{playData.alName}}">来源：<i>{{playData.alName}}</i></span>
                     </div>
-                    <i class="icon-music-minify icon-minify" @click="onTurnBack"></i>
+                    <i class="icon-music-down icon-minify" @click="onTurnBack"></i>
                 </div>
                 <div class="wrap" ref="lyricScrollDom">
                     <div class="lyric-text">

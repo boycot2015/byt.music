@@ -1,12 +1,18 @@
+// @font-face {
+//     font-family: 'font-music';  /* project id 1984636 */
+//     src: url('//at.alicdn.com/t/font_1984636_ii4mrbd3q1.eot');
+//     src: url('//at.alicdn.com/t/font_1984636_ii4mrbd3q1.eot?#iefix') format('embedded-opentype'),
+//     url('//at.alicdn.com/t/font_1984636_ii4mrbd3q1.woff2') format('woff2'),
+//     url('//at.alicdn.com/t/font_1984636_ii4mrbd3q1.woff') format('woff'),
+//     url('//at.alicdn.com/t/font_1984636_ii4mrbd3q1.ttf') format('truetype'),
+//     url('//at.alicdn.com/t/font_1984636_ii4mrbd3q1.svg#font-music') format('svg');
+//   }
 @font-face {
-    font-family: 'font-music';  /* project id 1984636 */
-    src: url('//at.alicdn.com/t/font_1984636_ii4mrbd3q1.eot');
-    src: url('//at.alicdn.com/t/font_1984636_ii4mrbd3q1.eot?#iefix') format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_1984636_ii4mrbd3q1.woff2') format('woff2'),
-    url('//at.alicdn.com/t/font_1984636_ii4mrbd3q1.woff') format('woff'),
-    url('//at.alicdn.com/t/font_1984636_ii4mrbd3q1.ttf') format('truetype'),
-    url('//at.alicdn.com/t/font_1984636_ii4mrbd3q1.svg#font-music') format('svg');
-  }
+    font-family: 'font-music';  /* Project id 1984636 */
+    src: url('//at.alicdn.com/t/c/font_1984636_stlw3ad76ap.woff2?t=1697857580710') format('woff2'),
+        url('//at.alicdn.com/t/c/font_1984636_stlw3ad76ap.woff?t=1697857580710') format('woff'),
+        url('//at.alicdn.com/t/c/font_1984636_stlw3ad76ap.ttf?t=1697857580710') format('truetype');
+    }
 .icon-music {
     font-family: 'font-music';
     font-size: 18px;
@@ -16,6 +22,31 @@
         color: @c-ccc;
         vertical-align: bottom;
         content: '\e63d';
+    }
+    &-min-box {
+        position: relative;
+        transform: rotateY(180deg);
+        &::after {
+            font-family: 'font-music';
+            font-size: 16px;
+            color: @c-ccc;
+            vertical-align: bottom;
+            content: '\e86d';
+        }
+    }
+    &-lock::after {
+        font-family: 'font-music';
+        font-size: 14px;
+        color: @c-ccc;
+        vertical-align: bottom;
+        content: '\e676';
+    }
+    &-unlock::after {
+        font-family: 'font-music';
+        font-size: 14px;
+        color: @c-ccc;
+        vertical-align: bottom;
+        content: '\e682';
     }
     &-user::after {
         font-family: 'font-music';
@@ -428,7 +459,7 @@
     }
     &-minify::after {
         font-family: 'font-music';
-        font-size: 24px;
+        font-size: 18px;
         color: @c-666;
         vertical-align: bottom;
         content: '\e66d';

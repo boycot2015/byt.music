@@ -41,7 +41,7 @@
             }" @click="toggleLoop()"></i>
             <!-- <i class="type">标准</i> -->
             <i class="new love-icon icon-music-love" :class="playData.liked && 'icon-music-love-full'" @click="collect"></i>
-            <i class="word" @click="() => {$emit('show-lyirc', !showLyirc);showLyirc = !showLyirc;}">词</i>
+            <i class="word" :class="{'is-active': showLyirc}" @click="() => {$emit('show-lyirc', !showLyirc);showLyirc = !showLyirc;}">词</i>
             <i class="icon js-play-list-btn icon-music-play-list" @click.stop="showList = !showList"></i>
             <div class="play-list js-play-list" v-show="showList">
                 <div class="title flexbox-h just-c">
@@ -244,6 +244,9 @@ export default {
             })
             window.electronAPI && window.electronAPI.onPlaySong((e, data) => {
                 !data.playData && playAudio()
+            })
+            window.electronAPI && window.electronAPI.onToggleLyric((e, data) => {
+                state.showLyirc = data.value
             })
         })
         const getAudioInfo = (_audio, call) => {
