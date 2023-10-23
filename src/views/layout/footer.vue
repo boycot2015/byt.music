@@ -16,7 +16,7 @@
                 <div class="progress-bar tc flex-4" @click="onSetTimerClick">
                      <!-- @click.stop="setTimer" -->
                     <span class="point" ref="progressTimeDom"></span>
-                    <span class="line js-line" :style="{width: audioTimePos.w + 'px' || ''}"></span>
+                    <span class="line js-line" :style="{width: audioTimePos.w || ''}"></span>
                 </div>
                 <span class="end-time tr">{{playData.endStr}}</span>
             </div>
@@ -28,7 +28,7 @@
                 <div class="progress-bar flex-4" @click="onSetVolumeClick">
                     <!-- @click.stop="setVolume" -->
                     <span class="point" v-show="showVolumeBtn" ref="progressVolumeDom"></span>
-                    <span class="line js-line" :style="{width: audioVolumePos.w + 'px' || ''}"></span>
+                    <span class="line js-line" :style="{width: audioVolumePos.w || ''}"></span>
                 </div>
             </div>
         </div>
@@ -144,14 +144,14 @@ export default {
             audioTimePos: {
                 l: -4,
                 t: -6,
-                r: 372,
+                r: null,
                 b: -4,
                 w: 0
             },
             audioVolumePos: {
                 l: -4,
                 t: -6,
-                r: 84,
+                r: null,
                 b: -4,
                 w: 20
             },
@@ -188,18 +188,20 @@ export default {
             window.electron && window.electron.thumbarButtons({ value: !value })
         })
         onMounted(() => {
+            let isResize = false
             drag({
                 obj: [progressTimeDom.value],
                 site: state.audioTimePos,
                 fn (obj) {
                     audio.pause()
+                    audio.currentTime = parseInt(obj.left / progressTimeDom.value.parentNode.offsetWidth * state.playData.duration)
+                    state.playData.currentTime = audio.currentTime
                     state.isMove = true
-                    audio.currentTime = obj.left / progressTimeDom.value.parentNode.offsetWidth * state.playData.duration
-                    state.playData.currentTime = parseInt(audio.currentTime)
                     setTimer(obj)
                 },
                 end (obj) {
                     !state.playData.paused && audio.src && audio.play()
+                    isResize = false
                     setTimeout(() => {
                         state.isMove = false
                     }, 300)
@@ -213,6 +215,7 @@ export default {
                     setVolume(obj)
                 },
                 end (obj) {
+                    isResize = false
                     setTimeout(() => {
                         state.isMove = false
                     }, 300)
@@ -232,6 +235,15 @@ export default {
                 if (playListDom !==null && !playListDom.contains(e.target)) {
                     state.showList = false
                 }
+            })
+            window.addEventListener('resize', (e) => {
+                if (isResize) return
+                isResize = true
+                console.log(parseInt(state.audioTimePos.w), parseInt(state.audioVolumePos.w), 'audioTimePos');
+                progressTimeDom.value.style.left = parseInt(state.audioTimePos.w) / progressTimeDom.value.parentNode.offsetWidth * 100 + '%'
+                progressVolumeDom.value.style.left = parseInt(state.audioVolumePos.w) / progressVolumeDom.value.parentNode.offsetWidth * 100 + '%'
+                state.audioTimePos.w =  parseInt(state.audioTimePos.w) / progressTimeDom.value.parentNode.offsetWidth * 100 + '%'
+                state.audioVolumePos.w = parseInt(state.audioVolumePos.w) / progressVolumeDom.value.parentNode.offsetWidth * 100 + '%'
             })
             window.electronAPI && window.electronAPI.onPrevPlay((e, data) => {
                 playPrev()
@@ -369,9 +381,9 @@ export default {
         }
         const setTimer = (obj) => {
             if (obj.offsetX) {
-                progressTimeDom.value.style.left = obj.offsetX - 3 + 'px'
+                progressTimeDom.value.style.left = obj.offsetX + 'px'
             }
-            state.audioTimePos.w = obj.left || obj.offsetX || 0
+            state.audioTimePos.w = (obj.left || obj.offsetX || 0 ) + 'px'
         }
         const setVolume = (obj) => {
             if (!progressVolumeDom.value && audio !== null) return
@@ -395,7 +407,7 @@ export default {
             }
             audio.muted = false
             progressVolumeDom.value.style.left = left + 'px'
-            state.audioVolumePos.w = left
+            state.audioVolumePos.w = left  + 'px'
             state.progressPsition = left > 8 ? left - 8 : left
             audio.volume = volume
             state.playData.volume = volume

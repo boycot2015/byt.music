@@ -7,7 +7,7 @@ export const drag = (options) => {
     var site = options.site || {}
     var fn = options.fn
     // var cancelElem = options.cancelElem
-    var dmW = document.documentElement.clientWidth || document.body.clientWidth
+    // var dmW = document.documentElement.clientWidth || document.body.clientWidth
     var dmH = document.documentElement.clientHeight || document.body.clientHeight
     site = site || {}
     obj = obj[0]
@@ -15,11 +15,11 @@ export const drag = (options) => {
     if (!target) return
     var adsorb = site.n || 0 // 磁性吸附的吸附范围
     var l = site.l || 0
-    var r = (site.r || site.r === 0) ? site.r : dmW - target.offsetWidth
+    var r = (site.r || site.r === 0) ? site.r : target.parentNode.offsetWidth - 8
     var t = site.t || 0
     var b = (site.b || site.b === 0) ? site.b : dmH - target.offsetHeight
     obj.onmousedown = function (ev) {
-        r = (site.r || site.r === 0) ? site.r : dmW - target.offsetWidth
+        r = (site.r || site.r === 0) ? site.r : target.parentNode.offsetWidth - 8
         b = (site.b || site.b === 0) ? site.b : dmH - target.offsetHeight
         var oEvent = ev || event
         var siteX = oEvent.clientX - target.offsetLeft

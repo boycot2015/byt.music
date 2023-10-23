@@ -28,7 +28,7 @@
                         class="content-item flexbox-h just-b">
                             <div class="left flex-1">
                                 <div class="cate-title flexbox-h">
-                                    <i class="icon-music-emoji"></i>
+                                    <!-- <i class="icon-music-emoji"></i> -->
                                     <p class="name">{{tabData.categories[index]}}</p>
                                 </div>
                             </div>

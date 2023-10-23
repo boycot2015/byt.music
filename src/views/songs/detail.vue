@@ -1,5 +1,5 @@
 <template>
-<div class="song-detail active flexbox-v">
+<div class="song-detail active flexbox-v" v-loading="{fullscreen: true, pageLoading }">
     <div class="scroll-view" ref="scrollDom">
         <div class="top flexbox-h just-c">
             <div class="handler" :class="{'active': !playData.paused}">
@@ -150,6 +150,7 @@ export default {
             limit: 50,
             offset: 0,
             loading: true,
+            pageLoading: true,
             scrollTop: 0,
             clientHeight: 0,
             currLyric: detailStore.currLyric || {}, // 当前播放的歌词
@@ -185,6 +186,8 @@ export default {
             lyricScrollDom.value.scrollTop = 0
             scrollDom.value.scrollTop = 0
             state.offset = 0
+            state.currLyric = state.lyricList[0]
+            cancelAnimationFrame(lyricScrollDom.value.timer)
         })
         watch(() => detailStore.currLyric, (value) => {
             state.currLyric = value
@@ -194,7 +197,7 @@ export default {
                         const offsetHeight = lyricScrollDom.value.children[0].children[0].offsetHeight
                         animate(lyricScrollDom.value, offsetHeight * (index - 5), 'scrollTop', 1)
                     } else {
-                        clearInterval(lyricScrollDom.value.timer)
+                        cancelAnimationFrame(lyricScrollDom.value.timer)
                     }
                 }
             })
@@ -224,8 +227,9 @@ export default {
         })
         // methods
         const getData = async (params) => {
+            state.loading = true
+            state.pageLoading = true
             if (state.offset > 0) {
-                state.loading = true
                 await store.dispatch('detail/getCommentByPage', params).then(res => {
                     state.loading = false
                 })
@@ -237,6 +241,7 @@ export default {
                 lyricScrollDom.value.scrollTop = 0
                 scrollDom.value.scrollTop = 0
                 state.loading = false
+                state.pageLoading = false
             })
         }
         const onItemlistClick = (item, type) => {

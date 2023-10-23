@@ -138,7 +138,7 @@ const routes = [
                 id: 5,
                 name: 'collect',
                 path: '/myMusic/collect',
-                component: () => import('@/views/myMusic/collect.vue'),
+                component: () => import('@/views/myMusic/index.vue'),
                 meta: {
                     title: '我的收藏',
                     login: true,

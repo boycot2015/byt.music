@@ -105,7 +105,6 @@ export default {
                         order.map(key => {
                             const obj = {}
                             const moreText = playlistRes.result[key].moreText
-                            obj.data = playlistRes.result[key]
                             if (moreText) {
                                 if (moreText.includes('个')) {
                                     obj.title = moreText.split('个')[1]
@@ -114,6 +113,7 @@ export default {
                                     obj.title = moreText.split('首')[1]
                                     obj.count = moreText.split('首')[0].slice(4)
                                 }
+                                obj.data = playlistRes.result[key]
                                 arr.push(obj)
                             }
                             commit('setData', { searchData: arr })

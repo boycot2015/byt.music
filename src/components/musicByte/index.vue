@@ -7,16 +7,11 @@
     </div>
 </template>
 <style lang="less">
-/* body {
-  font-family: arial, sans-serif;
-  background-color: #000;
-  width: 100%;
-  height: calc(100vh);
-  margin: 0;
-} */
 #music-bar-canvas {
-    width: 350px;
-    height: 50px;
+    width: 360px;
+    height: 80px;
+    padding: 0 10px;
+    border-bottom: 1px solid var(--primary-color);
 }
 .equalizer {
   display: flex;
@@ -179,8 +174,8 @@ export default {
             var canvas = document.getElementById('music-bar-canvas')
             var cwidth = canvas.width
             var cheight = canvas.height - 2
-            var meterWidth = 4 // 频谱条宽度
-            var gap = 2 // 频谱条间距
+            var meterWidth = 8 // 频谱条宽度
+            var gap = 4 // 频谱条间距
             var capHeight = 2
             const root = document.querySelector(':root')
             let barColor = root !== null && root.getAttribute('style')

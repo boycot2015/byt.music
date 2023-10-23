@@ -21,7 +21,7 @@
     </div>
     <div class="search-box flexbox-h" @dblclick.prevent @dblclick.stop>
         <input type="text" v-model="searchForm.key" @keyup="onSearch" :placeholder="searchForm.placeholder">
-        <div class="input-icon icon-music-search" ></div>
+        <div class="input-icon icon-music-search" @click="onSearch({keyCode: 13})"></div>
     </div>
     <div class="flexbox-h" @dblclick.prevent @dblclick.stop>
         <div class="user-info flex-4 tc just-c flexbox-h">
@@ -116,6 +116,9 @@ export default {
         }
         onMounted(() => {
             getWeather()
+            setInterval(() => {
+                getWeather()
+            }, 15 * 1000)
             document.addEventListener('click', (e) => {
                 if (loginForm.value !== null && !loginForm.value.$el.contains(e.target)) {
                     state.showLogin = false

@@ -26,6 +26,7 @@ v-if="(item.list && item.list.length) || item.img1v1Url || item.coverImgUrl || i
                 background: `url(${item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl
             }) no-repeat center/cover`}" -->
             <!-- <img :src="item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl" alt=""> -->
+            <!-- v-if="(item.type == 0 || category == 3) && item.copywriter" -->
             <span class="copy-writer" v-if="(item.type == 0 || category == 3) && item.copywriter">{{item.copywriter}}</span>
             <div class="right" v-if="item.playCount || item.playTime">
                 <span class="icon" v-if="type !== 4" :class="`icon-music-${item.type == 5 || type == 3 ? 'video':'erphone'}`"></span>

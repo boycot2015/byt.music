@@ -107,8 +107,7 @@
         </div>
         <div
         class="list-form"
-        v-if="type !== 1004 && type !== 1014"
-        v-loading="loading">
+        v-if="type !== 1004 && type !== 1014">
             <div class="list-header flexbox-h just-b" v-if="!isDaily">
                 <template v-if="!router.currentRoute.value.query.type">
                     <div class="order tl">
@@ -135,8 +134,8 @@
                     <div class="flex-1 title tr pdr10">排序<i class="icon-music-sort"></i></div>
                 </template>
             </div>
-            <div class="wrap">
-                <ul class="music-list js-footer-music-list song-list">
+            <div class="wrap" v-loading="loading">
+                <ul class="music-list js-footer-music-list song-list" v-if="coverDetail.tracks && coverDetail.tracks.length">
                     <list
                     @dblclick="onListItemdbClick(item)"
                     @click="() => activeIndex = index"
@@ -222,14 +221,14 @@ export default {
             // console.log(router, 'playlistRes')
             let params = { id: state.id, isDaily: state.isDaily, type: state.type }
             if (state.keywords) {
-                params = { keywords: state.keywords, limit: state.limit, offset: state.offset, type: 1018 }
+                params = { keywords: state.keywords, limit: 100, offset: 0, type: 1018 }
             }
             getData(params)
             document.querySelector('.music-box .main').addEventListener('scroll', function (e) {
                 // 获取定义好的scroll盒子
                 // const el = scrollDom.value
                 const condition = this.scrollHeight - this.scrollTop <= this.clientHeight
-                if (condition && !state.loading && router.currentRoute.value.query.keywords && state.coverDetail.more) {
+                if (condition && !state.loading && !router.currentRoute.value.query.keywords && state.coverDetail.more) {
                     state.offset++
                     getData({ keywords: state.keywords, offset: state.offset, limit: state.limit, type: state.type })
                 }
@@ -256,7 +255,10 @@ export default {
             getData({ id, limit: 30, offset: 1, type: 1 })
         })
         watch(() => router.currentRoute.value.query.keywords, (keywords) => {
-            getData({ keywords, limit: 30, offset: 1, type: 1018 })
+            state.keywords = keywords
+            state.loading = true
+            state.pageLoading = true
+            getData({ keywords, limit: 100, offset: 0, type: 1018 })
         })
         watch(() => listStore.tracks, (value) => {
             if (state.offset > 1) {
@@ -348,6 +350,7 @@ export default {
             }
             state.type = type
             state.offset = 1
+            state.loading = true
             getData({ keywords: state.keywords, offset: state.offset, limit: state.limit, type })
         }
         return {
