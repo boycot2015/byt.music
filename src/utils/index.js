@@ -122,6 +122,7 @@ export const filterTime = (timeStr) => {
 // 本地存储
 export const store = {
     state: {},
+    prefix: 'cloud_music_',
     getters: () => {
         return this.state
     },
@@ -130,7 +131,7 @@ export const store = {
          * @param {*} key 存储的键
          */
     get (key) {
-        const data = JSON.parse(localStorage.getItem(key))
+        const data = JSON.parse(localStorage.getItem(this.prefix + key))
         if (data != null) {
             if (data.expirse != null && data.expirse < new Date().getTime()) {
                 this.remove()
@@ -148,14 +149,14 @@ export const store = {
          */
     set (key, value, time = new Date().getTime() + 24 * 60 * 60 * 1000) {
         const data = { value, expirse: new Date(time).getTime() }
-        localStorage.setItem(key, JSON.stringify(data))
+        localStorage.setItem(this.prefix + key, JSON.stringify(data))
     },
     /**
          * 移除本地存储
          * @param {*} key 存储的键
          */
     remove (key) {
-        window.localStorage.removeItem(key)
+        window.localStorage.removeItem(this.prefix + key)
     },
     action: {},
     mutations: {}

@@ -17,7 +17,7 @@
             </div>
             <!-- 音乐跳动 -->
             <music-byte class="music-dance"></music-byte>
-            <div class="lyric-text-content">
+            <div class="lyric-text-content" v-loading="loadingLyirc">
                 <div class="info">
                     <div class="song-info flexbox-h">
                         <p class="name">
@@ -33,7 +33,7 @@
                     </div>
                     <i class="icon-music-down icon-minify" @click="onTurnBack"></i>
                 </div>
-                <div class="wrap" ref="lyricScrollDom">
+                <div class="wrap" ref="lyricScrollDom" v-show="!loadingLyirc">
                     <div class="lyric-text">
                         <template v-if="lyricList && lyricList.length">
                             <p
@@ -151,6 +151,7 @@ export default {
             offset: 0,
             loading: true,
             pageLoading: true,
+            loadingLyirc: true,
             scrollTop: 0,
             clientHeight: 0,
             currLyric: detailStore.currLyric || {}, // 当前播放的歌词
@@ -186,15 +187,19 @@ export default {
             lyricScrollDom.value.scrollTop = 0
             scrollDom.value.scrollTop = 0
             state.offset = 0
-            state.currLyric = state.lyricList[0]
-            cancelAnimationFrame(lyricScrollDom.value.timer)
+            state.loadingLyirc = true
+            setTimeout(() => {
+                state.loadingLyirc = false
+                state.currLyric = state.lyricList[0]
+                cancelAnimationFrame(lyricScrollDom.value.timer)
+            }, 200)
         })
         watch(() => detailStore.currLyric, (value) => {
             state.currLyric = value
             state.lyricList.map((el, index) => {
                 if (value.time === el.time) {
                     if (index > 5 && index < state.lyricList.length - 5) {
-                        const offsetHeight = lyricScrollDom.value.children[0].children[0].offsetHeight
+                        const offsetHeight = lyricScrollDom.value.children[0].children[0].offsetHeight + 10
                         animate(lyricScrollDom.value, offsetHeight * (index - 5), 'scrollTop', 1)
                     } else {
                         cancelAnimationFrame(lyricScrollDom.value.timer)
@@ -242,6 +247,7 @@ export default {
                 scrollDom.value.scrollTop = 0
                 state.loading = false
                 state.pageLoading = false
+                state.loadingLyirc = false
             })
         }
         const onItemlistClick = (item, type) => {

@@ -9,12 +9,12 @@
                 <h3 class="logo-title">{{headerData.title}}</h3>
             </router-link>
         </div>
-        <div class="back-forward tc flexbox-h">
+        <div class="back-forward tc flexbox-h" @dblclick.stop>
             <div class="back-btn" @click="goBack">&lt;</div>
             <div class="forward-btn" @click="goForward">&gt;</div>
         </div>
     </div>
-    <div class="weather flexbox-h just-b" style="cursor: pointer;" v-if="weathers.location" @click="() => $refs.weatherBox.showDialog()" @dblclick.prevent @dblclick.stop>
+    <div class="weather flexbox-h just-b" style="cursor: pointer;" v-if="weathers.location" @click="() => $refs.weatherBox.showDialog()" @dblclick.prevent >
         <div class="city">{{weathers.location.name}}</div>
         <div class="text" v-if="weathers.now" style="margin:0 5px;">{{weathers.now.text}}</div>
         <div class="temperature" v-if="weathers.now">{{weathers.now.temperature}}℃</div>
@@ -23,9 +23,9 @@
         <input type="text" v-model="searchForm.key" @keyup="onSearch" :placeholder="searchForm.placeholder">
         <div class="input-icon icon-music-search" @click="onSearch({keyCode: 13})"></div>
     </div>
-    <div class="flexbox-h" @dblclick.prevent @dblclick.stop>
+    <div class="flexbox-h" @dblclick.prevent>
         <div class="user-info flex-4 tc just-c flexbox-h">
-            <div class="wrap flexbox-h flex-1" @click.stop="showLogin = !showLogin">
+            <div class="wrap flexbox-h flex-1" @dblclick.stop @click.stop="showLogin = !showLogin">
                 <div class="avatar ">
                     <img :src="headerData.avatar" alt="">
                 </div>
@@ -38,15 +38,17 @@
             <user-info ref="userDialog" class="user-box" @mousedown.stop v-if="showLogin && hasLogin" @on-logout="onLogOut"></user-info>
             <!-- <span class="text vip-text">{{headerData.vipTxt}}</span> -->
             <!--  @click="showDialog"  -->
-            <div class="text icon theme icon-music-clothes" @click="onThemeChange"></div>
-            <div class="text icon message icon-music-msg"></div>
-            <div class="text icon setting icon-music-setting"></div>
+            <div class="flexbox-h" @dblclick.stop>
+                <div class="text icon theme icon-music-clothes" @click="onThemeChange"></div>
+                <div class="text icon message icon-music-msg"></div>
+                <div class="text icon setting icon-music-setting"></div>
+            </div>
         </div>
-        <div class="operation flex-1 align-c flexbox-h tc just-c">
+        <div class="operation flex-1 align-c flexbox-h tc just-c" @dblclick.stop>
             <i class="icon-music flex-1 icon-music-min-box js-music-min-box" title="小窗口显示" @click="onMinifty(true)"></i>
             <i class="full-sreen-btn flex-1 fa icon-music-minus js-music-minus" title="最小化窗口" @click="onMinifty()"></i>
-            <i class="min-btn flex-1 icon-music-rectangle js-music-rectangle" title="全屏" v-if="ismini" @click="onExtend"></i>
-            <i class="full-sreen-btn flex-1 icon-music-min js-music-min" title="退出全屏" v-else @click="onExtend"></i>
+            <i class="min-btn flex-1 icon-music-rectangle js-music-rectangle" title="全屏" v-if="ismini" @click.stop="onExtend"></i>
+            <i class="full-sreen-btn flex-1 icon-music-min js-music-min" title="退出全屏" v-else @click.stop="onExtend"></i>
             <i class="close-btn flex-1 icon-music-close js-music-close" title="关闭窗口" @click="onBoxHide"></i>
         </div>
     </div>
@@ -166,8 +168,8 @@ export default {
         }
         const onExtend = () => {
             state.ismini = !state.ismini
+            if (window.electron) window.electron.toggleFullScreen(state.ismini)
             emit('on-extend', !state.ismini)
-            if (window.electron) window.electron.toggleFullScreen(!state.ismini)
         }
         const onLoginFormClose = (val) => {
             state.showLogin = false
