@@ -17,6 +17,11 @@ import MessageBox from './components/MessageBox'
 // 引入自定义toast组件
 import showToast from './components/toast/index'
 import components from './components/index'
+
+// Plugin
+// import VueCssDoodle from '@luxdamore/vue-css-doodle'
+// import '@luxdamore/vue-css-doodle/dist/VueCssDoodle.css'
+
 const VueInstance = createApp(App)
 Object.keys(directives).forEach(k => {
     VueInstance.directive(k, directives[k])
@@ -26,6 +31,8 @@ Object.keys(components).forEach(k => {
 })
 VueInstance.config.globalProperties.$http = $http
 VueInstance.config.globalProperties.$baseUrl = $baseUrl
+VueInstance.config.ignoredElements = ['css-doodle']
+// VueInstance.use(VueCssDoodle)
 VueInstance.use(api)
     // .use(ElementPlus)
     .use(MessageBox)

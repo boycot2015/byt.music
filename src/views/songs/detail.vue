@@ -24,6 +24,7 @@
                             {{playData.name}}
                             <span class="level red bd-red pad2 font12">{{playData.level === 'exhigh' ?'标准音质':'极高音质'}}</span>
                             <span v-if="playData.type" class="type red bd-red pad2 font12">{{playData.type.toUpperCase()}}</span>
+                            <span class="type red bd-red pad2 font12" @click="togglePlayLyirc" style="margin-left: 10px;cursor: pointer;">歌词视效</span>
                         </p>
                     </div>
                     <div class="single-info flexbox-h">
@@ -88,6 +89,7 @@
                 </div>
             </div>
         </div>
+        <lyricAnimation ref="lyricAnimationRef" v-if="!pageLoading" @dblclick.stop></lyricAnimation>
     </div>
     <!-- v-if="scrollTop > clientHeight"  -->
     <to-top selector=".scroll-view"></to-top>
@@ -114,9 +116,12 @@ import {
 } from 'vue-router'
 import { animate } from '@/utils'
 import Comment from '@/views/components/comment'
+import lyricAnimation from '@/components/lyricAnimation'
+
 export default {
     components: {
-        Comment
+        Comment,
+        lyricAnimation
     },
     setup (props, { emit }) {
         const store = useStore()
@@ -125,6 +130,7 @@ export default {
         const router = useRouter()
         const lyricScrollDom = ref(null)
         const scrollDom = ref(null)
+        const lyricAnimationRef = ref(null)
         const state = reactive({
             lyricList: [],
             data: {
@@ -151,7 +157,7 @@ export default {
             offset: 0,
             loading: true,
             pageLoading: true,
-            loadingLyirc: true,
+            loadingLyirc: false,
             scrollTop: 0,
             clientHeight: 0,
             currLyric: detailStore.currLyric || {}, // 当前播放的歌词
@@ -277,13 +283,18 @@ export default {
         const scrollToTop = () => {
             scrollDom.value.scrollTop = 0
         }
+        const togglePlayLyirc = () => {
+            lyricAnimationRef.value.togglePlay()
+        }
         return {
             ...toRefs(state),
             router,
             lyricScrollDom,
             scrollDom,
+            lyricAnimationRef,
             onTurnBack,
             onItemlistClick,
+            togglePlayLyirc,
             scrollToTop
         }
     }
