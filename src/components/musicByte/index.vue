@@ -9,36 +9,9 @@
 <style lang="less">
 #music-bar-canvas {
     width: 360px;
-    height: 80px;
+    height: 60px;
     padding: 0 10px;
     border-bottom: 1px solid var(--primary-color);
-}
-.equalizer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100px;
-  margin-top: 0;
-}
-
-.equalizer-bar {
-  width: 2px;
-  margin: 0 2px;
-  display: flex;
-  flex-direction: column-reverse;
-}
-.equalizer-bar span {
-  display: block;
-  height: 2px;
-  border-radius: 0x;
-  width: 100%;
-  margin: 0;
-  background-color: #FFF;
-  transition: all .2s ease;
-  opacity: 1;
-}
-.equalizer-bar span {
-  background: @primary;
 }
 </style>
 

@@ -141,7 +141,7 @@ export default {
         })
         const onMinifty = (minify) => {
             if (minify) window.electron && window.electron.toggleMini({ value: true })
-            if (window.electron) window.electron.toggleMinMax(true)
+            if (window.electron) return window.electron.toggleMinMax(true)
             emit('on-minify', true)
         }
         const onBoxHide = () => {
