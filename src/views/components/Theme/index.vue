@@ -1,5 +1,5 @@
 <template>
-    <div class="byt-theme theme-dialog">
+    <div class="byt-theme theme-dialog" @click.stop>
         <div class="theme-dialog-title">
             <div class="icon-close" @click="toggleModal">×</div>
             选择主题

@@ -191,7 +191,7 @@ export default {
             let isResize = false
             drag({
                 obj: [progressTimeDom.value],
-                site: state.audioTimePos,
+                site: { ...state.audioTimePos, r: progressTimeDom.value.parentNode.offsetWidth - 8 },
                 fn (obj) {
                     audio.pause()
                     audio.currentTime = parseInt(obj.left / progressTimeDom.value.parentNode.offsetWidth * state.playData.duration)
@@ -209,7 +209,7 @@ export default {
             })
             drag({
                 obj: [progressVolumeDom.value],
-                site: state.audioVolumePos,
+                site: { ...state.audioVolumePos, r: progressVolumeDom.value.parentNode.offsetWidth - 8 },
                 fn (obj) {
                     state.isMove = true
                     setVolume(obj)
@@ -239,7 +239,7 @@ export default {
             window.addEventListener('resize', (e) => {
                 if (isResize) return
                 isResize = true
-                console.log(parseInt(state.audioTimePos.w), parseInt(state.audioVolumePos.w), 'audioTimePos');
+                // console.log(parseInt(state.audioTimePos.w), parseInt(state.audioVolumePos.w), 'audioTimePos');
                 progressTimeDom.value.style.left = parseInt(state.audioTimePos.w) / progressTimeDom.value.parentNode.offsetWidth * 100 + '%'
                 progressVolumeDom.value.style.left = parseInt(state.audioVolumePos.w) / progressVolumeDom.value.parentNode.offsetWidth * 100 + '%'
                 state.audioTimePos.w =  parseInt(state.audioTimePos.w) / progressTimeDom.value.parentNode.offsetWidth * 100 + '%'
@@ -403,14 +403,16 @@ export default {
             if (left === 0) {
                 state.audioVolumePos.w = 0
                 progressVolumeDom.value.style.left = '-8px'
+                state.audioVolumePos.w = '0px'
                 return
             }
-            audio.muted = false
+            audio.muted = volume < 0.1
             progressVolumeDom.value.style.left = left + 'px'
             state.audioVolumePos.w = left  + 'px'
             state.progressPsition = left > 8 ? left - 8 : left
             audio.volume = volume
             state.playData.volume = volume
+            state.playData.muted = volume < 0.1
             // console.log(audio.volume, state.progressPsition, 'setVolume')
             store.commit('setAudio', { volume })
         }

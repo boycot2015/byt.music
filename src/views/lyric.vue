@@ -48,10 +48,7 @@ export default {
         .content {
             padding: 0 20px 20px;
         }
-        // /deep/.close {
-        //     display: none;
-        // }
-        /deep/.operate-icon {
+        ::v-deep(.operate-icon) {
             text-align: center;
             font-size: 16px;
             user-select: none;

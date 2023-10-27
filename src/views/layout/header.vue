@@ -14,7 +14,7 @@
             <div class="forward-btn" @click="goForward">&gt;</div>
         </div>
     </div>
-    <div class="weather flexbox-h just-b" style="cursor: pointer;" v-if="weathers.location" @click="() => $refs.weatherBox.showDialog()" @dblclick.prevent >
+    <div class="weather flexbox-h just-b" style="cursor: pointer;" v-if="weathers.location" @dblclick.prevent >
         <div class="city">{{weathers.location.name}}</div>
         <div class="text" v-if="weathers.now" style="margin:0 5px;">{{weathers.now.text}}</div>
         <div class="temperature" v-if="weathers.now">{{weathers.now.temperature}}℃</div>
@@ -38,7 +38,7 @@
             <user-info ref="userDialog" class="user-box" @mousedown.stop v-if="showLogin && hasLogin" @on-logout="onLogOut"></user-info>
             <!-- <span class="text vip-text">{{headerData.vipTxt}}</span> -->
             <!--  @click="showDialog"  -->
-            <div class="flexbox-h" @dblclick.stop>
+            <div class="flexbox-h" @dblclick.stop @click.stop>
                 <div class="text icon theme icon-music-clothes" @click="onThemeChange"></div>
                 <div class="text icon message icon-music-msg"></div>
                 <div class="text icon setting icon-music-setting"></div>
@@ -52,7 +52,6 @@
             <i class="close-btn flex-1 icon-music-close js-music-close" title="关闭窗口" @click="onBoxHide"></i>
         </div>
     </div>
-    <weather ref="weatherBox" />
 </div>
 </template>
 
@@ -75,7 +74,6 @@ import {
 } from 'vuex'
 import loginForm from '@/views/components/login'
 import userInfo from '@/views/components/userInfo'
-import { changeTheme } from '@/utils'
 import { apiUrl } from '@/api/baseUrl'
 import axios from '@/api/axios'
 export default {
@@ -142,8 +140,8 @@ export default {
             }
         })
         const onMinifty = (minify) => {
-            if (minify) return window.electron && window.electron.toggleMini({ value: true })
-            if (window.electron) return window.electron.toggleMinMax(true)
+            if (minify) window.electron && window.electron.toggleMini({ value: true })
+            if (window.electron) window.electron.toggleMinMax(true)
             emit('on-minify', true)
         }
         const onBoxHide = () => {
@@ -207,12 +205,7 @@ export default {
             })
         }
         const onThemeChange = (e) => {
-            if (window.electron) {
-                emit('on-theme-change', true)
-                return
-            }
-            changeTheme(e)
-            store.dispatch('themeChanged', !store.state.themeChanged)
+            emit('on-theme-change', true)
         }
         return {
             router,

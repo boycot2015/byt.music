@@ -1,5 +1,5 @@
 <template>
-<div class="song-detail active flexbox-v" v-loading="{fullscreen: true, pageLoading }">
+<div class="song-detail flexbox-v" v-loading="{fullscreen: true, pageLoading }">
     <div class="scroll-view" ref="scrollDom">
         <div class="top flexbox-h just-c">
             <div class="handler" :class="{'active': !playData.paused}">
@@ -196,12 +196,12 @@ export default {
             state.loadingLyirc = true
             setTimeout(() => {
                 state.loadingLyirc = false
-                state.currLyric = state.lyricList[0]
+                state.currLyric = state.lyricList[0] || {}
                 cancelAnimationFrame(lyricScrollDom.value.timer)
             }, 200)
         })
         watch(() => detailStore.currLyric, (value) => {
-            state.currLyric = value
+            state.currLyric = value || {}
             state.lyricList.map((el, index) => {
                 if (value.time === el.time) {
                     if (index > 5 && index < state.lyricList.length - 5) {

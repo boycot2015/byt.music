@@ -146,7 +146,7 @@
         <!-- <weather ref="weatherBox" /> -->
         <!-- 自定义右键菜单 -->
         <context-menu @on-menu-click="(type) => type === 'setting' && (showThemeDialog = true)"></context-menu>
-        <div class="change-theme-btn" :class="{hide: showThemeDialog, show: !showThemeDialog}" @dblclick.stop="changeTheme" ref="dragthemeBox" @click.stop="onThemeShow"></div>
+        <!-- <div class="change-theme-btn" :class="{hide: showThemeDialog, show: !showThemeDialog}" @dblclick.stop="changeTheme" ref="dragthemeBox" @click.stop="onThemeShow"></div> -->
     </template>
 </div>
 </template>
@@ -351,7 +351,7 @@ export default {
             })
             drag({
                 obj: [progressVolumeDom.value],
-                site: state.audioVolumePos,
+                site: { ...state.audioVolumePos, r: 40 },
                 fn (obj) {
                     state.isMove = true
                     setVolume(obj)
@@ -372,10 +372,6 @@ export default {
                     obj: [dragMiniBox.value],
                     cancelElem: ['.js-mini-music-list', '.volume']
                 })
-                // drag({
-                //     obj: [weatherBox.value.$el],
-                //     target: [weatherBox.value.$el]
-                // })
             })
             audio = document.getElementById('play-audio')
             textMove(textMoveDom.value)
@@ -565,6 +561,7 @@ export default {
             !state.isMove && setVolume(e)
         }
         const onThemeShow = () => {
+            debugger
             state.showThemeDialog = !state.showThemeDialog
         }
         const toggleLyirc = (val) => {

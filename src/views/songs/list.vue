@@ -135,7 +135,7 @@
                 </template>
             </div>
             <div class="wrap" v-loading="loading">
-                <ul class="music-list js-footer-music-list song-list" v-if="coverDetail.tracks && coverDetail.tracks.length">
+                <ul class="music-list js-footer-music-list song-list" v-if="!loading && coverDetail.tracks && coverDetail.tracks.length">
                     <list
                     @dblclick="onListItemdbClick(item)"
                     @click="() => activeIndex = index"
@@ -152,6 +152,7 @@
                     :count="coverDetail.count"
                     :key="index"></list>
                 </ul>
+                <div v-else-if="!loading" class="no-data flexbox-h just-c align-c" style="padding: 50px 0;">暂无数据~</div>
             </div>
         </div>
         <video-temp-tab1
@@ -276,7 +277,9 @@ export default {
         const getData = async (params) => {
             state.loading = true
             await store.dispatch('list/getData', { ...params, offset: state.offset * state.limit }).then(() => {
-                state.loading = false
+                setTimeout(() => {
+                    state.loading = false
+                }, 500)
                 state.pageLoading = false
             })
         }

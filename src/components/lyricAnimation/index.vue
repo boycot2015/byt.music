@@ -5,9 +5,9 @@
             <css-doodle v-for="item in list" v-show="item.id === current.id" :key="item.id" :click-to-update="!!current['click-to-update']">
                 {{ item.code }}
             </css-doodle>
+            <i class="close icon-music-close" @click.stop="onClose"></i>
             <div class="lyric" ref="lyricBox" :class="{'paused': !!playData.paused, 'load': !isChange && !current.style.width, 'loadV': !isChange && current.style.width }" :style="{...current.style, ...currentlyric.style}">{{ currentlyric.text }}</div>
-            <div class="right" :class="{'is-expand': isExpand}">
-                <i class="close icon-music-close" @click.stop="onClose"></i>
+            <div class="bars flexbox-v aling-c just-c" :class="{'is-expand': isExpand}">
                 <i class="expand icon-music-left" :style="{color: current.color}" :class="{'icon-music-right': !isExpand}" @click="isExpand = !isExpand"></i>
                 <div class="list">
                     <div class="list-item" @click="onItemClick(item)" :class="{'is-active': item.id === current.id}" v-for="item in list" :key="item.id">
@@ -64,7 +64,7 @@ css-doodle {
         -webkit-text-fill-color: transparent;
         background-clip: text;
         background-size: 0 100%;
-        text-shadow: 3px 0px 5px var(--c-999);
+        // text-shadow: 3px 0px 5px var(--c-999);
         &.load {
             background-size:100% 100%;
             // cubic-bezier(0, 0.38, 0.28, 0.1)
@@ -97,39 +97,46 @@ css-doodle {
         }
     }
     .close {
+        right: 12px;
+        top: 10px;
         cursor: pointer;
-        position: relative;
+        position: absolute;
         display: block;
         text-align: center;
         margin-bottom: 10px;
+        z-index: 999;
+        transition: all .3s;
+        &:hover {
+            transform: rotateZ(90deg);
+        }
         &::after {
             color: #ccc;
             font-size: 20px;
         }
     }
-    .expand {
-        position: absolute;
-        left: -31px;
-        top: 50%;
-        cursor: pointer;
-        color: #ccc;
-        &::after {
-            font-size: 30px;
-        }
-    }
-    .right {
+    .bars {
         position: absolute;
         top: 0;
         right: 0;
         width: 48px;
         height: 100%;
-        padding-top: 10px;
+        padding-top: 20px;
         box-sizing: border-box;
-        transform: translateX(0);
+        transform: translateX(48px);
         transition: all ease-in-out .4s;
         background-color: rgba(0, 0, 0, 0.6);
         &.is-expand {
-            transform: translateX(48px);
+            transform: translateX(0);
+        }
+    }
+    .expand {
+        position: absolute;
+        right: 48px;
+        top: 50%;
+        cursor: pointer;
+        color: #ccc;
+        &::after {
+            font-size: 30px;
         }
     }
     .list {
@@ -390,69 +397,69 @@ export default {
                             filter: drop-shadow(0 0 10px #efefc5);
                             -webkit-box-reflect: initial;
                         }`
+                },
+                {
+                    id: 2,
+                    name: '光球流动',
+                    style: { color: '#fff', 'font-family': '宋体', fontSize: '24px', top: '10%', width: '32px' },
+                    code: `:doodle {
+                    @grid: 10 / 10vmin;
+                    background: #0a0c27;
+                    filter: blur(.1px);
+                    transform: scale(1)
                 }
-                // {
-                //     id: 2,
-                //     name: '光球流动',
-                //     style: { color: '#fff', 'font-family': '宋体', fontSize: '24px', top: '10%', width: '32px' },
-                //     code: `:doodle {
-                //     @grid: 10 / 10vmin;
-                //     background: #0a0c27;
-                //     filter: blur(.1px);
-                //     transform: scale(1)
-                // }
 
-                // @random {
-                //     border: 2px solid hsla(158, 70%, 68%, @rand(0.3));
-                // }
+                @random {
+                    border: 2px solid hsla(158, 70%, 68%, @rand(0.3));
+                }
 
-                // @random {
-                //     filter: blur(1.5px);
-                // }
+                @random {
+                    filter: blur(1.5px);
+                }
 
-                // @random {
-                //     animation: move 5s linear alternate infinite;
-                // }
+                @random {
+                    animation: move 5s linear alternate infinite;
+                }
 
-                // @random(0.1) {
-                //     animation: flicker 5s ease infinite;
-                // }
+                @random(0.1) {
+                    animation: flicker 5s ease infinite;
+                }
 
-                // @keyframes move {
-                //     0% {
-                //     transform:  translate(
-                //     @rand(-50%, 50%), @rand(-50%, 50%)
-                //     );
-                //     }
+                @keyframes move {
+                    0% {
+                    transform:  translate(
+                    @rand(-50%, 50%), @rand(-50%, 50%)
+                    );
+                    }
 
-                //     100% {
-                //     transform:  translate(
-                //     @rand(-50%, 50%), @rand(-50%, 50%)
-                //     );
-                //     }
-                // }
+                    100% {
+                    transform:  translate(
+                    @rand(-50%, 50%), @rand(-50%, 50%)
+                    );
+                    }
+                }
 
-                // @keyframes flicker {
-                //     0% {
-                //     opacity: 1;
-                //     }
+                @keyframes flicker {
+                    0% {
+                    opacity: 1;
+                    }
 
-                //     50% {
-                //     opacity: 0;
-                //     }
+                    50% {
+                    opacity: 0;
+                    }
 
-                //     100% {
-                //     opacity: 1;
-                //     }
-                // }
+                    100% {
+                    opacity: 1;
+                    }
+                }
 
-                // border-radius: 100%;
-                // background: hsla(158, 70%, 68%, @rand(1));
-                // transform: scale(@rand(.5, 1.2))
-                // translate(
-                // @rand(-50%, 50%), @rand(-50%, 50%)
-                // );`
-                // },
+                border-radius: 100%;
+                background: hsla(158, 70%, 68%, @rand(1));
+                transform: scale(@rand(.5, 1.2))
+                translate(
+                @rand(-50%, 50%), @rand(-50%, 50%)
+                );`
+                }
                 // {
                 //     id: 4,
                 //     name: '星光点点',
@@ -586,12 +593,9 @@ export default {
     methods: {
         togglePlay () {
             this.loading = true
-            // Math.floor(Math.random() * this.list.length)
-            this.current = this.list[0]
-            setTimeout(() => {
-                this.isPlay = !this.isPlay
-                this.loading = false
-            }, 200)
+            this.current = this.list[Math.floor(Math.random() * this.list.length)] || this.list[0]
+            this.isPlay = !this.isPlay
+            this.loading = false
         },
         onItemClick (item) {
             this.current = item
