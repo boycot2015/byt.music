@@ -27,7 +27,23 @@ export default {
     methods: {
         scrollToTop () {
             // eslint-disable-next-line vue/no-mutating-props
-            document.querySelector(this.selector).scrollTop = 0
+            // document.querySelector(this.selector).scrollTop = 0
+            const cubic = value => Math.pow(value, 3)
+            const easeInOutCubic = value => value < 0.5 ? cubic(value * 2) / 2 : 1 - cubic((1 - value) * 2) / 2
+            const el = document.querySelector(this.selector)
+            const beginTime = Date.now()
+            const beginValue = el.scrollTop
+            const rAF = window.requestAnimationFrame || (func => setTimeout(func, 16))
+            const frameFunc = () => {
+                const progress = (Date.now() - beginTime) / 500
+                if (progress < 1) {
+                    el.scrollTop = beginValue * (1 - easeInOutCubic(progress))
+                    rAF(frameFunc)
+                } else {
+                    el.scrollTop = 0
+                }
+            }
+            rAF(frameFunc)
         }
     }
 }

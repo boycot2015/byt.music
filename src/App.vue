@@ -57,6 +57,18 @@ export default {
 #app.dark-mode-invert >.cloud_music .cloud_music_main img {
     filter: invert(100%);
 }
+#app.dark-mode-invert >.cloud_music .cloud_music_main .slider-container {
+    filter: invert(100%);
+}
+#app.dark-mode-invert >.cloud_music .cloud_music_main .slider-container img {
+    filter: invert(100%);
+}
+#app.dark-mode-invert >.cloud_music .cloud_music_main .aside .img {
+    filter: invert(100%);
+}
+#app.dark-mode-invert >.cloud_music .cloud_music_main .aside .img img {
+    filter: invert(100%);
+}
 #app.dark-mode-invert .song-detail,
 #app.dark-mode-invert .theme-dialog .pic-list {
     filter: invert(100%);
