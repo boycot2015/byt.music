@@ -104,6 +104,7 @@ import {
     watch,
     reactive,
     toRefs,
+    nextTick,
     // getCurrentInstance,
     onMounted,
     onBeforeMount
@@ -284,7 +285,9 @@ export default {
             scrollDom.value.scrollTop = 0
         }
         const togglePlayLyirc = () => {
-            lyricAnimationRef.value.togglePlay()
+            nextTick(() => {
+                lyricAnimationRef.value.togglePlay()
+            })
         }
         return {
             ...toRefs(state),

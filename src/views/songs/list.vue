@@ -129,7 +129,7 @@
                         时长
                     </div>
                 </template>
-                <template class="dj-header" v-else>
+                <template v-else>
                     <div class="flex-1 title tl bdr0">共{{coverDetail.count || coverDetail.tracks && coverDetail.tracks.length}}首</div>
                     <div class="flex-1 title tr pdr10">排序<i class="icon-music-sort"></i></div>
                 </template>

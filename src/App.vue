@@ -73,6 +73,9 @@ export default {
 #app.dark-mode-invert .theme-dialog .pic-list {
     filter: invert(100%);
 }
+#app.dark-mode-invert>.cloud_music .video-detail{
+    background-color: #000!important;
+}
 #nav {
   padding: 30px;
 }

@@ -224,7 +224,7 @@ export default {
         // border-bottom: 1px solid @c-ccc;
     }
     &-body {
-        padding: 20px;
+        padding: 20px 10px 20px 20px;
         overflow: hidden;
         overflow-y: auto;
         height: calc(100% - 80px);
@@ -290,12 +290,13 @@ export default {
         display: flex;
         flex-wrap: wrap;
         // justify-content: space-between;
+        border-radius: 3px;
+        overflow: hidden;
         &-item {
-            width: 42px;
-            height: 42px;
-            border-radius: 3px;
-            margin-right: 16px;
-            margin-bottom: 16px;
+            height: 45px;
+            flex-basis: 10%;
+            // margin-right: 16px;
+            // margin-bottom: 16px;
             position: relative;
             overflow: hidden;
             cursor: pointer;
