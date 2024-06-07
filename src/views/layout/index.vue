@@ -59,6 +59,7 @@
     :style="{
         top: !showBox ? 0: ''
     }"
+    v-if="playData"
     :class="{'is-micro-app': microApp}"
     class="mini-music-box js-mini-music-box flexbox-v"
     v-show="showMiniBox" ref="dragMiniBox">

@@ -1,5 +1,5 @@
 <template>
-    <div class="footer flexbox-h just-b">
+    <div class="footer flexbox-h just-b" v-if="playData">
         <div class="play-btn flexbox-h just-a">
             <i class="icon-music-play-left" @click="playPrev"></i>
             <i class="js-play"
