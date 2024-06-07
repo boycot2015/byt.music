@@ -1,5 +1,5 @@
 <template>
-  <div class="aside js-aside" @dblclick.stop>
+  <div class="aside js-aside" @dblclick.stop v-if="playData">
         <div class="aside-list js-aside-template">
             <div
             v-for="($value) in menu"

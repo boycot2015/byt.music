@@ -1,6 +1,6 @@
 // import baseUrl from '../baseUrl'
 import { apiUrl } from '@/api/baseUrl'
-const baseUrl = 'http://news.boycot.top/api'
+const baseUrl = 'https://api.boycot.top/api'
 export default {
     list: baseUrl + '/infinity/get-wallpaper', // 全球知名高品质壁纸
     binglist: baseUrl + '/bing/list', // 必应每日壁纸
