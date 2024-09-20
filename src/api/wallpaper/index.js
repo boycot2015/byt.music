@@ -27,17 +27,14 @@ export default {
     },
     getCategory (params) {
         return axios.get(urls.getCategory, {
-            params
+            params: {
+                ...params,
+                source: 'birdpaper'
+            }
         }).then(res => {
+            // console.log(res, '223')
             const cates = [
-                ...res.catetoryData.imgList.map(el => ({
-                    category: el.name,
-                    hot_tag: [],
-                    old_id: el.id,
-                    position: '',
-                    show_name: el.name
-                })),
-                ...res.catetoryData.list.map(el => ({
+                ...res.data.cates.map(el => ({
                     category: el.name,
                     hot_tag: [],
                     old_id: el.id,
@@ -64,10 +61,12 @@ export default {
     newestList (params) {
         params = { pageno: 0, count: 20, cids: 0, ...params }
         return axios.get(urls.newestList, {
-            params
+            params: {
+                ...params,
+                source: 'birdpaper'
+            }
         }).then(res => {
-            // console.log(res, '223')
-            return { data: { list: res.datas.list.map(el => ({ id: el.id, url: el.img })) } }
+            return { data: { ...res.data, list: res.data.list.map(el => ({ id: el.id, url: el.img })) } }
         })
     },
     /**
@@ -77,10 +76,13 @@ export default {
     GetListByCategory (params) {
         params = { pageno: 0, count: 20, id: params.cids, ...params }
         return axios.get(urls.GetListByCategory, {
-            params
+            params: {
+                ...params,
+                source: 'birdpaper'
+            }
         }).then(res => {
             // console.log(res, '223')
-            return { data: { list: res.datas.list.map(el => ({ id: el.id, url: el.img })) } }
+            return { data: { ...res.data, list: res.data.list.map(el => ({ id: el.id, url: el.img })) } }
         })
     },
     unsplashList (params) {

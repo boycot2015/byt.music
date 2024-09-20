@@ -28,19 +28,13 @@ export default {
             const cateList = await wallpaper.getCategory()
             const state = {}
             const newestList = await wallpaper.newestList(params)
-            const customCate = [{
-                category: 'unsplash',
-                hot_tag: [],
-                position: '',
-                show_name: 'unsplash'
-            }]
             state.cateList = [{
                 category: '最新',
                 hot_tag: [],
                 old_id: 0,
                 position: '',
                 show_name: '最新'
-            }, ...cateList.data, ...customCate]
+            }, ...cateList.data]
             state.picData = newestList.data.list
             state.total = newestList.data.total_count
             commit('setData', state)
@@ -50,11 +44,9 @@ export default {
             let newestList = []
             const state = {}
             if (params.old_id) {
-                newestList = await wallpaper.GetListByCategory({ cids: params.old_id, count: params.count })
-            } else if (params.category === 'unsplash') {
-                newestList = await wallpaper.unsplashList({ cids: params.old_id, count: params.count })
+                newestList = await wallpaper.GetListByCategory({ id: params.old_id, size: params.count })
             } else {
-                newestList = await wallpaper.newestList({ pageno: params.pageno, count: params.count })
+                newestList = await wallpaper.newestList({ page: params.pageno, size: params.count })
             }
             state.picData = newestList.data.list
             state.total = newestList.data.total_count
@@ -66,19 +58,14 @@ export default {
             const state = {}
             if (params.old_id) {
                 newestList = await wallpaper.GetListByCategory({
-                    pageno: params.pageno,
-                    cids: params.old_id,
-                    count: params.count
-                })
-            } else if (params.category === 'unsplash') {
-                newestList = await wallpaper.unsplashList({
-                    pageno: params.pageno,
-                    count: params.count
+                    page: params.pageno,
+                    id: params.old_id,
+                    size: params.count
                 })
             } else {
                 newestList = await wallpaper.newestList({
-                    pageno: params.pageno,
-                    count: params.count
+                    page: params.pageno,
+                    size: params.count
                 })
             }
             state.picData = [...newestList.data.list]

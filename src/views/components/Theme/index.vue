@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="sub-title">在线壁纸</div>
-            <ul class="cate-list flexbox-h" v-loading="loading">
+            <ul class="cate-list flexbox-h" v-if="cateList && cateList.length">
                 <li class="cate-list-item"
                 :class="{active: cateIndex === item.old_id}"
                 @click="onCateChange(item)"
@@ -33,9 +33,9 @@
                     <img :src="pic.url" alt="">
                 </div>
             </div>
-            <div class="more-btn" v-if="total > picData.length" @click="loadingMore">加载更多 ></div>
+            <div class="more-btn" v-if="total > picData.length && !loading" @click="loadingMore">加载更多 ></div>
             <div class="sub-title">精选壁纸</div>
-            <div class="pic-list" v-loading="loading">
+            <div class="pic-list">
                 <div class="pic-list-item"
                 :class="{active: picIndex === index}"
                 @click="() => {picIndex = index;changeTheme('', {bgUrl: pic, bgUrlIndex: index})}" v-for="(pic, index) in localBgUrls" :key="pic">
@@ -66,11 +66,12 @@ import {
     // drag,
     changeTheme
 } from '@/utils'
-import { wallpaper } from '@/api/apiList'
+import useVirtualList from '@/hooks/useVirtualList'
 export default {
     setup (props, context) {
         const store = useStore()
         const themeData = store.state.theme
+        // const useVirtual = useVirtualList({})
         const state = reactive({
             loading: true,
             isNight: false,
@@ -109,7 +110,7 @@ export default {
             getData()
         })
         const getData = async () => {
-            store.dispatch('theme/getData', { pageno: state.pageno, count: state.count }).then(res => {
+            store.dispatch('theme/getData', { page: state.pageno, size: state.count }).then(res => {
                 state.loading = false
             })
         }
@@ -134,12 +135,15 @@ export default {
         }
         const loadingMore = async () => {
             state.pageno++
+            state.loading = true
             store.dispatch('theme/loadingMore', {
                 old_id: state.cateIndex,
                 category: state.cateIndex || 'unsplash',
                 pageno: state.pageno,
                 count: state.count
-            }).then(res => {})
+            }).then(res => {
+                state.loading = false
+            })
         }
         return {
             changeTheme,
@@ -178,6 +182,9 @@ export default {
         display: flex;
         align-items: center;
         border-left: 4px solid @primary;
+        &:nth-child(3) {
+            margin-top: 20px;
+        }
         .icon-night {
             display: inline-block;
             margin-left: 20px;
