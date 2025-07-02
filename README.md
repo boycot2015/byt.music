@@ -1,26 +1,39 @@
-# cloud_music
+# byt.music
 
-#### Description
-你的音乐，我的收藏
-## Project setup
-```
-yarn install
-```
+聚合各大音乐平台于一体的音乐播放器。
 
-### Compiles and hot-reloads for development
-```
-yarn serve
+```text
+技术栈： Vue 3 + Vite.
 ```
 
-### Compiles and minifies for production
-```
-yarn build
+## 推荐 IDE 配置
+
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+
+## 自定义配置
+
+查看 [Vite](https://vite.dev/config/).
+
+## 项目安装
+
+```sh
+pnpm install
 ```
 
-### Lints and fixes files
-```
-yarn lint
+### 启动开发服务器
+
+```sh
+pnpm dev
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 构建生产环境
+
+```sh
+pnpm build
+```
+
+### [ESLint](https://eslint.org/)
+
+```sh
+pnpm lint
+```
