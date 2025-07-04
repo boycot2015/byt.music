@@ -97,3 +97,9 @@ body {
 .el-tabs__header {
   margin-bottom: 0 !important;
 }
+.actions {
+  position: fixed;
+}
+.el-table thead {
+  --el-table-header-text-color: var(--color-text) !important;
+}

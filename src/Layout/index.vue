@@ -22,11 +22,11 @@ const keepAliveRoutes = router.options.routes
         <el-scrollbar always style="height: calc(100vh - 160px)">
           <div class="main scrollbar-wrapper">
             <router-view v-slot="{ Component }">
-              <keep-alive :include="keepAliveRoutes">
-                <transition name="el-fade-in-linear">
+              <transition name="slide-fade">
+                <keep-alive :include="keepAliveRoutes">
                   <component :is="Component" />
-                </transition>
-              </keep-alive>
+                </keep-alive>
+              </transition>
             </router-view>
           </div>
         </el-scrollbar>
@@ -41,5 +41,17 @@ const keepAliveRoutes = router.options.routes
   width: fit-content;
   width: 100%;
   min-width: 800px;
+  min-height: calc(100vh - 180px);
+}
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.5s ease;
+  opacity: 1;
+}
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+  height: 0;
+  transform: translateX(-30px);
 }
 </style>

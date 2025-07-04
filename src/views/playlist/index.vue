@@ -2,29 +2,40 @@
   <div class="playlist">
     <div class="top min-h-[40px] flex justify-between mb-4">
       <div class="flex items-center">
-        <el-popover placement="bottom-start" :disabled="loading" width="560px" trigger="hover">
+        <el-popover placement="bottom-start" :disabled="cateLoading || (cates[type] && !cates[type].length)" width="560px" trigger="hover">
           <template #reference>
-            <span class="cursor-pointer el-dropdown-link">
-              {{ ctype || '全部歌单' }}
+            <span class="cursor-pointer el-dropdown-link flex items-center">
+              {{ ctypeObj.name || '全部歌单' }}
               <el-icon class="el-icon--right">
-                <arrow-down />
+                <arrow-down v-if="cates[type] && cates[type].length" />
+                <Loading v-else-if="cateLoading" />
               </el-icon>
             </span>
           </template>
           <el-scrollbar max-height="300px" class="cates w-full">
-            <el-row :gutter="20" class="!m-0 !mb-2" v-for="(item, index) in cates" :key="index">
+            <el-row :gutter="20" class="!m-0 !mb-2" v-for="(item, index) in cates[type]" :key="index">
               <el-col :span="24" class="text-xl">
                 {{ item.category }}
               </el-col>
               <el-col :span="4" v-for="(el, index) in item.filters" :key="index" class="my-1">
-                <el-tag class="cursor-pointer" size="large" @click="fetchListData(el)">{{ el.name }}</el-tag>
+                <el-tag
+                  class="cursor-pointer"
+                  size="large"
+                  @click="
+                    () => {
+                      ctypeObj = el
+                      fetchListData(el)
+                    }
+                  "
+                  >{{ el.name }}</el-tag
+                >
               </el-col>
             </el-row>
-            <el-empty v-if="!cates.length && !loading" />
+            <el-empty v-if="cates[type] && !cates[type].length && !loading" />
           </el-scrollbar>
         </el-popover>
       </div>
-      <el-segmented v-model="type" :options="types" :disabled="loading" size="large" :props="{ label: 'title', value: 'type' }" @change="fetchData()" />
+      <el-segmented v-model="type" :options="types" :disabled="loading" size="large" :props="{ label: 'title', value: 'type' }" @change="fetchData" />
     </div>
     <!-- <h1>This is an playlist page</h1> -->
     <el-scrollbar ref="scrollbarRef" max-height="calc(100vh - 260px)" class="flex flex-col min-h-[calc(100vh-260px)]" v-loading="loading">
@@ -34,8 +45,11 @@
             <div class="img">
               <el-image lazy class="rounded-md overflow-hidden w-[140px] h-[140px]" fit="fill" :src="item.cover_img_url"></el-image>
             </div>
-            <div class="info flex flex-col ml-2">
-              <el-text>{{ item.title }}</el-text>
+            <div class="info flex flex-col ml-2 gap-y-2">
+              <div class="text-[#333] line-clamp-2">{{ item.title }}</div>
+              <div class="text-[#666] text-sm line-clamp-1 flex items-center"><el-avatar class="mr-1" v-if="item.creator?.avatarUrl" :src="item.creator?.avatarUrl" size="small"></el-avatar> {{ item.creator?.name || item.creator?.nickname }}</div>
+              <div>{{ item.create_time }}</div>
+              <div class="text-[#666] text-sm line-clamp-1">{{ item.play_num ? (item.play_num > 10000 ? (item.play_num / 10000).toFixed(1) + '万次播放' : item.play_num + '次播放') : '' }}</div>
             </div>
           </div>
         </el-col>
@@ -50,48 +64,56 @@
   </div>
 </template>
 <script name="playlist" setup>
-import { onMounted, ref } from 'vue'
-import { ArrowDown } from '@element-plus/icons-vue'
+import { getCurrentInstance, ref } from 'vue'
+import { ArrowDown, Loading } from '@element-plus/icons-vue'
 import { useRouter, useRoute } from 'vue-router'
-
+const { proxy } = getCurrentInstance()
+const $apiUrl = proxy.$apiUrl
 defineOptions({ name: 'playlist' })
 const route = useRoute()
 const router = useRouter()
 const type = ref(route.query.type || 'qq')
 const ctype = ref(route.query.ctype || '')
 const types = ref([])
-const cates = ref([{ id: '', category: '推荐', filters: [] }])
+const cates = ref({})
 const playlist = ref([])
 const loading = ref(true)
+const cateLoading = ref(false)
 const total = ref(0)
 const hasNextPage = ref(false)
 const currentPage = ref(route.query.page ? Number(route.query.page) : 1)
 const scrollbarRef = ref(null)
-
+const ctypeObj = ref({})
 const fetchData = (el) => {
-  const current = el || types.value.find((el) => el.type == type.value)
+  const current = el ? { type: el } : types.value.find((el) => el.type == type.value)
   loading.value = true
   currentPage.value = 1
+  ctype.value = !el ? route.query.ctype || '' : ''
+  ctypeObj.value = {
+    name: ctype.value,
+  }
   fetchCatesData(current)
   fetchListData(current)
 }
 const fetchCateData = async () => {
   loading.value = true
-  const response = await fetch('https://api.boycot.top/api/music/cate')
-  let res = await response.json()
-  types.value = res.data.map((el) => ({ ...el, title: el.title + '音乐' }))
+  const response = await fetch(`${$apiUrl}/music/cate`).then((res) => res.json())
+  types.value = response.data.map((el) => ({ ...el, title: el.title + '音乐' }))
 }
 const fetchCatesData = (item = { type: type.value }) => {
-  ctype.value = ''
-  fetch('https://api.boycot.top/api/music/cate?type=' + item.type)
+  if (cates.value[type.value] && cates.value[type.value].length) return
+  cateLoading.value = true
+  fetch(`${$apiUrl}/music/cate?type=${item.type}`)
     .then((res) => res.json())
     .then((res) => {
       if (!res.data) {
-        cates.value = []
+        cates.value[type.value] = []
+        cateLoading.value = false
         return
       }
-      cates.value = [{ ...cates.value[0], filters: res.data.recommend }, ...res.data.all]
+      cates.value[type.value] = [{ ...cates.value[0], filters: res.data.recommend }, ...res.data.all]
       scrollbarRef.value?.setScrollTop(0)
+      cateLoading.value = false
     })
 }
 const fetchListData = (item = {}) => {
@@ -101,26 +123,20 @@ const fetchListData = (item = {}) => {
   }
   ctype.value = item.id || ctype.value
   loading.value = true
-  fetch(`https://api.boycot.top/api/music?type=${item.type || type.value}&offset=${currentPage.value}&id=${ctype.value}`)
+  fetch(`${$apiUrl}/music?type=${item.type || type.value}&offset=${currentPage.value - 1}&id=${ctype.value}`)
     .then((res) => res.json())
     .then((res) => {
-      console.log(res, type.value)
       loading.value = false
       scrollbarRef.value?.setScrollTop(0)
       if (!res.data) return
       total.value = res.data.total || 999
       if (currentPage.value) playlist.value = res.data.result
       hasNextPage.value = !!res.data.hasNextPage
-      //   else playlist.value = [...playlist.value, ...res.data.result]
     })
-    .catch(() => {
-      loading.value = false
-    })
+    .catch(() => {})
 }
-onMounted(() => {
-  fetchCateData()
-  fetchListData()
-})
+fetchCateData()
+fetchData()
 </script>
 
 <style>
