@@ -1,16 +1,14 @@
 import './assets/styles/main.css'
-
+import 'element-plus/dist/index.css'
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import store from './stores' // 引入store
 import { apiUrl } from './api/baseUrl'
+
 const app = createApp(App)
-const piniaStore = createPinia()
-piniaStore.use(piniaPluginPersistedstate)
-app.use(piniaStore)
+app.use(store)
 app.use(router)
 app.config.globalProperties.$apiUrl = apiUrl
 

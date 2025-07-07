@@ -2,6 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import Aside from './Aside.vue'
 import Header from './Header.vue'
+import Footer from './Footer.vue'
 import { useRoute, useRouter } from 'vue-router'
 const router = useRouter()
 const keepAliveRoutes = router.options.routes
@@ -31,7 +32,9 @@ const keepAliveRoutes = router.options.routes
           </div>
         </el-scrollbar>
       </el-main>
-      <el-footer class="bg-[var(--vt-c-white)] flex items-center">Footer</el-footer>
+      <el-footer class="bg-[var(--vt-c-white)] flex items-center">
+        <Footer />
+      </el-footer>
     </el-container>
   </el-container>
 </template>

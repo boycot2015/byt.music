@@ -7,7 +7,7 @@ import IconFavicon from '@/components/icons/IconFavicon.vue'
 import IconRank from '@/components/icons/IconRank.vue'
 import IconHeart from '@/components/icons/IconHeart.vue'
 import { Search, Setting } from '@element-plus/icons-vue'
-const { state } = useConfigStore()
+const { config } = useConfigStore()
 const route = useRoute()
 const router = useRouter()
 const path = ref('/playlist')
@@ -37,7 +37,7 @@ const handleClose = (key, keyPath) => {
   <div class="flex flex-col items-center">
     <router-link to="/" class="logo w-full h-[60px] flex items-center py-2 justify-around">
       <img alt="Vue logo" class="h-10" src="@/assets/logo.svg" />
-      <div class="title text-2xl hidden">{{ state.title }}</div>
+      <div class="title text-2xl hidden">{{ config.title }}</div>
     </router-link>
     <div class="wrapper">
       <el-segmented v-model="path" direction="vertical" :options="menus" size="large" :props="{ label: 'title', value: 'path' }" @change="handleOpen">

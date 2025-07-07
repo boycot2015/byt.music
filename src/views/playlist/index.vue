@@ -27,6 +27,7 @@
                       fetchListData(el)
                     }
                   "
+                  :type="ctypeObj.name == el.name ? 'danger' : 'primary'"
                   >{{ el.name }}</el-tag
                 >
               </el-col>
@@ -89,9 +90,6 @@ const fetchData = (el) => {
   loading.value = true
   currentPage.value = 1
   ctype.value = !el ? route.query.ctype || '' : ''
-  ctypeObj.value = {
-    name: ctype.value,
-  }
   fetchCatesData(current)
   fetchListData(current)
 }
@@ -101,7 +99,10 @@ const fetchCateData = async () => {
   types.value = response.data.map((el) => ({ ...el, title: el.title + '音乐' }))
 }
 const fetchCatesData = (item = { type: type.value }) => {
-  if (cates.value[type.value] && cates.value[type.value].length) return
+  if (cates.value[type.value] && cates.value[type.value].length) {
+    ctypeObj.value = cates.value[type.value][0]?.filters[0]
+    return
+  }
   cateLoading.value = true
   fetch(`${$apiUrl}/music/cate?type=${item.type}`)
     .then((res) => res.json())
@@ -112,6 +113,13 @@ const fetchCatesData = (item = { type: type.value }) => {
         return
       }
       cates.value[type.value] = [{ ...cates.value[0], filters: res.data.recommend }, ...res.data.all]
+      cates.value[type.value].some((val) => {
+        let current = val.filters.find((el) => el.id == ctype.value)
+        if (current) {
+          ctypeObj.value = current
+          return true
+        }
+      })
       scrollbarRef.value?.setScrollTop(0)
       cateLoading.value = false
     })

@@ -83,8 +83,8 @@ const router = createRouter({
   ],
 })
 router.beforeEach((to, from, next) => {
-  const { state } = useConfigStore()
-  document.title = to.meta.title + '-' + state.title
+  const { config } = useConfigStore()
+  document.title = to.meta.title + '-' + config.title
   next()
 })
 export default router
