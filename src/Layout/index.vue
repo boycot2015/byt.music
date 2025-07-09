@@ -1,9 +1,11 @@
-<script setup>
+<script name="Layout" setup>
+import { ref } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import Aside from './Aside.vue'
 import Header from './Header.vue'
 import Footer from './Footer.vue'
 import { useRoute, useRouter } from 'vue-router'
+
 const router = useRouter()
 const keepAliveRoutes = router.options.routes
   .filter((el) => el.meta?.keepAlive)
