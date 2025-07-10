@@ -9,7 +9,9 @@
           ><el-icon class="mr-2"><IconHeart /></el-icon> 收藏</el-button
         >
         <el-link :href="data.info.source_url" underline="never" target="_blank" rel="noopener noreferrer" class="text-[#444] ml-3">
-          <el-button>官源</el-button>
+          <el-button
+            ><el-icon class="mr-2"><Link /></el-icon> 官源</el-button
+          >
         </el-link>
       </div>
       <div class="flex mb-3 min-h-[120px]">
@@ -29,7 +31,7 @@
           </div>
         </div>
       </div>
-      <el-table max-height="calc(100vh - 300px)" :data="data.tracks" @cell-dblclick="handlePlay">
+      <el-table :row-class-name="({ row, rowIndex }) => (playData.playIndex == rowIndex - 1 ? 'current-row' : '')" max-height="calc(100vh - 300px)" :data="data.tracks" @row-dblclick="handlePlay">
         <el-table-column prop="title" label="歌曲名称" show-overflow-tooltip>
           <template #default="scope">
             {{ scope.row.title }}
@@ -48,13 +50,13 @@
 <script setup>
 import { ref, getCurrentInstance, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { VideoPlay } from '@element-plus/icons-vue'
+import { VideoPlay, Link } from '@element-plus/icons-vue'
 import IconHeart from '@/components/icons/IconHeart.vue'
 import { usePlayerStore } from '@/stores/player'
 import { useCollectStore } from '@/stores/collect'
 const playerStore = usePlayerStore()
 const collectStore = useCollectStore()
-const { play } = playerStore
+const { play, playData, setPlayData } = playerStore
 const router = useRouter()
 const route = useRoute()
 console.log(route.params)
@@ -79,8 +81,9 @@ const fetchData = async () => {
 const handlePlayAll = () => {
   play(data.value.tracks)
 }
-const handlePlay = (item) => {
-  play(item)
+const handlePlay = (row) => {
+  setPlayData({ playIndex: playData.playlist?.findIndex((item) => item.id == row.id) })
+  play(row)
 }
 const handleCollect = () => {
   collectStore.add(data.value)

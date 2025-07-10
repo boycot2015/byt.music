@@ -21,7 +21,6 @@ export const usePlayerStore = defineStore(
       player.value = audio
       playData.value.muted = true
       playData.value.paused = true
-      playData.value.playIndex = 0
       // playData.value.url && play(playData.value)
     }
     const play = async (item, type = playData.value.type || 'qq') => {
@@ -30,6 +29,7 @@ export const usePlayerStore = defineStore(
         playData.value.playlist = item
         item = item[0]
       }
+      playData.value.currentTime = 0
       playData.value.type = type
       playData.value.id = item.id
       // playData.value.duration = item.duration
@@ -44,14 +44,15 @@ export const usePlayerStore = defineStore(
       return await fetch(`${apiUrl}/music/url?id=${item.id}&type=${type}`)
         .then((res) => res.json())
         .then((data) => {
+          playData.value.currentTime = 0
           if (!data.data) {
             playData.value.paused = true
             player.value.pause()
             ElMessage.error('获取歌曲失败，无法播放此歌曲~')
+            playData.value.url = ''
             return false
           }
           playData.value.url = data.data
-          playData.value.currentTime = 0
           playData.value.muted = false
           playData.value.paused = false
           playData.value.duration = player.value.duration

@@ -2,7 +2,7 @@
   <div class="playlist">
     <div class="top min-h-[40px] flex justify-between mb-4">
       <div class="flex items-center">
-        <el-popover placement="bottom-start" :disabled="cateLoading || (cates[type] && !cates[type].length)" width="560px" trigger="hover">
+        <el-popover placement="bottom-start" :disabled="cateLoading || (cates[type] && !cates[type].length)" width="580px" trigger="hover">
           <template #reference>
             <span class="cursor-pointer el-dropdown-link flex items-center">
               {{ ctypeObj.name || '全部歌单' }}
@@ -15,9 +15,9 @@
           <el-scrollbar max-height="300px" class="cates w-full">
             <el-row :gutter="20" class="!m-0 !mb-2" v-for="(item, index) in cates[type]" :key="index">
               <el-col :span="24" class="text-xl">
-                {{ item.category }}
+                {{ item.category || item.name }}
               </el-col>
-              <el-col :span="4" v-for="(el, index) in item.filters" :key="index" class="my-1">
+              <el-col :span="4" v-for="(el, index) in item.filters.filter((el) => el.name != '排行榜')" :key="index" class="my-1">
                 <el-tag
                   class="cursor-pointer"
                   size="large"
@@ -38,7 +38,6 @@
       </div>
       <el-segmented v-model="type" :options="types" :disabled="loading" size="large" :props="{ label: 'title', value: 'type' }" @change="fetchData" />
     </div>
-    <!-- <h1>This is an playlist page</h1> -->
     <el-scrollbar ref="scrollbarRef" max-height="calc(100vh - 260px)" class="flex flex-col min-h-[calc(100vh-260px)]" v-loading="loading">
       <el-row :gutter="10" class="!m-0">
         <el-col v-for="item in playlist" :key="item.id" :span="8" :lg="6" :xl="4" class="mb-10">
@@ -112,7 +111,7 @@ const fetchCatesData = (item = { type: type.value }) => {
         cateLoading.value = false
         return
       }
-      cates.value[type.value] = [{ ...cates.value[0], filters: res.data.recommend }, ...res.data.all]
+      cates.value[type.value] = [{ category: '热门', id: '', filters: res.data.recommend }, ...res.data.all]
       cates.value[type.value].some((val) => {
         let current = val.filters.find((el) => el.id == ctype.value)
         if (current) {
