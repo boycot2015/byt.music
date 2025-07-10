@@ -10,7 +10,7 @@ export const usePlayerStore = defineStore(
       url: '',
       type: 'qq',
       title: '',
-      duration: '',
+      duration: 100,
       currentTime: 0,
       playlist: [],
       muted: true,
@@ -25,10 +25,6 @@ export const usePlayerStore = defineStore(
     }
     const play = async (item, type = playData.value.type || 'qq') => {
       if (!item) return ElMessage.error('请选择歌曲')
-      if (item instanceof Array && item.length > 0) {
-        playData.value.playlist = item
-        item = item[0]
-      }
       playData.value.currentTime = 0
       playData.value.type = type
       playData.value.id = item.id

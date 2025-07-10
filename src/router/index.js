@@ -30,6 +30,7 @@ const router = createRouter({
       component: () => import('@/views/search/index.vue'),
       meta: {
         title: '搜索',
+        icon: 'Search',
       },
     },
     {
@@ -38,6 +39,7 @@ const router = createRouter({
       component: () => import('@/views/ranking/index.vue'),
       meta: {
         title: '排行榜',
+        icon: 'IconFavicon',
       },
     },
     {
@@ -46,6 +48,7 @@ const router = createRouter({
       component: () => import('@/views/favorites/index.vue'),
       meta: {
         title: '收藏',
+        icon: 'IconRank',
       },
     },
     {
@@ -54,6 +57,7 @@ const router = createRouter({
       component: () => import('@/views/playlist/detail.vue'),
       meta: {
         title: '歌单详情',
+        icon: 'Search',
         showBack: true,
       },
     },
@@ -63,6 +67,7 @@ const router = createRouter({
       component: () => import('@/views/playlist/index.vue'),
       meta: {
         title: '歌单',
+        icon: 'IconHeart',
         keepAlive: true,
       },
     },
@@ -72,6 +77,7 @@ const router = createRouter({
       component: () => import('@/views/setting/index.vue'),
       meta: {
         title: '设置',
+        icon: 'Setting',
       },
     },
     {

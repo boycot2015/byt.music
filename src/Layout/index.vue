@@ -16,12 +16,12 @@ const keepAliveRoutes = router.options.routes
 
 <template>
   <el-container>
-    <el-aside width="64px" class="bg-[var(--vt-c-white)] h-[100vh]">
+    <el-aside width="64px" class="bg-[transparent] h-[100vh]">
       <Aside />
     </el-aside>
-    <el-container>
-      <el-header class="bg-[var(--vt-c-white)] flex items-center"><Header /></el-header>
-      <el-main class="bg-[var(--vt-c-white)] m-[10px] !p-[10px] !overflow-hidden">
+    <el-container class="overflow-hidden">
+      <el-header class="bg-[transparent] flex items-center border-b-[1px] border-[#ccc]"><Header /></el-header>
+      <el-main class="bg-[transparent] m-[10px] !p-[10px] !overflow-hidden">
         <el-scrollbar always style="height: calc(100vh - 160px)">
           <div class="main scrollbar-wrapper">
             <router-view v-slot="{ Component }">
@@ -34,7 +34,7 @@ const keepAliveRoutes = router.options.routes
           </div>
         </el-scrollbar>
       </el-main>
-      <el-footer class="bg-[var(--vt-c-white)] flex items-center">
+      <el-footer class="bg-[transparent] flex items-center border-t-[1px] border-[#ccc]">
         <Footer />
       </el-footer>
     </el-container>

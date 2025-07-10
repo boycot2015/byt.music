@@ -1,12 +1,12 @@
 <template>
   <div class="player leading-[60px] h-[60px] flex flex-3 items-center justify-around w-full">
-    <el-slider size="small" class="flex-3 text-center" :disabled="!playData.url" v-model="playData.currentTime" :min="0" :format-tooltip="formatTime" :max="playData.duration" @change="audioRef.currentTime = playData.currentTime" />
+    <el-slider size="small" class="flex-3 text-center" :disabled="!playData.url" v-model="playData.currentTime" :min="0" :format-tooltip="formatTime" :max="playData.duration" @input="(val) => (inputValue = val)" @change="onSliderChange" />
     <audio ref="audioRef" class="flex-3 hidden" :muted="muted" :src="url" :loop="playData.loop" @ended="playNext" @timeupdate="onUpdate" @pause="setPlayData({ paused: true })" @play="setPlayData({ paused: false })"></audio>
     <div class="controls flex items-center justify-end flex-1 ml-5">
       <el-icon :size="30" :disabled="!playData.url" class="flex items-center mr-5">
         <IconInfinity class="cursor-pointer" @click="setPlayData({ loop: false, random: false })" v-if="playData.random" />
         <IconLoop class="cursor-pointer" @click="setPlayData({ loop: !playData.loop, random: true })" v-else-if="playData.loop" />
-        <IconList class="cursor-pointer" @click="setPlayData({ loop: !playData.loop, random: false })" v-else />
+        <IconListPlay class="cursor-pointer" @click="setPlayData({ loop: !playData.loop, random: false })" v-else />
       </el-icon>
       <el-icon :size="32" class="mr-5" @click="setPlayData({ muted: !playData.muted })" :disabled="!playData.url">
         <IconVolume class="cursor-pointer" v-if="!playData.muted" />
@@ -22,6 +22,16 @@
       <el-icon :size="38" @click="playNext">
         <IconNext class="cursor-pointer" />
       </el-icon>
+      <el-popover trigger="click" width="520px">
+        <template #reference>
+          <el-icon :size="32">
+            <IconListMusic class="cursor-pointer" />
+          </el-icon>
+        </template>
+        <template #default>
+          <Playlist :data="{ info: playData, tracks: playData.playlist }" :tableProps="{ maxHeight: 'calc(100vh - 400px)' }" />
+        </template>
+      </el-popover>
     </div>
   </div>
 </template>
@@ -34,9 +44,12 @@ import IconNext from '@/components/icons/IconNext.vue'
 import IconPrev from '@/components/icons/IconPrev.vue'
 import IconInfinity from '@/components/icons/IconInfinity.vue'
 import IconLoop from '@/components/icons/IconLoop.vue'
-import IconList from '@/components/icons/IconList.vue'
+import IconListPlay from '@/components/icons/IconListPlay.vue'
+import IconListMusic from '@/components/icons/IconListMusic.vue'
 import IconVolume from '@/components/icons/IconVolume.vue'
 import IconVolumeOff from '@/components/icons/IconVolumeOff.vue'
+import Playlist from '@/views/components/Playlist.vue'
+
 const playerStore = usePlayerStore()
 const { playData, initPlay, play, setPlayData } = playerStore
 const audioRef = ref(null)
@@ -44,6 +57,7 @@ const paused = computed(() => playData.paused)
 const muted = computed(() => playData.muted)
 const url = computed(() => playData.url)
 
+const inputValue = ref(0)
 const formatTime = () => {
   return `${Math.floor((playData.currentTime || 0) / 60)}:${('0' + Math.floor((playData.currentTime || 0) % 60)).slice(-2)}`
 }
@@ -85,6 +99,7 @@ const togglePlay = () => {
   if (!playData.url) return
   setPlayData({ paused: !playData.paused })
   if (audioRef.value.paused) {
+    audioRef.value.currentTime = playData.currentTime || 0
     audioRef.value.play()
   } else {
     audioRef.value.pause()
@@ -94,6 +109,14 @@ const onUpdate = () => {
   setPlayData({
     duration: audioRef.value.duration,
     currentTime: audioRef.value.currentTime,
+  })
+}
+const onSliderChange = () => {
+  audioRef.value.currentTime = inputValue.value
+  nextTick(() => {
+    setPlayData({
+      currentTime: inputValue.value,
+    })
   })
 }
 onMounted(() => {

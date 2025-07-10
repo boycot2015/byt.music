@@ -20,20 +20,20 @@ const scrollbar = ref(null)
 const scrollTop = ref(0)
 const itemRefs = ref([])
 let timer = ref(null)
-let lyricArr = computed(
-  () =>
-    playData?.lyric
-      ?.trim()
-      ?.split('\n')
-      .filter((_) => _ && _.split(']')[1]) || [],
-)
+let lyricArr = computed(() => {
+  if (!playData.lyric) return ['[00:00]纯音乐，请欣赏~']
+  return playData?.lyric
+    ?.trim()
+    ?.split('\n')
+    .filter((_) => _ && _.split(']')[1])
+})
 
-let timeArr = lyricArr.value.map((el) => el.split(']')[0].split('[')[1].split('.')[0])
+let timeArr = lyricArr.value?.map((el) => el.split(']')[0]?.split('[')[1]?.split('.')[0] || '0:00') || []
 const setSlider = (index) => {
   activeIndex.value = index || activeIndex.value
   if (index) {
     setPlayData({
-      currentTime: timeArr[index].split(':')[0] * 60 + Number(timeArr[index].split(':')[1]),
+      currentTime: timeArr[index]?.split(':')[0] * 60 + Number(timeArr[index].split(':')[1] || 0),
     })
   }
   if (scrollbar.value && !isScroll.value) {

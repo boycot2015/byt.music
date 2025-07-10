@@ -103,3 +103,23 @@ body {
 .el-table thead {
   --el-table-header-text-color: var(--color-text) !important;
 }
+.el-slider {
+  --el-slider-button-size: 12px !important;
+}
+.el-slider__button {
+  background-color: var(--el-slider-main-bg-color) !important;
+}
+.el-table {
+  --el-table-current-row-bg-color: var(--vt-c-primary);
+}
+
+.el-menu,
+.el-table td.el-table__cell,
+.el-table th.el-table__cell,
+.el-table,
+.el-table tr,
+.el-segmented,
+.el-pagination button,
+.el-pager li {
+  background-color: transparent !important;
+}

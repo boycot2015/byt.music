@@ -17,7 +17,10 @@ const menus = ref([
   { title: '排行榜', path: '/ranking', icon: markRaw(IconRank) },
   { title: '收藏', path: '/favorites', icon: markRaw(IconHeart) },
   { title: '设置', path: '/setting', icon: markRaw(Setting) },
+  // ...router.options.routes.filter((el) => el.meta && el.meta.icon).map((el) => ({ title: el.meta.title, path: el.path, icon: el.meta.icon })),
 ])
+// console.log(menus.value, 'route')
+
 watch(
   () => route.path,
   (newPath) => {
@@ -29,12 +32,9 @@ const handleOpen = (key, keyPath) => {
   path.value = key
   router.push(key)
 }
-const handleClose = (key, keyPath) => {
-  console.log(key, keyPath)
-}
 </script>
 <template>
-  <div class="flex flex-col items-center">
+  <div class="flex flex-col items-center border-r-[1px] border-[#ccc] h-full">
     <router-link to="/" class="logo w-full h-[60px] flex items-center py-2 justify-around">
       <img alt="Vue logo" class="h-10" src="@/assets/logo.svg" />
       <div class="title text-2xl hidden">{{ config.title }}</div>
