@@ -1,11 +1,20 @@
 <template>
   <el-page-header @back="goBack" :icon="route.meta.showBack ? ArrowLeft : ''">
     <template #title>
-      <span class="text-large font-600 mr-3" v-if="route.meta.showBack"> 返回 </span>
-      <span v-else></span>
+      <div class="flex items-center">
+        <span class="text-large font-600" v-if="route.meta.showBack"> 返回 </span>
+        <el-icon class="ml-3" :size="22" v-else-if="route.meta?.icon">
+          <component :is="route.meta.icon" />
+        </el-icon>
+      </div>
     </template>
     <template #content>
-      <span class="text-large font-600 mr-3"> {{ route.meta.title }} </span>
+      <div class="flex items-center">
+        <el-icon class="mr-3" :size="24" v-if="route.meta.showBack && route.meta?.icon">
+          <component :is="route.meta.icon" />
+        </el-icon>
+        <span class="text-large font-600"> {{ route.meta.title }} </span>
+      </div>
     </template>
   </el-page-header>
 </template>

@@ -47,9 +47,12 @@
             </div>
             <div class="info flex flex-col ml-2 gap-y-2">
               <div class="text-[#333] line-clamp-2">{{ item.title }}</div>
-              <div class="text-[#666] text-sm line-clamp-1 flex items-center"><el-avatar class="mr-1" v-if="item.creator?.avatarUrl" :src="item.creator?.avatarUrl" size="small"></el-avatar> {{ item.creator?.name || item.creator?.nickname }}</div>
+              <div class="text-[#666] text-sm line-clamp-1 flex items-center">
+                <el-avatar class="mr-1" v-if="item.creator?.avatarUrl" :src="item.creator?.avatarUrl" size="small"></el-avatar>
+                <span class="line-clamp-1 flex-1">{{ item.creator?.nickname || item?.desc }}</span>
+              </div>
               <div>{{ item.create_time }}</div>
-              <div class="text-[#666] text-sm line-clamp-1">{{ item.play_num ? (item.play_num > 10000 ? (item.play_num / 10000).toFixed(1) + '万次播放' : item.play_num + '次播放') : '' }}</div>
+              <div class="text-[#666] text-sm line-clamp-1">{{ item.play_count ? (item.play_count > 10000 ? (item.play_count / 10000).toFixed(1) + '万次播放' : item.play_count + '次播放') : '' }}</div>
             </div>
           </div>
         </el-col>

@@ -1,10 +1,14 @@
 <template>
   <div class="playlist-detail !overflow-hidden">
     <div class="min-h-[60vh]" v-loading="loading">
-      <Playlist :data="data" :tableProps="{ maxHeight: 'calc(100vh - 300px)' }">
+      <Playlist :data="data" :tableProps="{ maxHeight: 'calc(100vh - 300px)' }" :show-actions="true">
         <template #header>
           <div class="flex mb-3 min-h-[120px]">
-            <el-image :src="data.info.cover_img_url" class="w-[120px] h-[120px] rounded"></el-image>
+            <el-image :src="data.info.cover_img_url" class="w-[120px] h-[120px] rounded">
+              <template #placeholder>
+                <el-image src="/logo.svg"></el-image>
+              </template>
+            </el-image>
             <div class="info ml-4 flex-1">
               <div class="title text-xl mb-2">{{ data.info.title }}</div>
               <div v-if="data.info.desc">

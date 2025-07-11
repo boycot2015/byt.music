@@ -34,21 +34,13 @@ const router = createRouter({
       },
     },
     {
-      path: '/ranking',
-      name: 'ranking',
-      component: () => import('@/views/ranking/index.vue'),
+      path: '/playlist',
+      name: 'playlist',
+      component: () => import('@/views/playlist/index.vue'),
       meta: {
-        title: '排行榜',
+        title: '歌单',
         icon: 'IconFavicon',
-      },
-    },
-    {
-      path: '/favorites',
-      name: 'favorites',
-      component: () => import('@/views/favorites/index.vue'),
-      meta: {
-        title: '收藏',
-        icon: 'IconRank',
+        keepAlive: true,
       },
     },
     {
@@ -57,18 +49,27 @@ const router = createRouter({
       component: () => import('@/views/playlist/detail.vue'),
       meta: {
         title: '歌单详情',
-        icon: 'Search',
+        icon: 'IconFavicon',
+        hideInMenu: true,
         showBack: true,
       },
     },
     {
-      path: '/playlist',
-      name: 'playlist',
-      component: () => import('@/views/playlist/index.vue'),
+      path: '/ranking',
+      name: 'ranking',
+      component: () => import('@/views/ranking/index.vue'),
       meta: {
-        title: '歌单',
+        title: '排行榜',
+        icon: 'IconRank',
+      },
+    },
+    {
+      path: '/favorites',
+      name: 'favorites',
+      component: () => import('@/views/favorites/index.vue'),
+      meta: {
+        title: '收藏',
         icon: 'IconHeart',
-        keepAlive: true,
       },
     },
     {

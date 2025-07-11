@@ -29,7 +29,7 @@
           </el-icon>
         </template>
         <template #default>
-          <Playlist :data="{ info: playData, tracks: playData.playlist }" :tableProps="{ maxHeight: 'calc(100vh - 400px)' }" />
+          <Playlist :data="{ info: playData, tracks: playData.playlist }" :tableProps="{ maxHeight: '400px' }" />
         </template>
       </el-popover>
     </div>
