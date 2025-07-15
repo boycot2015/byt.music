@@ -1,21 +1,43 @@
 <template>
   <div class="playlist-detail !overflow-hidden">
-    <slot name="action">
-      <div class="actions backdrop-blur-md text-right absolute top-20 right-0" :class="actionClass" v-if="showActions && data.info">
-        <el-button type="primary" @click="handlePlayAll" :disabled="!data.info.id"
-          ><el-icon class="mr-2"><VideoPlay /></el-icon> 播放</el-button
-        >
-        <el-button type="warning" @click="toggleCollect" :disabled="!data.info.id"
-          ><el-icon class="mr-2"><IconHeartFill v-if="collectStore.has(data.info.id)" /> <IconHeart v-else /></el-icon> {{ collectStore.has(data.info.id) ? '已' : '' }}收藏</el-button
-        >
-        <el-link :href="data.info.source_url" underline="never" target="_blank" rel="noopener noreferrer" class="text-[#444] ml-3">
-          <el-button :disabled="!data.info.id"
-            ><el-icon class="mr-2"><Link /></el-icon> 官源</el-button
+    <div class="flex items-center justify-between pl-3" :class="headerClass">
+      <slot name="header" v-if="showHeader">
+        <div class="flex items-center">
+          <div class="text-xs flex items-center" v-if="data?.info?.nickname || data?.info?.title">
+            <el-avatar class="mr-2" size="small" v-if="data?.info?.headurl" :src="data?.info?.headurl"></el-avatar>
+            <el-icon class="mr-2" v-else><User /></el-icon>
+            <span class="line-clamp-1">{{ data?.info?.nickname || data?.info?.title }}</span>
+            <el-divider direction="vertical" />
+          </div>
+          <template v-if="data?.info?.ctime">
+            <div class="text-xs line-clamp-1">{{ data?.info?.ctime ? new Date(data?.info?.ctime).toLocaleString().split(' ')[0].replace(/\//g, '-') : '--' }}</div>
+            <el-divider direction="vertical" />
+          </template>
+          <div class="text-xs line-clamp-1" v-if="data?.info.play_count">
+            {{ data?.info.play_count ? (data?.info.play_count > 10000 ? (data?.info.play_count / 10000).toFixed(1) + '万次播放' : data?.info.play_count + '次播放') : '--' }}
+            <el-divider direction="vertical" />
+          </div>
+          <div class="text-xs line-clamp-1">
+            <span class="text-[var(--vt-c-primary)]">{{ data?.info?.total_song_num || data.tracks.length || 0 }}</span> 首歌曲
+          </div>
+        </div>
+      </slot>
+      <slot name="action">
+        <div class="actions backdrop-blur-md text-right absolute top-20 right-0" :class="actionClass" v-if="showActions && data.info">
+          <el-button type="primary" @click="handlePlayAll" :disabled="!data.info.id"
+            ><el-icon class="mr-2"><VideoPlay /></el-icon> 播放</el-button
           >
-        </el-link>
-      </div>
-    </slot>
-    <slot name="header"></slot>
+          <el-button type="warning" @click="toggleCollect" :disabled="!data.info.id"
+            ><el-icon class="mr-2"><IconHeartFill v-if="collectStore.has(data.info.id)" /> <IconHeart v-else /></el-icon> {{ collectStore.has(data.info.id) ? '已' : '' }}收藏</el-button
+          >
+          <el-link :href="data.info.source_url" underline="never" target="_blank" rel="noopener noreferrer" class="text-[#444] ml-3">
+            <el-button :disabled="!data.info.id"
+              ><el-icon class="mr-2"><Link /></el-icon> 官源</el-button
+            >
+          </el-link>
+        </div>
+      </slot>
+    </div>
     <el-table ref="tableRef" v-if="data.tracks" :row-class-name="({ row, rowIndex }) => (playData.id == row.id ? 'current-row' : '')" v-bind="tableProps" :data="data.tracks" @row-dblclick="handlePlay">
       <el-table-column prop="title" label="歌曲名称" show-overflow-tooltip>
         <template #default="scope">
@@ -35,6 +57,7 @@
         <el-empty></el-empty>
       </template>
     </el-table>
+    <slot name="pagination"></slot>
   </div>
 </template>
 <script setup>
@@ -66,7 +89,15 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  showHeader: {
+    type: Boolean,
+    default: true,
+  },
   actionClass: {
+    type: String,
+    default: '',
+  },
+  headerClass: {
     type: String,
     default: '',
   },
@@ -92,7 +123,7 @@ const handlePlay = (row) => {
 }
 const toggleCollect = () => {
   if (collectStore.has(data.value.info.id)) collectStore.remove(data.value.info.id)
-  else collectStore.add({ ...data.value, tracks: [], type: route.query.type, id: route.params.id })
+  else collectStore.add({ ...data.value, tracks: [], type: route.query.type || data.value.type, id: route.params.id || data.value.info.id })
 }
 watch(playIndex, () => {
   tableRef.value?.setScrollTop(playIndex.value * 40)
@@ -101,6 +132,7 @@ defineExpose({
   handlePlayAll,
   handlePlay,
   toggleCollect,
+  isCollect: (...arg) => collectStore.has(...arg),
   setScrollTop: (val) => tableRef.value?.setScrollTop(val === 0 ? 0 : playIndex.value * 40),
 })
 </script>

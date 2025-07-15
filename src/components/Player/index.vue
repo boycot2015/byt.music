@@ -3,12 +3,12 @@
     <el-slider size="small" class="flex-3 text-center" :disabled="!playData.url" v-model="playData.currentTime" :min="0" :format-tooltip="formatTime" :max="playData.duration" @input="(val) => (inputValue = val)" @change="onSliderChange" />
     <audio ref="audioRef" class="flex-3 hidden" :muted="muted" :src="url" :loop="playData.loop" @ended="playNext" @timeupdate="onUpdate" @pause="setPlayData({ paused: true })" @play="setPlayData({ paused: false })"></audio>
     <div class="controls flex items-center justify-end flex-1 ml-5">
-      <el-icon :size="30" :disabled="!playData.url" class="flex items-center mr-5">
+      <el-icon :size="30" :disabled="!playData.url" class="flex items-center mr-3">
         <IconInfinity class="cursor-pointer" @click="setPlayData({ loop: false, random: false })" v-if="playData.random" />
         <IconLoop class="cursor-pointer" @click="setPlayData({ loop: !playData.loop, random: true })" v-else-if="playData.loop" />
         <IconListPlay class="cursor-pointer" @click="setPlayData({ loop: !playData.loop, random: false })" v-else />
       </el-icon>
-      <el-icon :size="32" class="mr-5" @click="setPlayData({ muted: !playData.muted })" :disabled="!playData.url">
+      <el-icon :size="30" class="mr-3" @click="setPlayData({ muted: !playData.muted })" :disabled="!playData.url">
         <IconVolume class="cursor-pointer" v-if="!playData.muted" />
         <IconVolumeOff class="cursor-pointer" v-else />
       </el-icon>
@@ -29,7 +29,7 @@
           </el-icon>
         </template>
         <template #default>
-          <Playlist :data="{ info: playData, tracks: playData.playlist }" :tableProps="{ maxHeight: '400px' }" />
+          <Playlist :show-header="false" :data="{ info: playData, tracks: playData.playlist }" :tableProps="{ maxHeight: '400px' }" />
         </template>
       </el-popover>
     </div>

@@ -67,17 +67,19 @@
   </div>
 </template>
 <script name="playlist" setup>
-import { getCurrentInstance, ref } from 'vue'
+import { computed, getCurrentInstance, ref } from 'vue'
 import { ArrowDown, Loading } from '@element-plus/icons-vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useConfigStore } from '@/stores/config'
+defineOptions({ name: 'playlist' })
+const { config } = useConfigStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
-defineOptions({ name: 'playlist' })
 const route = useRoute()
 const router = useRouter()
 const type = ref(route.query.type || 'qq')
 const ctype = ref(route.query.ctype || '')
-const types = ref([])
+const types = computed(() => config.types)
 const cates = ref({})
 const playlist = ref([])
 const loading = ref(true)
@@ -94,11 +96,6 @@ const fetchData = (el) => {
   ctype.value = !el ? route.query.ctype || '' : ''
   fetchCatesData(current)
   fetchListData(current)
-}
-const fetchCateData = async () => {
-  loading.value = true
-  const response = await fetch(`${$apiUrl}/music/cate`).then((res) => res.json())
-  types.value = response.data.map((el) => ({ ...el, title: el.title + '音乐' }))
 }
 const fetchCatesData = (item = { type: type.value }) => {
   if (cates.value[type.value] && cates.value[type.value].length) {
@@ -145,7 +142,6 @@ const fetchListData = (item = {}) => {
     })
     .catch(() => {})
 }
-fetchCateData()
 fetchData()
 </script>
 

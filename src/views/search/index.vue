@@ -3,13 +3,19 @@
     <div class="border-b border-[var(--el-menu-border-color)] pb-4">
       <el-autocomplete placeholder="请输入搜索内容" clearable v-model="keyword" :fetch-suggestions="debounce(queryKeywords, 400)" size="large" @select="onSearch" @change="debounce(onSearch, 400)">
         <template #prepend>
-          <el-select size="large" class="!w-[110px]" v-model="type" @change="onSearch">
-            <el-option label="企鹅音乐" value="qq" />
-            <el-option label="网易音乐" value="netease" />
-            <el-option label="酷狗音乐" value="kugou" />
-            <el-option label="酷我音乐" value="kuwo" />
-            <el-option label="千千音乐" value="qianqian" />
-            <el-option label="咪咕音乐" value="migu" />
+          <el-select
+            size="large"
+            class="!w-[110px]"
+            v-model="type"
+            @change="
+              () => {
+                currentPage = 1
+                playlistRef.setScrollTop(0)
+                onSearch()
+              }
+            "
+          >
+            <el-option v-for="item in types" :key="item.type" :label="item.title" :value="item.type" />
           </el-select>
         </template>
         <template #append>
@@ -28,6 +34,8 @@
           @click="
             () => {
               keyword = item.name
+              currentPage = 1
+              playlistRef.setScrollTop(0)
               onSearch()
             }
           "
@@ -35,22 +43,43 @@
         >
       </el-scrollbar>
     </div>
-    <div class="relative">
-      <div class="flex justify-between my-5 items-center">
-        <el-button type="primary" @click="playlistRef.handlePlayAll" :disabled="!playlist.length || loading"
-          ><el-icon class="mr-2"><VideoPlay /></el-icon> 播放</el-button
-        >
-        <el-segmented v-model="stype" :disabled="!keyword || loading" :options="cates" size="large" :props="{ label: 'title', value: 'path' }" @change="onSearch" />
-      </div>
-      <Playlist ref="playlistRef" v-loading="loading" :data="{ info: { id: keyword }, tracks: playlist }" :tableProps="{ maxHeight: 'calc(100vh - 388px)' }" />
-    </div>
+    <Playlist ref="playlistRef" :showHeader="false" header-class="mt-5 !pl-0" action-class="mt-2" v-loading="loading" :data="{ info: { id: keyword, total_song_num: total || playlist.length }, tracks: playlist }" :tableProps="{ height: 'calc(100vh - 410px)' }">
+      <template #action>
+        <div class="relative flex-1 flex items-center justify-between">
+          <el-button type="primary" @click="playlistRef.handlePlayAll" :disabled="!playlist.length || loading"
+            ><el-icon class="mr-2"><VideoPlay /></el-icon> 播放</el-button
+          >
+          <el-segmented
+            v-model="stype"
+            :disabled="!keyword || loading"
+            :options="cates"
+            size="large"
+            :props="{ label: 'title', value: 'path' }"
+            @change="
+              () => {
+                currentPage = 1
+                playlistRef.setScrollTop(0)
+                onSearch()
+              }
+            "
+          />
+        </div>
+      </template>
+      <template #pagination>
+        <div class="flex justify-end mt-2">
+          <el-pagination layout="total, prev, pager, next, jumper, ->" :total="total" :page-size="pageSize" v-model:current-page="currentPage" @current-change="onSearch" />
+        </div>
+      </template>
+    </Playlist>
   </div>
 </template>
 <script name="search" setup>
 import { debounce } from 'lodash-es'
-import { getCurrentInstance, ref } from 'vue'
+import { computed, getCurrentInstance, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import Playlist from '@/views/components/Playlist.vue'
+import { useConfigStore } from '@/stores/config'
+const { config } = useConfigStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
 const $musicApiUrl = proxy.$musicApiUrl
@@ -65,13 +94,16 @@ const hasNextPage = ref(false)
 const keyword = ref('')
 const stype = ref('0')
 const type = ref('qq')
+const types = computed(() => config.types)
 const cates = ref([
   { title: '单曲', path: '0' },
+  { title: '歌单', path: '1' },
   { title: '专辑', path: 'album' },
   { title: '歌手', path: 'singer' },
-  { title: '歌单', path: 'playlist' },
+  { title: '用户', path: 'user' },
 ])
 const currentPage = ref(route.query.page ? Number(route.query.page) : 1)
+const pageSize = ref(15)
 const fetchData = async () => {
   pageLoading.value = true
   currentPage.value = 1
@@ -88,18 +120,19 @@ const queryKeywords = async (queryString, cb) => {
 }
 const onSearch = async () => {
   loading.value = true
-  let results = await fetch(`${$apiUrl}/music/search?keyword=${keyword.value}&type=${type.value}&searchType=${stype.value}&limit=20&offset=0`)
+  let results = await fetch(`${$apiUrl}/music/search?keyword=${keyword.value}&type=${type.value}&searchType=${stype.value}&limit=${pageSize.value}&page=${currentPage.value}`)
     .then((res) => res.json())
     .then((res) => res.data)
     .catch(() => {
       loading.value = false
     })
   playlist.value = results.result.map((el) => {
+    if (!el.duration || typeof el.duration !== 'number') return { ...el, duration: el.duration || '--' }
     let duration = Math.floor(el.duration / 60 / 1000) + ':' + (el.duration % 60 > 9 ? el.duration % 60 : '0' + (el.duration % 60))
     if (Math.floor(el.duration / 60) < 10) {
       duration = '0' + duration
     }
-    return { ...el, duration: el.durationStr ? el.durationStr : duration }
+    return { ...el, duration: el.durationStr ? el.durationStr : duration || '--' }
   })
   hasNextPage.value = results.hasMore
   total.value = results.total

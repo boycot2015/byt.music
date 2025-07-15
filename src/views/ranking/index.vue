@@ -1,87 +1,95 @@
 <template>
-  <div class="ranking overflow-hidden" v-loading="pageLoading">
-    <el-row :gutter="20">
-      <el-col :span="8" class="flex flex-col border-r border-[var(--el-color-primary)]">
-        <el-select v-model="type" @change="onSearch">
-          <el-option v-for="item in cates" :key="item.name" :label="item.title" :value="item.path" />
+  <div class="ranking">
+    <el-row :gutter="20" class="overflow-hidden">
+      <el-col :span="6" class="flex flex-col border-r border-[var(--el-border-color)]">
+        <el-select v-model="type" @change="fetchData">
+          <el-option v-for="item in types" :key="item.type" :label="item.title" :value="item.type" />
         </el-select>
-        <el-scrollbar>
-          <el-menu class="flex h-[calc(100vh-180px)] !border-0">
-            <el-menu-item> {{ 12312 }} </el-menu-item>
+        <el-scrollbar always class="!mt-[10px]" height="calc(100vh - 213px)" v-loading="pageLoading">
+          <el-menu :default-active="activePlayIndex" class="!border-0 h-full" v-if="cates[type] && cates[type]?.playlist.length" @select="fetchPlayList">
+            <el-menu-item v-for="item in cates[type].playlist" :key="item.id" :index="item.id + ''" class="!whitespace-normal !leading-[20px] !pl-0">
+              <div class="flex items-center flex-wrap">
+                <el-image lazy class="w-[36px] h-[36px] mr-2 rounded" :src="item.cover_img_url" fit="cover" />
+                <span class="line-clamp-2 flex-1">{{ item.title }}</span>
+              </div>
+            </el-menu-item>
           </el-menu>
+          <el-empty v-else-if="!pageLoading && !cates[type]?.playlist.length" />
         </el-scrollbar>
       </el-col>
-      <el-col :span="16">
-        <div class="relative">
-          <div class="flex justify-between items-center">
-            <el-button type="primary" @click="playlistRef.handlePlayAll" :disabled="!playlist.length || loading"
-              ><el-icon class="mr-2"><VideoPlay /></el-icon> 播放</el-button
-            >
-          </div>
-          <Playlist ref="playlistRef" v-loading="loading" :data="{ info: { id: keyword }, tracks: playlist }" :tableProps="{ maxHeight: 'calc(100vh - 288px)' }" />
-        </div>
+      <el-col :span="18">
+        <Playlist v-loading="loading" ref="playlistRef" :data="{ info: playlistInfo, tracks: playlist, id: playlistInfo.id, type }" :tableProps="{ maxHeight: 'calc(100vh - 203px)' }">
+          <template #action>
+            <div class="flex justify-end items-center" v-if="playlistRef">
+              <el-button type="primary" @click="playlistRef.handlePlayAll" :disabled="!playlist.length || loading"
+                ><el-icon class="mr-2"><VideoPlay /></el-icon> 播放</el-button
+              >
+              <el-button type="warning" @click="() => playlistRef?.toggleCollect()" :disabled="!playlistInfo || !playlist.length || loading"
+                ><el-icon class="mr-2"><IconHeartFill v-if="playlistRef?.isCollect(playlistInfo.id)" /> <IconHeart v-else /></el-icon> {{ playlistRef?.isCollect(playlistInfo.id) ? '已' : '' }}收藏</el-button
+              >
+              <el-link :href="playlistInfo?.source_url" underline="never" target="_blank" rel="noopener noreferrer" class="text-[#444] ml-3">
+                <el-button :disabled="!playlistInfo || !playlist.length || loading"
+                  ><el-icon class="mr-2"><Link /></el-icon> 官源</el-button
+                >
+              </el-link>
+            </div>
+          </template>
+        </Playlist>
       </el-col>
     </el-row>
   </div>
 </template>
 <script name="search" setup>
-import { getCurrentInstance, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { getCurrentInstance, ref, computed } from 'vue'
 import Playlist from '@/views/components/Playlist.vue'
+import { useConfigStore } from '@/stores/config'
+const { config } = useConfigStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
-const $musicApiUrl = proxy.$musicApiUrl
-const route = useRoute()
-const hots = ref([])
 const playlist = ref([])
-const playlistRef = ref([])
+const playlistRef = ref(null)
 const loading = ref(false)
 const pageLoading = ref(false)
-const total = ref(0)
-const hasNextPage = ref(false)
 const keyword = ref('')
 const type = ref('qq')
-const cates = ref([
-  { title: '企鹅音乐', path: 'qq' },
-  { title: '网易音乐', path: 'netease' },
-  { title: '酷狗音乐', path: 'kugou' },
-  { title: '酷我音乐', path: 'kuwo' },
-  { title: '千千音乐', path: 'qianqian' },
-  { title: '咪咕音乐', path: 'migu' },
-])
-const currentPage = ref(route.query.page ? Number(route.query.page) : 1)
+const ctype = ref('toplist')
+const activePlayIndex = ref('0')
+const types = computed(() => config.types)
+const cates = ref({})
+const playlistInfo = ref({})
 const fetchData = async () => {
+  if (cates.value[type.value]?.playlist?.length) {
+    fetchPlayList(cates.value[type.value].playlist[0]?.id + '')
+    return
+  }
+  cates.value[type.value] = { playlist: [], hasMore: false, total: 0 }
   pageLoading.value = true
-  currentPage.value = 1
-  const response = await fetch(`${$musicApiUrl}/search/hot/detail`).then((res) => res.json())
-  hots.value = response.data?.map((el) => ({ ...el, name: el.searchWord }))
-  pageLoading.value = false
-}
-const queryKeywords = async (queryString, cb) => {
-  let results = await fetch(`${$musicApiUrl}/search/hot`)
-    .then((res) => res.json())
-    .then((res) => res.result.hots.map((el) => ({ ...el, value: el.first })))
-  results = results.filter((item) => item.value.toLowerCase().indexOf(queryString.toLowerCase()) > -1)
-  cb(results)
-}
-const onSearch = async () => {
-  loading.value = true
-  let results = await fetch(`${$apiUrl}/music?type=${type.value}&limit=20&offset=0`)
+  let results = await fetch(`${$apiUrl}/music?type=${type.value}&id=${type.value == 'netease' ? '排行榜' : ctype.value}&limit=20&offset=0`)
     .then((res) => res.json())
     .then((res) => res.data)
     .catch(() => {
+      pageLoading.value = false
+    })
+  cates.value[type.value].playlist = results.result
+  cates.value[type.value].hasMore = results.hasMore || results.hasNextPage || false
+  cates.value[type.value].total = results.total
+  fetchPlayList(cates.value[type.value].playlist[0]?.id + '')
+  pageLoading.value = false
+}
+const fetchPlayList = async (id) => {
+  activePlayIndex.value = id
+  loading.value = true
+  keyword.value = id
+  let results = await fetch(`${$apiUrl}/music/detail?type=${type.value}&cate=${ctype.value}&id=${id}`)
+    .then((res) => res.json())
+    .then((res) => res.data || {})
+    .catch(() => {
       loading.value = false
     })
-  playlist.value = results.result.map((el) => {
-    let duration = Math.floor(el.duration / 60 / 1000) + ':' + (el.duration % 60 > 9 ? el.duration % 60 : '0' + (el.duration % 60))
-    if (Math.floor(el.duration / 60) < 10) {
-      duration = '0' + duration
-    }
-    return { ...el, duration: el.durationStr ? el.durationStr : duration }
-  })
-  hasNextPage.value = results.hasMore
-  total.value = results.total
+  playlist.value = results.tracks || []
+  playlistInfo.value = results.info || {}
   loading.value = false
+  playlistRef.value.setScrollTop(0)
 }
 fetchData()
 </script>

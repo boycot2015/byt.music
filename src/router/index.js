@@ -30,6 +30,7 @@ const router = createRouter({
       component: () => import('@/views/search/index.vue'),
       meta: {
         title: '搜索',
+        keepAlive: true,
         icon: 'Search',
       },
     },
@@ -60,6 +61,7 @@ const router = createRouter({
       component: () => import('@/views/ranking/index.vue'),
       meta: {
         title: '排行榜',
+        keepAlive: true,
         icon: 'IconRank',
       },
     },
@@ -69,6 +71,7 @@ const router = createRouter({
       component: () => import('@/views/favorites/index.vue'),
       meta: {
         title: '收藏',
+        keepAlive: true,
         icon: 'IconHeart',
       },
     },

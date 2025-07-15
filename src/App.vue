@@ -2,13 +2,22 @@
 import { RouterView } from 'vue-router'
 import Layout from './Layout/index.vue'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
-
+import { getCurrentInstance } from 'vue'
 import { useRouter } from 'vue-router'
+import { useConfigStore } from '@/stores/config'
+const { proxy } = getCurrentInstance()
+const $apiUrl = proxy.$apiUrl
+const { set } = useConfigStore()
 const router = useRouter()
 const keepAliveRoutes = router.options.routes
   .filter((el) => el.meta?.keepAlive)
   .map((el) => el.name)
   .join(',')
+const fetchCateData = async () => {
+  const response = await fetch(`${$apiUrl}/music/cate`).then((res) => res.json())
+  set({ types: response.data.map((el) => ({ ...el, title: el.title + '音乐' })) })
+}
+fetchCateData()
 </script>
 
 <template>
