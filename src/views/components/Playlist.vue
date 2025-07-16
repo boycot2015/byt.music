@@ -1,5 +1,5 @@
 <template>
-  <div class="playlist-detail !overflow-hidden">
+  <div class="playlist-detail !overflow-hidden rounded-md">
     <div class="flex items-center justify-between pl-3" :class="headerClass">
       <slot name="header" v-if="showHeader">
         <div class="flex items-center">
@@ -13,12 +13,12 @@
             <div class="text-xs line-clamp-1">{{ data?.info?.ctime ? new Date(data?.info?.ctime).toLocaleString().split(' ')[0].replace(/\//g, '-') : '--' }}</div>
             <el-divider direction="vertical" />
           </template>
-          <div class="text-xs line-clamp-1" v-if="data?.info.play_count">
-            {{ data?.info.play_count ? (data?.info.play_count > 10000 ? (data?.info.play_count / 10000).toFixed(1) + '万次播放' : data?.info.play_count + '次播放') : '--' }}
+          <div class="text-xs line-clamp-1" v-if="data?.info?.play_count">
+            {{ data?.info?.play_count ? (data?.info.play_count > 10000 ? (data?.info?.play_count / 10000).toFixed(1) + '万次播放' : data?.info.play_count + '次播放') : '--' }}
             <el-divider direction="vertical" />
           </div>
           <div class="text-xs line-clamp-1">
-            <span class="text-[var(--vt-c-primary)]">{{ data?.info?.total_song_num || data.tracks.length || 0 }}</span> 首歌曲
+            <span class="text-[var(--el-color-primary)]">{{ data?.info?.total_song_num || data.tracks.length || 0 }}</span> 首歌曲
           </div>
         </div>
       </slot>
@@ -52,7 +52,7 @@
           {{ scope.row.album?.name || scope.row.album || '--' }}
         </template>
       </el-table-column>
-      <el-table-column prop="duration" sortable width="120px" label="歌曲时长"></el-table-column>
+      <el-table-column prop="duration" align="right" sortable width="120px" label="歌曲时长"></el-table-column>
       <template v-slot:empty>
         <el-empty></el-empty>
       </template>

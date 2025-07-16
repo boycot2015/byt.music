@@ -1,5 +1,5 @@
 <template>
-  <el-page-header @back="goBack" :icon="route.meta.showBack ? ArrowLeft : ''">
+  <el-page-header @back="goBack" :icon="route.meta.showBack ? ArrowLeft : ''" class="w-full">
     <template #title>
       <div class="flex items-center">
         <span class="text-large font-600" v-if="route.meta.showBack"> 返回 </span>
@@ -16,11 +16,20 @@
         <span class="text-large font-600"> {{ route.meta.title }} </span>
       </div>
     </template>
+    <template #extra>
+      <div class="flex">
+        <el-switch v-model="isDark" inline-prompt active-icon="Moon" inactive-icon="Sunny" @change="toggleDark" />
+      </div>
+    </template>
   </el-page-header>
 </template>
 <script lang="ts" setup>
 import { ArrowLeft } from '@element-plus/icons-vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useDark, useToggle } from '@vueuse/core'
+
+const isDark = useDark()
+const toggleDark = useToggle(isDark)
 const router = useRouter()
 const route = useRoute()
 const goBack = () => {

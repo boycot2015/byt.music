@@ -15,12 +15,12 @@ const keepAliveRoutes = router.options.routes
 </script>
 
 <template>
-  <el-container>
-    <el-aside width="64px" class="bg-[transparent] h-[100vh]">
+  <el-container class="text-shadow-2xl">
+    <el-aside width="64px" class="h-[100vh]">
       <Aside />
     </el-aside>
-    <el-container class="overflow-hidden">
-      <el-header class="bg-[transparent] flex items-center border-b-[1px] border-[var(--el-menu-border-color)]"><Header /></el-header>
+    <el-container class="overflow-hidden bg-[var(--el-bg-color)]">
+      <el-header class="bg-[var(--el-bg-color)] flex items-center border-b-[1px] border-[var(--el-menu-border-color)]"><Header /></el-header>
       <el-main class="bg-[transparent] m-[10px] !p-[10px] !overflow-hidden">
         <el-scrollbar always style="height: calc(100vh - 160px)">
           <div class="main scrollbar-wrapper">
@@ -34,7 +34,7 @@ const keepAliveRoutes = router.options.routes
           </div>
         </el-scrollbar>
       </el-main>
-      <el-footer class="bg-[transparent] flex items-center border-t-[1px] border-[var(--el-menu-border-color)]">
+      <el-footer class="bg-[var(--el-bg-color)] flex items-center border-t-[1px] border-[var(--el-menu-border-color)]">
         <Footer />
       </el-footer>
     </el-container>
@@ -58,5 +58,13 @@ const keepAliveRoutes = router.options.routes
   opacity: 0;
   height: 0;
   transform: translateX(-30px);
+}
+.el-aside {
+  --aside-bg-color: rgba(255, 255, 255, 0.5);
+  background-color: var(--aside-bg-color);
+}
+html.dark .el-aside {
+  --aside-bg-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--aside-bg-color);
 }
 </style>

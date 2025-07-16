@@ -1,14 +1,14 @@
 <template>
   <div class="cover h-[calc(100vh-60px)] backdrop-blur-md">
     <div class="flex gap-10 items-center h-full justify-center mx-auto p-5">
-      <div class="cover-img w-[500px]">
-        <el-image class="min-w-[200px] rounded" :src="playData.img_url || '/logo.svg'">
+      <div class="cover-img">
+        <el-image class="w-[300px] rounded" :src="playData.img_url">
           <template #error>
-            <el-image src="/logo.svg" class="w-full h-full"></el-image>
+            <el-icon :size="320" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
           </template>
         </el-image>
       </div>
-      <div class="lyric">
+      <div class="lyric flex items-center">
         <Lyric />
       </div>
     </div>

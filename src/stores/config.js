@@ -5,8 +5,14 @@ export const useConfigStore = defineStore(
   'config',
   () => {
     const config = ref({
-      theme: 'dark',
       title: 'BytMusic',
+      description: '一个基于 Vue3 + Pinia + Element Plus 的音乐播放器',
+      theme: {
+        primaryColor: '#409eff',
+        backgroundColor: '#ffffff',
+        backgroundImage: '',
+        textColor: '#333333',
+      },
       types: [
         { title: '企鹅音乐', type: 'qq' },
         { title: '网易音乐', type: 'netease' },
@@ -20,6 +26,11 @@ export const useConfigStore = defineStore(
       config.value = {
         ...config.value,
         ...val,
+      }
+      if (val.theme) {
+        if (val.theme.backgroundImage) {
+          document.body.style.background = `url(${val.theme.backgroundImage}) no-repeat center/cover`
+        }
       }
     }
     return { config, set }

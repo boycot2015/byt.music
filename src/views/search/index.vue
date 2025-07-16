@@ -1,6 +1,6 @@
 <template>
-  <div class="search" v-loading="pageLoading">
-    <div class="border-b border-[var(--el-menu-border-color)] pb-4">
+  <div class="search">
+    <div class="pb-4">
       <el-autocomplete placeholder="请输入搜索内容" clearable v-model="keyword" :fetch-suggestions="debounce(queryKeywords, 400)" size="large" @select="onSearch" @change="debounce(onSearch, 400)">
         <template #prepend>
           <el-select
@@ -25,25 +25,28 @@
         </template>
       </el-autocomplete>
     </div>
-    <div class="keywords rounded mt-4 border border-[var(--el-menu-border-color)] pt-2">
+    <div class="keywords rounded my-4 border border-[var(--el-menu-border-color)] pt-2 rounded-md" v-loading="keywordLoading">
       <el-scrollbar class="flex flex-wrap" height="64px">
-        <el-tag
-          class="max-w-[200px] mx-2 mb-2 cursor-pointer"
-          v-for="item in hots"
-          :key="item.name"
-          @click="
-            () => {
-              keyword = item.name
-              currentPage = 1
-              playlistRef.setScrollTop(0)
-              onSearch()
-            }
-          "
-          >{{ item.name }}</el-tag
-        >
+        <template v-if="hots.length">
+          <el-tag
+            class="mx-2 mb-2 cursor-pointer whitespace-normal"
+            v-for="item in hots"
+            :key="item.name"
+            @click="
+              () => {
+                keyword = item.name
+                currentPage = 1
+                playlistRef.setScrollTop(0)
+                onSearch()
+              }
+            "
+            >{{ item.name }}</el-tag
+          >
+        </template>
+        <el-empty v-else-if="!keywordLoading"></el-empty>
       </el-scrollbar>
     </div>
-    <Playlist ref="playlistRef" :showHeader="false" header-class="mt-5 !pl-0" action-class="mt-2" v-loading="loading" :data="{ info: { id: keyword, total_song_num: total || playlist.length }, tracks: playlist }" :tableProps="{ height: 'calc(100vh - 410px)' }">
+    <Playlist ref="playlistRef" :showHeader="false" header-class="!pl-0" action-class="mt-2" v-loading="loading" :data="{ info: { id: keyword, total_song_num: total || playlist.length }, tracks: playlist }" :tableProps="{ height: 'calc(100vh - 410px)' }">
       <template #action>
         <div class="relative flex-1 flex items-center justify-between">
           <el-button type="primary" @click="playlistRef.handlePlayAll" :disabled="!playlist.length || loading"
@@ -54,7 +57,7 @@
             :disabled="!keyword || loading"
             :options="cates"
             size="large"
-            :props="{ label: 'title', value: 'path' }"
+            :props="{ label: 'title', value: 'value' }"
             @change="
               () => {
                 currentPage = 1
@@ -62,7 +65,12 @@
                 onSearch()
               }
             "
-          />
+          >
+            <template #default="{ item }">
+              {{ item.title }}
+              <span v-if="item.total">({{ item.total }})</span>
+            </template>
+          </el-segmented>
         </div>
       </template>
       <template #pagination>
@@ -88,7 +96,7 @@ const hots = ref([])
 const playlist = ref([])
 const playlistRef = ref([])
 const loading = ref(false)
-const pageLoading = ref(false)
+const keywordLoading = ref(false)
 const total = ref(0)
 const hasNextPage = ref(false)
 const keyword = ref('')
@@ -96,30 +104,38 @@ const stype = ref('0')
 const type = ref('qq')
 const types = computed(() => config.types)
 const cates = ref([
-  { title: '单曲', path: '0' },
-  { title: '歌单', path: '1' },
-  { title: '专辑', path: 'album' },
-  { title: '歌手', path: 'singer' },
-  { title: '用户', path: 'user' },
+  { title: '单曲', value: '0' },
+  { title: '歌单', value: '1' },
+  // { title: '专辑', value: 'album' },
+  // { title: '歌手', value: 'singer' },
+  // { title: '用户', value: 'user' },
 ])
 const currentPage = ref(route.query.page ? Number(route.query.page) : 1)
 const pageSize = ref(15)
 const fetchData = async () => {
-  pageLoading.value = true
+  keywordLoading.value = true
   currentPage.value = 1
   const response = await fetch(`${$musicApiUrl}/search/hot/detail`).then((res) => res.json())
   hots.value = response.data?.map((el) => ({ ...el, name: el.searchWord }))
-  pageLoading.value = false
+  keywordLoading.value = false
 }
 const queryKeywords = async (queryString, cb) => {
   let results = await fetch(`${$musicApiUrl}/search/hot`)
     .then((res) => res.json())
     .then((res) => res.result.hots.map((el) => ({ ...el, value: el.first })))
+    .catch(() => {
+      keywordLoading.value = false
+    })
   results = results.filter((item) => item.value.toLowerCase().indexOf(queryString.toLowerCase()) > -1)
   cb(results)
 }
 const onSearch = async () => {
   loading.value = true
+  cates.value.map((el) => {
+    if (el.value !== stype.value) {
+      el.total = 0
+    }
+  })
   let results = await fetch(`${$apiUrl}/music/search?keyword=${keyword.value}&type=${type.value}&searchType=${stype.value}&limit=${pageSize.value}&page=${currentPage.value}`)
     .then((res) => res.json())
     .then((res) => res.data)
@@ -137,7 +153,11 @@ const onSearch = async () => {
   hasNextPage.value = results.hasMore
   total.value = results.total
   loading.value = false
-  cates.value[0].title = `单曲(${total.value})`
+  cates.value.map((el) => {
+    if (el.value === stype.value) {
+      el.total = results.total
+    }
+  })
 }
 fetchData()
 </script>

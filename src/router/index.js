@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import { useConfigStore } from '@/stores/config'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -51,6 +52,7 @@ const router = createRouter({
       meta: {
         title: '歌单详情',
         icon: 'IconFavicon',
+        menuPath: '/playlist',
         hideInMenu: true,
         showBack: true,
       },
@@ -81,6 +83,7 @@ const router = createRouter({
       component: () => import('@/views/setting/index.vue'),
       meta: {
         title: '设置',
+        keepAlive: true,
         icon: 'Setting',
       },
     },
@@ -94,7 +97,7 @@ const router = createRouter({
 })
 router.beforeEach((to, from, next) => {
   const { config } = useConfigStore()
-  document.title = to.meta.title + '-' + config.title
+  document.title = to.meta.title + '-' + (config.title || 'BytMusic')
   next()
 })
 export default router

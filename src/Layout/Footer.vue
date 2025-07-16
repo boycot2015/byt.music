@@ -1,10 +1,10 @@
 <template>
   <footer class="footer w-full">
-    <div class="nav flex items-center justify-between w-full relative z-999">
+    <div class="nav flex items-center justify-between w-full relative z-10000">
       <div class="left flex flex-1 cursor-pointer" @click="coverVisible = !coverVisible">
-        <el-image :src="playData.img_url || '/logo.svg'" fit="fill" class="w-11 h-11 mr-2 rounded">
+        <el-image :src="playData.img_url" fit="fill" class="w-11 h-11 mr-2 rounded">
           <template #error>
-            <el-image src="/logo.svg" class="w-full h-full"></el-image>
+            <el-icon :size="44" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
           </template>
         </el-image>
         <div class="info">
@@ -14,13 +14,13 @@
       </div>
       <Player />
     </div>
-    <el-drawer v-model="coverVisible" :z-index="10" :modal-class="`!absolute !bg-[transparent]`" body-class="!p-0" header-class="text-center" direction="btt" :title="playData.title" size="100%" :with-header="false">
+    <el-drawer v-model="coverVisible" :z-index="9999" :modal-class="`!absolute !bg-[transparent]`" body-class="!p-0" header-class="text-center" direction="btt" :title="playData.title" size="100%" :with-header="false">
       <div class="relative z-10 backdrop-blur-2xl overflow-hidden">
         <div class="flex w-full items-center px-10 pr-5 leading-[60px]">
           <div class="flex flex-1 items-center text-center justify-center">
             <div class="title text-xl line-clamp-1 mr-2">{{ playData.title }}--{{ playData.singer }}</div>
           </div>
-          <div class="close cursor-pointer hover:text-[var(--vt-c-primary)]" @click="coverVisible = false">
+          <div class="close cursor-pointer hover:text-[var(--el-color-primary)]" @click="coverVisible = false">
             <el-icon :size="24">
               <ArrowDown />
             </el-icon>

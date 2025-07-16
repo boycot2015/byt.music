@@ -6,7 +6,7 @@
 
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
-  --vt-c-primary: #0284c7;
+  --el-color-primary: #0284c7;
   --vt-c-white: #ffffff;
   --vt-c-bg: #f5f5f5;
   --vt-c-white-soft: #f8f8f8;
@@ -16,46 +16,29 @@
   --vt-c-black-soft: #222222;
   --vt-c-black-mute: #282828;
 
-  --vt-c-indigo: #333333;
+  --vt-c-regular: #333333;
+  --vt-c-secondary: #666666;
 
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
   --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
   --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
   --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
 
-  --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
+  --vt-c-text-light-1: var(--vt-c-regular);
+  --vt-c-text-light-2: var(--vt-c-secondary);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
 }
 
 /* semantic color variables for this project */
 :root {
-  --color-background: var(--vt-c-bg);
-  --color-background-soft: var(--vt-c-white-soft);
-  --color-background-mute: var(--vt-c-white-mute);
-
-  --color-border: var(--vt-c-divider-light-2);
-  --color-border-hover: var(--vt-c-divider-light-1);
-
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
-
-  --section-gap: 160px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
-
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
-
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
-  }
+  --color-text: var(--vt-c-regular);
+  --color-text-secondary: var(--vt-c-secondary);
+  --section-gap: 16px;
+  --el-bg-color: rgba(255, 255, 255, 0.8) !important;
+  --el-bg-color-overlay: rgba(255, 255, 255, 0.8) !important;
+  --el-fill-color-blank: rgba(255, 255, 255, 0.95) !important;
+  --el-border-color-lighter: var(--vt-c-bg) !important;
 }
 
 *,
@@ -71,7 +54,7 @@
 body {
   min-height: 100vh;
   color: var(--color-text);
-  background: var(--color-background);
+  background: var(--el-bg-color);
   transition:
     color 0.5s,
     background-color 0.5s;
@@ -94,6 +77,14 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+html.dark {
+  /* 自定义深色颜色 */
+  --color-text: var(--vt-c-text-dark-1);
+  --color-text-secondary: var(--vt-c-text-dark-2);
+  --el-bg-color: rgba(0, 0, 0, 0.8) !important;
+  --el-bg-color-overlay: rgba(0, 0, 0, 0.85) !important;
+  --el-fill-color-blank: rgba(0, 0, 0, 0.95) !important;
+}
 .el-tabs__header {
   margin-bottom: 0 !important;
 }
@@ -107,10 +98,21 @@ body {
   background-color: var(--el-slider-main-bg-color) !important;
 }
 .el-table {
-  --el-table-current-row-bg-color: var(--vt-c-primary);
+  --el-table-current-row-bg-color: var(--el-color-primary);
 }
-
+.el-menu {
+  --el-menu-hover-bg-color: transparent !important;
+}
+.el-menu-item > div {
+  border-left: 2px solid transparent !important;
+  padding-left: 10px !important;
+}
+.el-menu-item:hover > div,
+.el-menu-item.is-active > div {
+  border-left: 2px solid var(--el-color-primary) !important;
+}
 .el-menu,
+.el-anchor,
 .el-table td.el-table__cell,
 .el-table th.el-table__cell,
 .el-table,

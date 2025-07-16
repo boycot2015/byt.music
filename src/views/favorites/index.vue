@@ -1,9 +1,9 @@
 <template>
   <div class="favorites h-full !p-0 min-h-[300px]">
-    <el-row>
+    <el-row :gutter="10">
       <el-col :span="6">
-        <el-scrollbar style="height: calc(100vh - 210px)">
-          <el-menu :default-active="current" class="h-[calc(100vh-210px)]" @select="onSelect" v-if="collect[current]">
+        <el-scrollbar style="height: calc(100vh - 160px)" class="ml-[-20px] border-r border-[var(--el-menu-border-color)]">
+          <el-menu :default-active="current" class="h-[calc(100vh-210px)] !border-0" @select="onSelect" v-if="collect[current]">
             <el-menu-item v-for="(item, index) in collect" :key="item.info?.id || index" :index="index + ''" @mouseenter="collectStore.update({ ...item, showClose: true })" @mouseleave="collectStore.update({ ...item, showClose: false })">
               <div class="flex items-center">
                 <el-image class="basis-[36px] rounded" :src="item.info.cover_img_url">
@@ -17,7 +17,7 @@
                 <div class="flex-1 ml-2">
                   <div class="text-xs line-clamp-2 text-wrap pr-[10px]" v-html="item.info.title"></div>
                 </div>
-                <div class="close cursor-pointer hover:text-[var(--vt-c-primary)] absolute right-0 transition-colors duration-300 ease-in-out" :class="{ hidden: !item.showClose }">
+                <div class="close cursor-pointer hover:text-[var(--el-color-primary)] absolute right-2 transition-colors duration-300 ease-in-out" :class="{ hidden: !item.showClose }">
                   <el-icon @click="collectStore.remove(item.info.id)"><Delete /></el-icon>
                 </div>
               </div>
@@ -25,7 +25,7 @@
           </el-menu>
           <el-empty v-else></el-empty>
         </el-scrollbar>
-        <div class="flex justify-center border-t border-r border-[var(--el-menu-border-color)] py-2">
+        <!-- <div class="flex justify-center py-2">
           <el-button
             :disabled="!collect.length"
             type="danger"
@@ -40,7 +40,7 @@
           >
             <el-icon class="mr-2"><Delete /></el-icon> 清空
           </el-button>
-        </div>
+        </div> -->
       </el-col>
       <el-col :span="18" v-loading="loading">
         <Playlist ref="playlistRef" :data="{ ...collect[current], tracks: playlist }" :tableProps="{ maxHeight: 'calc(100vh - 210px)' }">
