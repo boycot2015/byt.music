@@ -6,7 +6,7 @@
 
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
-  --el-color-primary: #0284c7;
+  --el-color-primary: #0284c7 !important;
   --vt-c-white: #ffffff;
   --vt-c-bg: #f5f5f5;
   --vt-c-white-soft: #f8f8f8;
@@ -36,8 +36,8 @@
   --color-text-secondary: var(--vt-c-secondary);
   --section-gap: 16px;
   --el-bg-color: rgba(255, 255, 255, 0.8) !important;
-  --el-bg-color-overlay: rgba(255, 255, 255, 0.8) !important;
-  --el-fill-color-blank: rgba(255, 255, 255, 0.95) !important;
+  --el-bg-color-overlay: rgba(255, 255, 255, 0.9) !important;
+  --el-fill-color-blank: rgba(255, 255, 255, 0.6) !important;
   --el-border-color-lighter: var(--vt-c-bg) !important;
 }
 
@@ -82,8 +82,8 @@ html.dark {
   --color-text: var(--vt-c-text-dark-1);
   --color-text-secondary: var(--vt-c-text-dark-2);
   --el-bg-color: rgba(0, 0, 0, 0.8) !important;
-  --el-bg-color-overlay: rgba(0, 0, 0, 0.85) !important;
-  --el-fill-color-blank: rgba(0, 0, 0, 0.95) !important;
+  --el-bg-color-overlay: rgba(0, 0, 0, 0.9) !important;
+  --el-fill-color-blank: rgba(0, 0, 0, 0.6) !important;
 }
 .el-tabs__header {
   margin-bottom: 0 !important;
