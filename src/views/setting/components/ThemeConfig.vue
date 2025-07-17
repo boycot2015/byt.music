@@ -114,7 +114,7 @@ const colorSource = ref('https://zhongguose.com')
 const fetchData = async () => {
   colorLoading.value = true
   const target = colorSource.value + '/colors.json'
-  fetch(`${$apiUrl}/proxy?url=${target}`, {})
+  fetch(`${$apiUrl}/apiDocs?url=${target}`, {})
     .then((res) => res.json())
     .then((res) => {
       colors.value = res.data?.map((el, index) => {
