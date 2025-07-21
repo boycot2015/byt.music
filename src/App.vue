@@ -70,6 +70,7 @@ const setHtmlStyleProp = (color) => {
 onMounted(() => {
   // Set the primary color from the config store on mount
   setHtmlStyleProp(config.theme.primaryColor)
+  document.querySelector(':root').style.setProperty('--el-color-primary', config.theme.primaryColor)
   document.documentElement.style.setProperty('--el-color-primary', config.theme.primaryColor)
   document.body.style.background = `url(${config.theme.backgroundImage}) no-repeat center/cover`
 })

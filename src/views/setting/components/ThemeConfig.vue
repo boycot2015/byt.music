@@ -148,6 +148,7 @@ const fetchPicData = async (page = 1) => {
     })
 }
 const onPickerChange = (val) => {
+  document.querySelector(':root').style.setProperty('--el-color-primary', val)
   document.documentElement.style.setProperty('--el-color-primary', val)
   set({
     theme: {
