@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
+import Error from '@/views/error.vue'
 import { useConfigStore } from '@/stores/config'
 
 const router = createRouter({
@@ -9,22 +9,22 @@ const router = createRouter({
       path: '/',
       name: 'home',
       redirect: '/playlist',
-      component: HomeView,
+      component: Error,
       meta: {
         title: '首页',
       },
     },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/AboutView.vue'),
-      meta: {
-        title: '关于',
-      },
-    },
+    // {
+    //   path: '/about',
+    //   name: 'about',
+    //   // route level code-splitting
+    //   // this generates a separate chunk (About.[hash].js) for this route
+    //   // which is lazy-loaded when the route is visited.
+    //   component: () => import('@/views/AboutView.vue'),
+    //   meta: {
+    //     title: '关于',
+    //   },
+    // },
     {
       path: '/search',
       name: 'search',
@@ -90,7 +90,7 @@ const router = createRouter({
     {
       path: '/:catchAll(.*)*',
       name: 'notFound',
-      component: HomeView,
+      component: Error,
       props: true,
     },
   ],

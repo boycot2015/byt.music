@@ -34,7 +34,7 @@
                 >
               </el-col>
             </el-row>
-            <el-empty v-if="cates[type] && !cates[type].length && !loading" />
+            <Empty v-if="cates[type] && !cates[type].length && !loading" />
           </el-scrollbar>
         </el-popover>
       </div>
@@ -59,7 +59,7 @@
         <el-col v-for="item in playlist" :key="item.id" :span="8" :lg="6" :xl="4" class="mb-10">
           <div class="flex cursor-pointer" @click="router.push({ path: `/playlist/${item.id}`, query: { type: type, ctype, page: currentPage } })">
             <div class="img">
-              <el-image lazy class="rounded-md overflow-hidden w-[140px] h-[140px]" fit="fill" :src="item.cover_img_url"></el-image>
+              <Image lazy class="rounded-md overflow-hidden w-[140px] h-[140px]" fit="fill" :src="item.cover_img_url"></Image>
             </div>
             <div class="info flex flex-col ml-2 gap-y-2">
               <div class="text-[var(--color-text)] line-clamp-2">{{ item.title }}</div>
@@ -73,7 +73,7 @@
           </div>
         </el-col>
         <el-col v-if="!loading && !playlist.length">
-          <el-empty></el-empty>
+          <Empty></Empty>
         </el-col>
       </el-row>
     </el-scrollbar>

@@ -2,11 +2,14 @@
   <footer class="footer w-full">
     <div class="nav flex items-center justify-between w-full relative z-10000">
       <div class="left flex flex-1 cursor-pointer" @click="coverVisible = !coverVisible">
-        <el-image :src="playData.img_url" fit="fill" class="w-11 h-11 mr-2 rounded">
+        <Image :src="playData.img_url" fit="fill" class="w-11 h-11 mr-2 rounded">
+          <template #placeholder>
+            <el-icon :size="44" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
+          </template>
           <template #error>
             <el-icon :size="44" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
           </template>
-        </el-image>
+        </Image>
         <div class="info">
           <div class="title line-clamp-1">{{ playData.title }}</div>
           <div class="singer text-xs line-clamp-1">{{ playData.singer }}</div>

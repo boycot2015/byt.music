@@ -43,7 +43,7 @@
             >{{ item.name }}</el-tag
           >
         </template>
-        <el-empty v-else-if="!keywordLoading"></el-empty>
+        <Empty v-else-if="!keywordLoading"></Empty>
       </el-scrollbar>
     </div>
     <Playlist ref="playlistRef" :showHeader="false" header-class="!pl-0" action-class="mt-2" v-loading="loading" :data="{ info: { id: keyword, total_song_num: total || playlist.length }, tracks: playlist }" :tableProps="{ height: 'calc(100vh - 410px)' }">

@@ -64,7 +64,7 @@
     >
       <el-row class="flex items-center" :gutter="10">
         <el-col v-for="(item, index) in picList" :key="index" :span="12" :lg="6" :md="8" :xl="4">
-          <el-image
+          <Image
             class="rounded cursor-pointer border border-2 border-[transparent]"
             :class="{ 'border-[var(--el-color-primary)]': item.id === active }"
             :src="item.url"
@@ -76,12 +76,7 @@
               }
             "
           >
-            <template #error>
-              <el-icon>
-                <icon-music />
-              </el-icon>
-            </template>
-          </el-image>
+          </Image>
         </el-col>
       </el-row>
     </el-scrollbar>
@@ -91,6 +86,7 @@
 <script setup>
 import { getCurrentInstance, ref, nextTick } from 'vue'
 import { useConfigStore } from '@/stores/config'
+import { setHtmlStyleProp } from '@/utils'
 const { config, set } = useConfigStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
@@ -148,8 +144,7 @@ const fetchPicData = async (page = 1) => {
     })
 }
 const onPickerChange = (val) => {
-  document.querySelector(':root').style.setProperty('--el-color-primary', val)
-  document.documentElement.style.setProperty('--el-color-primary', val)
+  setHtmlStyleProp(val)
   set({
     theme: {
       ...config.theme,

@@ -35,6 +35,13 @@ const handleOpen = (key) => {
           </div>
         </template>
       </el-segmented>
+      <!-- <el-menu class="!block !md:hidden" collapse @select="handleOpen">
+        <el-menu-item v-for="item in menus" :key="item.path" :index="item.path">
+          <el-icon class="text-shadow-2xl" size="20" :title="item.title">
+              <component :is="item.icon" />
+            </el-icon>
+          </el-menu-item>
+      </el-menu> -->
     </div>
   </div>
 </template>

@@ -2,7 +2,7 @@
   <div class="playlist-detail !overflow-hidden rounded-md">
     <div class="flex items-center justify-between pl-3" :class="headerClass">
       <slot name="header" v-if="showHeader">
-        <div class="flex items-center">
+        <div class="flex items-center hidden lg:flex">
           <div class="text-xs flex items-center" v-if="data?.info?.nickname || data?.info?.title">
             <el-avatar class="mr-2" size="small" v-if="data?.info?.headurl" :src="data?.info?.headurl"></el-avatar>
             <el-icon class="mr-2" v-else><User /></el-icon>
@@ -54,7 +54,7 @@
       </el-table-column>
       <el-table-column prop="duration" align="right" sortable width="120px" label="歌曲时长"></el-table-column>
       <template v-slot:empty>
-        <el-empty></el-empty>
+        <Empty></Empty>
       </template>
     </el-table>
     <slot name="pagination"></slot>

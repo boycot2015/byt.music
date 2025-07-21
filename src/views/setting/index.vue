@@ -23,7 +23,8 @@
     </el-row>
   </div>
 </template>
-<script setup>
+<script name="setting" setup>
+import PlaySource from './components/PlaySource/index.vue'
 import ThemeConfig from './components/ThemeConfig.vue'
 import { useConfigStore } from '@/stores/config'
 import { ref, markRaw } from 'vue'
@@ -40,6 +41,12 @@ const configs = ref({
     labelPosition: 'top',
     class: 'pl-4',
     component: markRaw(ThemeConfig),
+  },
+  playSource: {
+    label: '播放源(beta)',
+    labelPosition: 'top',
+    class: 'pl-4',
+    component: markRaw(PlaySource),
   },
   // Add more configuration options here
 })

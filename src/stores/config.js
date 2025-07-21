@@ -21,6 +21,14 @@ export const useConfigStore = defineStore(
         { title: '千千音乐', type: 'qianqian' },
         { title: '咪咕音乐', type: 'migu' },
       ],
+      playSource: {
+        url: 'https://y.qq.com/n/yqq/song/{id}.html',
+        list: [
+          { title: '默认', url: 'https://y.qq.com/n/yqq/song/{id}.html' },
+          { title: 'musicFree', url: 'https://music.163.com/#/song?id={id}' },
+          { title: '落雪', url: 'https://www.kugou.com/song/{id}.html' },
+        ]
+      },
     })
     const set = (val = {}) => {
       config.value = {
