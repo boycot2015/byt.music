@@ -3,7 +3,7 @@
 聚合各大音乐平台于一体的音乐播放器。
 
 ```text
-技术栈： Vue 3 + Vite.
+技术栈： Vue 3 + Vite + Element Plus + Pinia.
 ```
 
 ## 推荐 IDE 配置
