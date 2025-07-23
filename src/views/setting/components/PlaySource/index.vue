@@ -1,19 +1,22 @@
 <template>
   <div class="play-source flex items-center">
-    <el-radio-group v-model="config.playSource.url" disabled>
-      <el-radio v-for="(radio, index) in list" :key="index" border :value="radio.url">{{ radio.title }}</el-radio>
+    <el-radio-group v-model="source.apiUrl" @change="() => setSource(list.find((el) => el.apiUrl == source.apiUrl) || {}, '切换成功')">
+      <el-radio v-for="(radio, index) in list" :key="index" border :value="radio.apiUrl" :disabled="!radio.apiUrl"
+        ><span class="flex items-center"
+          >{{ radio.name }} <el-icon v-if="radio.id" class="ml-2" @click="removeSource(radio.id)"><Delete /></el-icon></span
+      ></el-radio>
     </el-radio-group>
     <el-button type="primary" class="ml-8" @click="visible = true"
-      ><el-icon><Plus /></el-icon>导入</el-button
+      ><el-icon class="mr-2"><Plus /></el-icon>导入</el-button
     >
     <el-dialog title="导入自定义源" :close-on-click-modal="false" width="480px" v-model="visible" @close="visible = false" top="30vh" center>
-      <el-input clearable v-model="playSource" placeholder="请输入自定义源，格式：https://xxx.json"> </el-input>
+      <el-input clearable v-model="playSource" placeholder="请输入自定义源，格式：https://xxx.js"> </el-input>
       <div class="tip leading-[20px] mt-5">提示：虽然我们已经尽可能地隔离了脚本的运行环境，但导入包含恶意行为的脚本仍可能会影响你的系统，请谨慎导入。</div>
       <template #footer>
         <div class="flex flex-row justify-center">
-          <el-button type="primary" :disabled="!playSource" @click="importSource()">在线导入</el-button>
+          <el-button type="primary" :disabled="!playSource" @click="importSource()" :loading="importLoading">在线导入</el-button>
           <el-upload :show-file-list="false" accept=".js" :disabled="!!playSource" :auto-upload="false" :on-change="importSource">
-            <el-button type="primary" class="ml-8" :disabled="!!playSource">本地导入</el-button>
+            <el-button type="primary" class="ml-8" :disabled="!!playSource" :loading="importLoading">本地导入</el-button>
           </el-upload>
         </div>
       </template>
@@ -26,70 +29,65 @@ import { getCurrentInstance, ref, computed } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useConfigStore } from '@/stores/config'
-const { config, set } = useConfigStore()
+const { source, setSource, removeSource } = useConfigStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
 const visible = ref(false)
 const playSource = ref('')
-const list = computed(() => config.playSource.list)
-const handleGetMusicUrl = async (source, musicInfo, quality) => {
-  const DEV_ENABLE = false
-  const API_URL = 'https://lxmusicapi.onrender.com'
-  const API_KEY = 'share-v2'
-  const songId = musicInfo.hash ?? musicInfo.songmid
-  const version = '2.11.0'
-  const env = DEV_ENABLE ? 'dev' : 'prod'
-  const request = await fetch(`${$apiUrl}/apiDocs?url=${API_URL}/url/${source}/${songId}/${quality}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'User-Agent': env ? `lx-music-${env}/${version}` : `lx-usic-request/${version}`,
-      'X-Request-Key': API_KEY,
-    },
-  })
-  const { body } = request
-  if (!body || isNaN(Number(body.code))) throw new Error('unknow error')
-  switch (body.code) {
-  case 0:
-    return body.url
-  case 1:
-    throw new Error('block ip')
-  case 2:
-    throw new Error('get music url failed')
-  case 4:
-    throw new Error('internal server error')
-  case 5:
-    throw new Error('too many requests')
-  case 6:
-    throw new Error('param error')
-  default:
-    throw new Error(body.msg ?? 'unknow error')
-  }
-}
-const importSource = (val) => {
+const importLoading = ref(false)
+const list = computed(() => source.list)
+const importSource = async (val) => {
   if (playSource.value) {
     if (!/^https?:\/\//.test(playSource.value) || !/[.js]$/.test(playSource.value)) {
       ElMessage.error('请输入正确的格式')
       return
     }
-    fetch(`${playSource.value}`).then((data) => {
-      console.log(eval(data.body))
-      handleGetMusicUrl('qq', {songmid: '0036v2971854iJ' }, 128).then((url) => {
-        console.log(url)
-      })
-      ElMessage.success('导入成功')
-      // set({
-      //   playSource: {
-      //     ...config.playSource,
-      //     url: playSource.value,
-      //   }
-      // })
+    let url = playSource.value
+    if (!url) return
+    importLoading.value = true
+    let res = ''
+    try {
+      res = await fetch(`${$apiUrl}/music/import/source?url=${url}`, { method: 'POST', follow_max: 3 }).then((resp) => resp.json())
+      setSource(
+        {
+          ...source,
+          list: [...source.list, res.data],
+        },
+        '导入成功'
+      )
       visible.value = false
-    })
+    } catch (err) {
+      ElMessage.error(err.message || '导入失败')
+      return
+    } finally {
+      importLoading.value = false
+      visible.value = false
+    }
     return
   }
   console.log(val)
-  ElMessage.success('导入成功')
+  const formData = new FormData()
+  formData.append('file', val.raw)
+  // 使用Fetch API发送文件
+  fetch(`${$apiUrl}/music/import/source`, {
+    method: 'POST',
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      ElMessage.success('导入成功')
+      console.log('导入成功:', data)
+      setSource(
+        {
+          ...source,
+          list: [...source.list, data.data],
+        },
+        '导入成功'
+      )
+    })
+    .catch((error) => {
+      console.error('上传过程中出现错误:', error)
+    })
   // set({
   //   playSource: {
   //     list: [...config.playSource.list, {

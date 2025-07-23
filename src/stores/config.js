@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-
+import { apiUrl } from '@/api/baseUrl'
+import { ElMessage } from 'element-plus'
 export const useConfigStore = defineStore(
   'config',
   () => {
@@ -21,14 +22,20 @@ export const useConfigStore = defineStore(
         { title: '千千音乐', type: 'qianqian' },
         { title: '咪咕音乐', type: 'migu' },
       ],
-      playSource: {
-        url: 'https://y.qq.com/n/yqq/song/{id}.html',
-        list: [
-          { title: '默认', url: 'https://y.qq.com/n/yqq/song/{id}.html' },
-          { title: 'musicFree', url: 'https://music.163.com/#/song?id={id}' },
-          { title: '落雪', url: 'https://www.kugou.com/song/{id}.html' },
-        ]
-      },
+      family: 'Microsoft YaHei',
+      familys: [
+        { label: '微软雅黑', value: 'Microsoft YaHei' },
+        { label: '苹方', value: 'PingFang SC' },
+        { label: '宋体', value: '宋体' },
+        { label: '黑体', value: '黑体' },
+        { label: '楷体', value: '楷体' },
+      ],
+    })
+    const source = ref({
+      apiUrl: apiUrl + '/music/url',
+      list: [
+        { name: '默认', apiUrl: apiUrl + '/music/url', id: '' },
+      ]
     })
     const set = (val = {}) => {
       config.value = {
@@ -40,8 +47,25 @@ export const useConfigStore = defineStore(
           document.body.style.background = `url(${val.theme.backgroundImage}) no-repeat center/cover`
         }
       }
+      if (val.family) {
+        document.documentElement.style.fontFamily = `"${val.family}", sans-serif !important`
+      }
     }
-    return { config, set }
+    const setSource = (data, msg = '设置成功') => {
+      for (const key in data) {
+        source.value[key] = data[key]
+      }
+      ElMessage.success(msg)
+    }
+    const removeSource = (val) => {
+      source.value.list = source.value.list.filter(item => item.id !== val)
+      if (source.value.id === val) {
+        for (const key in source.value.list[0]) {
+          source.value[key] = source.value.list[0][key]
+        }
+      }
+    }
+    return { config, source, set, setSource, removeSource }
   },
   {
     persist: {

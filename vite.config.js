@@ -9,6 +9,9 @@ import Components from 'unplugin-vue-components/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vueSetupExtend from 'vite-plugin-vue-setup-extend'
+
+// const hash = crypto.hash ?? ((algorithm, data, outputEncoding) =>
+//   crypto.createHash(algorithm).update(data).digest(outputEncoding));
 // https://vite.dev/config/
 export default defineConfig({
   base: './',

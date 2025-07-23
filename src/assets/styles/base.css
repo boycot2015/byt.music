@@ -35,9 +35,11 @@
   --color-text: var(--vt-c-regular);
   --color-text-secondary: var(--vt-c-secondary);
   --section-gap: 16px;
-  --el-bg-color: rgba(255, 255, 255, 0.8) !important;
-  --el-bg-color-overlay: rgba(255, 255, 255, 0.8) !important;
-  --el-fill-color-blank: rgba(255, 255, 255, 0.95) !important;
+  --el-text-color-regular: var(--vt-c-regular);
+  --el-text-color-secondary: var(--vt-c-secondary) !important;
+  --el-bg-color: rgba(255, 255, 255, .8) !important;
+  --el-bg-color-overlay: rgba(255, 255, 255, .8) !important;
+  --el-fill-color-blank: rgba(255, 255, 255, .8) !important;
   --el-border-color-lighter: var(--vt-c-bg) !important;
 }
 
@@ -48,9 +50,11 @@
   margin: 0;
   font-weight: normal;
 }
+
 *:focus-visible {
   outline: none;
 }
+
 body {
   min-height: 100vh;
   color: var(--color-text);
@@ -59,8 +63,7 @@ body {
     color 0.5s,
     background-color 0.5s;
   line-height: 1.6;
-  font-family:
-    Inter,
+  font-family: 宋体, Inter,
     -apple-system,
     BlinkMacSystemFont,
     'Segoe UI',
@@ -71,46 +74,58 @@ body {
     'Fira Sans',
     'Droid Sans',
     'Helvetica Neue',
-    sans-serif;
+    sans-serif !important;
   font-size: 15px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 html.dark {
   /* 自定义深色颜色 */
   --color-text: var(--vt-c-text-dark-1);
   --color-text-secondary: var(--vt-c-text-dark-2);
-  --el-bg-color: rgba(0, 0, 0, 0.8) !important;
-  --el-bg-color-overlay: rgba(0, 0, 0, 0.85) !important;
-  --el-fill-color-blank: rgba(0, 0, 0, 0.95) !important;
+  --el-bg-color: rgba(0, 0, 0, .65) !important;
+  --el-text-color-regular: var(--vt-c-text-dark-1) !important;
+  --el-text-color-secondary: var(--vt-c-text-dark-2) !important;
+  --el-bg-color-overlay: rgba(0, 0, 0, 0.9) !important;
+  --el-fill-color-blank: rgba(0, 0, 0, .65) !important;
 }
+
 .el-tabs__header {
   margin-bottom: 0 !important;
 }
+
 .el-table thead {
   --el-table-header-text-color: var(--color-text) !important;
 }
+
 .el-slider {
   --el-slider-button-size: 12px !important;
 }
+
 .el-slider__button {
   background-color: var(--el-slider-main-bg-color) !important;
 }
+
 .el-table {
   --el-table-current-row-bg-color: var(--el-color-primary);
 }
+
 .el-menu {
   --el-menu-hover-bg-color: transparent !important;
 }
-.el-menu-item > div {
+
+.el-menu-item>div {
   border-left: 2px solid transparent !important;
   padding-left: 10px !important;
 }
-.el-menu-item:hover > div,
-.el-menu-item.is-active > div {
+
+.el-menu-item:hover>div,
+.el-menu-item.is-active>div {
   border-left: 2px solid var(--el-color-primary) !important;
 }
+
 .el-menu,
 .el-anchor,
 .el-table td.el-table__cell,

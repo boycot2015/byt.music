@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { apiUrl } from '@/api/baseUrl'
 import { ElMessage } from 'element-plus'
+import { useConfigStore } from './config'
 export const usePlayerStore = defineStore(
   'player',
   () => {
@@ -17,6 +18,7 @@ export const usePlayerStore = defineStore(
       paused: true,
       playIndex: 0,
     })
+    const { source } = useConfigStore()
     const initPlay = (audio) => {
       player.value = audio
       playData.value.muted = true
@@ -37,7 +39,9 @@ export const usePlayerStore = defineStore(
         .then((data) => {
           playData.value.lyric = data.data.lyric
         })
-      return await fetch(`${apiUrl}/music/url?id=${item.id}&type=${type}`)
+      let url = `${apiUrl}/music/url?id=${item.id}&type=${type}`
+      if (source.id && source.apiKey) url += `&apiUrl=${source.apiUrl}&apiKey=${source.apiKey}`
+      return await fetch(url)
         .then((res) => res.json())
         .then((data) => {
           playData.value.currentTime = 0

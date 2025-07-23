@@ -69,12 +69,7 @@
             :class="{ 'border-[var(--el-color-primary)]': item.id === active }"
             :src="item.url"
             lazy
-            @click="
-              () => {
-                active = item.id + ''
-                set({ theme: { ...config.theme, backgroundImage: item.url } })
-              }
-            "
+            @click="setBackground(item)"
           >
           </Image>
         </el-col>
@@ -158,6 +153,14 @@ const onPicCateChange = () => {
     scrollbarRef.value.setScrollTop(0)
     fetchPicData()
   })
+}
+const setBackground = (item) => {
+  let img = new Image()
+  img.src = item.url
+  img.onload = () => {
+    active.value = item.id + ''
+    set({ theme: { ...config.theme, backgroundImage: item.url } })
+  }
 }
 fetchData()
 </script>
