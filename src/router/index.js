@@ -41,7 +41,7 @@ const router = createRouter({
       component: () => import('@/views/playlist/index.vue'),
       meta: {
         title: '歌单',
-        icon: 'IconFavicon',
+        icon: 'icon-favicon',
         keepAlive: true,
       },
     },
@@ -51,7 +51,7 @@ const router = createRouter({
       component: () => import('@/views/playlist/detail.vue'),
       meta: {
         title: '歌单详情',
-        icon: 'IconFavicon',
+        icon: 'icon-favicon',
         menuPath: '/playlist',
         hideInMenu: true,
         showBack: true,

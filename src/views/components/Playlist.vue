@@ -1,6 +1,6 @@
 <template>
   <div class="playlist-detail !overflow-hidden rounded-md">
-    <div class="flex items-center justify-between pl-3" :class="headerClass">
+    <div class="flex flex-col md:flex-row md:items-center justify-between md:pl-3 mb-2 md:mb-0" :class="headerClass">
       <slot name="header" v-if="showHeader">
         <div class="flex items-center hidden lg:flex">
           <div class="text-xs flex items-center" v-if="data?.info?.nickname || data?.info?.title">
@@ -23,7 +23,7 @@
         </div>
       </slot>
       <slot name="action">
-        <div class="actions backdrop-blur-md text-right absolute top-20 right-0" :class="actionClass" v-if="showActions && data.info">
+        <div class="actions backdrop-blur-md md:text-right md:absolute top-20 right-0" :class="actionClass" v-if="showActions && data.info">
           <el-button type="primary" @click="handlePlayAll" :disabled="!data.info.id"
             ><el-icon class="mr-2"><VideoPlay /></el-icon> 播放</el-button
           >
@@ -52,7 +52,11 @@
           {{ scope.row.album?.name || scope.row.album || '--' }}
         </template>
       </el-table-column>
-      <el-table-column prop="duration" align="right" sortable width="120px" label="歌曲时长"></el-table-column>
+      <el-table-column prop="duration" align="center" sortable width="120px" label="歌曲时长">
+        <template #default="scope">
+          {{ scope.row.duration || '--' }}
+        </template>
+      </el-table-column>
       <template v-slot:empty>
         <Empty></Empty>
       </template>
@@ -61,7 +65,7 @@
   </div>
 </template>
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, nextTick, onMounted } from 'vue'
 import { VideoPlay, Link } from '@element-plus/icons-vue'
 import { ElMessageBox } from 'element-plus'
 import IconHeart from '@/components/icons/IconHeart.vue'
@@ -72,7 +76,7 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 const playerStore = usePlayerStore()
 const collectStore = useCollectStore()
-
+const slots = defineSlots()
 const props = defineProps({
   data: {
     type: Object,
@@ -107,7 +111,7 @@ const playIndex = computed(() => playData.playIndex)
 
 const data = computed(() => props.data)
 const tableRef = ref(null)
-
+const tableHeight = ref('calc(100vh - 402px)')
 const handlePlayAll = () => {
   ElMessageBox.confirm('此操作会替换播放列表，是否播放？')
     .then(() => {
@@ -134,6 +138,24 @@ defineExpose({
   toggleCollect,
   isCollect: (...arg) => collectStore.has(...arg),
   setScrollTop: (val) => tableRef.value?.setScrollTop(val === 0 ? 0 : playIndex.value * 40),
+})
+const getParentTop = (el) => {
+  var actualTop = el.offsetTop
+  var current = el.offsetParent
+  while (current !== null) {
+    actualTop += current.offsetTop
+    current = current.offsetParent
+  }
+  return actualTop
+}
+onMounted(() => {
+  nextTick(() => {
+    let parentTop = getParentTop(tableRef.value.$el)
+    tableHeight.value = 'calc(100vh - ' + (parentTop + 100 + (slots.pagination ? 30 : 0)) + 'px)'
+    window.addEventListener('resize', () => {
+      tableHeight.value = 'calc(100vh - ' + (parentTop + 100 + (slots.pagination ? 30 : 0)) + 'px)'
+    })
+  })
 })
 </script>
 <style></style>

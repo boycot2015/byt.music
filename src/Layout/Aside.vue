@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useConfigStore } from '@/stores/config'
-const { config } = useConfigStore()
+const { config, set } = useConfigStore()
 const route = useRoute()
 const router = useRouter()
 const path = ref(route.meta?.menuPath || route.path)
@@ -17,31 +17,37 @@ router.afterEach(() => {
 const handleOpen = (key) => {
   path.value = key
   router.push(key)
+  set({ showAside: false })
 }
 </script>
 <template>
   <div class="flex flex-col items-center border-r-[1px] border-[var(--el-menu-border-color)] h-full">
     <router-link to="/" class="logo w-full h-[60px] flex items-center py-2 justify-around" :title="config.title">
       <el-icon :size="32" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
-      <div class="title text-2xl hidden">{{ config.title }}</div>
+      <div class="title text-2xl md:hidden">{{ config.title }}</div>
     </router-link>
     <div class="wrapper">
-      <el-segmented v-model="path" direction="vertical" :options="menus" size="large" :props="{ label: 'title', value: 'path' }" @change="handleOpen">
-        <template #default="scope">
-          <div class="flex flex-col items-center gap-2 p-2">
-            <el-icon class="text-shadow-2xl" size="20" :title="scope.item.title">
-              <component :is="scope.item.icon" />
+      <div class="hidden md:block">
+        <el-segmented v-model="path" direction="vertical" :options="menus" size="large" :props="{ label: 'title', value: 'path' }" @change="handleOpen">
+          <template #default="scope">
+            <div class="flex flex-col items-center gap-2 p-2">
+              <el-icon class="text-shadow-2xl" size="20" :title="scope.item.title">
+                <component :is="scope.item.icon" />
+              </el-icon>
+            </div>
+          </template>
+        </el-segmented>
+      </div>
+      <div class="block md:hidden">
+        <el-menu @select="handleOpen">
+          <el-menu-item v-for="item in menus" :key="item.path" :index="item.path">
+            <el-icon class="text-shadow-2xl" size="20" :title="item.title">
+              <component :is="item.icon" :key="item.icon" />
             </el-icon>
-          </div>
-        </template>
-      </el-segmented>
-      <!-- <el-menu class="!block !md:hidden" collapse @select="handleOpen">
-        <el-menu-item v-for="item in menus" :key="item.path" :index="item.path">
-          <el-icon class="text-shadow-2xl" size="20" :title="item.title">
-              <component :is="item.icon" />
-            </el-icon>
+            <span>{{ item.title }}</span>
           </el-menu-item>
-      </el-menu> -->
+        </el-menu>
+      </div>
     </div>
   </div>
 </template>

@@ -1,12 +1,12 @@
 <template>
-  <div class="play-source flex items-center">
+  <div class="play-source flex flex-col md:flex-row md:items-center">
     <el-radio-group v-model="source.apiUrl" @change="() => setSource(list.find((el) => el.apiUrl == source.apiUrl) || {}, '切换成功')">
       <el-radio v-for="(radio, index) in list" :key="index" border :value="radio.apiUrl" :disabled="!radio.apiUrl"
         ><span class="flex items-center"
           >{{ radio.name }} <el-icon v-if="radio.id" class="ml-2" @click="removeSource(radio.id)"><Delete /></el-icon></span
       ></el-radio>
     </el-radio-group>
-    <el-button type="primary" class="ml-8" @click="visible = true"
+    <el-button type="primary" class="md:ml-8 mt-2 w-full md:w-[auto] md:mt-0" @click="visible = true"
       ><el-icon class="mr-2"><Plus /></el-icon>导入</el-button
     >
     <el-dialog title="导入自定义源" :close-on-click-modal="false" width="480px" v-model="visible" @close="visible = false" top="30vh" center>

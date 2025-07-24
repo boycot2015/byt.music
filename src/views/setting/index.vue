@@ -1,7 +1,7 @@
 <template>
   <div class="setting">
     <el-row>
-      <el-col :span="4">
+      <el-col :span="0" :md="4" class="!hidden md:!block">
         <el-scrollbar height="calc(100vh - 160px)" class="border-r border-[var(--el-border-color)]">
           <div class="flex h-full">
             <el-anchor select-scroll-top type="underline" :offset="0" container=".config-form">
@@ -10,7 +10,7 @@
           </div>
         </el-scrollbar>
       </el-col>
-      <el-col :span="20">
+      <el-col :span="24" :md="20">
         <el-scrollbar height="calc(100vh - 160px)" class="">
           <el-form :model="config" ref="formRef" class="config-form pr-4 w-full" label-width="90px" label-position="right">
             <el-form-item v-for="(item, key) in configs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">

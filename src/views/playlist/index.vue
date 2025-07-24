@@ -1,8 +1,8 @@
 <template>
   <div class="playlist">
-    <div class="top min-h-[40px] flex justify-between mb-4">
+    <div class="top min-h-[40px] flex justify-between md:mb-4">
       <div class="flex items-center">
-        <el-popover placement="bottom-start" :disabled="cateLoading || (cates[type] && !cates[type].length)" width="580px" trigger="hover">
+        <el-popover placement="bottom-start" popper-class="!w-[95vw] md:!w-[600px] !p-2 !pl-0" :disabled="cateLoading || (cates[type] && !cates[type].length)" trigger="hover">
           <template #reference>
             <span class="cursor-pointer el-dropdown-link flex items-center">
               {{ ctypeObj.name || '全部歌单' }}
@@ -12,7 +12,7 @@
               </el-icon>
             </span>
           </template>
-          <el-scrollbar max-height="300px" class="cates w-full">
+          <el-scrollbar max-height="300px" class="cates md:w-full">
             <el-row :gutter="20" class="!m-0 !mb-2" v-for="(item, index) in cates[type]" :key="index">
               <el-col :span="24" class="text-xl">
                 {{ item.category || item.name }}
@@ -38,25 +38,51 @@
           </el-scrollbar>
         </el-popover>
       </div>
-      <el-segmented
-        v-model="type"
-        :options="types"
-        :disabled="loading"
-        size="large"
-        :props="{ label: 'title', value: 'type' }"
-        @change="
-          () => {
-            ctypeObj = {}
-            currentPage = 1
-            scrollbarRef.setScrollTop(0)
-            fetchData()
-          }
-        "
-      />
+      <div class="hidden md:block">
+        <el-segmented
+          v-model="type"
+          :options="types"
+          :disabled="loading"
+          size="large"
+          :props="{ label: 'title', value: 'type' }"
+          @change="
+            () => {
+              ctypeObj = {}
+              currentPage = 1
+              scrollbarRef.setScrollTop(0)
+              fetchData()
+            }
+          "
+        />
+      </div>
+      <div class="block md:hidden flex items-center">
+        <el-dropdown
+          @command="
+            () => {
+              ctypeObj = {}
+              currentPage = 1
+              scrollbarRef.setScrollTop(0)
+              fetchData()
+            }
+          "
+        >
+          <span class="el-dropdown-link flex items-center">
+            {{ types.find((el) => el.type == type).title }}
+            <el-icon class="el-icon--right">
+              <arrow-down />
+            </el-icon>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item v-for="item in types" :key="item.type" @click="type = item.type">{{ item.title }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
     </div>
-    <el-scrollbar ref="scrollbarRef" max-height="calc(100vh - 260px)" class="flex flex-col min-h-[calc(100vh-260px)] rounded-md" v-loading="loading">
+    <el-scrollbar ref="scrollbarRef" max-height="calc(100vh - 260px)" class="flex flex-col min-h-[calc(100vh-240px)] md:min-h-[calc(100vh-260px)] rounded-md" v-loading="loading">
       <el-row :gutter="10" class="!m-0">
-        <el-col v-for="item in playlist" :key="item.id" :span="8" :lg="6" :xl="4" class="mb-10">
+        <el-col v-for="item in playlist" :key="item.id" :span="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb-10">
           <div class="flex cursor-pointer" @click="router.push({ path: `/playlist/${item.id}`, query: { type: type, ctype, page: currentPage } })">
             <div class="img">
               <Image lazy class="rounded-md overflow-hidden w-[140px] h-[140px]" fit="fill" :src="item.cover_img_url"></Image>
@@ -77,8 +103,9 @@
         </el-col>
       </el-row>
     </el-scrollbar>
-    <div class="flex justify-end mt-2">
-      <el-pagination layout="total, prev, pager, next, jumper, ->" :total="total" v-model:current-page="currentPage" @current-change="fetchListData" />
+    <div class="flex justify-center md:justify-end mt-2">
+      <el-pagination class="!hidden md:!flex" layout="total, prev, pager, next, jumper, ->" :total="total" v-model:current-page="currentPage" @current-change="fetchListData" />
+      <el-pagination class="!flex md:!hidden" layout="total, prev, next, jumper, ->" :total="total" v-model:current-page="currentPage" @current-change="fetchListData" />
     </div>
   </div>
 </template>

@@ -2,6 +2,11 @@
   <el-page-header @back="goBack" :icon="route.meta.showBack ? ArrowLeft : ''" class="w-full">
     <template #title>
       <div class="flex items-center">
+        <div class="md:hidden flex items-center mr-3">
+          <el-icon :size="24" @click="() => set({ showAside: !config.showAside })">
+            <Menu />
+          </el-icon>
+        </div>
         <span class="text-large font-600" v-if="route.meta.showBack"> 返回 </span>
         <el-icon class="ml-3" :size="22" v-else-if="route.meta?.icon">
           <component :is="route.meta.icon" />
@@ -27,7 +32,8 @@
 import { ArrowLeft } from '@element-plus/icons-vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useDark, useToggle } from '@vueuse/core'
-
+import { useConfigStore } from '@/stores/config'
+const { config, set } = useConfigStore()
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 const router = useRouter()

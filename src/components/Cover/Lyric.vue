@@ -1,7 +1,7 @@
 <template>
   <div class="lyirc">
-    <el-scrollbar ref="scrollbar" height="400px" @scroll="onScroll">
-      <div class="w-[500px] drop-shadow-md">
+    <el-scrollbar ref="scrollbar" height="600px" @scroll="onScroll">
+      <div class="w-full lg:w-[500px] drop-shadow-md">
         <div :ref="(el) => (itemRefs[index] = el)" v-for="(item, index) in lyricArr" :key="item" class="leading-[18px] h-[60px]" @click="setSlider(index)">
           <span class="text-xl cursor-pointer !text-left transition-all delay-0 duration-300 ease-in-out" :class="{ 'text-[var(--el-color-primary)] !text-2xl': index === activeIndex }">{{ item.split(']')[1] }}</span>
         </div>
@@ -28,12 +28,12 @@ let lyricArr = computed(() => {
     .filter((_) => _ && _.split(']')[1])
 })
 
-let timeArr = lyricArr.value?.map((el) => el.split(']')[0]?.split('[')[1]?.split('.')[0] || '0:00') || []
+let timeArr = lyricArr.value?.filter((el) => el).map((el) => el.split(']')[0]?.split('[')[1]?.split('.')[0] || '0:00') || []
 const setSlider = (index) => {
   activeIndex.value = index || activeIndex.value
   if (index) {
     setPlayData({
-      currentTime: timeArr[index]?.split(':')[0] * 60 + Number(timeArr[index].split(':')[1] || 0),
+      currentTime: timeArr[index]?.split(':')[0] * 60 + Number(timeArr[index]?.split(':')[1] || 0),
     })
   }
   if (scrollbar.value && !isScroll.value) {

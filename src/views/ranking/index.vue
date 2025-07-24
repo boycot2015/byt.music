@@ -7,10 +7,10 @@
         </el-select>
         <el-scrollbar always class="!mt-[10px] rounded-md" height="calc(100vh - 213px)" v-loading="pageLoading">
           <el-menu :default-active="activePlayIndex" class="!border-0 h-full" v-if="cates[type] && cates[type]?.playlist.length" @select="fetchPlayList">
-            <el-menu-item v-for="item in cates[type].playlist" :key="item.id" :index="item.id + ''" class="!whitespace-normal !leading-[20px] !pl-0">
+            <el-menu-item v-for="item in cates[type].playlist" :key="item.id" :index="item.id + ''" class="!whitespace-normal !leading-[20px] !pl-0 !pr-0 md:!pr-4">
               <div class="flex items-center flex-wrap">
                 <Image lazy class="w-[36px] h-[36px] mr-2 rounded" :src="item.cover_img_url" fit="cover" />
-                <span class="line-clamp-2 flex-1">{{ item.title }}</span>
+                <span class="line-clamp-2 flex-1 hidden md:block">{{ item.title }}</span>
               </div>
             </el-menu-item>
           </el-menu>

@@ -14,6 +14,7 @@ export const useConfigStore = defineStore(
         backgroundImage: '',
         textColor: '#333333',
       },
+      showAside: false,
       types: [
         { title: '企鹅音乐', type: 'qq' },
         { title: '网易音乐', type: 'netease' },
@@ -38,9 +39,8 @@ export const useConfigStore = defineStore(
       ]
     })
     const set = (val = {}) => {
-      config.value = {
-        ...config.value,
-        ...val,
+      for (const key in val) {
+        config.value[key] = val[key]
       }
       if (val.theme) {
         if (val.theme.backgroundImage) {
