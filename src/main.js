@@ -9,7 +9,8 @@ import { apiUrl, musicApiUrl } from './api/baseUrl'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 const Icons = import.meta.glob('./components/icons/*.vue')
-
+import Image from './components/Image/index.vue'
+import Empty from './components/Empty/index.vue'
 const app = createApp(App)
 app.use(store)
 app.use(router)
@@ -24,4 +25,6 @@ Object.entries(Icons).forEach(async ([key, component]) => {
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
+app.component('Image', Image) 
+app.component('Empty', Empty) 
 app.mount('#app')

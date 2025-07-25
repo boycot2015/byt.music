@@ -23,14 +23,14 @@
         </div>
       </slot>
       <slot name="action">
-        <div class="actions backdrop-blur-md md:text-right md:absolute top-20 right-0" :class="actionClass" v-if="showActions && data.info">
+        <div class="actions w-full md:w-[auto] flex backdrop-blur-md md:text-right md:absolute top-20 right-0" :class="actionClass" v-if="showActions && data.info">
           <el-button type="primary" @click="handlePlayAll" :disabled="!data.info.id"
             ><el-icon class="mr-2"><VideoPlay /></el-icon> 播放</el-button
           >
           <el-button type="warning" @click="toggleCollect" :disabled="!data.info.id"
             ><el-icon class="mr-2"><IconHeartFill v-if="collectStore.has(data.info.id)" /> <IconHeart v-else /></el-icon> {{ collectStore.has(data.info.id) ? '已' : '' }}收藏</el-button
           >
-          <el-link :href="data.info.source_url" underline="never" target="_blank" rel="noopener noreferrer" class="text-[#444] ml-3">
+          <el-link :href="data.info.source_url" underline="never" target="_blank" rel="noopener noreferrer" class="text-[#444] ml-3 self-end">
             <el-button :disabled="!data.info.id"
               ><el-icon class="mr-2"><Link /></el-icon> 官源</el-button
             >

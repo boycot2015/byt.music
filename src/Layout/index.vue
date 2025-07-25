@@ -23,9 +23,9 @@ const keepAliveRoutes = router.options.routes
     </el-aside>
     <el-container class="overflow-hidden bg-[var(--el-bg-color)]">
       <el-header class="bg-[var(--el-bg-color)] flex items-center border-b-[1px] border-[var(--el-menu-border-color)]"><Header /></el-header>
-      <el-main class="bg-[transparent] !p-[10px] !overflow-hidden">
-        <el-scrollbar always style="height: calc(100vh - 160px)" class="hidden md:block">
-          <div class="main scrollbar-wrapper min-w-[768px]">
+      <el-main class="bg-[transparent] !overflow-hidden !p-0">
+        <el-scrollbar always style="height: calc(100vh - 120px)">
+          <div class="main scrollbar-wrapper !p-[10px] md:min-w-[768px]">
             <router-view v-slot="{ Component }">
               <transition name="slide-fade">
                 <keep-alive :include="keepAliveRoutes">
@@ -35,15 +35,6 @@ const keepAliveRoutes = router.options.routes
             </router-view>
           </div>
         </el-scrollbar>
-        <div class="main overflow-hidden md:hidden h-[calc(100vh-140px)]">
-          <router-view v-slot="{ Component }">
-            <transition name="slide-fade">
-              <keep-alive :include="keepAliveRoutes">
-                <component :is="Component" />
-              </keep-alive>
-            </transition>
-          </router-view>
-        </div>
       </el-main>
       <el-footer class="bg-[var(--el-bg-color)] flex items-center border-t-[1px] border-[var(--el-menu-border-color)] !px-3">
         <Footer />

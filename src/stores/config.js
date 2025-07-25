@@ -6,6 +6,7 @@ export const useConfigStore = defineStore(
   'config',
   () => {
     const config = ref({
+      isMobile: false,
       title: 'BytMusic',
       description: '一个基于 Vue3 + Pinia + Element Plus 的音乐播放器',
       theme: {

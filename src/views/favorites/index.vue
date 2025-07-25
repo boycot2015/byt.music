@@ -2,7 +2,7 @@
   <div class="favorites h-full !p-0 min-h-[300px]">
     <el-row :gutter="10" class="overflow-hidden flex flex-col md:flex-row">
       <el-col :span="24" :md="6">
-        <el-scrollbar style="height: calc(100vh - 160px)" class="ml-[-20px] md:border-r md:border-[var(--el-menu-border-color)]">
+        <el-scrollbar style="height: calc(100vh - 160px)" class="hidden md:block ml-[-20px] md:border-r md:border-[var(--el-menu-border-color)]">
           <el-menu :default-active="current" class="h-[calc(100vh-210px)] !border-0 !hidden md:!block" @select="onSelect" v-if="collect[current]">
             <el-menu-item v-for="(item, index) in collect" :key="item.info?.id || index" :index="index + ''" @mouseenter="collectStore.update({ ...item, showClose: true })" @mouseleave="collectStore.update({ ...item, showClose: false })">
               <div class="flex items-center">
@@ -11,24 +11,20 @@
                   <div class="text-xs line-clamp-2 text-wrap pr-[10px]" v-html="item.info.title"></div>
                 </div>
                 <div class="close cursor-pointer hover:text-[var(--el-color-primary)] absolute right-2 transition-colors duration-300 ease-in-out" :class="{ hidden: !item.showClose }">
-                  <el-icon @click="collectStore.remove(item.info.id)"><Delete /></el-icon>
+                  <el-icon @click.stop="collectStore.remove(item.info.id)"><Delete /></el-icon>
                 </div>
               </div>
             </el-menu-item>
           </el-menu>
-          <Empty v-else />
-          <el-row :gutter="16" class="overflow-hidden pr-0 !flex md:!hidden">
-            <el-col :span="24" class="mb-4 overflow-hidden rounded" v-for="(item, index) in collect" :key="item.info?.id || index">
-              <div class="flex flex-wrap cursor-pointer" @click="router.push({ path: `/playlist/${item.id}`, query: { type: type } })">
-                <Image lazy class="w-[160px] h-[160px] mr-2 rounded" :src="item.info.cover_img_url" fit="cover" />
-                <div class="info flex flex-col max-w-[240px] flex-1">
-                  <span class="line-clamp-1 flex-1 text-xl">{{ item.info.title }}</span>
-                  <span class="line-clamp-2 flex-1">{{ item.info.desc }}</span>
-                </div>
-              </div>
-            </el-col>
-          </el-row>
+          <Empty v-if="!collect[current]" />
         </el-scrollbar>
+        <GridList height="calc(100vh - 140px)" class="overflow-hidden pr-0 md:!hidden" v-loading="loading" :playlist="collect.map((el) => el.info)" :type="collect[current]?.type" ref="gridRef">
+          <template #action="{ row }">
+            <div class="close text-[var(--el-color-primary)] cursor-pointer hover:text-[var(--el-color-primary)] absolute bottom-0 right-2 transition-colors duration-300 ease-in-out">
+              <el-icon @click="collectStore.remove(row.id)"><Delete /></el-icon>
+            </div>
+          </template>
+        </GridList>
       </el-col>
       <el-col :span="18" class="!hidden md:!block">
         <Playlist ref="playlistRef" class="rounded-md" v-loading="loading" :data="{ ...collect[current], tracks: playlist }" :tableProps="{ maxHeight: 'calc(100vh - 210px)' }">
@@ -56,7 +52,7 @@ import { computed, ref, getCurrentInstance, onActivated } from 'vue'
 import { useCollectStore } from '@/stores/collect'
 import { VideoPlay, Link, Delete } from '@element-plus/icons-vue'
 import Playlist from '@/views/components/Playlist.vue'
-
+import GridList from '@/views/components/GridList.vue'
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
 const collectStore = useCollectStore()

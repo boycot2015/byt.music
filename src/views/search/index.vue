@@ -25,7 +25,7 @@
         </template>
       </el-autocomplete>
     </div>
-    <div class="keywords rounded my-4 border border-[var(--el-menu-border-color)] pt-2 rounded-md" v-loading="keywordLoading">
+    <div class="keywords rounded my-1 md:my-2 border border-[var(--el-menu-border-color)] pt-2 rounded-md" v-loading="keywordLoading">
       <el-scrollbar class="flex flex-wrap" height="64px">
         <template v-if="hots.length">
           <el-tag
@@ -46,7 +46,7 @@
         <Empty v-else-if="!keywordLoading"></Empty>
       </el-scrollbar>
     </div>
-    <Playlist ref="playlistRef" :showHeader="false" header-class="!pl-0" action-class="mt-2" v-loading="loading" :data="{ info: { id: keyword, total_song_num: total || playlist.length }, tracks: playlist }" :tableProps="{ height: 'calc(100vh - 410px)' }">
+    <Playlist ref="playlistRef" :showHeader="false" header-class="!pl-0" action-class="mt-2" v-loading="loading" :data="{ info: { id: keyword, total_song_num: total || playlist.length }, tracks: playlist }" :tableProps="{ height: 'calc(100vh - 370px)' }">
       <template #action>
         <div class="relative flex-1 flex items-center justify-between">
           <el-button type="primary" @click="playlistRef.handlePlayAll" :disabled="!playlist.length || loading"
@@ -74,8 +74,9 @@
         </div>
       </template>
       <template #pagination>
-        <div class="flex justify-end mt-2">
-          <el-pagination layout="total, prev, pager, next, jumper, ->" :total="total" :page-size="pageSize" v-model:current-page="currentPage" @current-change="onSearch" />
+        <div class="flex justify-center md:justify-end mt-2">
+          <el-pagination class="!hidden md:!flex" layout="total, prev, pager, next, jumper, ->" :total="total" :page-size="pageSize" v-model:current-page="currentPage" @current-change="onSearch" />
+          <el-pagination class="!flex md:!hidden" size="small" layout="prev, pager, next, jumper, ->" :total="total" :page-size="pageSize" v-model:current-page="currentPage" @current-change="onSearch" />
         </div>
       </template>
     </Playlist>

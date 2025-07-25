@@ -1,5 +1,5 @@
 <template>
-  <div class="play-source flex flex-col md:flex-row md:items-center">
+  <div class="w-full play-source flex flex-col md:flex-row md:items-center">
     <el-radio-group v-model="source.apiUrl" @change="() => setSource(list.find((el) => el.apiUrl == source.apiUrl) || {}, '切换成功')">
       <el-radio v-for="(radio, index) in list" :key="index" border :value="radio.apiUrl" :disabled="!radio.apiUrl"
         ><span class="flex items-center"
@@ -13,7 +13,7 @@
       <el-input clearable v-model="playSource" placeholder="请输入自定义源，格式：https://xxx.js"> </el-input>
       <div class="tip leading-[20px] mt-5">提示：虽然我们已经尽可能地隔离了脚本的运行环境，但导入包含恶意行为的脚本仍可能会影响你的系统，请谨慎导入。</div>
       <template #footer>
-        <div class="flex flex-row justify-center">
+        <div class="flex flex-row justify-center+">
           <el-button type="primary" :disabled="!playSource" @click="importSource()" :loading="importLoading">在线导入</el-button>
           <el-upload :show-file-list="false" accept=".js" :disabled="!!playSource" :auto-upload="false" :on-change="importSource">
             <el-button type="primary" class="ml-8" :disabled="!!playSource" :loading="importLoading">本地导入</el-button>
