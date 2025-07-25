@@ -1,6 +1,6 @@
 <template>
   <div class="playlist-detail !overflow-hidden rounded-md">
-    <div class="flex flex-col md:flex-row md:items-center justify-between md:pl-3 mb-2 md:mb-0" :class="headerClass">
+    <div class="flex flex-col overflow-hidden md:flex-row md:items-center justify-between md:pl-3 mb-2 md:mb-0" :class="headerClass">
       <slot name="header" v-if="showHeader">
         <div class="flex items-center hidden lg:flex">
           <div class="text-xs flex items-center" v-if="data?.info?.nickname || data?.info?.title">

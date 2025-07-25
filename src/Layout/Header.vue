@@ -2,13 +2,13 @@
   <el-page-header @back="goBack" :icon="route.meta.showBack ? ArrowLeft : ''" class="w-full">
     <template #title>
       <div class="flex items-center">
-        <div class="md:hidden flex items-center mr-3">
+        <div class="md:hidden flex items-center md:mr-3 mr-[0px]" v-if="route.meta.keepAlive">
           <el-icon :size="24" @click="() => set({ showAside: !config.showAside })">
             <Menu />
           </el-icon>
         </div>
         <span class="text-large font-600" v-if="route.meta.showBack"> 返回 </span>
-        <el-icon class="ml-3" :size="22" v-else-if="route.meta?.icon">
+        <el-icon class="md:ml-3 !hidden md:!block" :size="22" v-else-if="route.meta?.icon">
           <component :is="route.meta.icon" />
         </el-icon>
       </div>

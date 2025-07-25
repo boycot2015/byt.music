@@ -12,7 +12,7 @@
       </el-col>
       <el-col :span="24" :md="20">
         <el-scrollbar height="calc(100vh - 160px)" class="">
-          <el-form :model="config" ref="formRef" class="config-form pr-4 w-full" label-width="90px" label-position="right">
+          <el-form :model="config" ref="formRef" class="config-form md:pr-4 w-full" label-width="90px" label-position="right">
             <el-form-item v-for="(item, key) in configs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">
               <el-select v-if="item.type == 'select'" v-model="config[key]" @change="set({ [key]: config[key] })">
                 <el-option v-for="item in item.options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
@@ -47,13 +47,13 @@ const configs = ref({
   theme: {
     label: '主题配置',
     labelPosition: 'top',
-    class: 'pl-4',
+    class: 'md:pl-4',
     component: markRaw(ThemeConfig),
   },
   playSource: {
     label: '播放源',
     labelPosition: 'top',
-    class: 'pl-4',
+    class: 'md:pl-4',
     component: markRaw(PlaySource),
   },
   // Add more configuration options here

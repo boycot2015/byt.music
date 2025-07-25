@@ -57,6 +57,7 @@
       </div>
       <div class="block md:hidden flex items-center">
         <el-dropdown
+          trigger="click"
           @command="
             () => {
               ctypeObj = {}

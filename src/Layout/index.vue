@@ -23,7 +23,7 @@ const keepAliveRoutes = router.options.routes
     </el-aside>
     <el-container class="overflow-hidden bg-[var(--el-bg-color)]">
       <el-header class="bg-[var(--el-bg-color)] flex items-center border-b-[1px] border-[var(--el-menu-border-color)]"><Header /></el-header>
-      <el-main class="bg-[transparent] !p-[10px] md:!p-[10px] !overflow-hidden">
+      <el-main class="bg-[transparent] !p-[10px] !overflow-hidden">
         <el-scrollbar always style="height: calc(100vh - 160px)" class="hidden md:block">
           <div class="main scrollbar-wrapper min-w-[768px]">
             <router-view v-slot="{ Component }">
