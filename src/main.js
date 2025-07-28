@@ -18,6 +18,8 @@ app.use(router)
 app.config.globalProperties.$apiUrl = apiUrl
 app.config.globalProperties.$musicApiUrl = musicApiUrl
 
+// eslint-disable-next-line vue/no-reserved-component-names
+app.component('Image', Image)
 Object.entries(Icons).forEach(async ([key, component]) => {
   const componentName = key.replace('./components/icons/', '').replace('.vue', '')
   app.component(componentName, (await component()).default)
@@ -25,6 +27,5 @@ Object.entries(Icons).forEach(async ([key, component]) => {
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
-app.component('Image', Image) 
 app.component('Empty', Empty) 
 app.mount('#app')

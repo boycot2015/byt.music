@@ -4,7 +4,7 @@
       <div class="flex items-center">
         <div class="md:hidden flex items-center md:mr-3 mr-[0px]" v-if="route.meta.keepAlive">
           <el-icon :size="24" @click="() => set({ showAside: !config.showAside })">
-            <Menu />
+            <IconMenu />
           </el-icon>
         </div>
         <span class="text-large font-600" v-if="route.meta.showBack"> 返回 </span>
