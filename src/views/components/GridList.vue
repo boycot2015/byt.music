@@ -1,5 +1,5 @@
 <template>
-  <div class="grid-list">
+  <div class="grid-list rounded overflow-hidden">
     <el-scrollbar ref="scrollbarRef" :height="height || (config.isMobile ? 'calc(100vh - 220px)' : 'calc(100vh - 240px)')" class="flex flex-col min-h-[calc(100vh-240px)] rounded-md" v-loading="loading">
       <el-row :gutter="10" class="!m-0">
         <el-col v-for="item in playlist" :key="item.id" :span="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb-3 last:mb-0 md:mb-5">

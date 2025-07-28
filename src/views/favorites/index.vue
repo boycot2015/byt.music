@@ -1,7 +1,7 @@
 <template>
   <div class="favorites h-full !p-0 min-h-[300px]">
     <el-row :gutter="10" class="overflow-hidden flex flex-col md:flex-row">
-      <el-col :span="24" :md="6">
+      <el-col :span="24" :sm="4">
         <el-scrollbar style="height: calc(100vh - 160px)" class="hidden md:block ml-[-20px] md:border-r md:border-[var(--el-menu-border-color)]">
           <el-menu :default-active="current" class="h-[calc(100vh-210px)] !border-0 !hidden md:!block" @select="onSelect" v-if="collect[current]">
             <el-menu-item v-for="(item, index) in collect" :key="item.info?.id || index" :index="index + ''" @mouseenter="collectStore.update({ ...item, showClose: true })" @mouseleave="collectStore.update({ ...item, showClose: false })">
@@ -26,16 +26,16 @@
           </template>
         </GridList>
       </el-col>
-      <el-col :span="18" class="!hidden md:!block">
-        <Playlist ref="playlistRef" class="rounded-md" v-loading="loading" :data="{ ...collect[current], tracks: playlist }" :tableProps="{ maxHeight: 'calc(100vh - 210px)' }">
+      <el-col :span="0" :sm="20">
+        <Playlist ref="playlistRef" class="rounded-md" :loading="loading" :data="{ ...collect[current], tracks: playlist }" :tableProps="{ height: 'calc(100vh - 190px)' }">
           <template #action>
             <div class="flex justify-between items-center mb-[10px]" v-if="collect[current]?.info">
               <div class="text-right">
-                <el-button type="primary" :disabled="!collect[current]" @click="() => playlistRef.handlePlayAll()"
+                <el-button type="primary" :disabled="!collect[current] || loading" @click="() => playlistRef.handlePlayAll()"
                   ><el-icon class="mr-2"><VideoPlay /></el-icon> 播放</el-button
                 >
                 <el-link :href="collect[current]?.info?.source_url" underline="never" target="_blank" rel="noopener noreferrer" class="text-[#444] ml-3">
-                  <el-button :disabled="!collect[current]"
+                  <el-button :disabled="!collect[current] || loading"
                     ><el-icon class="mr-2"><Link /></el-icon> 官源</el-button
                   >
                 </el-link>

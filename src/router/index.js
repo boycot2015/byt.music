@@ -88,6 +88,16 @@ const router = createRouter({
       },
     },
     {
+      path: '/app',
+      name: 'app',
+      component: () => import('@/views/app/index.vue'),
+      meta: {
+        title: '应用',
+        keepAlive: true,
+        icon: 'IconApp',
+      },
+    },
+    {
       path: '/:catchAll(.*)*',
       name: 'notFound',
       component: Error,

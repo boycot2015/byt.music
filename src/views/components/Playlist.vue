@@ -38,7 +38,7 @@
         </div>
       </slot>
     </div>
-    <el-table ref="tableRef" v-if="data.tracks" :row-class-name="({ row, rowIndex }) => (playData.id == row.id ? 'current-row' : '')" v-bind="tableProps" :data="data.tracks" @row-dblclick="handlePlay">
+    <el-table ref="tableRef" class="rounded overflow-hidden mt-2" v-loading="loading" v-if="data.tracks" :row-class-name="({ row, rowIndex }) => (playData.id == row.id ? 'current-row' : '')" v-bind="tableProps" :data="data.tracks" @row-dblclick="handlePlay">
       <el-table-column prop="title" label="歌曲名称" show-overflow-tooltip>
         <template #default="scope">
           {{ scope.row.title }}
@@ -104,6 +104,10 @@ const props = defineProps({
   headerClass: {
     type: String,
     default: '',
+  },
+  loading: {
+    type: Boolean,
+    default: false,
   },
 })
 const { play, playData, setPlayData } = playerStore

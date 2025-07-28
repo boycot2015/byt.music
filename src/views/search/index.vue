@@ -46,7 +46,7 @@
         <Empty v-else-if="!keywordLoading"></Empty>
       </el-scrollbar>
     </div>
-    <Playlist ref="playlistRef" :showHeader="false" header-class="!pl-0" action-class="mt-2" v-loading="loading" :data="{ info: { id: keyword, total_song_num: total || playlist.length }, tracks: playlist }" :tableProps="{ height: 'calc(100vh - 370px)' }">
+    <Playlist ref="playlistRef" :showHeader="false" header-class="!pl-0" action-class="mt-2" v-loading="loading" :data="{ info: { id: keyword, total_song_num: total || playlist.length }, tracks: playlist }" :tableProps="{ height: 'calc(100vh - 380px)' }">
       <template #action>
         <div class="relative flex-1 flex items-center justify-between">
           <el-button type="primary" @click="playlistRef.handlePlayAll" :disabled="!playlist.length || loading"
