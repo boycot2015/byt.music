@@ -46,10 +46,15 @@ const data = ref({
 })
 const fetchData = async () => {
   loading.value = true
-  const response = await fetch(`${$apiUrl}/music/detail?type=${route.query.type}&id=${route.params.id}`)
-  let res = await response.json()
-  loading.value = false
-  data.value = res.data
+  try {
+    const response = await fetch(`${$apiUrl}/music/detail?type=${route.query.type}&id=${route.params.id}`)
+    let res = await response.json()
+    loading.value = false
+    data.value = res.data || { info: {} }
+  } catch (err) {
+    loading.value = false
+    console.log(err)
+  }
 }
 watch(playIndex, () => {
   tableRef.value?.setScrollTop(playIndex.value * 40)

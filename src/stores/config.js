@@ -37,6 +37,18 @@ export const useConfigStore = defineStore(
       apiUrl: apiUrl + '/music/url',
       list: [
         { name: '默认', apiUrl: apiUrl + '/music/url', id: '' },
+        {
+          allowShowUpdateAlert: true,
+          apiKey: 'share-v2',
+          apiUrl: 'https://lxmusicapi.onrender.com',
+          author: 'Huibq',
+          description: 'Github搜索“洛雪音乐音源”，禁止批量下载！',
+          homepage: '',
+          id: 'user_api_468_1753778736801',
+          musicSources: { kw: { name: 'kw', type: 'music', actions: ['musicUrl'], qualitys: ['128k', '320k'] }, },
+          name: 'Huibq_lxmusic源',
+          version: 'v1.2.0',
+        }
       ]
     })
     const set = (val = {}) => {

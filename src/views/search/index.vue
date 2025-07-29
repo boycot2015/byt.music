@@ -46,10 +46,19 @@
         <Empty v-else-if="!keywordLoading"></Empty>
       </el-scrollbar>
     </div>
-    <Playlist ref="playlistRef" :showHeader="false" header-class="!pl-0" action-class="mt-2" v-loading="loading" :data="{ info: { id: keyword, total_song_num: total || playlist.length }, tracks: playlist }" :tableProps="{ height: 'calc(100vh - 380px)' }">
+    <Playlist
+      ref="playlistRef"
+      :showHeader="false"
+      header-class="!pl-0"
+      action-class="mt-2"
+      v-loading="loading"
+      :data="{ info: { id: keyword, total_song_num: total || playlist.length }, tracks: playlist }"
+      :tableEvents="{ rowClick: (row) => router.push({ path: '/playlist/' + row.id, query: { type } }) }"
+      :tableProps="{ height: config.isMobile ? 'calc(100vh - 360px)' : 'calc(100vh - 380px)', rowClassName: 'cursor-pointer' }"
+    >
       <template #action>
-        <div class="relative flex-1 flex items-center justify-between">
-          <el-button type="primary" @click="playlistRef.handlePlayAll" :disabled="!playlist.length || loading"
+        <div class="relative flex-1 flex items-center justify-between" :class="{ '!justify-end': stype != '0' }">
+          <el-button type="primary" @click="playlistRef.handlePlayAll" v-show="stype == '0'" :disabled="!playlist.length || loading"
             ><el-icon class="mr-2"><VideoPlay /></el-icon> 播放</el-button
           >
           <el-segmented
@@ -85,9 +94,10 @@
 <script name="search" setup>
 import { debounce } from 'lodash-es'
 import { computed, getCurrentInstance, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Playlist from '@/views/components/Playlist.vue'
 import { useConfigStore } from '@/stores/config'
+const router = useRouter()
 const { config } = useConfigStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl

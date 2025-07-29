@@ -13,37 +13,37 @@ export const useAppStore = defineStore(
     {
       name: '每日手记',
       url: 'https://www.boycot.top/',
-      icon: 'IconApp',
+      icon: 'IconDocumentation',
     },
     {
       name: 'api文档',
       url: 'https://api-docs.boycot.top',
-      icon: 'IconApp',
+      icon: 'IconDocumentation',
     },
     {
       name: 'api应用示例',
       url: 'https://group.boycot.top/',
-      icon: 'IconApp',
+      icon: 'IconCommunity',
     },
     {
       name: 'blog',
       url: 'https://blog-new.boycot.top/',
-      icon: 'IconApp',
+      icon: 'IconEcosystem',
     },
     {
       name: 'blog-admin',
       url: 'https://blog-admin.boycot.top/',
-      icon: 'IconApp',
+      icon: 'IconEcosystem',
     },
     {
       name: 'AI导航',
       url: 'https://nav.boycot.top/',
-      icon: 'IconApp',
+      icon: 'IconEcosystem',
     },
     {
       name: 'bytMusic',
       url: 'https://music.boycot.top/',
-      icon: 'IconApp',
+      icon: 'IconMusic',
     },
     {
       name: '百度',
@@ -64,32 +64,34 @@ export const useAppStore = defineStore(
     const tabs = ref(apps.value.filter((item) => item.affix) || [])
     const current = ref(tabs.value[0]?.id || '')
     const total = computed(() => apps.value.length)
-    function add(el, prop = 'tabs') {
-      if (prop === 'apps') apps.value.push({ ...el, id: Math.random().toString(36).substring(2, 10) })
-      if (prop === 'tabs') tabs.value.push({ ...el, closable: true })
-      if (prop === 'tabs') current.value = tabs.value[0]?.id || ''
+    function add(el, action = 'tabs') {
+      if (has(el.id)) return
+      if (action === 'apps') apps.value.push({ ...el, id: Math.random().toString(36).substring(2, 10) })
+      if (action === 'tabs') tabs.value.push({ ...el, closable: true })
+      if (action === 'tabs') current.value = tabs.value[0]?.id || ''
     }
-    function remove(id, prop = 'tabs') {
-      if (prop === 'apps') apps.value = apps.value.filter((item) => item.id != id)
-      if (prop === 'tabs') tabs.value = tabs.value.filter((item) => item.id != id)
-      if (prop === 'tabs') current.value = tabs.value[0]?.id || ''
+    function remove(id, action = 'tabs') {
+      if (action === 'apps') apps.value = apps.value.filter((item) => item.id != id)
+      if (action === 'tabs') tabs.value = tabs.value.filter((item) => item.id != id)
+      if (action === 'tabs') current.value = tabs.value[tabs.value.length - 1]?.id || ''
     }
-    function update(row, prop = 'tabs') {
-      if (prop === 'apps') apps.value = apps.value.map((el) => {
+    function update(row, action = 'tabs') {
+      if (action === 'apps') apps.value = apps.value.map((el) => {
         if (el.id == row.id) {
           return { ...el, ...row }
         }
         return el
       })
-      if (prop === 'tabs') tabs.value = tabs.value.map((el) => {
+      if (action === 'tabs') tabs.value = tabs.value.map((el) => {
         if (el.id == row.id) {
           return { ...el, ...row }
         }
         return el
       })
     }
-    function has(id) {
-      return !!tabs.value.find((item) => item.id == id)
+    function has(id, action = 'tabs') {
+      if (action === 'tabs') return !!tabs.value.find((item) => item.id == id)
+      return !!apps.value.find((item) => item.id == id)
     }
     function setCurrent(id) {
       current.value = id || ''

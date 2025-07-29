@@ -1,7 +1,7 @@
 <template>
   <div class="ranking">
     <el-row :gutter="20" class="overflow-hidden flex flex-col md:flex-row">
-      <el-col :span="24" :sm="4" class="flex flex-col border-r border-[var(--el-border-color)]">
+      <el-col :span="24" :sm="6" :md="4" class="flex flex-col border-r border-[var(--el-border-color)]">
         <el-select v-model="type" @change="fetchData" size="large">
           <el-option v-for="item in types" :key="item.type" :label="item.title" :value="item.type" />
         </el-select>
@@ -25,7 +25,7 @@
           </el-row>
         </el-scrollbar>
       </el-col>
-      <el-col :span="0" :sm="20">
+      <el-col :span="0" :sm="18" :md="20">
         <Playlist :loading="loading" ref="playlistRef" :data="{ info: playlistInfo, tracks: playlist, id: playlistInfo.id, type }" :tableProps="{ height: 'calc(100vh - 190px)' }">
           <template #action>
             <div class="justify-end items-center" v-if="playlistRef">

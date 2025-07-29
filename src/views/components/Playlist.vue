@@ -23,9 +23,9 @@
         </div>
       </slot>
       <slot name="action">
-        <div class="actions w-full md:w-[auto] flex backdrop-blur-md md:text-right md:absolute top-20 right-0" :class="actionClass" v-if="showActions && data.info">
+        <div class="actions w-full mb-1 md:mb-0 md:w-[auto] flex md:text-right md:absolute top-20 right-2" :class="actionClass" v-if="showActions && data.info">
           <el-button type="primary" @click="handlePlayAll" :disabled="!data.info.id"
-            ><el-icon class="mr-2"><VideoPlay /></el-icon> 播放</el-button
+            ><el-icon class="mr-2"><VideoPlay /></el-icon>播放全部<span class="text-xs" v-if="data?.info?.total_song_num">({{ data?.info?.total_song_num || 0 }})</span></el-button
           >
           <el-button type="warning" @click="toggleCollect" :disabled="!data.info.id"
             ><el-icon class="mr-2"><IconHeartFill v-if="collectStore.has(data.info.id)" /> <IconHeart v-else /></el-icon> {{ collectStore.has(data.info.id) ? '已' : '' }}收藏</el-button
@@ -38,7 +38,7 @@
         </div>
       </slot>
     </div>
-    <el-table ref="tableRef" class="rounded overflow-hidden mt-2" v-loading="loading" v-if="data.tracks" :row-class-name="({ row, rowIndex }) => (playData.id == row.id ? 'current-row' : '')" v-bind="tableProps" :data="data.tracks" @row-dblclick="handlePlay">
+    <el-table ref="tableRef" class="rounded overflow-hidden mt-2" v-loading="loading" v-if="data.tracks" :row-class-name="({ row, rowIndex }) => (playData.id == row.id ? 'current-row' : '')" v-bind="tableProps" v-on="tableEvents" :data="data.tracks" @row-dblclick="handlePlay">
       <el-table-column prop="title" label="歌曲名称" show-overflow-tooltip>
         <template #default="scope">
           {{ scope.row.title }}
@@ -108,6 +108,10 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false,
+  },
+  tableEvents: {
+    type: Object,
+    default: () => ({}),
   },
 })
 const { play, playData, setPlayData } = playerStore

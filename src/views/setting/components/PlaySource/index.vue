@@ -9,11 +9,11 @@
     <el-button type="primary" class="md:ml-8 mt-2 w-full md:w-[auto] md:mt-0" @click="visible = true"
       ><el-icon class="mr-2"><Plus /></el-icon>导入</el-button
     >
-    <el-dialog title="导入自定义源" :close-on-click-modal="false" width="480px" v-model="visible" @close="visible = false" top="30vh" center>
+    <el-dialog title="导入自定义源" :z-index="100001" :close-on-click-modal="false" width="360px" v-model="visible" @close="visible = false" top="30vh" center>
       <el-input clearable v-model="playSource" placeholder="请输入自定义源，格式：https://xxx.js"> </el-input>
       <div class="tip leading-[20px] mt-5">提示：虽然我们已经尽可能地隔离了脚本的运行环境，但导入包含恶意行为的脚本仍可能会影响你的系统，请谨慎导入。</div>
       <template #footer>
-        <div class="flex flex-row justify-center+">
+        <div class="flex flex-row justify-center">
           <el-button type="primary" :disabled="!playSource" @click="importSource()" :loading="importLoading">在线导入</el-button>
           <el-upload :show-file-list="false" accept=".js" :disabled="!!playSource" :auto-upload="false" :on-change="importSource">
             <el-button type="primary" class="ml-8" :disabled="!!playSource" :loading="importLoading">本地导入</el-button>
@@ -65,7 +65,6 @@ const importSource = async (val) => {
     }
     return
   }
-  console.log(val)
   const formData = new FormData()
   formData.append('file', val.raw)
   // 使用Fetch API发送文件
@@ -75,7 +74,6 @@ const importSource = async (val) => {
   })
     .then((response) => response.json())
     .then((data) => {
-      ElMessage.success('导入成功')
       console.log('导入成功:', data)
       setSource(
         {

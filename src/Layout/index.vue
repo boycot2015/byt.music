@@ -23,9 +23,9 @@ const keepAliveRoutes = router.options.routes
     </el-aside>
     <el-container class="overflow-hidden bg-[var(--el-bg-color)]">
       <el-header class="bg-[var(--el-bg-color)] flex items-center border-b-[1px] border-[var(--el-menu-border-color)]"><Header /></el-header>
-      <el-main class="bg-[transparent] !overflow-hidden !p-0">
+      <el-main class="bg-[transparent] !overflow-hidden !p-0 layout">
         <el-scrollbar always style="height: calc(100vh - 120px)">
-          <div class="main scrollbar-wrapper !p-[10px] md:min-w-[700px]">
+          <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px]">
             <router-view v-slot="{ Component }">
               <transition name="slide-fade">
                 <keep-alive :include="keepAliveRoutes">
@@ -33,6 +33,7 @@ const keepAliveRoutes = router.options.routes
                 </keep-alive>
               </transition>
             </router-view>
+            <el-backtop target=".layout .el-scrollbar__wrap" :bottom="100"></el-backtop>
           </div>
         </el-scrollbar>
       </el-main>

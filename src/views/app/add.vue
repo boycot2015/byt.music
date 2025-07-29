@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="添加应用" v-model="visible" width="320px" @close="onClose">
+  <el-dialog :z-index="10001" title="添加应用" v-model="visible" width="320px" @close="onClose">
     <el-form :model="form" :rules="rules" ref="formRef" label-width="80px">
       <el-form-item label="应用名称" prop="name">
         <el-input v-model="form.name" placeholder="请输入应用名称"></el-input>

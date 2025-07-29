@@ -1,6 +1,6 @@
 <template>
   <div class="player leading-[60px] h-[60px] flex flex-1 md:flex-3 items-center justify-around w-full">
-    <el-slider size="small" class="md:flex-3 !hidden md:!block text-center" :disabled="!playData.url" v-model="playData.currentTime" :min="0" :format-tooltip="formatTime" :max="playData.duration" @input="(val) => (inputValue = val)" @change="onSliderChange" />
+    <el-slider size="small" class="md:flex-3 !h-[auto] !hidden md:!block text-center" :disabled="!playData.url" v-model="playData.currentTime" :min="0" :format-tooltip="formatTime" :max="playData.duration" @input="(val) => (inputValue = val)" @change="onSliderChange" />
     <audio ref="audioRef" class="flex-3 hidden" :muted="muted" :src="url" :loop="playData.loop" @ended="playNext" @timeupdate="onUpdate" @pause="setPlayData({ paused: true })" @play="setPlayData({ paused: false })"></audio>
     <div class="controls flex items-center justify-end flex-1 ml-5">
       <div class="mr-3 hidden md:flex items-center">
