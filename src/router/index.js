@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Error from '@/views/error.vue'
 import { useConfigStore } from '@/stores/config'
+import NProgress from 'nprogress'
 
+NProgress.configure({ parent: '.el-main', showSpinner: false })
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -106,8 +108,12 @@ const router = createRouter({
   ],
 })
 router.beforeEach((to, from, next) => {
+  NProgress.start()
   const { config } = useConfigStore()
   document.title = to.meta.title + '-' + (config.title || 'BytMusic')
   next()
+})
+router.afterEach(() => {
+  NProgress.done()
 })
 export default router

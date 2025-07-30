@@ -24,7 +24,7 @@ const handleOpen = (key) => {
   <div class="flex flex-col items-center border-r-[1px] border-[var(--el-menu-border-color)] h-full">
     <router-link to="/" class="logo w-full h-[60px] flex items-center py-2 justify-around" :title="config.title">
       <el-icon :size="32" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
-      <div class="title text-2xl md:hidden">{{ config.title }}</div>
+      <div class="title text-2xl md:hidden line-clamp-1 max-w-[90px]">{{ config.title }}</div>
     </router-link>
     <div class="wrapper">
       <div class="hidden md:block">

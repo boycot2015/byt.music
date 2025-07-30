@@ -2,8 +2,10 @@
   <div class="app">
     <div class="flex flex-col">
       <el-tabs
-        class="w-full"
-        type="border-card"
+        size="small"
+        class="w-full tabs"
+        type="card"
+        addable
         v-model="appId"
         @tab-click="
           (val) => {
@@ -11,18 +13,33 @@
             loading = false
           }
         "
+        @edit="popoverVisible = true"
         @tab-remove="(id) => remove(id)"
       >
-        <el-tab-pane v-for="item in appList" :key="item.id" :name="item.id" :label="item.name" :closable="item.closable">
+        <template #add-icon>
+          <el-dropdown trigger="click" @command="onAction">
+            <el-icon :size="20" class="el-icon--right pr-1">
+              <arrow-down />
+            </el-icon>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item :disabled="tabs.length <= 1 || current.affix" command="closeCurrent">关闭当前</el-dropdown-item>
+                <el-dropdown-item :disabled="tabs.length <= 1" command="closeOther">关闭其他</el-dropdown-item>
+                <el-dropdown-item :disabled="tabs.length <= 1" command="closeAll">关闭全部</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </template>
+        <el-tab-pane v-for="item in tabs" :key="item.id" :name="item.id" :label="item.name" :closable="!!item.closable">
           <template #label>
             <div class="flex items-center">
-              <Image :src="item.icon" alt="" width="28px" height="28px" v-if="item.icon && item.icon.includes('http')" class="mr-1"></Image>
+              <Image :src="item.icon" alt="" class="w-[20px] h-[20px] mr-1" v-if="item.icon && item.icon.includes('http')"></Image>
               <el-icon v-else-if="item.icon" class="mr-1"><component :is="item.icon || 'IconApp'" /></el-icon>
               {{ item.name }}
             </div>
           </template>
-          <div class="h-[calc(100vh-185px)] rounded" v-loading="loading">
-            <el-scrollbar class="p-3" v-show="current.affix">
+          <div class="h-[calc(100vh-185px)] rounded overflow-hidden" v-loading="loading">
+            <el-scrollbar class="py-3" v-show="current.affix">
               <div class="overflow-hidden">
                 <div class="flex items-center justify-between mb-2">
                   <h3>热门推荐</h3>
@@ -30,13 +47,22 @@
                     ><el-icon :size="16" class="mr-1" v-if="isEdit"><Edit /></el-icon><el-icon :size="16" class="mr-1" v-else><Setting /></el-icon> {{ !isEdit ? '管理' : '退出' }}</el-link
                   >
                 </div>
-                <el-row :gutter="16">
-                  <el-col v-for="item in apps" :key="item.id" :span="24" :sm="12" :md="8" :lg="6" :xl="4">
+                <el-row :gutter="16" class="apps">
+                  <el-col v-for="item in apps" :key="item.id" :span="12" :sm="8" :md="6" :lg="4" :xl="3">
                     <el-card
                       class="mb-4 cursor-pointer"
+                      body-class="!p-3"
+                      shadow="hover"
                       @click="
                         () => {
+                          if (isEdit && item.editable) {
+                            addVisible = true
+                            rowData = item
+                            return
+                          }
+                          NProgress.start()
                           loading = !has(item.id)
+                          !loading && NProgress.done()
                           add(item)
                           setCurrent(item.id)
                         }
@@ -45,17 +71,43 @@
                       <template #default>
                         <div class="flex items-center justify-between relative">
                           <div class="flex items-center">
-                            <Image v-if="item.icon && item.icon.includes('http')" :src="item.icon" alt="" width="28px" height="28px" class="mr-1"></Image>
-                            <el-icon :size="28" v-else-if="item.icon" class="mr-2"><component :is="item.icon || 'IconApp'" /></el-icon>
-                            <span class="line-clamp-1">{{ item.name }}</span>
+                            <Image v-if="item.icon && item.icon.includes('http')" :src="item.icon" alt="" class="w-[24px] h-[24px] mr-2"></Image>
+                            <el-icon :size="36" v-else-if="item.icon" class="mr-3"><component :is="item.icon || 'IconApp'" /></el-icon>
+                            <div class="flex flex-col">
+                              <span class="line-clamp-1">{{ item.name }}</span>
+                              <span class="line-clamp-1 text-sm text-[var(--vt-c-secondary)]">{{ item.desc || item.name }}</span>
+                            </div>
                           </div>
-                          <el-icon :size="20" class="!text-[var(--el-color-primary)]" v-show="item.closable && isEdit" @click.stop="remove(item.id, 'apps')"><Close /></el-icon>
+                          <div class="flex items-center justify-end">
+                            <el-icon
+                              :size="20"
+                              class="!text-[var(--el-color-primary)]"
+                              v-show="isEdit && item.editable"
+                              @click.stop="
+                                () => {
+                                  addVisible = true
+                                  rowData = item
+                                }
+                              "
+                              ><Edit
+                            /></el-icon>
+                            <el-icon :size="20" class="!text-[var(--el-color-primary)] ml-2" v-show="item.closable && isEdit" @click.stop="remove(item.id, 'apps')"><Close /></el-icon>
+                          </div>
                         </div>
                       </template>
                     </el-card>
                   </el-col>
-                  <el-col :span="24" :sm="12" :md="8" :lg="6" :xl="4">
-                    <el-card class="mb-2 cursor-pointer" @click="addVisible = true">
+                  <el-col :span="12" :sm="8" :md="6" :lg="4" :xl="3" class="app-add">
+                    <el-card
+                      class="mb-2 cursor-pointer"
+                      shadow="hover"
+                      @click="
+                        () => {
+                          addVisible = true
+                          rowData = {}
+                        }
+                      "
+                    >
                       <template #default>
                         <div class="flex items-center justify-between">
                           <div class="flex items-center">
@@ -74,23 +126,29 @@
         </el-tab-pane>
       </el-tabs>
     </div>
-    <addDialog v-model="addVisible" @submit="(item) => add(item, 'apps')"></addDialog>
+    <addDialog v-model="addVisible" :rowData="rowData" @submit="(item) => (item.id ? update(item, 'apps') : add(item, 'apps'))"></addDialog>
   </div>
 </template>
 <script name="app" setup>
-import { ref, computed, watchEffect, onActivated } from 'vue'
+import { ref, computed, watchEffect, watch, onActivated, onMounted } from 'vue'
 // import { useRouter } from 'vue-router'
 import { useAppStore } from '@/stores/app'
 import addDialog from './add.vue'
+import Sortable from 'sortablejs' //插件引入
+import NProgress from 'nprogress'
+
 const appStore = useAppStore()
 // const router = useRouter()
-const { add, remove, has, setCurrent } = appStore
+const { add, remove, has, update, set, setCurrent } = appStore
 const apps = computed(() => appStore.apps.filter((item) => !item.affix))
-const appList = computed(() => appStore.tabs)
+const tabs = computed(() => appStore.tabs)
 const addVisible = ref(false)
 const appId = ref(appStore.current)
 const isEdit = ref(false)
 const loading = ref(true)
+const rowData = ref({})
+const popoverVisible = ref(false)
+let appsortable = null
 const current = computed(() => appStore.tabs.find((item) => item.id === appStore.current))
 watchEffect(() => {
   appId.value = appStore.current
@@ -98,10 +156,71 @@ watchEffect(() => {
 onActivated(() => {
   loading.value = current.value?.affix ? false : true
 })
+onMounted(() => {
+  Sortable.create(document.querySelector('.tabs .el-tabs__nav'), {
+    animation: 300,
+    easing: 'ease-in-out',
+    draggable: '.el-tabs__item.is-closable',
+    onEnd: (evt) => {
+      let list = tabs.value
+      const movedItem = tabs.value[evt.oldIndex]
+      list.splice(evt.oldIndex, 1)
+      list.splice(evt.newIndex, 0, movedItem)
+      set(list, 'tabs')
+    },
+  })
+  appsortable = Sortable.create(document.querySelector('.el-row.apps'), {
+    animation: 150,
+    draggable: '.el-col',
+    filter: '.el-col.app-add',
+    easing: 'cubic-bezier(1, 0, 0, 1)',
+    disabled: true,
+    onEnd: (evt) => {
+      let list = apps.value
+      const movedItem = apps.value[evt.oldIndex]
+      list.splice(evt.oldIndex, 1)
+      list.splice(evt.newIndex, 0, movedItem)
+      set(
+        list.filter((item) => item),
+        'apps'
+      )
+    },
+  })
+})
+const onAction = (command) => {
+  switch (command) {
+    case 'closeCurrent':
+      !current.value.affix && remove(appId.value, 'tabs')
+      break
+    case 'closeOther':
+      set(appStore.apps.filter((item) => item.affix).concat(tabs.value.filter((item) => item.id === appId.value && !item.affix)), 'tabs')
+      break
+    case 'closeAll':
+      set(
+        appStore.apps.filter((item) => item.affix),
+        'tabs'
+      )
+      break
+  }
+}
+watch(isEdit, (val) => {
+  appsortable?.option('disabled', !val)
+})
+watch(loading, (val) => {
+  if (!val) {
+    NProgress.done()
+  }
+})
 </script>
 <style lang="scss" scoped>
 :deep(.el-tabs.el-tabs--border-card > .el-tabs__content) {
   padding: 0px !important;
+  border: 0 !important;
+}
+:deep(.el-tabs__item.is-closable) {
+  background-color: var(--el-color-bg);
+}
+:deep(.el-tabs__new-tab) {
   border: 0 !important;
 }
 </style>

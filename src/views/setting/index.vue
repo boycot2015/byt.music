@@ -2,7 +2,7 @@
   <div class="setting">
     <el-row>
       <el-col :span="0" :md="4" class="!hidden md:!block">
-        <el-scrollbar height="calc(100vh - 160px)" class="border-r border-[var(--el-border-color)]">
+        <el-scrollbar height="calc(100vh - 140px)" class="border-r border-[var(--el-border-color)]">
           <div class="flex h-full">
             <el-anchor select-scroll-top type="underline" :offset="0" container=".config-form">
               <el-anchor-link v-for="(item, key) in configs" :href="`#config-${key}`" :key="key"> {{ item.label }} </el-anchor-link>
@@ -11,14 +11,14 @@
         </el-scrollbar>
       </el-col>
       <el-col :span="24" :md="20">
-        <el-scrollbar height="calc(100vh - 160px)" class="">
-          <el-form :model="config" ref="formRef" class="config-form md:pr-4 w-full" label-width="90px" label-position="right">
+        <el-scrollbar height="calc(100vh - 140px)" class="">
+          <el-form :model="config" ref="formRef" class="config-form md:pr-4 md:pl-4 w-full" label-position="left">
             <el-form-item v-for="(item, key) in configs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">
               <el-select v-if="item.type == 'select'" v-model="config[key]" @change="set({ [key]: config[key] })">
                 <el-option v-for="item in item.options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
               </el-select>
               <component v-else-if="item.component" :is="item.component" />
-              <el-input v-else v-model="config[key]" />
+              <el-input v-else v-model="config[key]" :type="item.type || 'text'" :placeholder="item.placeholder || '请输入'" :maxlength="item.maxlength" />
             </el-form-item>
           </el-form>
         </el-scrollbar>
@@ -35,9 +35,12 @@ const { config, set } = useConfigStore()
 const configs = ref({
   title: {
     label: '标题',
+    maxlength: 15,
   },
   description: {
     label: '描述',
+    type: 'textarea',
+    maxlength: 150,
   },
   family: {
     label: '字体',
@@ -47,13 +50,13 @@ const configs = ref({
   theme: {
     label: '主题配置',
     labelPosition: 'top',
-    class: 'md:pl-4',
+    class: 'md:pl-0',
     component: markRaw(ThemeConfig),
   },
   playSource: {
     label: '播放源',
     labelPosition: 'top',
-    class: 'md:pl-4',
+    class: 'md:pl-0',
     component: markRaw(PlaySource),
   },
   // Add more configuration options here

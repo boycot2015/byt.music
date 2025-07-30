@@ -2,7 +2,7 @@
   <el-image v-bind="$attrs">
     <template #error>
       <slot name="error">
-        <el-icon>
+        <el-icon :size="size">
           <icon-music />
         </el-icon>
       </slot>
@@ -18,6 +18,12 @@
     </template>
   </el-image>
 </template>
-<script setup lang="ts">
+<script setup>
 import { ElImage } from 'element-plus'
+defineProps({
+  size: {
+    type: Number,
+    default: 24,
+  },
+})
 </script>

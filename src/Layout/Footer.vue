@@ -1,6 +1,6 @@
 <template>
   <footer class="footer w-full">
-    <div class="nav flex items-center justify-between w-full relative z-10000">
+    <div class="nav flex items-center justify-between w-full relative z-100">
       <div class="left flex flex-1 cursor-pointer" @click="coverVisible = !coverVisible">
         <Image :src="playData.img_url" fit="fill" class="w-11 h-11 mr-2 rounded">
           <template #placeholder>
@@ -17,7 +17,7 @@
       </div>
       <Player />
     </div>
-    <el-drawer v-model="coverVisible" :z-index="9999" :modal-class="`!absolute !bg-[transparent]`" body-class="!p-0" header-class="text-center" direction="btt" :title="playData.title" size="100%" :with-header="false">
+    <el-drawer v-model="coverVisible" :z-index="99" :modal-class="`!absolute !bg-[transparent]`" body-class="!p-0" header-class="text-center" direction="btt" :title="playData.title" size="100%" :with-header="false">
       <div class="relative z-10 backdrop-blur-2xl overflow-hidden">
         <div class="flex w-full items-center px-10 pr-5 leading-[60px]">
           <div class="flex flex-1 items-center text-center justify-center">

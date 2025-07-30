@@ -27,7 +27,7 @@ export default defineConfig([
   {
     rules: {
       'vue/multi-word-component-names': 'off',
-      indent: ['error', 2], // 缩进使用 2 个空格
+      indent: ['error', 2, { switchCase: 1 }], // 缩进使用 2 个空格
       'linebreak-style': ['error', 'unix'], // 使用 Unix 风格的换行符
       quotes: ['error', 'single'], // 使用单引号
       semi: ['error', 'never'], // 语句末尾不加分号

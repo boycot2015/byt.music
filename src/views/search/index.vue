@@ -53,7 +53,7 @@
       action-class="mt-2"
       v-loading="loading"
       :data="{ info: { id: keyword, total_song_num: total || playlist.length }, tracks: playlist }"
-      :tableEvents="{ rowClick: (row) => router.push({ path: '/playlist/' + row.id, query: { type } }) }"
+      :tableEvents="{ rowClick: (row) => stype != '0' && router.push({ path: '/playlist/' + row.id, query: { type } }) }"
       :tableProps="{ height: config.isMobile ? 'calc(100vh - 360px)' : 'calc(100vh - 380px)', rowClassName: 'cursor-pointer' }"
     >
       <template #action>
