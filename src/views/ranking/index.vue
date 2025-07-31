@@ -16,10 +16,10 @@
           </el-menu>
           <Empty v-else-if="!pageLoading && !cates[type]?.playlist.length" />
           <el-row :gutter="16" class="overflow-hidden pr-0" v-if="config.isMobile">
-            <el-col :xs="8" :sm="6" class="mb-4 overflow-hidden rounded" v-for="item in cates[type].playlist" :key="item.id">
+            <el-col :xs="8" :sm="6" class="overflow-hidden rounded mb-2" v-for="item in cates[type].playlist" :key="item.id">
               <div class="flex flex-col items-center flex-wrap cursor-pointer" @click="router.push({ path: `/playlist/${item.id}`, query: { type: type } })">
                 <Image lazy class="w-[120px] h-[120px] mr-2 rounded" :src="item.cover_img_url" fit="cover" />
-                <span class="line-clamp-2 flex-1">{{ item.title }}</span>
+                <h3 class="line-clamp-2 flex-1 leading-[22px] mt-1">{{ item.title }}</h3>
               </div>
             </el-col>
           </el-row>

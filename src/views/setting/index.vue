@@ -21,6 +21,18 @@
               <el-input v-else v-model="config[key]" :type="item.type || 'text'" :placeholder="item.placeholder || '请输入'" :maxlength="item.maxlength" />
             </el-form-item>
           </el-form>
+          <el-form :model="player" ref="playerRef" class="config-player md:pr-4 md:pl-4 w-full" label-position="left">
+            <el-form-item v-for="(item, key) in playConfigs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">
+              <el-select v-if="item.type == 'select'" v-model="config[key]" @change="set({ [key]: config[key] })">
+                <el-option v-for="item in item.options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+              </el-select>
+              <el-radio-group v-else-if="item.type == 'radio'" v-model="player[key]" @change="set({ [key]: player[key] })">
+                <el-radio v-for="item in item.options" :key="item.value" :value="item.value"> {{ item.label }} </el-radio>
+              </el-radio-group>
+              <component v-else-if="item.component" :is="item.component" />
+              <el-input v-else v-model="config[key]" :type="item.type || 'text'" :placeholder="item.placeholder || '请输入'" :maxlength="item.maxlength" />
+            </el-form-item>
+          </el-form>
         </el-scrollbar>
       </el-col>
     </el-row>
@@ -30,8 +42,10 @@
 import PlaySource from './components/PlaySource/index.vue'
 import ThemeConfig from './components/ThemeConfig.vue'
 import { useConfigStore } from '@/stores/config'
-import { ref, markRaw } from 'vue'
+import { usePlayerStore } from '@/stores/player'
+import { ref, markRaw, computed } from 'vue'
 const { config, set } = useConfigStore()
+const { player, setPlayer } = usePlayerStore()
 const configs = ref({
   title: {
     label: '标题',
@@ -53,11 +67,21 @@ const configs = ref({
     class: 'md:pl-0',
     component: markRaw(ThemeConfig),
   },
+  // Add more configuration options here
+})
+const playConfigs = ref({
   playSource: {
     label: '播放源',
     labelPosition: 'top',
     class: 'md:pl-0',
     component: markRaw(PlaySource),
+  },
+  playBar: {
+    label: '播放进度条样式',
+    labelPosition: 'top',
+    class: 'md:pl-0',
+    type: 'radio',
+    options: player.playBars,
   },
   // Add more configuration options here
 })

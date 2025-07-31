@@ -8,7 +8,7 @@
               {{ ctypeObj.name || '全部歌单' }}
               <el-icon class="el-icon--right">
                 <arrow-down v-if="cates[type] && cates[type].length" />
-                <Loading v-else-if="cateLoading" />
+                <el-button loading v-else-if="cateLoading" type="primary" link loading-icon="Loading" class="ml-2"></el-button>
               </el-icon>
             </span>
           </template>
@@ -17,7 +17,7 @@
               <el-col :span="24" class="text-xl">
                 {{ item.category || item.name }}
               </el-col>
-              <el-col :span="4" v-for="(el, index) in item.filters.filter((el) => el.name != '排行榜')" :key="index" class="my-1">
+              <el-col :span="6" :md="4" v-for="(el, index) in item.filters.filter((el) => el.name != '排行榜')" :key="index" class="my-1">
                 <el-tag
                   class="cursor-pointer"
                   size="large"

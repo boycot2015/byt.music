@@ -1,44 +1,56 @@
 <template>
-  <div class="text-slider">
-    <div class="scroll-wrap relative" ref="scrollWrap">
-      <p class="scroll-item">{{ msg || '--' }}</p>
-    </div>
+  <div class="scroll-wrap relative" ref="scrollWrap">
+    {{ msg || '--' }}
   </div>
 </template>
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
+<script setup>
+import { ref, watch, onMounted, nextTick } from 'vue'
 
-defineProps({
+const props = defineProps({
   msg: String,
 })
-let timer: any = null
-const scrollWrap = ref<HTMLElement>()
-function scroll() {
-  let p = scrollWrap.value.getElementsByTagName('p')[0]
-  let p_w = p.offsetWidth
-  let div_w = scrollWrap.value.offsetWidth
-  if (div_w > p_w || !scrollWrap.value) {
-    return false
-  }
-
-  let step = 10
-  timer = setInterval(() => {
-    step++
-    if (!scrollWrap.value) {
-      clearInterval(timer)
+const scrollWrap = ref(null)
+const textMove = (oCon, max = 8) => {
+  if (oCon && oCon !== null) {
+    oCon._move = null
+    const step = -1
+    if (oCon.textContent.length <= max) {
+      clearInterval(oCon._move)
       return
+    } else {
+      autoRoll(oCon, step)
     }
-    scrollWrap.value.animate({ left: -step + 'px' }, 20)
-  }, 30)
+    oCon._move = setInterval(() => {
+      autoRoll(oCon, step)
+    }, 30)
+  }
+}
+const autoRoll = (oCon, step) => {
+  console.log(-oCon.offsetWidth + oCon.parentNode.offsetWidth, oCon.offsetLeft, step, 'textMove')
+  if (oCon.offsetLeft < -oCon.offsetWidth + oCon.parentNode.offsetWidth) {
+    oCon.style.left = -oCon.offsetWidth + oCon.parentNode.offsetWidth + 'px'
+    if (oCon.offsetLeft > 0) oCon.style.left = 0 + 'px'
+    clearInterval(oCon._move)
+    return
+  }
+  if (oCon.offsetLeft > 0) {
+    oCon.style.left = -oCon.offsetWidth / 2 + 'px'
+  }
+  oCon.style.left = -oCon.offsetLeft + step + 'px'
 }
 onMounted(() => {
-  scroll()
+  // nextTick(() => {
+  //   textMove(scrollWrap.value, 10)
+  // })
+})
+watch(props, () => {
+  if (scrollWrap.value._move) clearInterval(scrollWrap.value._move)
+  // textMove(scrollWrap.value, 20)
 })
 </script>
 <style scoped>
 .scroll-wrap {
-  max-width: 100%;
-  overflow: hidden;
   white-space: nowrap;
+  width: fit-content;
 }
 </style>

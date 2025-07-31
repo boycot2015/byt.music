@@ -5,9 +5,13 @@ import Aside from './Aside.vue'
 import Header from './Header.vue'
 import Footer from './Footer.vue'
 import { useRoute, useRouter } from 'vue-router'
-
 import { useConfigStore } from '@/stores/config'
+import { usePlayerStore } from '@/stores/player'
+import { useDark } from '@vueuse/core'
+
+const isDark = useDark()
 const { config } = useConfigStore()
+const { player } = usePlayerStore()
 const router = useRouter()
 const keepAliveRoutes = router.options.routes
   .filter((el) => el.meta?.keepAlive)
@@ -18,11 +22,11 @@ const keepAliveRoutes = router.options.routes
 
 <template>
   <el-container class="text-shadow-2xl">
-    <el-aside width="64px" class="h-[100vh] hidden md:block">
+    <el-aside width="64px" class="!transition-all !duration-300 h-[100vh] z-999 hidden md:block shadow-[0_0_5px_0_rgba(0,0,0,0.1)]" :class="{ 'md:!shadow-[0_5px_30px_0_rgba(255,255,255,0.1)]': isDark, 'is-leave': player.showCover }">
       <Aside />
     </el-aside>
     <el-container class="overflow-hidden bg-[var(--el-bg-color)]">
-      <el-header class="bg-[var(--el-bg-color)] flex items-center md:shadow-[0_10px_30px_0_rgba(255,255,255,0.1)] dark:shadow-[0_5px_10px_0_rgba(255,255,255,0.1)]"><Header /></el-header>
+      <el-header class="bg-[var(--el-bg-color)] flex items-center shadow-[0_0_5px_0_rgba(0,0,0,0.1)]" :class="{ 'md:!shadow-[0_5px_30px_0_rgba(255,255,255,0.1)]': isDark }"><Header /></el-header>
       <el-main class="bg-[transparent] !overflow-hidden !p-0 layout">
         <el-scrollbar always style="height: calc(100vh - 120px)">
           <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px]">
@@ -37,7 +41,7 @@ const keepAliveRoutes = router.options.routes
           </div>
         </el-scrollbar>
       </el-main>
-      <el-footer class="bg-[var(--el-bg-color)] flex items-center md:shadow-[0_-10px_30px_0_rgba(255,255,255,0.1)] !px-3">
+      <el-footer class="bg-[var(--el-bg-color)] z-999 !p-0 shadow-[0_-5px_30px_0_rgba(0,0,0,0.1)]" :class="{ 'md:!shadow-[0_-5px_30px_0_rgba(255,255,255,0.1)]': isDark }">
         <Footer />
       </el-footer>
     </el-container>
@@ -71,5 +75,20 @@ const keepAliveRoutes = router.options.routes
 html.dark .el-aside {
   --aside-bg-color: rgba(0, 0, 0, 0.5);
   background-color: var(--aside-bg-color);
+}
+.el-footer .is-open {
+  animation: slideX 0.3s ease-in forwards;
+}
+.el-aside.is-leave {
+  transition: width 0.3s ease-in forwards;
+  width: 0px !important;
+}
+@keyframes slideX {
+  0% {
+    width: 64px !important;
+  }
+  100% {
+    width: 0px !important;
+  }
 }
 </style>

@@ -1,7 +1,19 @@
 <template>
   <div class="player leading-[60px] h-[60px] flex flex-1 md:flex-3 items-center justify-around w-full">
     <el-button loading v-if="loading" type="primary" link loading-icon="Loading" class="mr-2"></el-button>
-    <el-slider size="small" class="md:flex-3 !h-[auto] !hidden md:!block text-center" :disabled="disabled" v-model="playData.currentTime" :min="0" :format-tooltip="formatTime" :max="playData.duration" @input="(val) => (inputValue = val)" @change="onSliderChange" />
+    <el-slider
+      size="small"
+      :class="{ '!md:flex-2': player.playBar == 'small' }"
+      v-if="player.playBar != 'full'"
+      class="md:flex-3 !h-[auto] !hidden md:!block text-center"
+      :disabled="disabled"
+      v-model="playData.currentTime"
+      :min="0"
+      :format-tooltip="formatTime"
+      :max="playData.duration"
+      @input="(val) => (inputValue = val)"
+      @change="onSliderChange"
+    />
     <audio ref="audioRef" class="flex-3 hidden" :muted="muted" :src="url" :loop="playData.loop" @ended="playNext" @timeupdate="onUpdate" @pause="setPlayData({ paused: true })" @play="setPlayData({ paused: false })"></audio>
     <div class="controls flex items-center justify-end flex-1 ml-5">
       <div class="mr-3 hidden md:flex items-center">
@@ -56,7 +68,7 @@ import IconVolumeOff from '@/components/icons/IconVolumeOff.vue'
 import Playlist from '@/views/components/Playlist.vue'
 
 const playerStore = usePlayerStore()
-const { playData, initPlay, play, setPlayData } = playerStore
+const { player, playData, initPlay, play, setPlayData } = playerStore
 const audioRef = ref(null)
 const paused = computed(() => playData.paused)
 const muted = computed(() => playData.muted)
@@ -144,3 +156,14 @@ watch(playData, (newVal, oldVal) => {
 })
 const disabled = computed(() => !playData.url || loading.value)
 </script>
+<style lang="scss" scoped>
+.player :deep(.el-slider) {
+  .el-slider__bar,
+  .el-slider__runway {
+    height: var(--el-slider-height);
+  }
+  .el-slider__button-wrapper {
+    display: block;
+  }
+}
+</style>

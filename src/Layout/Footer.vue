@@ -1,6 +1,22 @@
 <template>
-  <footer class="footer w-full">
-    <div class="nav flex items-center justify-between w-full relative z-100">
+  <footer class="footer w-full transition-width duration-300">
+    <el-slider
+      size="small"
+      class="md:flex-3 relative z-999 !h-[auto] text-center"
+      v-show="player.playBar == 'full' || config.isMobile"
+      v-model="playData.currentTime"
+      :min="0"
+      :format-tooltip="() => `${Math.floor((playData.currentTime || 0) / 60)}:${('0' + Math.floor((playData.currentTime || 0) % 60)).slice(-2)}`"
+      :max="playData.duration"
+      @change="
+        (value) =>
+          setPlayData({
+            withLyric: true,
+            currentTime: value,
+          })
+      "
+    />
+    <div class="nav flex items-center justify-between w-full relative z-100 px-3">
       <div class="left flex flex-1 cursor-pointer" @click="coverVisible = !coverVisible">
         <Image :src="playData.img_url" fit="fill" class="w-11 h-11 mr-2 rounded">
           <template #placeholder>
@@ -36,11 +52,30 @@
   </footer>
 </template>
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { usePlayerStore } from '@/stores/player'
+import { useConfigStore } from '@/stores/config'
 import Cover from '@/components/Cover/index.vue'
 import { ArrowDown } from '@element-plus/icons-vue'
 import Player from '@/components/Player/index.vue'
+import NProgress from 'nprogress'
 const playData = computed(() => usePlayerStore().playData)
+const player = computed(() => usePlayerStore().player)
+const config = computed(() => useConfigStore().config)
+const { setPlayer } = usePlayerStore()
 const coverVisible = ref(false)
+watch(coverVisible, (value) => {
+  setPlayer({ showCover: value })
+})
 </script>
+<style lang="scss" scoped>
+:deep(.el-slider) {
+  .el-slider__bar,
+  .el-slider__runway {
+    height: 2px;
+  }
+  .el-slider__button-wrapper {
+    display: none;
+  }
+}
+</style>

@@ -1,13 +1,11 @@
 <template>
   <div class="lyirc">
-    <el-scrollbar ref="scrollbar" :height="'calc(100vh - 150px)'" @scroll="onScroll">
+    <el-scrollbar ref="scrollbar" :height="config.isMobile ? 'calc(100vh - 140px)' : 'calc(100vh - 230px)'" @scroll="onScroll">
       <div class="w-full lg:w-[500px] drop-shadow-md">
         <div :ref="(el) => (itemRefs[index] = el)" v-for="(item, index) in lyricArr" :key="item" class="h-[48px]" @click="setSlider(index)">
           <span class="text-xl cursor-pointer line-clamp-1 !text-left transition-all delay-0 duration-300 ease-in-out" :class="{ 'text-[var(--el-color-primary)] !text-2xl': index === activeIndex }">
-            <TextSlider v-if="index === activeIndex" :msg="item.split(']')[1]" />
-            <template v-else>
-              {{ item.split(']')[1] }}
-            </template>
+            <TextSlider v-show="index === activeIndex" :msg="item.split(']')[1]" />
+            <span v-show="index !== activeIndex">{{ item.split(']')[1] }}</span>
           </span>
         </div>
       </div>

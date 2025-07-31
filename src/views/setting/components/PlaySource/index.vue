@@ -28,8 +28,8 @@
 import { getCurrentInstance, ref, computed } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import { useConfigStore } from '@/stores/config'
-const { source, setSource, removeSource } = useConfigStore()
+import { usePlayerStore } from '@/stores/player'
+const { source, setSource, removeSource } = usePlayerStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
 const visible = ref(false)
@@ -86,15 +86,6 @@ const importSource = async (val) => {
     .catch((error) => {
       console.error('上传过程中出现错误:', error)
     })
-  // set({
-  //   playSource: {
-  //     list: [...config.playSource.list, {
-  //       title: val.name,
-  //       url: val.name,
-  //     }],
-  //     url: playSource.value,
-  //   }
-  // })
   visible.value = false
 }
 </script>
