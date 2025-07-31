@@ -2,55 +2,63 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { apiUrl } from '@/api/baseUrl'
 import { ElMessage } from 'element-plus'
+const defaults = {
+  player: {
+    showCover: false,
+    playBar: 'middle',
+    playBars: [
+      { label: 'mini', value: 'small' },
+      { label: '中等', value: 'middle' },
+      { label: '全宽', value: 'full' },
+    ]
+  },
+  source: {
+    apiUrl: apiUrl + '/music/url',
+    list: [
+      { name: '默认', apiUrl: apiUrl + '/music/url', id: '' },
+      {
+        allowShowUpdateAlert: true,
+        apiKey: 'share-v2',
+        apiUrl: 'https://lxmusicapi.onrender.com',
+        author: 'Huibq',
+        description: 'Github搜索“洛雪音乐音源”，禁止批量下载！',
+        homepage: '',
+        id: 'user_api_468_1753778736801',
+        musicSources: { kw: { name: 'kw', type: 'music', actions: ['musicUrl'], qualitys: ['128k', '320k'] }, },
+        name: 'Huibq_lxmusic源',
+        version: 'v1.2.0',
+      }
+    ]
+  },
+  playData: {
+    url: '',
+    type: 'qq',
+    title: '',
+    img_url: '',
+    singer: '',
+    duration: 100,
+    currentTime: 0,
+    playlist: [],
+    muted: false,
+    paused: true,
+    withLyric: false,
+    lyric: '',
+    playIndex: 0,
+  }
+}
 export const usePlayerStore = defineStore(
   'player',
   () => {
-    const player = ref({
-      showCover: false,
-      playBar: 'middle',
-      playBars: [
-        { label: '小进度条', value: 'small' },
-        { label: '中进度条', value: 'middle' },
-        { label: '大进度条', value: 'full' },
-      ]
-    })
-    const source = ref({
-      apiUrl: apiUrl + '/music/url',
-      list: [
-        { name: '默认', apiUrl: apiUrl + '/music/url', id: '' },
-        {
-          allowShowUpdateAlert: true,
-          apiKey: 'share-v2',
-          apiUrl: 'https://lxmusicapi.onrender.com',
-          author: 'Huibq',
-          description: 'Github搜索“洛雪音乐音源”，禁止批量下载！',
-          homepage: '',
-          id: 'user_api_468_1753778736801',
-          musicSources: { kw: { name: 'kw', type: 'music', actions: ['musicUrl'], qualitys: ['128k', '320k'] }, },
-          name: 'Huibq_lxmusic源',
-          version: 'v1.2.0',
-        }
-      ]
-    })
-    const playData = ref({
-      url: '',
-      type: 'qq',
-      title: '',
-      duration: 100,
-      currentTime: 0,
-      playlist: [],
-      muted: false,
-      paused: true,
-      withLyric: false,
-      playIndex: 0,
-    })
+    const player = ref(JSON.parse(JSON.stringify(defaults.player)))
+    const source = ref(JSON.parse(JSON.stringify(defaults.source)))
+    const playData = ref(JSON.parse(JSON.stringify(defaults.playData)))
     const initPlay = () => {
       playData.value.paused = true
       // playData.value.url && play(playData.value)
     }
     const play = async (item, type = playData.value.type || 'qq') => {
-      if (!item) return ElMessage.error('请选择歌曲')
       playData.value.currentTime = 0
+      if (!item) return ElMessage.error('请选择歌曲')
       playData.value.type = type
       playData.value.id = item.id
       // playData.value.duration = item.duration
@@ -63,7 +71,7 @@ export const usePlayerStore = defineStore(
           playData.value.lyric = data.data.lyric
         })
       let url = `${apiUrl}/music/url?id=${item.id}&type=${type}`
-      if (source.id && source.apiKey) url += `&apiUrl=${source.apiUrl}&apiKey=${source.apiKey}`
+      if (source.value.id && source.value.apiKey) url += `&apiUrl=${source.value.apiUrl}&apiKey=${source.value.apiKey}`
       return await fetch(url)
         .then((res) => res.json())
         .then((data) => {
@@ -104,11 +112,9 @@ export const usePlayerStore = defineStore(
         }
       }
     }
-    return { source, player, playData, initPlay, play, setPlayData, setPlayer, setSource, removeSource }
+    return { defaults, source, player, playData, initPlay, play, setPlayData, setPlayer, setSource, removeSource }
   },
   {
-    persist: {
-      debug: true,
-    },
+    persist: true,
   },
 )

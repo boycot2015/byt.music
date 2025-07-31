@@ -72,7 +72,7 @@ watch(coverVisible, (value) => {
 :deep(.el-slider) {
   .el-slider__bar,
   .el-slider__runway {
-    height: 2px;
+    height: 3px;
   }
   .el-slider__button-wrapper {
     display: none;
