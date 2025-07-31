@@ -1,6 +1,6 @@
 <template>
   <div class="cover h-[calc(100vh-60px)] backdrop-blur-md">
-    <div class="flex gap-10 items-center h-full justify-center mx-auto p-5">
+    <div class="flex gap-10 md:items-center md:h-full md:justify-center mx-auto !pt-0 p-3 md:p-5">
       <div class="cover-img hidden lg:block">
         <Image class="w-[300px] rounded" :src="playData.img_url">
           <template #placeholder>

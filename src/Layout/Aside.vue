@@ -21,7 +21,7 @@ const handleOpen = (key) => {
 }
 </script>
 <template>
-  <div class="flex flex-col items-center border-r-[1px] border-[var(--el-menu-border-color)] h-full">
+  <div class="flex flex-col relative z-99 items-center h-full md:shadow-[35px_0px_10px_0_rgba(0,0,0,0.9)]">
     <router-link to="/" class="logo w-full h-[60px] flex items-center py-2 justify-around" :title="config.title">
       <el-icon :size="32" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
       <div class="title text-2xl md:hidden line-clamp-1 max-w-[90px]">{{ config.title }}</div>
@@ -39,7 +39,7 @@ const handleOpen = (key) => {
         </el-segmented>
       </div>
       <div class="block md:hidden">
-        <el-menu @select="handleOpen">
+        <el-menu @select="handleOpen" class="!border-0">
           <el-menu-item v-for="item in menus" :key="item.path" :index="item.path">
             <el-icon class="text-shadow-2xl" size="20" :title="item.title">
               <component :is="item.icon" :key="item.icon" />

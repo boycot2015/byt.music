@@ -22,7 +22,7 @@ const keepAliveRoutes = router.options.routes
       <Aside />
     </el-aside>
     <el-container class="overflow-hidden bg-[var(--el-bg-color)]">
-      <el-header class="bg-[var(--el-bg-color)] flex items-center border-b-[1px] border-[var(--el-menu-border-color)]"><Header /></el-header>
+      <el-header class="bg-[var(--el-bg-color)] flex items-center md:shadow-[0_10px_30px_0_rgba(255,255,255,0.1)] dark:shadow-[0_5px_10px_0_rgba(255,255,255,0.1)]"><Header /></el-header>
       <el-main class="bg-[transparent] !overflow-hidden !p-0 layout">
         <el-scrollbar always style="height: calc(100vh - 120px)">
           <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px]">
@@ -37,7 +37,7 @@ const keepAliveRoutes = router.options.routes
           </div>
         </el-scrollbar>
       </el-main>
-      <el-footer class="bg-[var(--el-bg-color)] flex items-center border-t-[1px] border-[var(--el-menu-border-color)] !px-3">
+      <el-footer class="bg-[var(--el-bg-color)] flex items-center md:shadow-[0_-10px_30px_0_rgba(255,255,255,0.1)] !px-3">
         <Footer />
       </el-footer>
     </el-container>

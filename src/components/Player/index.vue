@@ -1,17 +1,18 @@
 <template>
   <div class="player leading-[60px] h-[60px] flex flex-1 md:flex-3 items-center justify-around w-full">
-    <el-slider size="small" class="md:flex-3 !h-[auto] !hidden md:!block text-center" :disabled="!playData.url" v-model="playData.currentTime" :min="0" :format-tooltip="formatTime" :max="playData.duration" @input="(val) => (inputValue = val)" @change="onSliderChange" />
+    <el-button loading v-if="loading" type="primary" link loading-icon="Loading" class="mr-2"></el-button>
+    <el-slider size="small" class="md:flex-3 !h-[auto] !hidden md:!block text-center" :disabled="disabled" v-model="playData.currentTime" :min="0" :format-tooltip="formatTime" :max="playData.duration" @input="(val) => (inputValue = val)" @change="onSliderChange" />
     <audio ref="audioRef" class="flex-3 hidden" :muted="muted" :src="url" :loop="playData.loop" @ended="playNext" @timeupdate="onUpdate" @pause="setPlayData({ paused: true })" @play="setPlayData({ paused: false })"></audio>
     <div class="controls flex items-center justify-end flex-1 ml-5">
       <div class="mr-3 hidden md:flex items-center">
-        <el-icon :size="30" :disabled="!playData.url">
+        <el-icon :size="30" :disabled="disabled">
           <IconInfinity class="cursor-pointer" @click="setPlayData({ loop: false, random: false })" v-if="playData.random" />
           <IconLoop class="cursor-pointer" @click="setPlayData({ loop: !playData.loop, random: true })" v-else-if="playData.loop" />
           <IconListPlay class="cursor-pointer" @click="setPlayData({ loop: !playData.loop, random: false })" v-else />
         </el-icon>
       </div>
       <div class="mr-3 hidden md:flex items-center">
-        <el-icon :size="30" @click="setPlayData({ muted: !playData.muted })" :disabled="!playData.url">
+        <el-icon :size="30" @click="setPlayData({ muted: !playData.muted })" :disabled="disabled">
           <IconVolume class="cursor-pointer" v-if="!playData.muted" />
           <IconVolumeOff class="cursor-pointer" v-else />
         </el-icon>
@@ -19,7 +20,7 @@
       <el-icon :size="38" @click="playPrev">
         <IconPrev class="cursor-pointer" />
       </el-icon>
-      <el-icon :size="38" @click="togglePlay" :disabled="!playData.url">
+      <el-icon :size="38" @click="togglePlay" :disabled="disabled">
         <IconPlay class="cursor-pointer" v-if="paused" />
         <IconPause class="cursor-pointer" v-else />
       </el-icon>
@@ -60,19 +61,21 @@ const audioRef = ref(null)
 const paused = computed(() => playData.paused)
 const muted = computed(() => playData.muted)
 const url = computed(() => playData.url)
-
+const loading = ref(false)
 const inputValue = ref(0)
 const formatTime = () => {
   return `${Math.floor((playData.currentTime || 0) / 60)}:${('0' + Math.floor((playData.currentTime || 0) % 60)).slice(-2)}`
 }
 const playNext = () => {
   // playing ended
+  audioRef.value.currentTime = 0
   if (playData.playIndex === playData.playlist.length - 1 && !playData.random) return
   if (playData.random) {
     setPlayData({ playIndex: Math.floor(Math.random() * (playData.playlist.length - 1)), currentTime: 0 })
   } else {
     setPlayData({ playIndex: (playData.playIndex || 0) + 1, currentTime: 0 })
   }
+  loading.value = true
   play(playData.playlist[playData.playIndex]).then((success) => {
     if (success) {
       audioRef.value.play()
@@ -80,16 +83,18 @@ const playNext = () => {
       setPlayData({ paused: true })
       audioRef.value.pause()
     }
+    loading.value = false
   })
 }
 const playPrev = () => {
-  // playing ended
+  audioRef.value.currentTime = 0
   if (playData.playIndex === 0 && !playData.random) return
   if (playData.random) {
     setPlayData({ playIndex: Math.floor(Math.random() * (playData.playlist.length - 1)), currentTime: 0 })
   } else {
     setPlayData({ playIndex: (playData.playIndex || 0) - 1, currentTime: 0 })
   }
+  loading.value = true
   play(playData.playlist[playData.playIndex]).then((success) => {
     if (success) {
       audioRef.value.play()
@@ -97,6 +102,7 @@ const playPrev = () => {
       setPlayData({ paused: true })
       audioRef.value.pause()
     }
+    loading.value = false
   })
 }
 const togglePlay = () => {
@@ -129,11 +135,12 @@ onMounted(() => {
   })
 })
 watch(playData, (newVal, oldVal) => {
-  if (!playData.paused && !playData.currentTime) {
+  if (!playData.paused && !playData.currentTime && playData.url) {
     audioRef.value.play()
   }
-  if (newVal.currentTime !== oldVal.currentTime) {
+  if (newVal.withLyric) {
     audioRef.value.currentTime = newVal.currentTime || 0
   }
 })
+const disabled = computed(() => !playData.url || loading.value)
 </script>

@@ -1,18 +1,26 @@
 <template>
   <div class="lyirc">
-    <el-scrollbar ref="scrollbar" height="600px" @scroll="onScroll">
+    <el-scrollbar ref="scrollbar" :height="'calc(100vh - 150px)'" @scroll="onScroll">
       <div class="w-full lg:w-[500px] drop-shadow-md">
-        <div :ref="(el) => (itemRefs[index] = el)" v-for="(item, index) in lyricArr" :key="item" class="leading-[18px] h-[60px]" @click="setSlider(index)">
-          <span class="text-xl cursor-pointer !text-left transition-all delay-0 duration-300 ease-in-out" :class="{ 'text-[var(--el-color-primary)] !text-2xl': index === activeIndex }">{{ item.split(']')[1] }}</span>
+        <div :ref="(el) => (itemRefs[index] = el)" v-for="(item, index) in lyricArr" :key="item" class="h-[48px]" @click="setSlider(index)">
+          <span class="text-xl cursor-pointer line-clamp-1 !text-left transition-all delay-0 duration-300 ease-in-out" :class="{ 'text-[var(--el-color-primary)] !text-2xl': index === activeIndex }">
+            <TextSlider v-if="index === activeIndex" :msg="item.split(']')[1]" />
+            <template v-else>
+              {{ item.split(']')[1] }}
+            </template>
+          </span>
         </div>
       </div>
     </el-scrollbar>
   </div>
 </template>
 <script setup>
-import { ref, watch, onMounted, computed } from 'vue'
+import { ref, watch, onMounted, computed, nextTick } from 'vue'
 import { usePlayerStore } from '@/stores/player'
+import { useConfigStore } from '@/stores/config'
+import TextSlider from '@/components/TextSlider/index.vue'
 const playerStore = usePlayerStore()
+const { config } = useConfigStore()
 const { playData, setPlayData } = playerStore
 const activeIndex = ref(0)
 const isScroll = ref(false)
@@ -33,7 +41,13 @@ const setSlider = (index) => {
   activeIndex.value = index || activeIndex.value
   if (index) {
     setPlayData({
+      withLyric: true,
       currentTime: timeArr[index]?.split(':')[0] * 60 + Number(timeArr[index]?.split(':')[1] || 0),
+    })
+    nextTick(() => {
+      setPlayData({
+        withLyric: false,
+      })
     })
   }
   if (scrollbar.value && !isScroll.value) {
@@ -47,7 +61,7 @@ const setSlider = (index) => {
     let timerStr = `${timeStr1}:${timeStr2}`
     let index = timeArr.findIndex((_) => _ === timerStr)
     let elementH = itemRefs.value[activeIndex.value].offsetHeight
-    let baseTop = 3 * elementH
+    let baseTop = 6 * elementH
     activeIndex.value = index === -1 ? activeIndex.value : index
     if (scrollTop.value > 0 && activeIndex.value * baseTop < scrollTop.value) return
     let top = activeIndex.value * elementH < baseTop ? 0 : activeIndex.value * elementH - baseTop

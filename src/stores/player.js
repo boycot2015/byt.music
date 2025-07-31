@@ -14,14 +14,14 @@ export const usePlayerStore = defineStore(
       duration: 100,
       currentTime: 0,
       playlist: [],
-      muted: true,
+      muted: false,
       paused: true,
+      withLyric: false,
       playIndex: 0,
     })
     const { source } = useConfigStore()
     const initPlay = (audio) => {
       player.value = audio
-      playData.value.muted = true
       playData.value.paused = true
       // playData.value.url && play(playData.value)
     }
