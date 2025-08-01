@@ -12,7 +12,7 @@
               </el-icon>
             </span>
           </template>
-          <el-scrollbar max-height="300px" class="cates md:w-full">
+          <el-scrollbar max-height="300px" class="cates md:w-full backdrop-blur">
             <el-row :gutter="20" class="!m-0 !mb-2" v-for="(item, index) in cates[type]" :key="index">
               <el-col :span="24" class="text-xl">
                 {{ item.category || item.name }}

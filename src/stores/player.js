@@ -5,11 +5,12 @@ import { ElMessage } from 'element-plus'
 const defaults = {
   player: {
     showCover: false,
+    loading: false,
     playBar: 'middle',
     playBars: [
       { label: 'mini', value: 'small' },
       { label: '中等', value: 'middle' },
-      { label: '全宽', value: 'full' },
+      { label: '全宽(移动端默认)', value: 'full' },
     ]
   },
   source: {
@@ -65,6 +66,7 @@ export const usePlayerStore = defineStore(
       playData.value.title = item.title
       playData.value.img_url = item.img_url
       playData.value.singer = item.singer || item.artist
+      player.value.loading = true
       await fetch(`${apiUrl}/music/lyric?id=${item.id}&type=${type}`)
         .then((res) => res.json())
         .then((data) => {
@@ -85,6 +87,7 @@ export const usePlayerStore = defineStore(
           playData.value.url = data.data
           playData.value.muted = false
           playData.value.paused = false
+          player.value.loading = false
           return true
         })
     }

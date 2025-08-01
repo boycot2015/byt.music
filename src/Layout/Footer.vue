@@ -1,24 +1,27 @@
 <template>
   <footer class="footer w-full transition-width duration-300">
-    <el-slider
-      size="small"
-      class="md:flex-3 relative z-999 !h-[auto] text-center"
-      v-show="player.playBar == 'full' || config.isMobile"
-      v-model="playData.currentTime"
-      :min="0"
-      :format-tooltip="() => `${Math.floor((playData.currentTime || 0) / 60)}:${('0' + Math.floor((playData.currentTime || 0) % 60)).slice(-2)}`"
-      :max="playData.duration"
-      @change="
-        (value) =>
-          setPlayData({
-            withLyric: true,
-            currentTime: value,
-          })
-      "
-    />
+    <div class="relative z-9999 left-0 top-0">
+      <el-button loading v-if="player.loading && player.playBar == 'full'" type="primary" link loading-icon="Loading" class="mr-2"></el-button>
+      <el-slider
+        size="small"
+        class="!w-full z-999 !h-[auto] text-center"
+        v-show="player.playBar == 'full' || config.isMobile"
+        v-model="playData.currentTime"
+        :min="0"
+        :format-tooltip="() => `${Math.floor((playData.currentTime || 0) / 60)}:${('0' + Math.floor((playData.currentTime || 0) % 60)).slice(-2)}`"
+        :max="playData.duration"
+        @change="
+          (value) =>
+            setPlayData({
+              withLyric: true,
+              currentTime: value,
+            })
+        "
+      />
+    </div>
     <div class="nav flex items-center justify-between w-full relative z-100 px-3">
       <div class="left flex flex-1 cursor-pointer" @click="coverVisible = !coverVisible">
-        <Image :src="playData.img_url" fit="fill" class="w-11 h-11 mr-2 rounded">
+        <Image :src="playData.img_url" fit="fill" class="w-10 h-10 mr-2 rounded">
           <template #placeholder>
             <el-icon :size="44" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
           </template>
@@ -26,7 +29,7 @@
             <el-icon :size="44" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
           </template>
         </Image>
-        <div class="info">
+        <div class="info flex-1">
           <div class="title line-clamp-1">{{ playData.title }}</div>
           <div class="singer text-xs line-clamp-1">{{ playData.singer }}</div>
         </div>

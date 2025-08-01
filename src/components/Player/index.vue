@@ -1,20 +1,13 @@
 <template>
   <div class="player leading-[60px] h-[60px] flex flex-1 md:flex-3 items-center justify-around w-full">
-    <el-button loading v-if="loading" type="primary" link loading-icon="Loading" class="mr-2"></el-button>
-    <el-slider
-      size="small"
-      :class="{ '!md:flex-2': player.playBar == 'small' }"
-      v-if="player.playBar != 'full'"
-      class="md:flex-3 !h-[auto] !hidden md:!block text-center"
-      :disabled="disabled"
-      v-model="playData.currentTime"
-      :min="0"
-      :format-tooltip="formatTime"
-      :max="playData.duration"
-      @input="(val) => (inputValue = val)"
-      @change="onSliderChange"
-    />
-    <audio ref="audioRef" class="flex-3 hidden" :muted="muted" :src="url" :loop="playData.loop" @ended="playNext" @timeupdate="onUpdate" @pause="setPlayData({ paused: true })" @play="setPlayData({ paused: false })"></audio>
+    <div class="md:flex-3 !hidden md:!flex" :class="{ 'justify-end': player.playBar == 'small' }" v-if="player.playBar != 'full'">
+      <el-button loading v-show="loading" type="primary" link loading-icon="Loading" class="mr-2"></el-button>
+      <div class="flex flex-col items-center justify-center" :class="{ '!flex-row w-full': player.playBar == 'middle' }">
+        <span class="leading-[26px] w-10 mr-4" v-show="!loading" :class="{ '!order-2 ml-2': player.playBar == 'middle' }">{{ formatTime(playData.currentTime) }}/{{ formatTime(playData.duration) }}</span>
+        <el-slider :class="{ '!w-[200px]': player.playBar == 'small' }" size="small" class="!h-[auto] text-center" :disabled="disabled" v-model="playData.currentTime" :min="0" :format-tooltip="formatTime" :max="playData.duration" @input="(val) => (inputValue = val)" @change="onSliderChange" />
+      </div>
+      <audio ref="audioRef" class="hidden" :muted="muted" :src="url" :loop="playData.loop" @ended="playNext" @timeupdate="onUpdate" @pause="setPlayData({ paused: true })" @play="setPlayData({ paused: false })"></audio>
+    </div>
     <div class="controls flex items-center justify-end flex-1 ml-5">
       <div class="mr-3 hidden md:flex items-center">
         <el-icon :size="30" :disabled="disabled">
@@ -39,7 +32,7 @@
       <el-icon :size="38" @click="playNext">
         <IconNext class="cursor-pointer" />
       </el-icon>
-      <el-popover trigger="click" width="520px">
+      <el-popover trigger="click" popper-class="backdrop-blur" width="360px">
         <template #reference>
           <el-icon :size="32">
             <IconListMusic class="cursor-pointer" />
@@ -75,12 +68,13 @@ const muted = computed(() => playData.muted)
 const url = computed(() => playData.url)
 const loading = ref(false)
 const inputValue = ref(0)
-const formatTime = () => {
-  return `${Math.floor((playData.currentTime || 0) / 60)}:${('0' + Math.floor((playData.currentTime || 0) % 60)).slice(-2)}`
+const formatTime = (time = playData.currentTime) => {
+  return `${Math.floor((time || 0) / 60)}:${('0' + Math.floor((time || 0) % 60)).slice(-2)}`
 }
 const playNext = () => {
   // playing ended
   audioRef.value.currentTime = 0
+  audioRef.value.pause()
   if (playData.playIndex === playData.playlist.length - 1 && !playData.random) return
   if (playData.random) {
     setPlayData({ playIndex: Math.floor(Math.random() * (playData.playlist.length - 1)), currentTime: 0 })
@@ -100,6 +94,7 @@ const playNext = () => {
 }
 const playPrev = () => {
   audioRef.value.currentTime = 0
+  audioRef.value.pause()
   if (playData.playIndex === 0 && !playData.random) return
   if (playData.random) {
     setPlayData({ playIndex: Math.floor(Math.random() * (playData.playlist.length - 1)), currentTime: 0 })
@@ -147,7 +142,7 @@ onMounted(() => {
   })
 })
 watch(playData, (newVal, oldVal) => {
-  if (!playData.paused && !playData.currentTime && playData.url) {
+  if (!playData.paused && !playData.currentTime && playData.url && !loading.value) {
     audioRef.value.play()
   }
   if (newVal.withLyric) {
@@ -161,9 +156,11 @@ const disabled = computed(() => !playData.url || loading.value)
   .el-slider__bar,
   .el-slider__runway {
     height: var(--el-slider-height);
+    // top: -7px;
   }
   .el-slider__button-wrapper {
     display: block;
+    // height: 20px;
   }
 }
 </style>

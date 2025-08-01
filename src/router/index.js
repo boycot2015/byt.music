@@ -80,16 +80,6 @@ const router = createRouter({
       },
     },
     {
-      path: '/setting',
-      name: 'setting',
-      component: () => import('@/views/setting/index.vue'),
-      meta: {
-        title: '设置',
-        keepAlive: true,
-        icon: 'Setting',
-      },
-    },
-    {
       path: '/app',
       name: 'app',
       component: () => import('@/views/app/index.vue'),
@@ -97,6 +87,16 @@ const router = createRouter({
         title: '应用',
         keepAlive: true,
         icon: 'IconApp',
+      },
+    },
+    {
+      path: '/setting',
+      name: 'setting',
+      component: () => import('@/views/setting/index.vue'),
+      meta: {
+        title: '设置',
+        keepAlive: true,
+        icon: 'Setting',
       },
     },
     {

@@ -1,11 +1,12 @@
 <template>
   <div class="search">
     <div class="pb-4">
-      <el-autocomplete placeholder="请输入搜索内容" clearable v-model="keyword" :fetch-suggestions="debounce(queryKeywords, 400)" size="large" @select="onSearch" @change="debounce(onSearch, 400)">
+      <el-autocomplete popper-class="backdrop-blur" placeholder="请输入搜索内容" clearable v-model="keyword" :fetch-suggestions="debounce(queryKeywords, 400)" size="large" @select="onSearch" @change="debounce(onSearch, 400)">
         <template #prepend>
           <el-select
             size="large"
             class="!w-[110px]"
+            popper-class="backdrop-blur"
             v-model="type"
             @change="
               () => {

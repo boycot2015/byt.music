@@ -39,7 +39,7 @@
       </slot>
     </div>
     <el-table ref="tableRef" class="rounded overflow-hidden mt-2" v-loading="loading" v-if="data.tracks" :row-class-name="({ row, rowIndex }) => (playData.id == row.id ? 'current-row' : '')" v-bind="tableProps" v-on="tableEvents" :data="data.tracks" @row-dblclick="handlePlay">
-      <el-table-column prop="title" label="歌曲名称" show-overflow-tooltip>
+      <el-table-column prop="title" label="歌曲名" show-overflow-tooltip>
         <template #default="scope">
           {{ scope.row.title }}
           <span v-if="scope.row.quality == 'HQ'" class="text-[green] text-[12px]">{{ scope.row.quality }}</span>
@@ -47,7 +47,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="artist" show-overflow-tooltip label="艺术家"></el-table-column>
-      <el-table-column prop="album" show-overflow-tooltip label="专辑名称">
+      <el-table-column prop="album" show-overflow-tooltip label="专辑名">
         <template #default="scope">
           {{ scope.row.album?.name || scope.row.album || '--' }}
         </template>
