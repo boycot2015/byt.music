@@ -32,7 +32,21 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-config-provider :locale="zhCn">
+  <el-config-provider
+    :locale="zhCn"
+    :link="{
+      underline: 'never',
+    }"
+    :experimental-features="{
+      modelClass: 'backdrop-blur',
+      popoverClass: 'backdrop-blur',
+    }"
+    :message="{
+      max: 2,
+      duration: 2000,
+      plain: true,
+    }"
+  >
     <Layout>
       <router-view v-slot="{ Component }">
         <keep-alive :include="keepAliveRoutes">

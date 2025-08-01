@@ -2,7 +2,7 @@
   <div class="playlist">
     <div class="top min-h-[40px] flex justify-between md:mb-4">
       <div class="flex items-center">
-        <el-popover placement="bottom-start" popper-class="!w-[95vw] md:!w-[600px] !p-2 !pl-0" :disabled="cateLoading || (cates[type] && !cates[type].length)" trigger="hover">
+        <el-popover placement="bottom-start" popper-class="!w-[95vw] backdrop-blur md:!w-[600px] !p-2 !pl-0" :disabled="cateLoading || (cates[type] && !cates[type].length)" trigger="hover">
           <template #reference>
             <span class="cursor-pointer el-dropdown-link flex items-center">
               {{ ctypeObj.name || '全部歌单' }}
@@ -12,7 +12,7 @@
               </el-icon>
             </span>
           </template>
-          <el-scrollbar max-height="300px" class="cates md:w-full backdrop-blur">
+          <el-scrollbar max-height="300px" class="cates md:w-full">
             <el-row :gutter="20" class="!m-0 !mb-2" v-for="(item, index) in cates[type]" :key="index">
               <el-col :span="24" class="text-xl">
                 {{ item.category || item.name }}

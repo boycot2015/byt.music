@@ -2,7 +2,7 @@
   <div class="ranking">
     <el-row :gutter="20" class="overflow-hidden flex flex-col md:flex-row">
       <el-col :span="24" :sm="6" :md="4" class="flex flex-col border-r border-[var(--el-border-color)]">
-        <el-select v-model="type" @change="fetchData" size="large">
+        <el-select v-model="type" @change="fetchData" size="large" popper-class="backdrop-blur">
           <el-option v-for="item in types" :key="item.type" :label="item.title" :value="item.type" />
         </el-select>
         <el-scrollbar ref="scrollbarRef" always class="!mt-[10px]" height="calc(100vh - 190px)" v-loading="pageLoading">

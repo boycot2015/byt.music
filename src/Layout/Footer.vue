@@ -1,18 +1,18 @@
 <template>
   <footer class="footer w-full transition-width duration-300">
-    <div class="relative z-9999 left-0 top-0">
-      <el-button loading v-if="player.loading && player.playBar == 'full'" type="primary" link loading-icon="Loading" class="mr-2"></el-button>
+    <div class="absolute bottom-[60px] w-full flex z-9999">
+      <el-button loading v-if="player.loading && player.playBar == 'full'" type="primary" link loading-icon="Loading" class="z-9999 !absolute left-0 top-[-8px]"></el-button>
       <el-slider
         size="small"
         class="!w-full z-999 !h-[auto] text-center"
         v-show="player.playBar == 'full' || config.isMobile"
-        v-model="playData.currentTime"
+        v-model="player.currentTime"
         :min="0"
-        :format-tooltip="() => `${Math.floor((playData.currentTime || 0) / 60)}:${('0' + Math.floor((playData.currentTime || 0) % 60)).slice(-2)}`"
-        :max="playData.duration"
+        :format-tooltip="() => `${Math.floor((player.currentTime || 0) / 60)}:${('0' + Math.floor((player.currentTime || 0) % 60)).slice(-2)}`"
+        :max="player.duration"
         @change="
           (value) =>
-            setPlayData({
+            setPlayer({
               withLyric: true,
               currentTime: value,
             })
@@ -62,6 +62,7 @@ import Cover from '@/components/Cover/index.vue'
 import { ArrowDown } from '@element-plus/icons-vue'
 import Player from '@/components/Player/index.vue'
 import NProgress from 'nprogress'
+
 const playData = computed(() => usePlayerStore().playData)
 const player = computed(() => usePlayerStore().player)
 const config = computed(() => useConfigStore().config)

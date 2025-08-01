@@ -3,7 +3,7 @@
     <el-scrollbar ref="scrollbar" :height="config.isMobile ? 'calc(100vh - 140px)' : 'calc(100vh - 230px)'" @scroll="onScroll">
       <div class="w-full lg:w-[500px] drop-shadow-md">
         <div :ref="(el) => (itemRefs[index] = el)" v-for="(item, index) in lyricArr" :key="item" class="h-[48px]" @click="setSlider(index)">
-          <span class="text-xl cursor-pointer line-clamp-1 !text-left transition-all delay-0 duration-300 ease-in-out" :class="{ 'text-[var(--el-color-primary)] !text-2xl': index === activeIndex }">
+          <span class="text-xl cursor-pointer line-clamp-1 !text-left transition-all delay-0 duration-300 ease-in-out" :class="{ 'text-[var(--el-color-primary)] !text-2xl ': index === activeIndex }">
             <TextSlider v-show="index === activeIndex" :msg="item.split(']')[1]" />
             <span v-show="index !== activeIndex">{{ item.split(']')[1] }}</span>
           </span>
@@ -19,53 +19,53 @@ import { useConfigStore } from '@/stores/config'
 import TextSlider from '@/components/TextSlider/index.vue'
 const playerStore = usePlayerStore()
 const { config } = useConfigStore()
-const { playData, setPlayData } = playerStore
+const { player, playData, setPlayer, setPlayData } = playerStore
 const activeIndex = ref(0)
 const isScroll = ref(false)
 const scrollbar = ref(null)
 const scrollTop = ref(0)
 const itemRefs = ref([])
 let timer = ref(null)
-let lyricArr = computed(() => {
-  if (!playData.lyric) return ['[00:00]纯音乐，请欣赏~']
-  return playData?.lyric
-    ?.trim()
-    ?.split('\n')
-    .filter((_) => _ && _.split(']')[1])
-})
+let lyricArr = computed(() => playData.lyricList || [])
 
 let timeArr = lyricArr.value?.filter((el) => el).map((el) => el.split(']')[0]?.split('[')[1]?.split('.')[0] || '0:00') || []
 const setSlider = (index) => {
   activeIndex.value = index || activeIndex.value
   if (index) {
-    setPlayData({
+    setPlayer({
       withLyric: true,
       currentTime: timeArr[index]?.split(':')[0] * 60 + Number(timeArr[index]?.split(':')[1] || 0),
     })
     nextTick(() => {
-      setPlayData({
+      setPlayer({
         withLyric: false,
       })
     })
   }
   if (scrollbar.value && !isScroll.value) {
-    if (!playData.currentTime && scrollbar.value) {
+    if (!player.currentTime && scrollbar.value) {
       activeIndex.value = 0
       scrollbar.value.setScrollTop(0)
+      setPlayData({
+        lyricIndex: 0,
+      })
       return
     }
-    let timeStr1 = playData?.currentTime / 60 > 10 ? Math.floor(playData?.currentTime / 60) : `0${Math.floor(playData?.currentTime / 60)}`
-    let timeStr2 = playData?.currentTime % 60 > 10 ? Math.floor(playData?.currentTime % 60) : `0${Math.floor(playData?.currentTime % 60)}`
+    let timeStr1 = player?.currentTime / 60 > 10 ? Math.floor(player?.currentTime / 60) : `0${Math.floor(player?.currentTime / 60)}`
+    let timeStr2 = player?.currentTime % 60 > 10 ? Math.floor(player?.currentTime % 60) : `0${Math.floor(player?.currentTime % 60)}`
     let timerStr = `${timeStr1}:${timeStr2}`
     let index = timeArr.findIndex((_) => _ === timerStr)
     let elementH = itemRefs.value[activeIndex.value].offsetHeight
-    let baseTop = 6 * elementH
+    let baseTop = 5 * elementH
     activeIndex.value = index === -1 ? activeIndex.value : index
     if (scrollTop.value > 0 && activeIndex.value * baseTop < scrollTop.value) return
     let top = activeIndex.value * elementH < baseTop ? 0 : activeIndex.value * elementH - baseTop
-    if (!playData?.currentTime) {
+    if (!player?.currentTime) {
       activeIndex.value = 0
       scrollbar.value.setScrollTop(0)
+      setPlayData({
+        lyricIndex: 0,
+      })
       return
     }
     top &&
@@ -74,6 +74,9 @@ const setSlider = (index) => {
         left: 0,
         behavior: 'smooth',
       })
+    setPlayData({
+      lyricIndex: activeIndex.value,
+    })
   }
 }
 const onScroll = ({ scrollTop: top }) => {
@@ -84,7 +87,7 @@ const onScroll = ({ scrollTop: top }) => {
     isScroll.value = false
   }, 1000)
 }
-watch(playData, () => setSlider())
+watch(player, () => setSlider())
 
 onMounted(() => {
   setSlider()

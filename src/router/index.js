@@ -108,7 +108,7 @@ const router = createRouter({
   ],
 })
 router.beforeEach((to, from, next) => {
-  NProgress.start()
+  if (to.name !== from.name) NProgress.start()
   const { config } = useConfigStore()
   document.title = to.meta.title + '-' + (config.title || 'BytMusic')
   next()

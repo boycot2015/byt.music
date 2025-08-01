@@ -15,7 +15,7 @@
     <el-row v-loading="colorLoading" class="min-h-[200px] rounded-md overflow-hidden">
       <el-col v-for="(item, index) in showColors" :key="index" :span="4" :md="2">
         <div class="flex flex-col items-center justify-center ml-[-20px]">
-          <el-color-picker size="large" v-model="item.value" :predefine="colors.map((el) => el.value).slice(index * 16, index * 16 + 16)" @change="onPickerChange" />
+          <el-color-picker popper-class="backdrop-blur z-9999" size="large" v-model="item.value" :predefine="colors.map((el) => el.value).slice(index * 16, index * 16 + 16)" @change="onPickerChange" />
           <div class="text-md">{{ item.name }}</div>
         </div>
       </el-col>
@@ -63,8 +63,10 @@
       "
     >
       <el-row class="flex items-center" :gutter="10">
-        <el-col v-for="(item, index) in picList" :key="index" :span="12" :lg="6" :md="8" :xl="4">
-          <Image class="rounded cursor-pointer border border-2 border-[transparent]" :class="{ 'border-[var(--el-color-primary)]': item.id === active }" :src="item.url" lazy @click="setBackground(item)"> </Image>
+        <el-col class="mb-2" v-for="(item, index) in picList" :key="index" :span="12" :sm="8" :lg="6" :xl="4">
+          <div class="img rounded-md h-full md:h-40 overflow-hidden border border-2 border-[transparent]" :class="{ 'border-[var(--el-color-primary)]': item.id === active }">
+            <Image fit="cover" class="rounded-md transition-all duration-400 scale-150 lg:scale-120 hover:!scale-160 cursor-pointer" :src="item.url" lazy @click="setBackground(item)"> </Image>
+          </div>
         </el-col>
       </el-row>
     </el-scrollbar>

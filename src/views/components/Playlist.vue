@@ -122,7 +122,7 @@ const tableRef = ref(null)
 const tableHeight = ref('calc(100vh - 402px)')
 const handlePlayAll = () => {
   ElMessageBox.confirm('此操作会替换播放列表，是否播放？', {
-    modalClass: '!z-99999',
+    modalClass: '!z-99999 backdrop-blur',
   })
     .then(() => {
       tableRef.value?.setScrollTop(0)

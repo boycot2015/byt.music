@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { apiUrl } from '@/api/baseUrl'
 import { ElMessage } from 'element-plus'
@@ -6,7 +6,15 @@ const defaults = {
   player: {
     showCover: false,
     loading: false,
+    muted: false,
+    withLyric: false,
+    random: false,
+    loop: false,
+    paused: true,
     playBar: 'middle',
+    volume: 0.5,
+    currentTime: 0,
+    duration: 100,
     playBars: [
       { label: 'mini', value: 'small' },
       { label: '中等', value: 'middle' },
@@ -37,14 +45,11 @@ const defaults = {
     title: '',
     img_url: '',
     singer: '',
-    duration: 100,
-    currentTime: 0,
     playlist: [],
-    muted: false,
-    paused: true,
-    withLyric: false,
     lyric: '',
     playIndex: 0,
+    lyricIndex: 0,
+    lyricList: []
   }
 }
 export const usePlayerStore = defineStore(
@@ -54,7 +59,7 @@ export const usePlayerStore = defineStore(
     const source = ref(JSON.parse(JSON.stringify(defaults.source)))
     const playData = ref(JSON.parse(JSON.stringify(defaults.playData)))
     const initPlay = () => {
-      playData.value.paused = true
+      player.value.paused = true
       // playData.value.url && play(playData.value)
     }
     const play = async (item, type = playData.value.type || 'qq') => {
@@ -62,7 +67,6 @@ export const usePlayerStore = defineStore(
       if (!item) return ElMessage.error('请选择歌曲')
       playData.value.type = type
       playData.value.id = item.id
-      // playData.value.duration = item.duration
       playData.value.title = item.title
       playData.value.img_url = item.img_url
       playData.value.singer = item.singer || item.artist
@@ -71,6 +75,16 @@ export const usePlayerStore = defineStore(
         .then((res) => res.json())
         .then((data) => {
           playData.value.lyric = data.data.lyric
+          let lyricArr = computed(() => {
+            if (!playData.value.lyric) return ['[00:00]纯音乐，请欣赏~']
+            return playData.value?.lyric
+              ?.trim()
+              ?.split('\n')
+              .filter((_) => _ && _.split(']')[1])
+          })
+          setPlayData({
+            lyricList: lyricArr,
+          })
         })
       let url = `${apiUrl}/music/url?id=${item.id}&type=${type}`
       if (source.value.id && source.value.apiKey) url += `&apiUrl=${source.value.apiUrl}&apiKey=${source.value.apiKey}`
@@ -85,10 +99,15 @@ export const usePlayerStore = defineStore(
             return false
           }
           playData.value.url = data.data
-          playData.value.muted = false
-          playData.value.paused = false
-          player.value.loading = false
+          player.value.muted = false
+          player.value.paused = false
           return true
+        }).catch(() => {
+          playData.value.url = ''
+          playData.value.paused = true
+          return false
+        }).finally(() => {
+          player.value.loading = false
         })
     }
     const setPlayData = (data = {}) => {

@@ -27,7 +27,7 @@ const keepAliveRoutes = router.options.routes
     </el-aside>
     <el-container class="overflow-hidden bg-[var(--el-bg-color)]">
       <el-header class="bg-[var(--el-bg-color)] flex items-center shadow-[0_0_5px_0_rgba(0,0,0,0.1)]" :class="{ 'md:!shadow-[0_5px_30px_0_rgba(255,255,255,0.1)]': isDark }"><Header /></el-header>
-      <el-main class="bg-[transparent] !overflow-hidden !p-0 layout">
+      <el-main class="bg-[transparent] !overflow-hidden !p-0 rounded layout">
         <el-scrollbar always style="height: calc(100vh - 120px)">
           <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px]">
             <router-view v-slot="{ Component }">

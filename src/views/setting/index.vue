@@ -16,7 +16,7 @@
         <el-scrollbar height="calc(100vh - 140px)" class="">
           <el-form :model="config" class="config-form md:pr-4 md:pl-4 w-full" label-position="left">
             <el-form-item v-for="(item, key) in configs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">
-              <el-select v-if="item.type == 'select'" v-model="config[key]" @change="set({ [key]: config[key] })">
+              <el-select popper-class="backdrop-blur" v-if="item.type == 'select'" v-model="config[key]" @change="set({ [key]: config[key] })">
                 <el-option v-for="item in item.options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
               </el-select>
               <component v-else-if="item.component" :is="item.component" />
@@ -25,7 +25,7 @@
           </el-form>
           <el-form :model="player" class="config-player md:pr-4 md:pl-4 w-full" label-position="left">
             <el-form-item v-for="(item, key) in playConfigs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">
-              <el-select v-if="item.type == 'select'" v-model="player[key]" @change="set({ [key]: player[key] })">
+              <el-select popper-class="backdrop-blur" v-if="item.type == 'select'" v-model="player[key]" @change="set({ [key]: player[key] })">
                 <el-option v-for="item in item.options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
               </el-select>
               <el-radio-group v-else-if="item.type == 'radio'" v-model="player[key]" @change="set({ [key]: player[key] })">

@@ -9,7 +9,7 @@
     <el-button type="primary" class="md:ml-8 mt-2 w-full md:w-[auto] md:mt-0" @click="visible = true"
       ><el-icon class="mr-2"><Plus /></el-icon>导入</el-button
     >
-    <el-dialog title="导入自定义源" :z-index="100001" :close-on-click-modal="false" width="360px" v-model="visible" @close="visible = false" top="30vh" center>
+    <el-dialog title="导入自定义源" modal-class="backdrop-blur" :z-index="100001" :close-on-click-modal="false" width="360px" v-model="visible" @close="visible = false" top="30vh" center>
       <el-input clearable v-model="playSource" placeholder="请输入自定义源，格式：https://xxx.js"> </el-input>
       <div class="tip leading-[20px] mt-5">提示：虽然我们已经尽可能地隔离了脚本的运行环境，但导入包含恶意行为的脚本仍可能会影响你的系统，请谨慎导入。</div>
       <template #footer>

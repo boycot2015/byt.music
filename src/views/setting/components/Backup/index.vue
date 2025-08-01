@@ -9,12 +9,12 @@
     <el-button type="danger" class="mt-2 !ml-0 md:!ml-4 w-full md:w-[auto] md:mt-0" @click="onReset()"
       ><el-icon class="mr-2"><RefreshLeft /></el-icon>恢复默认设置</el-button
     >
-    <el-dialog title="导入配置" :z-index="100001" :close-on-click-modal="false" width="360px" v-model="visible" @close="visible = false" top="30vh" center>
-      <div class="tip leading-[20px] my-2">提示：导入配置后，需要刷新应用才能生效。</div>
+    <el-dialog title="导入配置" modal-class="backdrop-blur" :z-index="100001" :close-on-click-modal="false" width="380px" v-model="visible" @close="visible = false" top="30vh" center>
+      <div class="tip leading-[20px] my-2">提示：导入配置后，部分配置可能需要刷新才能生效。</div>
       <template #footer>
         <div class="flex flex-row justify-center">
           <el-upload :show-file-list="false" accept=".json" :disabled="!!playSource" :auto-upload="false" :on-change="importSource">
-            <el-button type="primary" class="ml-8" :disabled="!!playSource" :loading="importLoading">本地导入</el-button>
+            <el-button type="primary" :disabled="!!playSource" :loading="importLoading">本地导入</el-button>
           </el-upload>
         </div>
       </template>
@@ -25,7 +25,7 @@
 <script setup>
 import { getCurrentInstance, ref, computed } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { usePlayerStore } from '@/stores/player'
 import { useConfigStore } from '@/stores/config'
 const { defaults: playerDefaults, player, source, playData, setSource, setPlayer, setPlayData } = usePlayerStore()
@@ -89,10 +89,19 @@ const importSource = async (file) => {
   //   })
 }
 const onReset = () => {
-  set({ ...defaults })
-  setSource({ ...playerDefaults.source })
-  setPlayer({ ...playerDefaults.player })
-  setPlayData({ ...playerDefaults.playData })
+  ElMessageBox.confirm('您确定要恢复默认设置吗？这将重置当前所有配置。', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    modalClass: 'backdrop-blur',
+    type: 'warning',
+  })
+    .then(() => {
+      set({ ...defaults })
+      setSource({ ...playerDefaults.source })
+      setPlayer({ ...playerDefaults.player })
+      setPlayData({ ...playerDefaults.playData })
+    })
+    .catch(() => {})
 }
 const onExport = () => {
   const data = {

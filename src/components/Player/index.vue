@@ -1,25 +1,37 @@
 <template>
   <div class="player leading-[60px] h-[60px] flex flex-1 md:flex-3 items-center justify-around w-full">
-    <div class="md:flex-3 !hidden md:!flex" :class="{ 'justify-end': player.playBar == 'small' }" v-if="player.playBar != 'full'">
-      <el-button loading v-show="loading" type="primary" link loading-icon="Loading" class="mr-2"></el-button>
+    <el-carousel :initial-index="playData.lyricIndex" :cardScale="0.75" ref="sliderRef" height="60px" v-if="!config.isMobile && player.playBar != 'middle' && !player.showCover" class="flex-1" direction="vertical" type="card" :autoplay="false">
+      <el-carousel-item v-for="(item, index) in lyricList" :key="item">
+        <h3 class="text-[14px] text-center leading-[30px]" :class="{ 'bg-linear-to-r bg-clip-text from-[var(--el-text-color-regular)] text-transparent to-[var(--el-color-primary)]': index === playData.lyricIndex }">{{ item.split(']')[1] }}</h3>
+      </el-carousel-item>
+    </el-carousel>
+    <div class="md:flex-3 !hidden md:!flex" :class="{ 'justify-end md:flex-1': player.playBar == 'small' }" v-if="player.playBar != 'full'">
       <div class="flex flex-col items-center justify-center" :class="{ '!flex-row w-full': player.playBar == 'middle' }">
-        <span class="leading-[26px] w-10 mr-4" v-show="!loading" :class="{ '!order-2 ml-2': player.playBar == 'middle' }">{{ formatTime(playData.currentTime) }}/{{ formatTime(playData.duration) }}</span>
-        <el-slider :class="{ '!w-[200px]': player.playBar == 'small' }" size="small" class="!h-[auto] text-center" :disabled="disabled" v-model="playData.currentTime" :min="0" :format-tooltip="formatTime" :max="playData.duration" @input="(val) => (inputValue = val)" @change="onSliderChange" />
+        <span class="leading-[26px] w-10 mr-4" v-show="!player.loading" :class="{ '!order-2 ml-2': player.playBar == 'middle' }">{{ formatTime(player.currentTime) }}/{{ formatTime(player.duration) }}</span>
+        <div class="flex w-full">
+          <el-button loading v-show="player.loading" type="primary" link loading-icon="Loading" class="mr-2"></el-button>
+          <el-slider :class="{ '!w-[200px]': player.playBar == 'small' }" size="small" class="!h-[20px] text-center" :disabled="disabled" v-model="player.currentTime" :min="0" :format-tooltip="formatTime" :max="player.duration" @input="(val) => (inputValue = val)" @change="onSliderChange" />
+        </div>
       </div>
-      <audio ref="audioRef" class="hidden" :muted="muted" :src="url" :loop="playData.loop" @ended="playNext" @timeupdate="onUpdate" @pause="setPlayData({ paused: true })" @play="setPlayData({ paused: false })"></audio>
     </div>
+    <audio ref="audioRef" class="hidden" :muted="muted" :src="url" :volume="player.volume" :loop="player.loop" @ended="playNext" @timeupdate="onUpdate" @pause="setPlayer({ paused: true })" @play="setPlayer({ paused: false })"></audio>
     <div class="controls flex items-center justify-end flex-1 ml-5">
       <div class="mr-3 hidden md:flex items-center">
         <el-icon :size="30" :disabled="disabled">
-          <IconInfinity class="cursor-pointer" @click="setPlayData({ loop: false, random: false })" v-if="playData.random" />
-          <IconLoop class="cursor-pointer" @click="setPlayData({ loop: !playData.loop, random: true })" v-else-if="playData.loop" />
-          <IconListPlay class="cursor-pointer" @click="setPlayData({ loop: !playData.loop, random: false })" v-else />
+          <IconInfinity class="cursor-pointer" @click="setPlayer({ loop: false, random: false })" v-if="player.random" />
+          <IconLoop class="cursor-pointer" @click="setPlayer({ loop: !player.loop, random: true })" v-else-if="player.loop" />
+          <IconListPlay class="cursor-pointer" @click="setPlayer({ loop: !player.loop, random: false })" v-else />
         </el-icon>
       </div>
       <div class="mr-3 hidden md:flex items-center">
-        <el-icon :size="30" @click="setPlayData({ muted: !playData.muted })" :disabled="disabled">
-          <IconVolume class="cursor-pointer" v-if="!playData.muted" />
-          <IconVolumeOff class="cursor-pointer" v-else />
+        <el-icon :size="30" @click="setPlayer({ muted: !player.muted })" :disabled="disabled">
+          <el-popover trigger="hover" popper-class="backdrop-blur">
+            <template #reference>
+              <IconVolume class="cursor-pointer" v-if="!player.muted" />
+              <IconVolumeOff class="cursor-pointer" v-else />
+            </template>
+            <el-slider :step="0.1" size="small" class="!h-[auto] text-center w-full" v-model="player.volume" :min="0" :format-tooltip="() => formatTime(player.volume, 'percent')" :max="1" @input="(val) => (inputValue = val)" @change="(val) => onSliderChange(val, 'volume')" />
+          </el-popover>
         </el-icon>
       </div>
       <el-icon :size="38" @click="playPrev">
@@ -32,14 +44,14 @@
       <el-icon :size="38" @click="playNext">
         <IconNext class="cursor-pointer" />
       </el-icon>
-      <el-popover trigger="click" popper-class="backdrop-blur" width="360px">
+      <el-popover trigger="click" popper-class="backdrop-blur" :width="'360px'">
         <template #reference>
           <el-icon :size="32">
             <IconListMusic class="cursor-pointer" />
           </el-icon>
         </template>
         <template #default>
-          <Playlist :show-header="false" :data="{ info: playData, tracks: playData.playlist }" :tableProps="{ maxHeight: '400px' }" />
+          <Playlist :show-header="false" :data="{ info: playData, tracks: playData.playlist }" :tableProps="{ maxHeight: '400px', showHeader: false }" />
         </template>
       </el-popover>
     </div>
@@ -48,6 +60,7 @@
 <script setup>
 import { computed, ref, nextTick, onMounted, watch } from 'vue'
 import { usePlayerStore } from '@/stores/player'
+import { useConfigStore } from '@/stores/config'
 import IconPlay from '@/components/icons/IconPlay.vue'
 import IconPause from '@/components/icons/IconPause.vue'
 import IconNext from '@/components/icons/IconNext.vue'
@@ -61,95 +74,109 @@ import IconVolumeOff from '@/components/icons/IconVolumeOff.vue'
 import Playlist from '@/views/components/Playlist.vue'
 
 const playerStore = usePlayerStore()
-const { player, playData, initPlay, play, setPlayData } = playerStore
+const configStore = useConfigStore()
+const { player, playData, initPlay, play, setPlayData, setPlayer } = playerStore
+const { config } = configStore
 const audioRef = ref(null)
-const paused = computed(() => playData.paused)
-const muted = computed(() => playData.muted)
+const paused = computed(() => player.paused)
+const muted = computed(() => player.muted)
 const url = computed(() => playData.url)
-const loading = ref(false)
+const lyricList = computed(() => playData.lyricList)
+const sliderRef = ref(null)
 const inputValue = ref(0)
-const formatTime = (time = playData.currentTime) => {
-  return `${Math.floor((time || 0) / 60)}:${('0' + Math.floor((time || 0) % 60)).slice(-2)}`
+const formatTime = (str = player.currentTime, type = 'time') => {
+  if (type === 'percent') return str * 100
+  return `${Math.floor((str || 0) / 60)}:${('0' + Math.floor((str || 0) % 60)).slice(-2)}`
 }
 const playNext = () => {
   // playing ended
-  audioRef.value.currentTime = 0
   audioRef.value.pause()
-  if (playData.playIndex === playData.playlist.length - 1 && !playData.random) return
-  if (playData.random) {
-    setPlayData({ playIndex: Math.floor(Math.random() * (playData.playlist.length - 1)), currentTime: 0 })
+  audioRef.value.currentTime = 0
+  setPlayer({ currentTime: 0, duration: 0 })
+  if (playData.playIndex === playData.playlist.length - 1 && !player.random) return
+  if (player.random) {
+    setPlayData({ playIndex: Math.floor(Math.random() * (playData.playlist.length - 1)), lyricIndex: 0 })
   } else {
-    setPlayData({ playIndex: (playData.playIndex || 0) + 1, currentTime: 0 })
+    setPlayData({ playIndex: (playData.playIndex || 0) + 1, lyricIndex: 0 })
   }
-  loading.value = true
   play(playData.playlist[playData.playIndex]).then((success) => {
     if (success) {
       audioRef.value.play()
     } else {
-      setPlayData({ paused: true })
+      setPlayer({ paused: true })
       audioRef.value.pause()
     }
-    loading.value = false
   })
 }
 const playPrev = () => {
-  audioRef.value.currentTime = 0
   audioRef.value.pause()
-  if (playData.playIndex === 0 && !playData.random) return
-  if (playData.random) {
-    setPlayData({ playIndex: Math.floor(Math.random() * (playData.playlist.length - 1)), currentTime: 0 })
+  audioRef.value.currentTime = 0
+  setPlayer({ currentTime: 0, duration: 0 })
+  if (playData.playIndex === 0 && !player.random) return
+  if (player.random) {
+    setPlayData({ playIndex: Math.floor(Math.random() * (playData.playlist.length - 1)), lyricIndex: 0 })
   } else {
-    setPlayData({ playIndex: (playData.playIndex || 0) - 1, currentTime: 0 })
+    setPlayData({ playIndex: (playData.playIndex || 0) - 1, lyricIndex: 0 })
   }
-  loading.value = true
   play(playData.playlist[playData.playIndex]).then((success) => {
     if (success) {
       audioRef.value.play()
     } else {
-      setPlayData({ paused: true })
+      setPlayer({ paused: true })
       audioRef.value.pause()
     }
-    loading.value = false
   })
 }
 const togglePlay = () => {
   if (!playData.url) return
-  setPlayData({ paused: !playData.paused })
+  setPlayer({ paused: !player.paused })
   if (audioRef.value.paused) {
-    audioRef.value.currentTime = playData.currentTime || 0
+    audioRef.value.currentTime = player.currentTime || 0
     audioRef.value.play()
   } else {
     audioRef.value.pause()
   }
 }
 const onUpdate = () => {
-  setPlayData({
-    duration: audioRef.value.duration,
+  setPlayer({
+    duration: audioRef.value.duration || player.duration || 0,
     currentTime: audioRef.value.currentTime,
   })
+  sliderRef.value?.setActiveItem(playData.lyricIndex)
 }
-const onSliderChange = () => {
-  audioRef.value.currentTime = inputValue.value
+const onSliderChange = (val, prop = 'currentTime') => {
+  audioRef.value[prop] = val
   nextTick(() => {
-    setPlayData({
-      currentTime: inputValue.value,
+    setPlayer({
+      [prop]: val,
+      muted: prop == 'volume' && val === 0,
     })
   })
 }
 onMounted(() => {
   nextTick(() => {
-    initPlay(audioRef.value)
+    initPlay()
+    audioRef.value.volume = player.volume
   })
 })
-watch(playData, (newVal, oldVal) => {
-  if (!playData.paused && !playData.currentTime && playData.url && !loading.value) {
+watch(playData, () => {
+  if (!player.paused && !player.currentTime && playData.url && !player.loading) {
     audioRef.value.play()
   }
-  if (newVal.withLyric) {
-    audioRef.value.currentTime = newVal.currentTime || 0
-  }
+  sliderRef.value?.setActiveItem(playData.lyricIndex)
 })
-const disabled = computed(() => !playData.url || loading.value)
+watch(player, (val) => {
+  if (val.withLyric) {
+    audioRef.value.currentTime = player.currentTime || 0
+  }
+  let timeArr = lyricList.value?.filter((el) => el).map((el) => el.split(']')[0]?.split('[')[1]?.split('.')[0] || '0:00') || []
+  let timeStr1 = player?.currentTime / 60 > 10 ? Math.floor(player?.currentTime / 60) : `0${Math.floor(player?.currentTime / 60)}`
+  let timeStr2 = player?.currentTime % 60 > 10 ? Math.floor(player?.currentTime % 60) : `0${Math.floor(player?.currentTime % 60)}`
+  let timerStr = `${timeStr1}:${timeStr2}`
+  let index = timeArr.findIndex((_) => _ === timerStr)
+  index !== -1 && setPlayData({ lyricIndex: index })
+})
+const disabled = computed(() => !playData.url || player.loading)
 </script>
 <style lang="scss" scoped>
 .player :deep(.el-slider) {
