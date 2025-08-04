@@ -10,11 +10,11 @@
         <span class="leading-[26px] w-10 mr-4" v-show="!player.loading" :class="{ '!order-2 ml-2': player.playBar == 'middle' }">{{ formatTime(player.currentTime) }}/{{ formatTime(player.duration) }}</span>
         <div class="flex w-full">
           <el-button loading v-show="player.loading" type="primary" link loading-icon="Loading" class="mr-2"></el-button>
-          <el-slider :class="{ '!w-[200px]': player.playBar == 'small' }" size="small" class="!h-[20px] text-center" :disabled="disabled" v-model="player.currentTime" :min="0" :format-tooltip="formatTime" :max="player.duration" @input="(val) => (inputValue = val)" @change="onSliderChange" />
+          <Slider @change="onSliderChange" />
         </div>
       </div>
     </div>
-    <audio ref="audioRef" class="hidden" :muted="muted" :src="url" :volume="player.volume" :loop="player.loop" @ended="playNext" @timeupdate="onUpdate" @pause="setPlayer({ paused: true })" @play="setPlayer({ paused: false })"></audio>
+    <audio ref="audioRef" id="audio" class="hidden" :muted="muted" :src="url" :volume="player.volume" :loop="player.loop" @ended="playNext" @timeupdate="onUpdate" @pause="setPlayer({ paused: true })" @play="setPlayer({ paused: false })"></audio>
     <div class="controls flex items-center justify-end flex-1 ml-5">
       <div class="mr-3 hidden md:flex items-center">
         <el-icon :size="30" :disabled="disabled">
@@ -72,6 +72,7 @@ import IconListMusic from '@/components/icons/IconListMusic.vue'
 import IconVolume from '@/components/icons/IconVolume.vue'
 import IconVolumeOff from '@/components/icons/IconVolumeOff.vue'
 import Playlist from '@/views/components/Playlist.vue'
+import Slider from './components/Slider.vue'
 
 const playerStore = usePlayerStore()
 const configStore = useConfigStore()
@@ -167,7 +168,7 @@ watch(playData, () => {
 })
 watch(player, (val) => {
   if (val.withLyric) {
-    audioRef.value.currentTime = player.currentTime || 0
+    audioRef.value.currentTime = inputValue.value || player.currentTime || 0
   }
   let timeArr = lyricList.value?.filter((el) => el).map((el) => el.split(']')[0]?.split('[')[1]?.split('.')[0] || '0:00') || []
   let timeStr1 = player?.currentTime / 60 > 10 ? Math.floor(player?.currentTime / 60) : `0${Math.floor(player?.currentTime / 60)}`

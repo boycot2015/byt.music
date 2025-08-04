@@ -1,6 +1,6 @@
 <template>
   <div class="grid-list rounded overflow-hidden">
-    <el-scrollbar ref="scrollbarRef" :height="height || (config.isMobile ? 'calc(100vh - 220px)' : 'calc(100vh - 240px)')" class="flex flex-col min-h-[calc(100vh-240px)] rounded-md" v-loading="loading">
+    <el-scrollbar ref="scrollbarRef" :height="config.isMobile ? 'auto' : height || 'calc(100vh - 240px)'" class="flex flex-col min-h-[calc(100vh-240px)] rounded-md" v-loading="loading">
       <el-row :gutter="10" class="!m-0">
         <el-col v-for="item in playlist" :key="item.id" :span="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb-3 last:mb-0 md:mb-5">
           <div class="flex cursor-pointer relative" @click="router.push({ path: `/playlist/${item.id}`, query: { type: type, ctype, page: currentPage } })">
@@ -8,7 +8,7 @@
               <Image lazy class="rounded-md overflow-hidden w-[140px] h-[140px]" fit="fill" :src="item.cover_img_url"></Image>
             </div>
             <div class="info flex flex-col ml-2 gap-y-2">
-              <div class="text-[var(--color-text)] line-clamp-2">{{ item.title }}</div>
+              <div class="text-[var(--color-text)] line-clamp-2">{{ item.title || '--' }}</div>
               <div class="text-[var(--color-text-secondary)] text-sm line-clamp-1 flex items-center">
                 <el-avatar class="mr-1" v-if="item.creator?.avatarUrl" :src="item.creator?.avatarUrl" size="small"></el-avatar>
                 <span class="line-clamp-1 flex-1">{{ item.creator?.nickname || item?.desc }}</span>

@@ -5,8 +5,8 @@
         <el-select v-model="type" @change="fetchData" size="large" popper-class="backdrop-blur">
           <el-option v-for="item in types" :key="item.type" :label="item.title" :value="item.type" />
         </el-select>
-        <el-scrollbar ref="scrollbarRef" always class="!mt-[10px]" height="calc(100vh - 190px)" v-loading="pageLoading">
-          <el-menu :default-active="activePlayIndex" class="!border-0 h-full rounded-md overflow-hidden" v-if="cates[type] && cates[type]?.playlist.length && !config.isMobile" @select="fetchPlayList">
+        <el-scrollbar ref="scrollbarRef" always class="!mt-[10px]" height="calc(100vh - 190px)" v-loading="pageLoading" element-loading-custom-class="backdrop-blur !z-99" v-if="!config.isMobile">
+          <el-menu :default-active="activePlayIndex" class="!border-0 h-full rounded-md overflow-hidden" v-if="cates[type] && cates[type]?.playlist.length" @select="fetchPlayList">
             <el-menu-item v-for="item in cates[type].playlist" :key="item.id" :index="item.id + ''" class="!whitespace-normal !leading-[20px] !pl-0 !pr-0 md:!pr-4">
               <div class="flex items-center flex-wrap">
                 <Image lazy class="w-[36px] h-[36px] mr-2 rounded" :src="item.cover_img_url" fit="cover" />
@@ -14,16 +14,16 @@
               </div>
             </el-menu-item>
           </el-menu>
-          <Empty v-else-if="!pageLoading && !cates[type]?.playlist.length" />
-          <el-row :gutter="16" class="overflow-hidden pr-0" v-if="config.isMobile">
-            <el-col :xs="8" :sm="6" class="overflow-hidden rounded mb-2" v-for="item in cates[type].playlist" :key="item.id">
-              <div class="flex flex-col items-center flex-wrap cursor-pointer" @click="router.push({ path: `/playlist/${item.id}`, query: { type: type } })">
-                <Image lazy class="w-[120px] h-[120px] mr-2 rounded" :src="item.cover_img_url" fit="cover" />
-                <h3 class="line-clamp-2 flex-1 leading-[22px] mt-1">{{ item.title }}</h3>
-              </div>
-            </el-col>
-          </el-row>
         </el-scrollbar>
+        <el-row :gutter="16" class="overflow-hidden pt-2" v-else>
+          <el-col :xs="8" :sm="6" class="overflow-hidden rounded mb-2" v-for="item in cates[type].playlist" :key="item.id">
+            <div class="flex flex-col items-center flex-wrap cursor-pointer" @click="router.push({ path: `/playlist/${item.id}`, query: { type: type } })">
+              <Image lazy class="w-full h-full mr-2 rounded" :src="item.cover_img_url" fit="cover" />
+              <h3 class="line-clamp-2 flex-1 leading-[22px] mt-1">{{ item.title }}</h3>
+            </div>
+          </el-col>
+        </el-row>
+        <Empty v-if="!pageLoading && !cates[type]?.playlist.length" />
       </el-col>
       <el-col :span="0" :sm="18" :md="20">
         <Playlist :loading="loading" ref="playlistRef" :data="{ info: playlistInfo, tracks: playlist, id: playlistInfo.id, type }" :tableProps="{ height: 'calc(100vh - 190px)' }">

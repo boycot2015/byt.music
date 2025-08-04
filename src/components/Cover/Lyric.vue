@@ -30,16 +30,11 @@ let lyricArr = computed(() => playData.lyricList || [])
 
 let timeArr = lyricArr.value?.filter((el) => el).map((el) => el.split(']')[0]?.split('[')[1]?.split('.')[0] || '0:00') || []
 const setSlider = (index) => {
-  activeIndex.value = index || activeIndex.value
+  activeIndex.value = index || playData.lyricIndex || activeIndex.value
   if (index) {
     setPlayer({
       withLyric: true,
       currentTime: timeArr[index]?.split(':')[0] * 60 + Number(timeArr[index]?.split(':')[1] || 0),
-    })
-    nextTick(() => {
-      setPlayer({
-        withLyric: false,
-      })
     })
   }
   if (scrollbar.value && !isScroll.value) {

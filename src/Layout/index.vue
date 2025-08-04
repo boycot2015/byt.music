@@ -27,8 +27,8 @@ const keepAliveRoutes = router.options.routes
     </el-aside>
     <el-container class="overflow-hidden bg-[var(--el-bg-color)]">
       <el-header class="bg-[var(--el-bg-color)] flex items-center shadow-[0_0_5px_0_rgba(0,0,0,0.1)]" :class="{ 'md:!shadow-[0_5px_30px_0_rgba(255,255,255,0.1)]': isDark }"><Header /></el-header>
-      <el-main class="bg-[transparent] !overflow-hidden !p-0 rounded layout">
-        <el-scrollbar always style="height: calc(100vh - 120px)">
+      <el-main class="bg-[transparent] md:!overflow-hidden !p-0 rounded layout">
+        <el-scrollbar style="height: calc(100vh - 120px)">
           <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px]">
             <router-view v-slot="{ Component }">
               <transition name="slide-fade">
@@ -37,7 +37,9 @@ const keepAliveRoutes = router.options.routes
                 </keep-alive>
               </transition>
             </router-view>
-            <el-backtop target=".layout .el-scrollbar__wrap" :bottom="100"></el-backtop>
+            <el-backtop target=".layout .el-scrollbar__wrap" :bottom="80" :right="15">
+              <el-icon><ArrowUpBold /></el-icon>
+            </el-backtop>
           </div>
         </el-scrollbar>
       </el-main>
@@ -45,7 +47,7 @@ const keepAliveRoutes = router.options.routes
         <Footer />
       </el-footer>
     </el-container>
-    <el-drawer direction="ltr" modal-class="md:hidden" size="40vw" :with-header="false" :z-index="99999" v-model="config.showAside" class="h-[100vh] md:hidden" body-class="!p-0">
+    <el-drawer direction="ltr" modal-class="md:hidden backdrop-blur" size="30vw" :with-header="false" :z-index="99999" v-model="config.showAside" class="h-[100vh] md:hidden" body-class="!p-0">
       <Aside />
     </el-drawer>
   </el-container>

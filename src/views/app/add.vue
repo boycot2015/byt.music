@@ -2,7 +2,7 @@
   <el-dialog :z-index="1000" modal-class="backdrop-blur" :title="`${form.id && has(form.id, 'apps') ? '编辑' : '添加'}应用`" v-model="visible" width="340px" @close="onClose">
     <el-form :model="form" :rules="rules" ref="formRef" label-width="80px">
       <el-form-item label="推荐应用" prop="id">
-        <el-select v-model="form.id" placeholder="请选择应用名称" clearable filterable @change="(val) => (form = { ...apps.find((el) => el.id == val) })">
+        <el-select v-model="form.id" popper-class="backdrop-blur" placeholder="请选择应用名称" clearable filterable @change="(val) => (form = { ...apps.find((el) => el.id == val) })">
           <el-option v-for="item in apps" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>

@@ -124,3 +124,8 @@ html.dark {
 #nprogress .bar {
   background-color: var(--el-color-primary) !important;
 }
+
+.el-popper {
+  border: none !important;
+  padding: 10px !important;
+}

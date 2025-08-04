@@ -2,14 +2,9 @@
   <footer class="footer w-full transition-width duration-300">
     <div class="absolute bottom-[60px] w-full flex z-9999">
       <el-button loading v-if="player.loading && player.playBar == 'full'" type="primary" link loading-icon="Loading" class="z-9999 !absolute left-0 top-[-8px]"></el-button>
-      <el-slider
-        size="small"
+      <Slider
         class="!w-full z-999 !h-[auto] text-center"
         v-show="player.playBar == 'full' || config.isMobile"
-        v-model="player.currentTime"
-        :min="0"
-        :format-tooltip="() => `${Math.floor((player.currentTime || 0) / 60)}:${('0' + Math.floor((player.currentTime || 0) % 60)).slice(-2)}`"
-        :max="player.duration"
         @change="
           (value) =>
             setPlayer({
@@ -55,19 +50,21 @@
   </footer>
 </template>
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import { useConfigStore } from '@/stores/config'
 import Cover from '@/components/Cover/index.vue'
 import { ArrowDown } from '@element-plus/icons-vue'
 import Player from '@/components/Player/index.vue'
+import Slider from '@/components/Player/components/Slider.vue'
 import NProgress from 'nprogress'
 
+const inputValue = ref(0)
 const playData = computed(() => usePlayerStore().playData)
 const player = computed(() => usePlayerStore().player)
 const config = computed(() => useConfigStore().config)
 const { setPlayer } = usePlayerStore()
-const coverVisible = ref(false)
+const coverVisible = ref(player.value.showCover)
 watch(coverVisible, (value) => {
   setPlayer({ showCover: value })
 })

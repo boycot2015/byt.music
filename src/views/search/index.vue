@@ -26,7 +26,7 @@
         </template>
       </el-autocomplete>
     </div>
-    <div class="keywords rounded my-1 md:my-2 border border-[var(--el-menu-border-color)] pt-2 rounded-md" v-loading="keywordLoading">
+    <div class="keywords rounded my-1 md:my-2 border border-[var(--el-menu-border-color)] pt-2 rounded-md overflow-hidden" v-loading="keywordLoading" element-loading-custom-class="backdrop-blur !z-99">
       <el-scrollbar class="flex flex-wrap" height="64px">
         <template v-if="hots.length">
           <el-tag
@@ -52,7 +52,7 @@
       :showHeader="false"
       header-class="!pl-0"
       action-class="mt-2"
-      v-loading="loading"
+      :loading="loading"
       :data="{ info: { id: keyword, total_song_num: total || playlist.length }, tracks: playlist }"
       :tableEvents="{ rowClick: (row) => stype != '0' && router.push({ path: '/playlist/' + row.id, query: { type } }) }"
       :tableProps="{ height: config.isMobile ? 'calc(100vh - 360px)' : 'calc(100vh - 380px)', rowClassName: 'cursor-pointer' }"

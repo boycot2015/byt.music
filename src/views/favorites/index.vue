@@ -18,10 +18,10 @@
           </el-menu>
           <Empty v-if="!collect[current]" />
         </el-scrollbar>
-        <GridList height="calc(100vh - 140px)" class="overflow-hidden pr-0 md:!hidden" v-loading="loading" :playlist="collect.map((el) => el.info)" :type="collect[current]?.type" ref="gridRef">
+        <GridList height="calc(100vh - 140px)" class="overflow-hidden pr-0 md:!hidden" v-loading="loading" :playlist="collect.map((el) => ({ ...el.info, id: el.id || el.info.id }))" :type="collect[current]?.type" ref="gridRef">
           <template #action="{ row }">
             <div class="close text-[var(--el-color-primary)] cursor-pointer hover:text-[var(--el-color-primary)] absolute bottom-0 right-2 transition-colors duration-300 ease-in-out">
-              <el-icon @click="collectStore.remove(row.id)"><Delete /></el-icon>
+              <el-icon @click.stop="collectStore.remove(row.id)"><Delete /></el-icon>
             </div>
           </template>
         </GridList>

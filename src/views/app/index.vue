@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app overflow-hidden">
     <div class="flex flex-col">
       <el-tabs
         size="small"
@@ -78,7 +78,7 @@
                               <span class="line-clamp-1 text-sm text-[var(--vt-c-secondary)]">{{ item.desc || item.name }}</span>
                             </div>
                           </div>
-                          <div class="flex items-center justify-end">
+                          <div class="flex flex-col md:flex-row items-center md:justify-end">
                             <el-icon
                               :size="20"
                               class="!text-[var(--el-color-primary)]"
@@ -91,7 +91,7 @@
                               "
                               ><Edit
                             /></el-icon>
-                            <el-icon :size="20" class="!text-[var(--el-color-primary)] ml-2" v-show="item.closable && isEdit" @click.stop="remove(item.id, 'apps')"><Close /></el-icon>
+                            <el-icon :size="20" class="!text-[var(--el-color-primary)] mt-1 md:mt-0 md:ml-2" v-show="item.closable && isEdit" @click.stop="remove(item.id, 'apps')"><Close /></el-icon>
                           </div>
                         </div>
                       </template>

@@ -1,10 +1,10 @@
 <template>
   <div class="setting">
     <el-row>
-      <el-col :span="0" :md="4" class="!hidden md:!block">
+      <el-col :span="0" :md="4" class="!hidden md:!block relative">
         <el-scrollbar height="calc(100vh - 140px)" class="border-r border-[var(--el-border-color)]">
-          <div class="flex h-full">
-            <el-anchor select-scroll-top type="underline" :offset="0" container=".config-form">
+          <div class="flex h-full !fixed">
+            <el-anchor select-scroll-top type="underline" :offset="0" container=".layout .el-scrollbar__wrap">
               <el-anchor-link v-for="(item, key) in configs" :href="`#config-${key}`" :key="key"> {{ item.label }} </el-anchor-link>
               <el-anchor-link v-for="(item, key) in playConfigs" :href="`#config-${key}`" :key="key"> {{ item.label }} </el-anchor-link>
               <el-anchor-link v-for="(item, key) in brConfigs" :href="`#config-${key}`" :key="key"> {{ item.label }} </el-anchor-link>
@@ -13,34 +13,33 @@
         </el-scrollbar>
       </el-col>
       <el-col :span="24" :md="20">
-        <el-scrollbar height="calc(100vh - 140px)" class="">
-          <el-form :model="config" class="config-form md:pr-4 md:pl-4 w-full" label-position="left">
-            <el-form-item v-for="(item, key) in configs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">
-              <el-select popper-class="backdrop-blur" v-if="item.type == 'select'" v-model="config[key]" @change="set({ [key]: config[key] })">
-                <el-option v-for="item in item.options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-              </el-select>
-              <component v-else-if="item.component" :is="item.component" />
-              <el-input v-else v-model="config[key]" :type="item.type || 'text'" :placeholder="item.placeholder || '请输入'" :maxlength="item.maxlength" />
-            </el-form-item>
-          </el-form>
-          <el-form :model="player" class="config-player md:pr-4 md:pl-4 w-full" label-position="left">
-            <el-form-item v-for="(item, key) in playConfigs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">
-              <el-select popper-class="backdrop-blur" v-if="item.type == 'select'" v-model="player[key]" @change="set({ [key]: player[key] })">
-                <el-option v-for="item in item.options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
-              </el-select>
-              <el-radio-group v-else-if="item.type == 'radio'" v-model="player[key]" @change="set({ [key]: player[key] })">
-                <el-radio v-for="item in item.options" :key="item.value" :value="item.value"> {{ item.label }} </el-radio>
-              </el-radio-group>
-              <component v-else-if="item.component" :is="item.component" />
-              <el-input v-else v-model="player[key]" :type="item.type || 'text'" :placeholder="item.placeholder || '请输入'" :maxlength="item.maxlength" />
-            </el-form-item>
-          </el-form>
-          <el-form class="config-form md:pr-4 md:pl-4 w-full" label-position="left">
-            <el-form-item v-for="(item, key) in brConfigs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">
-              <component v-if="item.component" :is="item.component" />
-            </el-form-item>
-          </el-form>
-        </el-scrollbar>
+        <el-form :model="config" class="config-form md:pr-4 md:pl-4 w-full" label-position="left">
+          <el-form-item v-for="(item, key) in configs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">
+            <el-select popper-class="backdrop-blur" v-if="item.type == 'select'" v-model="config[key]" @change="set({ [key]: config[key] })">
+              <el-option v-for="item in item.options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+            </el-select>
+            <component v-else-if="item.component" :is="item.component" />
+            <el-input v-else v-model="config[key]" :type="item.type || 'text'" :placeholder="item.placeholder || '请输入'" :maxlength="item.maxlength" />
+          </el-form-item>
+        </el-form>
+        <el-form :model="player" class="config-player md:pr-4 md:pl-4 w-full" label-position="left">
+          <el-form-item v-for="(item, key) in playConfigs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">
+            <el-select popper-class="backdrop-blur" v-if="item.type == 'select'" v-model="player[key]" @change="set({ [key]: player[key] })">
+              <el-option v-for="item in item.options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
+            </el-select>
+            <el-radio-group v-else-if="item.type == 'radio'" v-model="player[key]" @change="set({ [key]: player[key] })">
+              <el-radio v-for="item in item.options" :key="item.value" :value="item.value"> {{ item.label }} </el-radio>
+            </el-radio-group>
+            <component v-else-if="item.component" :is="item.component" />
+            <el-input v-else v-model="player[key]" :type="item.type || 'text'" :placeholder="item.placeholder || '请输入'" :maxlength="item.maxlength" />
+          </el-form-item>
+        </el-form>
+        <el-form class="config-form md:pr-4 md:pl-4 w-full" label-position="left">
+          <el-form-item v-for="(item, key) in brConfigs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">
+            <component v-if="item.component" :is="item.component" />
+          </el-form-item>
+        </el-form>
+        <!-- <el-scrollbar :height="!config.isMobile ? 'calc(100vh - 140px)' : 'auto'"> </el-scrollbar> -->
       </el-col>
     </el-row>
   </div>

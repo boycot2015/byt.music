@@ -38,7 +38,18 @@
         </div>
       </slot>
     </div>
-    <el-table ref="tableRef" class="rounded overflow-hidden mt-2" v-loading="loading" v-if="data.tracks" :row-class-name="({ row, rowIndex }) => (playData.id == row.id ? 'current-row' : '')" v-bind="tableProps" v-on="tableEvents" :data="data.tracks" @row-dblclick="handlePlay">
+    <el-table
+      ref="tableRef"
+      class="rounded overflow-hidden mt-2"
+      v-loading="loading"
+      element-loading-custom-class="backdrop-blur !z-99"
+      v-if="data.tracks"
+      :row-class-name="({ row, rowIndex }) => (playData.id == row.id ? 'current-row' : '')"
+      v-bind="tableProps"
+      v-on="tableEvents"
+      :data="data.tracks"
+      @row-dblclick="handlePlay"
+    >
       <el-table-column prop="title" label="歌曲名" show-overflow-tooltip>
         <template #default="scope">
           {{ scope.row.title }}

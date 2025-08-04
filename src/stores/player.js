@@ -8,6 +8,7 @@ const defaults = {
     loading: false,
     muted: false,
     withLyric: false,
+    visualizer: false, // 歌词可视化
     random: false,
     loop: false,
     paused: true,
@@ -118,6 +119,11 @@ export const usePlayerStore = defineStore(
     const setPlayer = (data = {}) => {
       for (const key in data) {
         player.value[key] = data[key]
+      }
+      if (data.withLyric) {
+        setTimeout(() => {
+          player.value.withLyric = false
+        }, 100)
       }
     }
     const setSource = (data, msg = '设置成功') => {

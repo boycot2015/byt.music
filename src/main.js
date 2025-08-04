@@ -28,5 +28,5 @@ Object.entries(Icons).forEach(async ([key, component]) => {
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
-app.component('Empty', Empty) 
+app.component('Empty', Empty)
 app.mount('#app')

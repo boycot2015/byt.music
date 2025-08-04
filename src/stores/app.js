@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { ElMessage } from 'element-plus'
 const affixs = [{
   name: '工作台',
   url: '',
@@ -79,11 +80,13 @@ export const useAppStore = defineStore(
       if (action === 'apps') apps.value.push({ ...el, id: el.id || Math.random().toString(36).substring(2, 10), closable: true, editable: true })
       if (action === 'tabs') tabs.value.push({ ...el, closable: true, editable: true })
       if (action === 'tabs') current.value = tabs.value[0]?.id || ''
+      if (action === 'apps') ElMessage.success('添加成功')
     }
     function remove(id, action = 'tabs') {
       if (action === 'apps') apps.value = apps.value.filter((item) => item.id != id)
       if (action === 'tabs') tabs.value = tabs.value.filter((item) => item.id != id)
       if (action === 'tabs' && current.value === id) current.value = tabs.value[tabs.value.length - 1]?.id || ''
+      if (action === 'apps') ElMessage.success('删除成功')
     }
     function update(row) {
       if (!has(row.id, 'apps')) {
@@ -96,6 +99,7 @@ export const useAppStore = defineStore(
           }
           return el
         })
+        ElMessage.success('更新成功')
       }
       tabs.value = tabs.value.map((el) => {
         if (el.id == row.id) {

@@ -3,19 +3,19 @@
     <template #title>
       <div class="flex items-center">
         <div class="md:hidden flex items-center md:mr-3 mr-[0px]" v-if="route.meta.keepAlive">
-          <el-icon :size="24" @click="() => set({ showAside: !config.showAside })">
+          <el-icon :size="24" @click.stop="() => set({ showAside: !config.showAside })">
             <IconMenu />
           </el-icon>
         </div>
         <span class="text-large font-600" v-if="route.meta.showBack"> 返回 </span>
-        <el-icon class="md:ml-3 !hidden md:!block" :size="22" v-else-if="route.meta?.icon">
+        <el-icon class="md:ml-3 !hidden md:!block" :size="22" v-else-if="route.meta?.icon" @click.stop>
           <component :is="route.meta.icon" />
         </el-icon>
       </div>
     </template>
     <template #content>
       <div class="flex items-center">
-        <el-icon class="mr-3" :size="24" v-if="route.meta.showBack && route.meta?.icon">
+        <el-icon class="mr-3" :size="24" v-if="route.meta.showBack && route.meta?.icon" @click.stop>
           <component :is="route.meta.icon" />
         </el-icon>
         <span class="text-large font-600"> {{ route.meta.title }} </span>
@@ -39,6 +39,6 @@ const toggleDark = useToggle(isDark)
 const router = useRouter()
 const route = useRoute()
 const goBack = () => {
-  router.push({ path: route.matched[0].path.replace('/:id', ''), query: route.query })
+  router.go(-1)
 }
 </script>

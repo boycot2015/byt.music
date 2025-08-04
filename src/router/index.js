@@ -64,7 +64,7 @@ const router = createRouter({
       name: 'ranking',
       component: () => import('@/views/ranking/index.vue'),
       meta: {
-        title: '排行榜',
+        title: '排行',
         keepAlive: true,
         icon: 'IconRank',
       },
