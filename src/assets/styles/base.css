@@ -62,6 +62,7 @@ body {
   background: var(--el-bg-color);
   width: 100vw;
   overflow: hidden;
+  font-family: CangErYuYang, blackFont, OPPOFont, 宋体, 楷体, Microsoft YaHei, Song, KaiTi, sans-serif;
 }
 
 html.dark {
@@ -128,4 +129,16 @@ html.dark {
 .el-popper {
   border: none !important;
   padding: 10px !important;
+}
+
+.el-loading-mask {
+  z-index: 99 !important;
+}
+
+.el-carousel__mask {
+  background: transparent !important;
+}
+
+.el-button.is-loading:before {
+  background-color: transparent !important;
 }

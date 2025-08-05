@@ -1,0 +1,24 @@
+@font-face {
+    font-family: 'blackFont';
+    src: url('@/assets/fonts/black.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'OPPOFont';
+    src: url('@/assets/fonts/OPPO.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Song';
+    src: url('@/assets/fonts/Song.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'KaiTi';
+    src: url('@/assets/fonts/KaiTi.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'CangErYuYang';
+    src: url('@/assets/fonts/CangErYuYang.ttf') format('truetype');
+}

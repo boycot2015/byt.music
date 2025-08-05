@@ -8,7 +8,7 @@ const defaults = {
     loading: false,
     muted: false,
     withLyric: false,
-    visualizer: false, // 歌词可视化
+    visualizer: true, // 歌词可视化
     random: false,
     loop: false,
     paused: true,

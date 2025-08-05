@@ -20,13 +20,13 @@ const defaults = {
     { title: '千千音乐', type: 'qianqian' },
     { title: '咪咕音乐', type: 'migu' },
   ],
-  family: 'Microsoft YaHei',
+  family: 'CangErYuYang',
   familys: [
-    { label: '微软雅黑', value: 'Microsoft YaHei' },
-    { label: '苹方', value: 'PingFang SC' },
-    { label: '宋体', value: '宋体' },
-    { label: '黑体', value: '黑体' },
-    { label: '楷体', value: '楷体' },
+    { label: '黑体', value: 'blackFont' },
+    { label: '宋体', value: 'Song' },
+    { label: '楷体', value: 'KaiTi' },
+    { label: 'OPPO', value: 'OPPOFont' },
+    { label: '仓耳', value: 'CangErYuYang' },
   ],
 }
 export const useConfigStore = defineStore(
@@ -42,7 +42,7 @@ export const useConfigStore = defineStore(
         document.body.style.background = `url(${val.theme.backgroundImage}) no-repeat center/cover`
       }
       if (val.family) {
-        document.documentElement.style.fontFamily = `"${val.family}", sans-serif !important`
+        document.body.style.fontFamily = `${val.family}`
       }
     }
     return { defaults, config, set }

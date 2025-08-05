@@ -1,6 +1,6 @@
 <template>
   <div class="player leading-[60px] h-[60px] flex flex-1 md:flex-3 items-center justify-around w-full">
-    <el-carousel :initial-index="playData.lyricIndex" :cardScale="0.75" ref="sliderRef" height="60px" v-if="!config.isMobile && player.playBar != 'middle' && !player.showCover" class="flex-1" direction="vertical" type="card" :autoplay="false">
+    <el-carousel :initial-index="playData.lyricIndex" indicator-position="none" :cardScale="0.75" ref="sliderRef" height="60px" v-if="!config.isMobile && player.playBar != 'middle' && !player.showCover" class="flex-1" direction="vertical" type="card" :autoplay="false">
       <el-carousel-item v-for="(item, index) in lyricList" :key="item">
         <h3 class="text-[14px] text-center leading-[30px]" :class="{ 'bg-linear-to-r bg-clip-text from-[var(--el-text-color-regular)] text-transparent to-[var(--el-color-primary)]': index === playData.lyricIndex }">{{ item.split(']')[1] }}</h3>
       </el-carousel-item>
@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-    <audio ref="audioRef" id="audio" class="hidden" :muted="muted" :src="url" :volume="player.volume" :loop="player.loop" @ended="playNext" @timeupdate="onUpdate" @pause="setPlayer({ paused: true })" @play="setPlayer({ paused: false })"></audio>
+    <audio ref="audioRef" crossorigin="anonymous" id="audio" class="hidden" :muted="muted" :src="url" :volume="player.volume" :loop="player.loop" @ended="playNext" @timeupdate="onUpdate" @pause="setPlayer({ paused: true })" @play="setPlayer({ paused: false })"></audio>
     <div class="controls flex items-center justify-end flex-1 ml-5">
       <div class="mr-3 hidden md:flex items-center">
         <el-icon :size="30" :disabled="disabled">
@@ -85,6 +85,8 @@ const url = computed(() => playData.url)
 const lyricList = computed(() => playData.lyricList)
 const sliderRef = ref(null)
 const inputValue = ref(0)
+const disabled = computed(() => !playData.url || player.loading)
+
 const formatTime = (str = player.currentTime, type = 'time') => {
   if (type === 'percent') return str * 100
   return `${Math.floor((str || 0) / 60)}:${('0' + Math.floor((str || 0) % 60)).slice(-2)}`
@@ -177,7 +179,12 @@ watch(player, (val) => {
   let index = timeArr.findIndex((_) => _ === timerStr)
   index !== -1 && setPlayData({ lyricIndex: index })
 })
-const disabled = computed(() => !playData.url || player.loading)
+defineExpose({
+  togglePlay,
+  playNext,
+  playPrev,
+  setPlayer: (...args) => onSliderChange(...args),
+})
 </script>
 <style lang="scss" scoped>
 .player :deep(.el-slider) {

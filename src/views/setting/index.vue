@@ -1,9 +1,9 @@
 <template>
   <div class="setting">
     <el-row>
-      <el-col :span="0" :md="4" class="!hidden md:!block relative">
+      <el-col :span="0" :md="4" class="relative">
         <el-scrollbar height="calc(100vh - 140px)" class="border-r border-[var(--el-border-color)]">
-          <div class="flex h-full !fixed">
+          <div class="flex h-full !hidden md:!block !fixed">
             <el-anchor select-scroll-top type="underline" :offset="0" container=".layout .el-scrollbar__wrap">
               <el-anchor-link v-for="(item, key) in configs" :href="`#config-${key}`" :key="key"> {{ item.label }} </el-anchor-link>
               <el-anchor-link v-for="(item, key) in playConfigs" :href="`#config-${key}`" :key="key"> {{ item.label }} </el-anchor-link>
@@ -27,7 +27,7 @@
             <el-select popper-class="backdrop-blur" v-if="item.type == 'select'" v-model="player[key]" @change="set({ [key]: player[key] })">
               <el-option v-for="item in item.options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
             </el-select>
-            <el-radio-group v-else-if="item.type == 'radio'" v-model="player[key]" @change="set({ [key]: player[key] })">
+            <el-radio-group v-else-if="item.type == 'radio'" :disabled="item.disabled" v-model="player[key]" @change="set({ [key]: player[key] })">
               <el-radio v-for="item in item.options" :key="item.value" :value="item.value"> {{ item.label }} </el-radio>
             </el-radio-group>
             <component v-else-if="item.component" :is="item.component" />
@@ -88,7 +88,16 @@ const playConfigs = ref({
     labelPosition: 'top',
     class: 'md:pl-0',
     type: 'radio',
+    disabled: computed(() => !!config.isMobile),
     options: player.playBars,
+  },
+  visualizer: {
+    label: '歌词可视化',
+    type: 'radio',
+    options: [
+      { label: '关闭', value: false },
+      { label: '开启', value: true },
+    ],
   },
   // Add more configuration options here
 })

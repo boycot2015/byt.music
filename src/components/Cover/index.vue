@@ -1,5 +1,5 @@
 <template>
-  <div class="cover h-[calc(100vh-60px)] backdrop-blur-md">
+  <div class="cover h-[calc(100vh-60px)] backdrop-blur-md relative z-2">
     <div class="flex relative z-2 gap-10 md:items-center md:h-full overflow-hidden md:justify-center !mt-0 m-3 md:m-5">
       <div class="cover-img hidden lg:block">
         <Image class="w-[300px] rounded" :src="playData.img_url">
@@ -15,15 +15,14 @@
         <Lyric />
       </div>
     </div>
-    <Analyser />
   </div>
 </template>
 <script setup>
-// import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import Lyric from './Lyric.vue'
-import Analyser from '../Player/components/Analyser/index.vue'
 
 const playerStore = usePlayerStore()
-const { playData } = playerStore
+const player = computed(() => playerStore.player)
+const playData = computed(() => playerStore.playData)
 </script>

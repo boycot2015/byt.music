@@ -9,8 +9,8 @@
     <el-button type="danger" class="mt-2 !ml-0 md:!ml-4 w-full md:w-[auto] md:mt-0" @click="onReset()"
       ><el-icon class="mr-2"><RefreshLeft /></el-icon>恢复默认设置</el-button
     >
-    <el-dialog title="导入配置" modal-class="backdrop-blur" :z-index="100001" :close-on-click-modal="false" width="380px" v-model="visible" @close="visible = false" top="30vh" center>
-      <div class="tip leading-[20px] my-2">提示：导入配置后，部分配置可能需要刷新才能生效。</div>
+    <el-dialog title="导入配置" modal-class="backdrop-blur" :z-index="100001" :close-on-click-modal="false" width="360px" v-model="visible" @close="visible = false" top="30vh" center>
+      <div class="tip leading-[20px] my-2">导入配置后，部分配置可能需要刷新才能生效。</div>
       <template #footer>
         <div class="flex flex-row justify-center">
           <el-upload :show-file-list="false" accept=".json" :disabled="!!playSource" :auto-upload="false" :on-change="importSource">
