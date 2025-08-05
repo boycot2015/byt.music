@@ -15,7 +15,7 @@
         <Lyric />
       </div>
     </div>
-    <!-- <Analyser /> -->
+    <Analyser />
   </div>
 </template>
 <script setup>

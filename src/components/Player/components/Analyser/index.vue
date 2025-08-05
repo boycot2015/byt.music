@@ -9,15 +9,15 @@ const { setPlayer } = usePlayerStore()
 const player = computed(() => usePlayerStore().player)
 const playData = computed(() => usePlayerStore().playData)
 const init = () => {
-  const audio = document.createElement('audio')
-  const canvas = document.getElementById('visualizer')
-  audio.src = playData.value.url
-  audio.crossOrigin = 'anonymous'
-  if (!player.value.paused) audio.play()
-  const ctx = canvas.getContext('2d')
   const audioCtx = new AudioContext()
+  const audio = document.createElement('audio')
   const audioSrc = audioCtx.createMediaElementSource(audio)
   const analyser = audioCtx.createAnalyser()
+  audio.src = playData.value.url
+  const canvas = document.getElementById('visualizer')
+  audio.crossOrigin = 'anonymous'
+  // audio.play()
+  const ctx = canvas.getContext('2d')
 
   audioSrc.connect(analyser)
   analyser.connect(audioCtx.destination)
@@ -68,10 +68,8 @@ const init = () => {
   updata()
 }
 watch(player.value, () => {
-  if (player.value.paused) {
-    setPlayer({ visualizer: !player.value.paused })
-    init()
-  }
+  setPlayer({ visualizer: !player.value.paused })
+  init(player.value.paused)
 })
 onMounted(() => {
   init()
