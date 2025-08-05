@@ -2,7 +2,7 @@
   <div class="playlist">
     <div class="top min-h-[40px] flex justify-between md:mb-4">
       <div class="flex items-center">
-        <el-popover placement="bottom-start" popper-class="!w-[95vw] backdrop-blur md:!w-[600px] !p-2 !pl-0" :disabled="cateLoading || (cates[type] && !cates[type].length)" trigger="hover">
+        <el-popover placement="bottom-start" v-model:visible="modalVisible" popper-class="!w-[95vw] backdrop-blur md:!w-[600px] !p-2 !pl-0" :disabled="cateLoading || (cates[type] && !cates[type].length)" :trigger="config.isMobile ? 'click' : 'hover'">
           <template #reference>
             <span class="cursor-pointer el-dropdown-link flex items-center">
               {{ ctypeObj.name || '全部歌单' }}
@@ -21,12 +21,13 @@
                 <el-tag
                   class="cursor-pointer"
                   size="large"
-                  @click="
+                  @click.stop="
                     () => {
                       ctypeObj = el
                       currentPage = 1
                       gridRef.setScrollTop(0)
                       fetchListData(el)
+                      modalVisible = false
                     }
                   "
                   :effect="ctypeObj.name != el.name ? 'light' : 'dark'"
@@ -109,6 +110,7 @@ const cates = ref({})
 const playlist = ref([])
 const loading = ref(true)
 const cateLoading = ref(false)
+const modalVisible = ref(false)
 const total = ref(0)
 const hasNextPage = ref(false)
 const currentPage = ref(route.query.page ? Number(route.query.page) : 1)

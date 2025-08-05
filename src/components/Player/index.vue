@@ -44,7 +44,7 @@
       <el-icon :size="38" @click="playNext">
         <IconNext class="cursor-pointer" />
       </el-icon>
-      <el-popover trigger="click" popper-class="backdrop-blur" :width="'360px'">
+      <el-popover trigger="click" popper-class="backdrop-blur" :width="config.isMobile ? '95vw' : '680px'">
         <template #reference>
           <el-icon :size="32">
             <IconListMusic class="cursor-pointer" />
@@ -143,7 +143,7 @@ const togglePlay = () => {
 const onUpdate = () => {
   setPlayer({
     duration: audioRef.value.duration || player.duration || 0,
-    currentTime: audioRef.value.currentTime,
+    currentTime: !player.loading ? 0 : audioRef.value.currentTime,
   })
   sliderRef.value?.setActiveItem(playData.lyricIndex)
 }

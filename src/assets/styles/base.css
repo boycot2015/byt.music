@@ -138,7 +138,3 @@ html.dark {
 .el-carousel__mask {
   background: transparent !important;
 }
-
-.el-button.is-loading:before {
-  background-color: transparent !important;
-}
