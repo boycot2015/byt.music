@@ -44,7 +44,7 @@
       <el-icon :size="38" @click="playNext">
         <IconNext class="cursor-pointer" />
       </el-icon>
-      <el-popover trigger="click" popper-class="backdrop-blur" :width="config.isMobile ? '95vw' : '680px'">
+      <el-popover trigger="click" :show-arrow="false" popper-class="backdrop-blur" :width="config.isMobile ? '95vw' : '680px'">
         <template #reference>
           <el-icon :size="32">
             <IconListMusic class="cursor-pointer" />
@@ -76,18 +76,20 @@ import Slider from './components/Slider.vue'
 
 const playerStore = usePlayerStore()
 const configStore = useConfigStore()
-const { player, playData, initPlay, play, setPlayData, setPlayer } = playerStore
+const { initPlay, play, setPlayData, setPlayer } = playerStore
+const player = computed(() => usePlayerStore().player)
+const playData = computed(() => usePlayerStore().playData)
 const { config } = configStore
 const audioRef = ref(null)
-const paused = computed(() => player.paused)
-const muted = computed(() => player.muted)
-const url = computed(() => playData.url)
-const lyricList = computed(() => playData.lyricList)
+const paused = computed(() => player.value.paused)
+const muted = computed(() => player.value.muted)
+const url = computed(() => playData.value.url)
+const lyricList = computed(() => playData.value.lyricList)
 const sliderRef = ref(null)
 const inputValue = ref(0)
-const disabled = computed(() => !playData.url || player.loading)
+const disabled = computed(() => !playData.value.url || player.value.loading)
 
-const formatTime = (str = player.currentTime, type = 'time') => {
+const formatTime = (str = player.value.currentTime, type = 'time') => {
   if (type === 'percent') return str * 100
   return `${Math.floor((str || 0) / 60)}:${('0' + Math.floor((str || 0) % 60)).slice(-2)}`
 }
@@ -96,13 +98,13 @@ const playNext = () => {
   audioRef.value.pause()
   audioRef.value.currentTime = 0
   setPlayer({ currentTime: 0, duration: 0 })
-  if (playData.playIndex === playData.playlist.length - 1 && !player.random) return
-  if (player.random) {
-    setPlayData({ playIndex: Math.floor(Math.random() * (playData.playlist.length - 1)), lyricIndex: 0 })
+  if (playData.value.playIndex === playData.value.playlist.length - 1 && !player.value.random) return
+  if (player.value.random) {
+    setPlayData({ playIndex: Math.floor(Math.random() * (playData.value.playlist.length - 1)), lyricIndex: 0 })
   } else {
-    setPlayData({ playIndex: (playData.playIndex || 0) + 1, lyricIndex: 0 })
+    setPlayData({ playIndex: (playData.value.playIndex || 0) + 1, lyricIndex: 0 })
   }
-  play(playData.playlist[playData.playIndex]).then((success) => {
+  play(playData.value.playlist[playData.value.playIndex]).then((success) => {
     if (success) {
       audioRef.value.play()
     } else {
@@ -115,13 +117,13 @@ const playPrev = () => {
   audioRef.value.pause()
   audioRef.value.currentTime = 0
   setPlayer({ currentTime: 0, duration: 0 })
-  if (playData.playIndex === 0 && !player.random) return
-  if (player.random) {
-    setPlayData({ playIndex: Math.floor(Math.random() * (playData.playlist.length - 1)), lyricIndex: 0 })
+  if (playData.value.playIndex === 0 && !player.value.random) return
+  if (player.value.random) {
+    setPlayData({ playIndex: Math.floor(Math.random() * (playData.value.playlist.length - 1)), lyricIndex: 0 })
   } else {
-    setPlayData({ playIndex: (playData.playIndex || 0) - 1, lyricIndex: 0 })
+    setPlayData({ playIndex: (playData.value.playIndex || 0) - 1, lyricIndex: 0 })
   }
-  play(playData.playlist[playData.playIndex]).then((success) => {
+  play(playData.value.playlist[playData.value.playIndex]).then((success) => {
     if (success) {
       audioRef.value.play()
     } else {
@@ -131,10 +133,10 @@ const playPrev = () => {
   })
 }
 const togglePlay = () => {
-  if (!playData.url) return
-  setPlayer({ paused: !player.paused })
+  if (!playData.value.url) return
+  setPlayer({ paused: !player.value.paused })
   if (audioRef.value.paused) {
-    audioRef.value.currentTime = player.currentTime || 0
+    audioRef.value.currentTime = player.value.currentTime || 0
     audioRef.value.play()
   } else {
     audioRef.value.pause()
@@ -142,10 +144,10 @@ const togglePlay = () => {
 }
 const onUpdate = () => {
   setPlayer({
-    duration: audioRef.value.duration || player.duration || 0,
-    currentTime: player.loading ? 0 : audioRef.value.currentTime,
+    duration: audioRef.value.duration || player.value.duration || 0,
+    currentTime: player.value.loading ? 0 : audioRef.value.currentTime,
   })
-  sliderRef.value?.setActiveItem(playData.lyricIndex)
+  sliderRef.value?.setActiveItem(playData.value.lyricIndex)
 }
 const onSliderChange = (val, prop = 'currentTime') => {
   audioRef.value[prop] = val
@@ -159,22 +161,22 @@ const onSliderChange = (val, prop = 'currentTime') => {
 onMounted(() => {
   nextTick(() => {
     initPlay()
-    audioRef.value.volume = player.volume
+    audioRef.value.volume = player.value.volume
   })
 })
-watch(playData, () => {
-  if (!player.paused && !player.currentTime && playData.url && !player.loading) {
+watch(playData.value, () => {
+  if (!player.value.paused && !player.value.currentTime && playData.value.url && !player.value.loading) {
     audioRef.value.play()
   }
-  sliderRef.value?.setActiveItem(playData.lyricIndex)
+  sliderRef.value?.setActiveItem(playData.value.lyricIndex)
 })
-watch(player, (val) => {
+watch(player.value, (val) => {
   if (val.withLyric) {
-    audioRef.value.currentTime = inputValue.value || player.currentTime || 0
+    audioRef.value.currentTime = inputValue.value || player.value.currentTime || 0
   }
   let timeArr = lyricList.value?.filter((el) => el).map((el) => el.split(']')[0]?.split('[')[1]?.split('.')[0] || '0:00') || []
-  let timeStr1 = player?.currentTime / 60 > 10 ? Math.floor(player?.currentTime / 60) : `0${Math.floor(player?.currentTime / 60)}`
-  let timeStr2 = player?.currentTime % 60 > 10 ? Math.floor(player?.currentTime % 60) : `0${Math.floor(player?.currentTime % 60)}`
+  let timeStr1 = player.value?.currentTime / 60 > 10 ? Math.floor(player.value?.currentTime / 60) : `0${Math.floor(player.value?.currentTime / 60)}`
+  let timeStr2 = player.value?.currentTime % 60 > 10 ? Math.floor(player.value?.currentTime % 60) : `0${Math.floor(player.value?.currentTime % 60)}`
   let timerStr = `${timeStr1}:${timeStr2}`
   let index = timeArr.findIndex((_) => _ === timerStr)
   index !== -1 && setPlayData({ lyricIndex: index })

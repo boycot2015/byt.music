@@ -6,6 +6,7 @@
           <el-select
             size="large"
             class="!w-[110px]"
+            :show-arrow="false"
             popper-class="backdrop-blur"
             v-model="type"
             @change="

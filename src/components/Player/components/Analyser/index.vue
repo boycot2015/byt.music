@@ -80,7 +80,6 @@ const init = () => {
     ctx.closePath()
     myRequest.value = requestAnimationFrame(renderFrame)
   }
-  myRequest.value = requestAnimationFrame(renderFrame)
   renderFrame()
 }
 

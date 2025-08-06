@@ -2,7 +2,7 @@
   <div class="playlist">
     <div class="top min-h-[40px] flex justify-between md:mb-4">
       <div class="flex items-center">
-        <el-popover placement="bottom-start" v-model:visible="modalVisible" popper-class="!w-[95vw] backdrop-blur md:!w-[600px] !p-2 !pl-0" :disabled="cateLoading || (cates[type] && !cates[type].length)" :trigger="config.isMobile ? 'click' : 'hover'">
+        <el-popover placement="bottom-start" :show-arrow="false" v-model:visible="modalVisible" popper-class="!w-[95vw] backdrop-blur md:!w-[600px] !p-2 !pl-0" :disabled="cateLoading || (cates[type] && !cates[type].length)" :trigger="config.isMobile ? 'click' : 'hover'">
           <template #reference>
             <span class="cursor-pointer el-dropdown-link flex items-center">
               {{ ctypeObj.name || '全部歌单' }}
@@ -60,6 +60,8 @@
       <div class="block md:hidden flex items-center">
         <el-dropdown
           trigger="click"
+          :show-arrow="false"
+          popper-class="backdrop-blur"
           @command="
             () => {
               ctypeObj = {}

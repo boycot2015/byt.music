@@ -33,7 +33,7 @@
           </template>
         </div>
       </div>
-      <Player ref="playerRef" />
+      <Player />
     </div>
     <el-drawer v-model="coverVisible" :z-index="99" :modal-class="`!absolute !bg-[transparent]`" body-class="!p-0" header-class="text-center" direction="btt" :title="playData.title" size="100%" :with-header="false">
       <div class="relative z-10 backdrop-blur-2xl overflow-hidden">
@@ -71,7 +71,6 @@ const player = computed(() => usePlayerStore().player)
 const config = computed(() => useConfigStore().config)
 const { setPlayer } = usePlayerStore()
 const coverVisible = ref(player.value.showCover)
-const playerRef = ref(null)
 watch(coverVisible, (value) => {
   setPlayer({ showCover: value })
 })

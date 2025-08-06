@@ -1,5 +1,7 @@
 <template>
-  <el-slider :class="{ '!w-[200px]': player.playBar == 'small' }" size="small" class="!h-[20px] text-center" :disabled="disabled" v-model="player.currentTime" :min="0" :format-tooltip="formatTime" :max="player.duration" @input="(val) => (inputValue = val)" @change="onSliderChange" />
+  <div>
+    <el-slider :class="{ '!w-[200px]': player.playBar == 'small' }" size="small" class="!h-[5px] text-center" :disabled="disabled" v-model="player.currentTime" :min="0" :format-tooltip="formatTime" :max="player.duration" @input="(val) => (inputValue = val)" @change="onSliderChange" />
+  </div>
 </template>
 <script setup>
 import { ref, nextTick } from 'vue'
