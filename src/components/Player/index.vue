@@ -143,7 +143,7 @@ const togglePlay = () => {
 const onUpdate = () => {
   setPlayer({
     duration: audioRef.value.duration || player.duration || 0,
-    currentTime: !player.loading ? 0 : audioRef.value.currentTime,
+    currentTime: player.loading ? 0 : audioRef.value.currentTime,
   })
   sliderRef.value?.setActiveItem(playData.lyricIndex)
 }

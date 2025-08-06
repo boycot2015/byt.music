@@ -21,13 +21,6 @@ const defaults = {
     { title: '咪咕音乐', type: 'migu' },
   ],
   family: 'CangErYuYang',
-  familys: [
-    { label: '黑体', value: 'blackFont' },
-    { label: '宋体', value: 'Song' },
-    { label: '楷体', value: 'KaiTi' },
-    { label: 'OPPO', value: 'OPPOFont' },
-    { label: '仓耳', value: 'CangErYuYang' },
-  ],
 }
 export const useConfigStore = defineStore(
   'config',

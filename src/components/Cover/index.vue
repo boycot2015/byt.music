@@ -11,9 +11,7 @@
           </template>
         </Image>
       </div>
-      <div class="lyric flex items-center">
-        <Lyric />
-      </div>
+      <Lyric />
     </div>
   </div>
 </template>

@@ -50,7 +50,7 @@
         <Cover />
         <Analyser v-if="player.visualizer" />
       </div>
-      <div class="bg-cover z-9 absolute top-0 overflow-hidden left-0 w-full h-full bg-cover bg-center bg-no-repeat opacity-50 blur-[10px] transition-all duration-300 ease-in-out" :style="{ backgroundImage: `url(${playData.img_url})` }"></div>
+      <div class="bg-cover z-9 absolute top-0 overflow-hidden left-0 w-full h-full bg-cover bg-center bg-no-repeat opacity-50 blur-[100px] transition-all duration-300 ease-in-out" :style="{ backgroundImage: `url(${playData.img_url})` }"></div>
     </el-drawer>
   </footer>
 </template>
@@ -80,7 +80,7 @@ watch(coverVisible, (value) => {
 :deep(.el-slider) {
   .el-slider__bar,
   .el-slider__runway {
-    height: 3px;
+    height: 5px;
   }
   .el-slider__button-wrapper {
     display: none;

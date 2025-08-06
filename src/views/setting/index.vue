@@ -66,7 +66,13 @@ const configs = ref({
   family: {
     label: '字体',
     type: 'select',
-    options: config.familys,
+    options: [
+      { label: '黑体', value: 'blackFont' },
+      { label: '宋体', value: 'Song' },
+      { label: '楷体', value: 'KaiTi' },
+      { label: 'OPPO', value: 'OPPOFont' },
+      { label: '仓耳', value: 'CangErYuYang' },
+    ],
   },
   theme: {
     label: '主题配置',
@@ -89,7 +95,11 @@ const playConfigs = ref({
     class: 'md:pl-0',
     type: 'radio',
     disabled: computed(() => !!config.isMobile),
-    options: player.playBars,
+    options: [
+      { label: 'mini', value: 'small' },
+      { label: '中等', value: 'middle' },
+      { label: '全宽(移动端默认)', value: 'full' },
+    ],
   },
   visualizer: {
     label: '歌词可视化',
@@ -97,6 +107,15 @@ const playConfigs = ref({
     options: [
       { label: '关闭', value: false },
       { label: '开启', value: true },
+    ],
+  },
+  lyricAlign: {
+    label: '歌词对齐方式',
+    type: 'radio',
+    options: [
+      { label: '左对齐', value: 'left' },
+      { label: '居中对齐', value: 'center' },
+      { label: '右对齐', value: 'right' },
     ],
   },
   // Add more configuration options here

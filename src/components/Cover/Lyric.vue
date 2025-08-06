@@ -1,9 +1,9 @@
 <template>
-  <div class="lyirc">
+  <div class="lyric flex items-center overflow-hidden">
     <el-scrollbar ref="scrollbar" :height="config.isMobile ? 'calc(100vh - 140px)' : 'calc(100vh - 230px)'" @scroll="onScroll">
-      <div class="w-full lg:w-[500px] drop-shadow-md">
+      <div class="w-full lg:w-[500px] drop-shadow-md pb-[300px]">
         <div :ref="(el) => (itemRefs[index] = el)" v-for="(item, index) in lyricArr" :key="item" class="h-[48px]" @click="setSlider(index)">
-          <span class="text-xl cursor-pointer line-clamp-1 !text-left transition-all delay-0 duration-300 ease-in-out" :class="{ 'text-[var(--el-color-primary)] !text-2xl ': index === activeIndex }">
+          <span class="text-xl cursor-pointer line-clamp-1 text-left transition-all delay-0 duration-300 ease-in-out" :class="{ 'text-[var(--el-color-primary)] !text-2xl ': index === activeIndex, '!text-center': player.lyricAlign === 'center', '!text-right': player.lyricAlign === 'right' }">
             <TextSlider v-show="index === activeIndex" :msg="item.split(']')[1]" />
             <span v-show="index !== activeIndex">{{ item.split(']')[1] }}</span>
           </span>
@@ -19,7 +19,8 @@ import { useConfigStore } from '@/stores/config'
 import TextSlider from '@/components/TextSlider/index.vue'
 const playerStore = usePlayerStore()
 const { config } = useConfigStore()
-const { player, playData, setPlayer, setPlayData } = playerStore
+const player = computed(() => usePlayerStore().player)
+const { playData, setPlayer, setPlayData } = playerStore
 const activeIndex = ref(0)
 const isScroll = ref(false)
 const scrollbar = ref(null)
@@ -38,7 +39,7 @@ const setSlider = (index) => {
     })
   }
   if (scrollbar.value && !isScroll.value) {
-    if (!player.currentTime && scrollbar.value) {
+    if (!player.value.currentTime && scrollbar.value) {
       activeIndex.value = 0
       scrollbar.value.setScrollTop(0)
       setPlayData({
@@ -46,16 +47,16 @@ const setSlider = (index) => {
       })
       return
     }
-    let timeStr1 = player?.currentTime / 60 > 10 ? Math.floor(player?.currentTime / 60) : `0${Math.floor(player?.currentTime / 60)}`
-    let timeStr2 = player?.currentTime % 60 > 10 ? Math.floor(player?.currentTime % 60) : `0${Math.floor(player?.currentTime % 60)}`
+    let timeStr1 = player.value?.currentTime / 60 > 10 ? Math.floor(player.value?.currentTime / 60) : `0${Math.floor(player.value?.currentTime / 60)}`
+    let timeStr2 = player.value?.currentTime % 60 > 10 ? Math.floor(player.value?.currentTime % 60) : `0${Math.floor(player.value?.currentTime % 60)}`
     let timerStr = `${timeStr1}:${timeStr2}`
-    let index = timeArr.findIndex((_) => _ === timerStr)
+    let index = [...timeArr].findIndex((_) => _ === timerStr)
     let elementH = itemRefs.value[activeIndex.value].offsetHeight
     let baseTop = 5 * elementH
     activeIndex.value = index === -1 ? activeIndex.value : index
     if (scrollTop.value > 0 && activeIndex.value * baseTop < scrollTop.value) return
     let top = activeIndex.value * elementH < baseTop ? 0 : activeIndex.value * elementH - baseTop
-    if (!player?.currentTime) {
+    if (!player?.value?.currentTime) {
       activeIndex.value = 0
       scrollbar.value.setScrollTop(0)
       setPlayData({
@@ -82,7 +83,7 @@ const onScroll = ({ scrollTop: top }) => {
     isScroll.value = false
   }, 1000)
 }
-watch(player, () => setSlider())
+watch(player.value, () => setSlider())
 
 onMounted(() => {
   setSlider()
@@ -91,5 +92,14 @@ onMounted(() => {
 <style lang="scss" scoped>
 :deep(.el-scrollbar__bar) {
   display: none !important;
+}
+.lyric {
+  position: relative;
+  padding: 5px;
+  box-shadow: 0px 0px 100px var(--el-bg-color);
+  -webkit-mask-image: linear-gradient(transparent 0%, #fff 30%, #fff 60%, transparent 100%);
+}
+html.dark .lyric {
+  -webkit-mask-image: linear-gradient(transparent 0%, #000 30%, #000 60%, transparent 100%);
 }
 </style>

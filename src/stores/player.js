@@ -16,11 +16,7 @@ const defaults = {
     volume: 0.5,
     currentTime: 0,
     duration: 100,
-    playBars: [
-      { label: 'mini', value: 'small' },
-      { label: '中等', value: 'middle' },
-      { label: '全宽(移动端默认)', value: 'full' },
-    ]
+    lyricAlign: 'left',
   },
   source: {
     apiUrl: apiUrl + '/music/url',

@@ -51,6 +51,5 @@ watch(props, () => {
 <style scoped>
 .scroll-wrap {
   white-space: nowrap;
-  width: fit-content;
 }
 </style>
