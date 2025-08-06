@@ -1,7 +1,7 @@
 <template>
   <div class="cover h-[calc(100vh-60px)] backdrop-blur-md relative z-2">
     <div class="flex relative z-2 gap-10 md:items-center md:h-full overflow-hidden md:justify-center !mt-0 m-3 md:m-5">
-      <div class="cover-img hidden lg:block">
+      <div class="cover-img hidden md:block">
         <Image class="w-[300px] rounded" :src="playData.img_url">
           <template #placeholder>
             <el-icon :size="300" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>

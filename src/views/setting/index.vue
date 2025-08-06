@@ -102,7 +102,7 @@ const playConfigs = ref({
     ],
   },
   visualizer: {
-    label: '歌词可视化',
+    label: '歌词可视化(实验性)',
     type: 'radio',
     options: [
       { label: '关闭', value: false },

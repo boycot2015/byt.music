@@ -1,7 +1,7 @@
 <template>
   <div class="lyric flex items-center overflow-hidden">
     <el-scrollbar ref="scrollbar" :height="config.isMobile ? 'calc(100vh - 140px)' : 'calc(100vh - 230px)'" @scroll="onScroll">
-      <div class="w-full lg:w-[500px] drop-shadow-md pb-[300px]">
+      <div class="w-full md:w-[500px] drop-shadow-md py-[300px]">
         <div :ref="(el) => (itemRefs[index] = el)" v-for="(item, index) in lyricArr" :key="item" class="h-[48px]" @click="setSlider(index)">
           <span class="text-xl cursor-pointer line-clamp-1 text-left transition-all delay-0 duration-300 ease-in-out" :class="{ 'text-[var(--el-color-primary)] !text-2xl ': index === activeIndex, '!text-center': player.lyricAlign === 'center', '!text-right': player.lyricAlign === 'right' }">
             <TextSlider v-show="index === activeIndex" :msg="item.split(']')[1]" />
@@ -50,12 +50,12 @@ const setSlider = (index) => {
     let timeStr1 = player.value?.currentTime / 60 > 10 ? Math.floor(player.value?.currentTime / 60) : `0${Math.floor(player.value?.currentTime / 60)}`
     let timeStr2 = player.value?.currentTime % 60 > 10 ? Math.floor(player.value?.currentTime % 60) : `0${Math.floor(player.value?.currentTime % 60)}`
     let timerStr = `${timeStr1}:${timeStr2}`
-    let index = [...timeArr].findIndex((_) => _ === timerStr)
+    let index = [...timeArr].filter((el) => el).findIndex((_) => _ === timerStr)
     let elementH = itemRefs.value[activeIndex.value].offsetHeight
     let baseTop = 5 * elementH
-    activeIndex.value = index === -1 ? activeIndex.value : index
-    if (scrollTop.value > 0 && activeIndex.value * baseTop < scrollTop.value) return
-    let top = activeIndex.value * elementH < baseTop ? 0 : activeIndex.value * elementH - baseTop
+    activeIndex.value = index === -1 || index < activeIndex.value ? activeIndex.value : index
+    // if (scrollTop.value > 0 && activeIndex.value * baseTop < scrollTop.value) return
+    let top = activeIndex.value * elementH - baseTop
     if (!player?.value?.currentTime) {
       activeIndex.value = 0
       scrollbar.value.setScrollTop(0)
@@ -66,7 +66,7 @@ const setSlider = (index) => {
     }
     top &&
       scrollbar.value.scrollTo({
-        top,
+        top: top + 300,
         left: 0,
         behavior: 'smooth',
       })
