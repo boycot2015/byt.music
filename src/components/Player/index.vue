@@ -1,11 +1,11 @@
 <template>
   <div class="player leading-[60px] h-[60px] flex flex-1 md:flex-3 items-center justify-around w-full">
-    <el-carousel :initial-index="playData.lyricIndex" indicator-position="none" :cardScale="0.75" ref="sliderRef" height="60px" v-if="!config.isMobile && player.playBar != 'middle' && !player.showCover" class="flex-1" direction="vertical" type="card" :autoplay="false">
+    <el-carousel :initial-index="playData.lyricIndex" indicator-position="none" :cardScale="0.75" ref="sliderRef" height="60px" v-if="!config.isMobile && !player.showCover" class="flex-1" direction="vertical" type="card" :autoplay="false">
       <el-carousel-item v-for="(item, index) in lyricList" :key="item">
         <h3 class="text-[14px] text-center leading-[30px]" :class="{ 'bg-linear-to-r bg-clip-text from-[var(--el-text-color-regular)] text-transparent to-[var(--el-color-primary)]': index === playData.lyricIndex }">{{ item.split(']')[1] }}</h3>
       </el-carousel-item>
     </el-carousel>
-    <div class="md:flex-3 !hidden md:!flex" :class="{ 'justify-end md:flex-1': player.playBar == 'small' }" v-if="player.playBar != 'full'">
+    <div class="md:flex-3 !hidden md:!flex mx-2" :class="{ 'justify-end md:flex-1': player.playBar == 'small' }" v-if="player.playBar != 'full'">
       <div class="flex flex-col items-center justify-center" :class="{ '!flex-row w-full': player.playBar == 'middle' }">
         <span class="leading-[26px] w-10 mr-4" v-show="!player.loading" :class="{ '!order-2 ml-2': player.playBar == 'middle' }">{{ formatTime(player.currentTime) }}/{{ formatTime(player.duration) }}</span>
         <div class="flex w-full">

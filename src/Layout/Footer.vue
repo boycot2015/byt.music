@@ -48,7 +48,7 @@
           </div>
         </div>
         <Cover />
-        <Analyser v-if="player.visualizer" />
+        <Analyser />
       </div>
       <div class="bg-cover z-9 absolute top-0 overflow-hidden left-0 w-full h-full bg-cover bg-center bg-no-repeat opacity-50 blur-[100px] transition-all duration-300 ease-in-out" :style="{ backgroundImage: `url(${playData.img_url})` }"></div>
     </el-drawer>

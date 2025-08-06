@@ -80,10 +80,17 @@ const init = () => {
     ctx.closePath()
     myRequest.value = requestAnimationFrame(renderFrame)
   }
+  myRequest.value = requestAnimationFrame(renderFrame)
   renderFrame()
 }
+
 watch(player.value, () => {
-  !player.value.paused && init(player.value.paused)
+  if (!player.value.visualizer) {
+    document.getElementById('visualizer').style.visibility = 'hidden'
+    return
+  }
+  document.getElementById('visualizer').style.visibility = 'visible'
+  !player.value.paused && init()
 })
 onUnmounted(() => {
   cancelAnimationFrame(myRequest.value)

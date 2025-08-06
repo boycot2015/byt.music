@@ -137,3 +137,7 @@ html.dark {
 .el-carousel__mask {
   background: transparent !important;
 }
+
+.el-select-dropdown .el-scrollbar {
+  padding-bottom: 0 !important;
+}

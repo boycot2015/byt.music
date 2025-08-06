@@ -5,7 +5,9 @@
         <template #header>
           <div class="md:flex mb-3 min-h-[120px] relative rounded overflow-hidden">
             <Image :src="data.info.cover_img_url" class="h-[300px] md:w-[120px] md:h-[120px] rounded scale-[2] md:scale-[1]"></Image>
-            <div class="info md:ml-4 p-2 rounded overflow-hidden text-shadow-lg md:text-shadow-none text-[var(--vt-c-text-dark-1)] md:text-[var(--el-color-regular)] md:p-0 flex-1 absolute h-full w-full md:relative backdrop-blur-3xl left-0 top-0 right-0 flex flex-col justify-center">
+            <div
+              class="info md:ml-4 p-2 rounded overflow-hidden text-shadow-lg md:text-shadow-none text-[var(--vt-c-text-dark-1)] md:text-[var(--el-color-regular)] md:p-0 flex-1 absolute h-full w-full md:relative backdrop-blur-xl md:backdrop-blur-none left-0 top-0 right-0 flex flex-col justify-center"
+            >
               <div class="title text-3xl mb-2">{{ data.info.title }}</div>
               <div v-if="data.info.desc" class="hidden md:block">
                 <el-tooltip placement="top" v-if="data.info.desc.replace(/<br>/g, '。').length > 100">
