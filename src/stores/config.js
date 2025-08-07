@@ -21,6 +21,7 @@ const defaults = {
     { title: '咪咕音乐', type: 'migu' },
   ],
   family: 'CangErYuYang',
+  showTableAction: true,
 }
 export const useConfigStore = defineStore(
   'config',

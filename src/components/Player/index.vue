@@ -16,7 +16,11 @@
     </div>
     <audio ref="audioRef" crossorigin="anonymous" id="audio" class="hidden" :muted="muted" :src="url" :volume="player.volume" :loop="player.loop" @ended="playNext" @timeupdate="onUpdate" @pause="setPlayer({ paused: true })" @play="setPlayer({ paused: false })"></audio>
     <div class="controls flex items-center justify-end flex-1 ml-5">
-      <div class="mr-3 hidden md:flex items-center">
+      <el-icon class="cursor-pointer mr-2" :size="26" @click="() => toggleCollect({ ...playData }, 'song')">
+        <IconHeartFill class="text-[var(--el-color-primary)]" v-if="has(playData.id, 'song')" />
+        <IconHeart v-else />
+      </el-icon>
+      <div class="mr-3 flex items-center">
         <el-icon :size="30" :disabled="disabled">
           <IconInfinity class="cursor-pointer" @click="setPlayer({ loop: false, random: false })" v-if="player.random" />
           <IconLoop class="cursor-pointer" @click="setPlayer({ loop: !player.loop, random: true })" v-else-if="player.loop" />
@@ -25,7 +29,7 @@
       </div>
       <div class="mr-3 hidden md:flex items-center">
         <el-icon :size="30" @click="setPlayer({ muted: !player.muted })" :disabled="disabled">
-          <el-popover trigger="hover" popper-class="backdrop-blur">
+          <el-popover trigger="hover" popper-class="backdrop-blur" :show-arrow="false">
             <template #reference>
               <IconVolume class="cursor-pointer" v-if="!player.muted" />
               <IconVolumeOff class="cursor-pointer" v-else />
@@ -60,6 +64,7 @@
 <script setup>
 import { computed, ref, nextTick, onMounted, watch } from 'vue'
 import { usePlayerStore } from '@/stores/player'
+import { useCollectStore } from '@/stores/collect'
 import { useConfigStore } from '@/stores/config'
 import IconPlay from '@/components/icons/IconPlay.vue'
 import IconPause from '@/components/icons/IconPause.vue'
@@ -76,7 +81,9 @@ import Slider from './components/Slider.vue'
 
 const playerStore = usePlayerStore()
 const configStore = useConfigStore()
+const collectStore = useCollectStore()
 const { initPlay, play, setPlayData, setPlayer } = playerStore
+const { has, toggleCollect } = collectStore
 const player = computed(() => usePlayerStore().player)
 const playData = computed(() => usePlayerStore().playData)
 const { config } = configStore

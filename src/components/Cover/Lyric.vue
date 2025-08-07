@@ -4,7 +4,7 @@
       <div class="w-full md:w-[500px] drop-shadow-md py-[300px]">
         <div :ref="(el) => (itemRefs[index] = el)" v-for="(item, index) in lyricArr" :key="item" class="h-[48px]" @click="setSlider(index)">
           <span class="text-xl cursor-pointer line-clamp-1 text-left transition-all delay-0 duration-300 ease-in-out" :class="{ 'text-[var(--el-color-primary)] !text-2xl ': index === activeIndex, '!text-center': player.lyricAlign === 'center', '!text-right': player.lyricAlign === 'right' }">
-            <TextSlider v-show="index === activeIndex" :msg="item.split(']')[1]" />
+            <TextSlider class="md:text-shadow-md" v-show="index === activeIndex" :msg="item.split(']')[1]" />
             <span v-show="index !== activeIndex">{{ item.split(']')[1] }}</span>
           </span>
         </div>
@@ -39,7 +39,7 @@ const setSlider = (index) => {
     })
   }
   if (scrollbar.value && !isScroll.value) {
-    if (!player.value.currentTime && scrollbar.value) {
+    if ((!player.value.currentTime && scrollbar.value) || !itemRefs.value) {
       activeIndex.value = 0
       scrollbar.value.setScrollTop(0)
       setPlayData({
@@ -51,10 +51,9 @@ const setSlider = (index) => {
     let timeStr2 = player.value?.currentTime % 60 > 10 ? Math.floor(player.value?.currentTime % 60) : `0${Math.floor(player.value?.currentTime % 60)}`
     let timerStr = `${timeStr1}:${timeStr2}`
     let index = [...timeArr].filter((el) => el).findIndex((_) => _ === timerStr)
-    let elementH = itemRefs.value[activeIndex.value].offsetHeight
+    let elementH = itemRefs?.value[activeIndex.value]?.offsetHeight || 48
     let baseTop = 5 * elementH
     activeIndex.value = index === -1 || index < activeIndex.value ? activeIndex.value : index
-    // if (scrollTop.value > 0 && activeIndex.value * baseTop < scrollTop.value) return
     let top = activeIndex.value * elementH - baseTop
     if (!player?.value?.currentTime) {
       activeIndex.value = 0

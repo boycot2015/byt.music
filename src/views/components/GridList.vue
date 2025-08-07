@@ -5,7 +5,7 @@
         <el-col v-for="item in playlist" :key="item.id" :span="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb-3 last:mb-0 md:mb-5">
           <div class="flex cursor-pointer relative" @click="router.push({ path: `/playlist/${item.id}`, query: { type: type, ctype, page: currentPage } })">
             <div class="img">
-              <Image lazy class="rounded-md overflow-hidden w-[140px] h-[140px]" fit="fill" :src="item.cover_img_url"></Image>
+              <Image lazy class="rounded-md overflow-hidden w-[140px] h-[140px]" fit="fill" :src="item.cover_img_url" :size="140"></Image>
             </div>
             <div class="info flex flex-col ml-2 gap-y-2">
               <div class="text-[var(--color-text)] line-clamp-2">{{ item.title || '--' }}</div>

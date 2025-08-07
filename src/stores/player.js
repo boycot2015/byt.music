@@ -67,8 +67,10 @@ export const usePlayerStore = defineStore(
       playData.value.title = item.title
       playData.value.img_url = item.img_url
       playData.value.singer = item.singer || item.artist
+      playData.value.album = item.album || item.album_name
+      playData.value.duration = item.duration || item.durationStr
       player.value.loading = true
-      await fetch(`${apiUrl}/music/lyric?id=${item.id}&type=${type}`)
+      fetch(`${apiUrl}/music/lyric?id=${item.id}&type=${type}`)
         .then((res) => res.json())
         .then((data) => {
           playData.value.lyric = data.data.lyric
@@ -76,9 +78,9 @@ export const usePlayerStore = defineStore(
             if (!playData.value.lyric) return ['[00:00]纯音乐，请欣赏~']
             return playData.value?.lyric
               ?.trim()
-              ?.split('\n')
+              ?.replace(/\r\n/g, '\n').split('\n')
               .filter((_) => _ && _.split(']')[1])
-          })
+          })          
           setPlayData({
             lyricList: lyricArr,
           })

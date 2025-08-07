@@ -1,5 +1,5 @@
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 26 26">
     Icon from Akar Icons by Arturo Wibawa - https://github.com/artcoholic/akar-icons/blob/master/LICENSE
     <g fill="none" stroke="currentColor" stroke-width="1">
       <path stroke-linecap="round" stroke-linejoin="round" d="M2 6a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z" />

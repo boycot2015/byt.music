@@ -1,5 +1,5 @@
 <template>
-  <footer class="footer w-full transition-width duration-300">
+  <footer class="footer w-full">
     <div class="absolute bottom-[60px] w-full flex z-9999">
       <el-button size="large" loading v-if="player.loading && player.playBar == 'full'" type="primary" link loading-icon="Loading" class="z-9999 !absolute left-0 top-[-8px]"></el-button>
       <Slider
@@ -38,8 +38,9 @@
     <el-drawer v-model="coverVisible" :z-index="99" :modal-class="`!absolute !bg-[transparent]`" body-class="!p-0" header-class="text-center" direction="btt" :title="playData.title" size="100%" :with-header="false">
       <div class="relative z-10 backdrop-blur-2xl overflow-hidden">
         <div class="flex w-full items-center px-10 pr-5 leading-[60px]">
-          <div class="flex flex-1 items-center text-center justify-center">
-            <div class="title text-xl line-clamp-1 mr-2">{{ playData.title }}--{{ playData.singer }}</div>
+          <div class="flex flex-col md:flex-row flex-1 items-center text-center justify-center">
+            <div class="title text-xl line-clamp-1 mr-2">{{ playData.title }}<span class="hidden md:inline"> --</span></div>
+            <span class="text-xs md:text-xl">{{ playData.singer }}</span>
           </div>
           <div class="close cursor-pointer hover:text-[var(--el-color-primary)]" @click="coverVisible = false">
             <el-icon :size="24">
@@ -80,6 +81,7 @@ watch(coverVisible, (value) => {
   .el-slider__bar,
   .el-slider__runway {
     height: 5px;
+    border-radius: 0;
   }
   .el-slider__button-wrapper {
     display: none;

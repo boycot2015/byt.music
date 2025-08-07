@@ -5,7 +5,7 @@
         <div class="flex items-center hidden lg:flex">
           <div class="text-xs flex items-center" v-if="data?.info?.nickname || data?.info?.title">
             <el-avatar class="mr-2" size="small" v-if="data?.info?.headurl" :src="data?.info?.headurl"></el-avatar>
-            <el-icon class="mr-2" v-else><User /></el-icon>
+            <el-icon class="mr-2" :size="20" v-else><User /></el-icon>
             <span class="line-clamp-1">{{ data?.info?.nickname || data?.info?.title }}</span>
             <el-divider direction="vertical" />
           </div>
@@ -24,13 +24,13 @@
       </slot>
       <slot name="action">
         <div class="actions w-full mb-1 md:mb-0 md:w-[auto] flex md:text-right md:absolute top-20 right-2" :class="actionClass" v-if="showActions && data.info">
-          <el-button type="primary" @click="handlePlayAll" :disabled="!data.info.id"
+          <el-button type="primary" @click="handlePlayAll" :disabled="!data.info.id && !data.tracks.length"
             ><el-icon class="mr-2"><VideoPlay /></el-icon>播放全部<span class="text-xs" v-if="data?.info?.total_song_num">({{ data?.info?.total_song_num || 0 }})</span></el-button
           >
-          <el-button type="warning" @click="toggleCollect" :disabled="!data.info.id"
+          <el-button type="warning" @click="toggleCollect" :disabled="!data.info.id" v-if="data?.info?.id"
             ><el-icon class="mr-2"><IconHeartFill v-if="collectStore.has(data.info.id)" /> <IconHeart v-else /></el-icon> {{ collectStore.has(data.info.id) ? '已' : '' }}收藏</el-button
           >
-          <el-link :href="data.info.source_url" underline="never" target="_blank" rel="noopener noreferrer" class="text-[#444] ml-3 self-end">
+          <el-link :href="data.info.source_url" v-if="data?.info?.id" underline="never" target="_blank" rel="noopener noreferrer" class="text-[#444] ml-3 self-end">
             <el-button :disabled="!data.info.id"
               ><el-icon class="mr-2"><Link /></el-icon> 官源</el-button
             >
@@ -57,15 +57,24 @@
           <span v-else class="text-[purple] text-[12px]">{{ scope.row.quality }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="artist" show-overflow-tooltip label="艺术家"></el-table-column>
+      <el-table-column prop="artist" show-overflow-tooltip label="艺术家">
+        <template #default="scope">
+          {{ scope.row.artist || scope.row.singer || '--' }}
+        </template>
+      </el-table-column>
       <el-table-column prop="album" show-overflow-tooltip label="专辑名">
         <template #default="scope">
           {{ scope.row.album?.name || scope.row.album || '--' }}
         </template>
       </el-table-column>
-      <el-table-column prop="duration" align="center" sortable width="120px" label="歌曲时长">
+      <el-table-column prop="duration" align="center" sortable width="120px" label="歌曲时长" v-if="!config.isMobile">
         <template #default="scope">
           {{ scope.row.duration || '--' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="duration" align="left" width="120px" label="操作" v-if="$slots['table-action'] && config.showTableAction">
+        <template #default="scope">
+          <slot name="table-action" :row="scope.row"></slot>
         </template>
       </el-table-column>
       <template v-slot:empty>
@@ -77,17 +86,13 @@
 </template>
 <script setup>
 import { ref, computed, watch, nextTick, onMounted } from 'vue'
-import { VideoPlay, Link } from '@element-plus/icons-vue'
 import { ElMessageBox } from 'element-plus'
 import IconHeart from '@/components/icons/IconHeart.vue'
 import IconHeartFill from '@/components/icons/IconHeartFill.vue'
 import { usePlayerStore } from '@/stores/player'
 import { useCollectStore } from '@/stores/collect'
+import { useConfigStore } from '@/stores/config'
 import { useRoute } from 'vue-router'
-const route = useRoute()
-const playerStore = usePlayerStore()
-const collectStore = useCollectStore()
-const slots = defineSlots()
 const props = defineProps({
   data: {
     type: Object,
@@ -125,9 +130,16 @@ const props = defineProps({
     default: () => ({}),
   },
 })
+const route = useRoute()
+const playerStore = usePlayerStore()
+const collectStore = useCollectStore()
+const configStore = useConfigStore()
+const slots = defineSlots()
 const { play, playData, setPlayData } = playerStore
+const config = computed(() => configStore.config)
 const playIndex = computed(() => playData.playIndex)
 
+const emit = defineEmits(['action'])
 const data = computed(() => props.data)
 const tableRef = ref(null)
 const tableHeight = ref('calc(100vh - 402px)')

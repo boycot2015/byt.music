@@ -6,11 +6,11 @@
           <el-menu :default-active="current" class="h-[calc(100vh-210px)] !border-0 !hidden md:!block" @select="onSelect" v-if="collect[current]">
             <el-menu-item v-for="(item, index) in collect" :key="item.info?.id || index" :index="index + ''" @mouseenter="collectStore.update({ ...item, showClose: true })" @mouseleave="collectStore.update({ ...item, showClose: false })">
               <div class="flex items-center">
-                <Image class="basis-[36px] rounded" :src="item.info.cover_img_url"></Image>
+                <Image class="basis-[32px] rounded" :src="item.info.cover_img_url || '/logo.svg'"></Image>
                 <div class="flex-1 ml-2">
                   <div class="text-xs line-clamp-2 text-wrap pr-[10px]" v-html="item.info.title"></div>
                 </div>
-                <div class="close cursor-pointer hover:text-[var(--el-color-primary)] absolute right-2 transition-colors duration-300 ease-in-out" :class="{ hidden: !item.showClose }">
+                <div v-if="item.info.id" class="close cursor-pointer hover:text-[var(--el-color-primary)] absolute right-2 transition-colors duration-300 ease-in-out" :class="{ hidden: !item.showClose }">
                   <el-icon @click.stop="collectStore.remove(item.info.id)"><Delete /></el-icon>
                 </div>
               </div>
@@ -31,16 +31,51 @@
           <template #action>
             <div class="flex justify-between items-center mb-[10px]" v-if="collect[current]?.info">
               <div class="text-right">
-                <el-button type="primary" :disabled="!collect[current] || loading" @click="() => playlistRef.handlePlayAll()"
+                <el-button type="primary" :disabled="!collect[current] || loading || playlist.length == 0" @click="() => playlistRef.handlePlayAll()"
                   ><el-icon class="mr-2"><VideoPlay /></el-icon> 播放</el-button
                 >
-                <el-link :href="collect[current]?.info?.source_url" underline="never" target="_blank" rel="noopener noreferrer" class="text-[#444] ml-3">
+                <el-link v-if="collect[current]?.info?.source_url" :href="collect[current]?.info?.source_url" underline="never" target="_blank" rel="noopener noreferrer" class="text-[#444] ml-3">
                   <el-button :disabled="!collect[current] || loading"
                     ><el-icon class="mr-2"><Link /></el-icon> 官源</el-button
                   >
                 </el-link>
+                <el-button
+                  type="danger"
+                  @click="
+                    () => {
+                      ElMessageBox.confirm('确定清空？').then(() => {
+                        collect[current] && collect[current].info.id == 0 && (playlist = [])
+                        collectStore.remove(0, 'song')
+                      })
+                    }
+                  "
+                  v-if="collect[current]?.info?.id == 0"
+                  :disabled="!collect[current] || loading"
+                  ><el-icon class="mr-2"><Delete /></el-icon> 清空</el-button
+                >
               </div>
             </div>
+          </template>
+          <template #table-action="scope">
+            <el-link type="primary" size="small" @click="() => playlistRef.handlePlay(scope.row)">播放</el-link>
+            <el-link
+              type="primary"
+              size="small"
+              class="ml-2"
+              @click="
+                () => {
+                  collectStore.has(scope.row.id, 'song')
+                    ? ElMessageBox.confirm('确定取消收藏？')
+                        .then(() => {
+                          collect[current] && collect[current].info.id == 0 && (playlist = playlist.filter((item) => item.id !== scope.row.id))
+                          collectStore.toggleCollect(scope.row, 'song')
+                        })
+                        .catch(() => {})
+                    : collectStore.toggleCollect(scope.row, 'song')
+                }
+              "
+              >{{ collect[current] && collect[current].info.id == 0 ? '移除' : collectStore.has(scope.row.id, 'song') ? '取消收藏' : '收藏' }}</el-link
+            >
           </template>
         </Playlist>
       </el-col>
@@ -50,7 +85,7 @@
 <script name="favorites" setup>
 import { computed, ref, getCurrentInstance, onActivated } from 'vue'
 import { useCollectStore } from '@/stores/collect'
-import { VideoPlay, Link, Delete } from '@element-plus/icons-vue'
+import { ElMessageBox } from 'element-plus'
 import Playlist from '@/views/components/Playlist.vue'
 import GridList from '@/views/components/GridList.vue'
 const { proxy } = getCurrentInstance()
@@ -68,7 +103,11 @@ const onSelect = (index) => {
   fetchData()
 }
 const fetchData = async () => {
-  if (!collect.value[current.value]) return
+  if (!collect.value[current.value] || !collect.value[current.value].info.id) {
+    playlist.value = collect.value[current.value]?.tracks || []
+    loading.value = false
+    return
+  }
   loading.value = true
   const response = await fetch(`${$apiUrl}/music/detail?type=${collect.value[current.value].type}&id=${collect.value[current.value]?.id}`)
   let res = await response.json()

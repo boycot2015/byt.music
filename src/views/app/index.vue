@@ -1,21 +1,7 @@
 <template>
   <div class="app overflow-hidden">
     <div class="flex flex-col">
-      <el-tabs
-        size="small"
-        class="w-full tabs"
-        type="card"
-        addable
-        v-model="appId"
-        @tab-click="
-          (val) => {
-            setCurrent(val.paneName)
-            loading = false
-          }
-        "
-        @edit="popoverVisible = true"
-        @tab-remove="(id) => remove(id)"
-      >
+      <el-tabs size="small" class="w-full tabs" type="card" addable v-model="appId" @tab-click="onTabClick" @tab-remove="(id) => remove(id)">
         <template #add-icon>
           <el-dropdown trigger="click" @command="onAction">
             <el-icon :size="20" class="el-icon--right pr-1">
@@ -50,7 +36,7 @@
                 <el-row :gutter="16" class="apps">
                   <el-col v-for="item in apps" :key="item.id" :span="12" :sm="8" :md="6" :lg="4" :xl="3">
                     <el-card
-                      class="mb-4 cursor-pointer"
+                      class="mb-4 cursor-pointer !border-0"
                       body-class="!p-3"
                       shadow="hover"
                       @click="
@@ -99,7 +85,7 @@
                   </el-col>
                   <el-col :span="12" :sm="8" :md="6" :lg="4" :xl="3" class="app-add">
                     <el-card
-                      class="mb-2 cursor-pointer"
+                      class="mb-2 cursor-pointer !border-0"
                       shadow="hover"
                       @click="
                         () => {
@@ -147,7 +133,6 @@ const appId = ref(appStore.current)
 const isEdit = ref(false)
 const loading = ref(true)
 const rowData = ref({})
-const popoverVisible = ref(false)
 let appsortable = null
 const current = computed(() => appStore.tabs.find((item) => item.id === appStore.current))
 watchEffect(() => {
@@ -202,6 +187,13 @@ const onAction = (command) => {
       )
       break
   }
+}
+const onTabClick = (val) => {
+  if (val.paneName == appId.value) {
+    return
+  }
+  setCurrent(val.paneName)
+  loading.value = false
 }
 watch(isEdit, (val) => {
   appsortable?.option('disabled', !val)

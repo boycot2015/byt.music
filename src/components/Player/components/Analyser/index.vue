@@ -45,7 +45,7 @@ const init = () => {
   var cwidth = canvas.width
   var cheight = canvas.height - 2
   var meterWidth = 12 // width of the meters in the spectrum
-  var gap = 2 // gap between meters
+  var gap = 0 // gap between meters
   var capHeight = 2
   var meterNum = (cwidth * 1.5) / (meterWidth + gap) // count of the meters
   var capYPositionArray = [] /// /store the vertical position of hte caps for the preivous frame

@@ -2,15 +2,17 @@
   <el-image v-bind="$attrs">
     <template #error>
       <slot name="error">
-        <el-icon :size="size">
-          <icon-music />
-        </el-icon>
+        <div class="flex items-center justify-center h-full">
+          <el-icon :size="size">
+            <icon-music />
+          </el-icon>
+        </div>
       </slot>
     </template>
     <template #placeholder>
       <slot name="placeholder">
         <div class="flex items-center justify-center h-full">
-          <el-icon :size="100">
+          <el-icon :size="size">
             <icon-music />
           </el-icon>
         </div>

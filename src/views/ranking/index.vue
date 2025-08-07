@@ -9,7 +9,7 @@
           <el-menu :default-active="activePlayIndex" class="!border-0 h-full rounded-md overflow-hidden" v-if="cates[type] && cates[type]?.playlist.length" @select="fetchPlayList">
             <el-menu-item v-for="item in cates[type].playlist" :key="item.id" :index="item.id + ''" class="!whitespace-normal !leading-[20px] !pl-0 !pr-0 md:!pr-4">
               <div class="flex items-center flex-wrap">
-                <Image lazy class="w-[36px] h-[36px] mr-2 rounded" :src="item.cover_img_url" fit="cover" />
+                <Image lazy class="w-[32px] h-[32px] mr-2 rounded" :src="item.cover_img_url" fit="cover" />
                 <span class="!line-clamp-2 flex-1 hidden md:block">{{ item.title }}</span>
               </div>
             </el-menu-item>
@@ -18,7 +18,7 @@
         <el-row :gutter="16" class="overflow-hidden pt-2" v-else>
           <el-col :xs="8" :sm="6" class="overflow-hidden rounded mb-2" v-for="item in cates[type].playlist" :key="item.id">
             <div class="flex flex-col items-center flex-wrap cursor-pointer" @click="router.push({ path: `/playlist/${item.id}`, query: { type: type } })">
-              <Image lazy class="w-full h-full mr-2 rounded" :src="item.cover_img_url" fit="cover" />
+              <Image lazy class="w-full h-full min-w-[100px] min-h-[105px] mr-2 rounded" :src="item.cover_img_url" :size="100" fit="cover" />
               <h3 class="line-clamp-2 flex-1 leading-[22px] mt-1">{{ item.title }}</h3>
             </div>
           </el-col>
