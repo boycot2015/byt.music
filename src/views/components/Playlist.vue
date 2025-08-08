@@ -50,7 +50,7 @@
       :data="data.tracks"
       @row-dblclick="handlePlay"
     >
-      <el-table-column prop="title" label="歌曲名" show-overflow-tooltip>
+      <el-table-column prop="title" min-width="130px" label="歌曲名" show-overflow-tooltip>
         <template #default="scope">
           {{ scope.row.title }}
           <span v-if="scope.row.quality == 'HQ'" class="text-[green] text-[12px]">{{ scope.row.quality }}</span>
@@ -67,12 +67,12 @@
           {{ scope.row.album?.name || scope.row.album || '--' }}
         </template>
       </el-table-column>
-      <el-table-column prop="duration" align="center" sortable width="120px" label="歌曲时长" v-if="!config.isMobile">
+      <el-table-column prop="duration" align="center" sortable label="歌曲时长" v-if="!config.isMobile">
         <template #default="scope">
           {{ scope.row.duration || '--' }}
         </template>
       </el-table-column>
-      <el-table-column prop="duration" align="left" width="120px" label="操作" v-if="$slots['table-action'] && config.showTableAction">
+      <el-table-column prop="action" align="center" label="操作" width="70px" v-if="$slots['table-action'] && config.showTableAction">
         <template #default="scope">
           <slot name="table-action" :row="scope.row"></slot>
         </template>

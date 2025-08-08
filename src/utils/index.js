@@ -45,3 +45,8 @@ export const setHtmlStyleProp = (color) => {
   const dark = mix(color, BLACK, 0.2)
   html.style.setProperty(`${PRE_DARK}-2`, dark)
 }
+
+export const formatTime = (str, type = 'time') => {
+  if (type === 'percent') return str * 100
+  return `${Math.floor((str || 0) / 60)}:${('0' + Math.floor((str || 0) % 60)).slice(-2)}`
+}

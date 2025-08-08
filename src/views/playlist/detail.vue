@@ -27,7 +27,9 @@
           </div>
         </template>
         <template #table-action="scope">
-          <el-link type="primary" size="small" @click="() => tableRef.handlePlay(scope.row)">播放</el-link>
+          <el-link type="primary" size="small" @click="() => tableRef.handlePlay(scope.row)"
+            ><el-icon :size="22"> <icon-play /> </el-icon
+          ></el-link>
           <el-link
             type="primary"
             size="small"
@@ -44,8 +46,13 @@
                   : collectStore.toggleCollect(scope.row, 'song')
               }
             "
-            >{{ data.info.id == 0 ? '移除' : collectStore.has(scope.row.id, 'song') ? '取消收藏' : '收藏' }}</el-link
           >
+            <el-icon>
+              <Delete v-if="data.info && data.info.id == 0" />
+              <icon-heart-fill v-else-if="collectStore.has(scope.row.id, 'song')" />
+              <icon-heart v-else />
+            </el-icon>
+          </el-link>
         </template>
       </Playlist>
     </div>

@@ -6,6 +6,7 @@
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import { useConfigStore } from '@/stores/config'
+import { usePlayer } from '@/hooks/usePlayer'
 const { setPlayer } = usePlayerStore()
 const config = computed(() => useConfigStore().config)
 const player = computed(() => usePlayerStore().player)
@@ -28,7 +29,7 @@ const init = () => {
    * reference: http://www.patrick-wied.at/blog/how-to-create-audio-visualizations-with-javascript-html
    */
   window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext
-  var audio = document.getElementById('audio')
+  var audio = document.getElementById('audio') || usePlayer().audioRef.value
   var ctx = new AudioContext()
   var analyser = ctx.createAnalyser()
   var audioSrc = ctx.createMediaElementSource(audio)

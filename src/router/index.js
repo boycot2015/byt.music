@@ -103,7 +103,9 @@ const router = createRouter({
       path: '/:catchAll(.*)*',
       name: 'notFound',
       component: Error,
-      props: true,
+      meta: {
+        title: '404',
+      },
     },
   ],
 })
