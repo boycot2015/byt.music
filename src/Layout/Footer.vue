@@ -26,7 +26,7 @@
           </template>
         </Image>
         <div class="info flex-1">
-          <div v-if="player.loading" class="leading-[42px]">正在加载资源...</div>
+          <div v-if="player.loading" class="leading-[42px] line-clamp-1">正在加载资源...</div>
           <template v-else>
             <div class="title line-clamp-1">{{ playData.title }}</div>
             <div class="singer text-xs line-clamp-1">{{ playData.singer }}</div>
