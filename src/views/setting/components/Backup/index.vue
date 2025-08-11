@@ -28,8 +28,10 @@ import { Plus } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { usePlayerStore } from '@/stores/player'
 import { useConfigStore } from '@/stores/config'
+import { useCollectStore } from '@/stores/collect'
 const { defaults: playerDefaults, player, source, playData, setSource, setPlayer, setPlayData } = usePlayerStore()
 const { defaults, config, set } = useConfigStore()
+const { update: updateCollect } = useCollectStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
 const visible = ref(false)
@@ -100,6 +102,7 @@ const onReset = () => {
       setSource({ ...playerDefaults.source })
       setPlayer({ ...playerDefaults.player })
       setPlayData({ ...playerDefaults.playData })
+      updateCollect([])
     })
     .catch(() => {})
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="lyric flex items-center overflow-hidden !px-5 md:px-0 w-full md:w-[auto]">
-    <el-scrollbar ref="scrollbar" class="w-full md:w-[auto]" :height="config.isMobile ? '70vh' : 'calc(100vh - 230px)'" @scroll="onScroll">
+    <el-scrollbar ref="scrollbar" class="w-full md:w-[auto]" :height="config.isMobile ? '66vh' : 'calc(100vh - 230px)'" @scroll="onScroll">
       <div class="w-full md:w-[500px] drop-shadow-md py-[300px]">
         <div :ref="(el) => (itemRefs[index] = el)" v-for="(item, index) in lyricArr" :key="item" class="h-[48px]" @click="setSlider(index)">
           <span class="text-xl cursor-pointer line-clamp-1 text-left transition-all delay-0 duration-300 ease-in-out" :class="{ 'text-[var(--el-color-primary)] !text-2xl ': index === activeIndex, '!text-center': player.lyricAlign === 'center', '!text-right': player.lyricAlign === 'right' }">

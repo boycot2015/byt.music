@@ -29,10 +29,14 @@ const init = () => {
    * reference: http://www.patrick-wied.at/blog/how-to-create-audio-visualizations-with-javascript-html
    */
   window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext
-  var audio = document.getElementById('audio') || usePlayer().audioRef.value
+  var audio = usePlayer().audioRef.value
+  audio.crossOrigin = 'anonymous'
+  audio.preload = 'auto'
+  audio.autoplay = true
   var ctx = new AudioContext()
   var analyser = ctx.createAnalyser()
   var audioSrc = ctx.createMediaElementSource(audio)
+  document.body.appendChild(audio)
   // we have to connect the MediaElementSource with the analyser
   audioSrc.connect(analyser)
   analyser.connect(ctx.destination)
@@ -90,13 +94,14 @@ watch(player.value, () => {
     return
   }
   document.getElementById('visualizer').style.visibility = 'visible'
-  !player.value.paused && init()
+  // !player.value.paused && init()
 })
 onUnmounted(() => {
   cancelAnimationFrame(myRequest.value)
 })
 onMounted(() => {
-  // init()
+  usePlayer().initPlayer()
+  init()
 })
 </script>
  <style>

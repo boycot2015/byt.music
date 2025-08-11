@@ -28,7 +28,13 @@ export const useCollectStore = defineStore(
     }
     function update(row) {
       if (row && row instanceof Array && !row.length) {
-        collect.value = []
+        collect.value = [{
+          info: {
+            id: 0,
+            title: '我的收藏'
+          },
+          tracks: []
+        }]
         return
       }
       collect.value = collect.value.map((el) => {

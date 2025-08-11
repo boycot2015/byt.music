@@ -5,9 +5,13 @@ export const usePlayer = () => {
     const { initPlay, play, setPlayData, setPlayer } = playerStore
     const player = computed(() => usePlayerStore().player)
     const playData = computed(() => usePlayerStore().playData)
-    const audioRef = ref(new Audio(playData.value.url))
+    const audioRef = ref(null)
     const lyricList = computed(() => playData.value.lyricList)
     const initPlayer = () => {
+        if (audioRef.value) {
+          initPlay()
+          return
+        }
         audioRef.value.crossOrigin = 'anonymous'
         audioRef.value.preload = 'auto'
         audioRef.value.autoplay = true
@@ -16,15 +20,13 @@ export const usePlayer = () => {
           volume: player.value.volume,
           currentTime: player.value.currentTime,
           loop: player.value.loop,
-          paused: player.value.paused,
+          paused: true,
           src: playData.value.url,
           muted: player.value.muted,
         })
         audioRef.value.addEventListener('canplaythrough', () => {
           console.log('canplaythrough')
         })
-        // console.log(audioRef.value, 'audioRef.value');
-        
     }
     const setPlayerData = (data) => {
       for (const key in data) {
@@ -36,7 +38,7 @@ export const usePlayer = () => {
     const playNext = () => {
       audioRef.value.pause()
       audioRef.value.currentTime = 0
-      setPlayer({ currentTime: 0, duration: 0 })
+      setPlayer({ currentTime: 0, duration: 0, paused: true })
       if (playData.value.playIndex === playData.value.playlist.length - 1 && !player.value.random) return
       if (player.value.random) {
         setPlayData({ playIndex: Math.floor(Math.random() * (playData.value.playlist.length - 1)), lyricIndex: 0 })
@@ -47,8 +49,8 @@ export const usePlayer = () => {
         if (success) {
           audioRef.value.src = playData.value.url
           audioRef.value.play()
+          setPlayer({ paused: false })
         } else {
-          setPlayer({ paused: true })
           audioRef.value.pause()
         }
       })
@@ -56,7 +58,7 @@ export const usePlayer = () => {
     const playPrev = () => {
       audioRef.value.pause()
       audioRef.value.currentTime = 0
-      setPlayer({ currentTime: 0, duration: 0 })
+      setPlayer({ currentTime: 0, duration: 0, paused: true })
       if (playData.value.playIndex === 0 && !player.value.random) return
       if (player.value.random) {
         setPlayData({ playIndex: Math.floor(Math.random() * (playData.value.playlist.length - 1)), lyricIndex: 0 })
@@ -67,31 +69,32 @@ export const usePlayer = () => {
         if (success) {
           audioRef.value.src = playData.value.url
           audioRef.value.play()
+          setPlayer({ paused: false })
         } else {
-          setPlayer({ paused: true })
           audioRef.value.pause()
         }
       })
     }
-    const togglePlay = () => {
+    const togglePlay = () => {      
       if (!playData.value.url) return
       setPlayer({ paused: !player.value.paused })
       setPlayerData({ paused: !player.value.paused })
+      audioRef.value.ontimeupdate = () => {
+        onUpdate()
+      }
       if (audioRef.value.paused) {
         if (!audioRef.value.src) {
           audioRef.value.src = playData.value.url
         }
+        audioRef.value.currentTime = player.value.currentTime || 0
         audioRef.value.play()
-        audioRef.value.ontimeupdate = () => {
-          console.log(audioRef.value.currentTime);
-          setPlayer({ currentTime: audioRef.value.currentTime })
-        }
       } else {
-        setPlayer({ currentTime: audioRef.value.currentTime })
+        setPlayer({ currentTime: player.value.currentTime })
         audioRef.value.pause()
       }
     }
     const onUpdate = () => {
+      if (player.value.withLyric || !audioRef.value) return
       setPlayer({
         duration: audioRef.value.duration || player.value.duration || 0,
         currentTime: player.value.loading ? 0 : audioRef.value.currentTime,

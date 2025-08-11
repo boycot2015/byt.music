@@ -123,10 +123,11 @@ export const usePlayerStore = defineStore(
       for (const key in data) {
         player.value[key] = data[key]
       }
+      
       if (data.withLyric) {
         setTimeout(() => {
           player.value.withLyric = false
-        }, 100)
+        }, 200)
       }
     }
     const setSource = (data, msg = '设置成功') => {

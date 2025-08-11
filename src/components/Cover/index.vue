@@ -27,9 +27,9 @@
       ></swiper-slide>
       <swiper-slide><Lyric class="w-full" /></swiper-slide>
     </swiper>
-    <div class="bottom h-[20vh] flex flex-col items-center justify-between md:!hidden">
+    <div class="bottom h-[20vh] mt-2 flex flex-col items-center justify-between md:!hidden">
       <div class="slider w-full px-5">
-        <Slider class="w-full" @change="(val) => setPlayer({ currentTime: val })" />
+        <Slider class="!w-full" @change="(val) => setPlayer({ withLyric: true, currentTime: val })" />
         <div class="flex items-center justify-between mt-2">
           <div class="text-[12px]">{{ formatTime(player.currentTime) }}</div>
           <div class="text-[12px]">{{ formatTime(player.duration) }}</div>
@@ -86,7 +86,7 @@
           </el-icon>
         </div>
         <div class="flex items-center">
-          <el-icon :size="22" :disabled="disabled"> <Menu class="cursor-pointer" @click="setPlayer({ loop: false, random: false })" /> </el-icon>
+          <el-icon :size="22" :disabled="disabled"> <ChatDotSquare class="cursor-pointer" @click="setPlayer({ loop: false, random: false })" /> </el-icon>
         </div>
       </div>
     </div>
@@ -115,9 +115,9 @@ const { playNext, playPrev, togglePlay } = usePlayer()
 const { config } = configStore
 const modules = ref([Scrollbar, A11y])
 const lyricVisible = ref(false)
+const player = computed(() => playerStore.player)
 const paused = computed(() => player.value.paused)
 const muted = computed(() => player.value.muted)
-const player = computed(() => playerStore.player)
 const playData = computed(() => playerStore.playData)
 const disabled = computed(() => !playData.value.url || player.value.loading)
 const onSwiper = (swiper) => {

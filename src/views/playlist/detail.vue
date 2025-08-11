@@ -59,7 +59,7 @@
   </div>
 </template>
 <script setup>
-import { ref, getCurrentInstance, computed, watch } from 'vue'
+import { ref, getCurrentInstance, computed, watch, onMounted, onActivated } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import Playlist from '@/views/components/Playlist.vue'
@@ -103,5 +103,11 @@ watch(playIndex, () => {
   tableRef.value?.setScrollTop(playIndex.value * 40)
 })
 fetchData()
+onMounted(() => {
+  tableRef.value?.setScrollTop(0)
+})
+onActivated(() => {
+  tableRef.value?.setScrollTop(0)
+})
 </script>
 <style></style>

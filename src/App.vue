@@ -8,11 +8,8 @@ import { useRouter } from 'vue-router'
 import { useConfigStore } from '@/stores/config'
 import { usePlayerStore } from '@/stores/player'
 import { setHtmlStyleProp } from '@/utils'
-import { usePlayer } from '@/hooks/usePlayer'
 
-const audioRef = ref(null)
 const { config } = useConfigStore()
-const { onUpdate, playNext, initPlayer } = usePlayer()
 const { playData, setPlayer } = usePlayerStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
@@ -36,22 +33,6 @@ onMounted(() => {
   window.addEventListener('resize', () => {
     set({ isMobile: document.body.clientWidth < 768 })
   })
-  initPlayer()
-  // audioRef.value.addEventListener('canplaythrough', () => {
-  //   console.log('pause')
-  //   playData.value.play()
-  // })
-  // console.log(audio, 'audio')
-
-  // audioRef.value.addEventListener('ended', playNext)
-  // audioRef.value.addEventListener('pause', () => {
-  //   console.log('pause')
-  //   // setPlayer({ paused: true })
-  // })
-  // audioRef.value.addEventListener('play', () => {
-  //   // setPlayer({ paused: false })
-  // })
-  // audioRef.value.addEventListener('timeupdate', onUpdate)
 })
 </script>
 

@@ -47,9 +47,12 @@
       <el-icon :size="38" @click="playNext">
         <IconNext class="cursor-pointer" />
       </el-icon>
+      <el-icon :size="32" class="!block md:!hidden" @click="playlistVisible = true">
+        <IconListMusic class="cursor-pointer" />
+      </el-icon>
       <el-popover trigger="click" :show-arrow="false" popper-class="backdrop-blur" :width="config.isMobile ? '95vw' : '680px'">
         <template #reference>
-          <el-icon :size="32">
+          <el-icon :size="32" class="!hidden md:!block">
             <IconListMusic class="cursor-pointer" />
           </el-icon>
         </template>
@@ -65,6 +68,17 @@
           </Playlist>
         </template>
       </el-popover>
+      <el-drawer trigger="click" :z-index="99" header-class="!leading-[32px] !px-3 !mb-2" :show-close="false" direction="btt" size="80%" body-class="!p-0" v-model="playlistVisible" :show-arrow="false" :width="config.isMobile ? '95vw' : '680px'">
+        <template #header>
+          <span class="total">共{{ playData.playlist.length }}首歌曲</span>
+          <el-button type="danger" :disabled="playData.playlist.length === 0" round @click="setPlayData({ playlist: [] })" icon="Delete">清空</el-button>
+        </template>
+        <Playlist :show-header="false" :data="{ info: playData, tracks: playData.playlist }" :tableProps="{ miniHeight: '200px', showHeader: false }">
+          <template #table-action="{ row }">
+            <el-link type="danger" :disabled="playData.playlist.length === 0" size="small" @click="setPlayData({ playlist: playData.playlist.filter((item) => item.id !== row.id) })" icon="Delete"></el-link>
+          </template>
+        </Playlist>
+      </el-drawer>
     </div>
   </div>
 </template>
@@ -103,8 +117,8 @@ const lyricList = computed(() => playData.value.lyricList)
 const sliderRef = ref(null)
 const inputValue = ref(0)
 const disabled = computed(() => !playData.value.url || player.value.loading)
-
-const { audioRef, playNext, playPrev, togglePlay, onUpdate } = usePlayer()
+const playlistVisible = ref(false)
+const { audioRef, initPlayer, playNext, playPrev, togglePlay, onUpdate } = usePlayer()
 
 const onSliderChange = (val, prop = 'currentTime') => {
   audioRef.value[prop] = val
@@ -119,6 +133,7 @@ onMounted(() => {
   onUpdate(() => {
     sliderRef.value?.setActiveItem(playData.value.lyricIndex)
   })
+  initPlayer()
 })
 watch(playData.value, () => {
   sliderRef.value?.setActiveItem(playData.value.lyricIndex)

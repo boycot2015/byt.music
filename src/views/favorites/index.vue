@@ -10,7 +10,7 @@
                 <div class="flex-1 ml-2">
                   <div class="text-xs line-clamp-2 text-wrap pr-[10px]" v-html="item.info.title"></div>
                 </div>
-                <div v-if="item.info.id" class="close cursor-pointer hover:text-[var(--el-color-primary)] absolute right-2 transition-colors duration-300 ease-in-out" :class="{ hidden: !item.showClose }">
+                <div v-if="!!item.info.id" class="close cursor-pointer hover:text-[var(--el-color-primary)] absolute right-2 transition-colors duration-300 ease-in-out" :class="{ hidden: !item.showClose }">
                   <el-icon @click.stop="collectStore.remove(item.info.id)"><Delete /></el-icon>
                 </div>
               </div>
@@ -20,7 +20,7 @@
         </el-scrollbar>
         <GridList height="calc(100vh - 140px)" class="overflow-hidden pr-0 md:!hidden" v-loading="loading" :playlist="collect.map((el) => ({ ...el.info, id: el.id || el.info.id }))" :type="collect[current]?.type" ref="gridRef">
           <template #action="{ row }">
-            <div class="close text-[var(--el-color-primary)] cursor-pointer hover:text-[var(--el-color-primary)] absolute bottom-0 right-2 transition-colors duration-300 ease-in-out">
+            <div v-if="!!row.id" class="close text-[var(--el-color-primary)] cursor-pointer hover:text-[var(--el-color-primary)] absolute bottom-0 right-2 transition-colors duration-300 ease-in-out">
               <el-icon @click.stop="collectStore.remove(row.id)"><Delete /></el-icon>
             </div>
           </template>
