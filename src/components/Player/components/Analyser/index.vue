@@ -6,13 +6,15 @@
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import { useConfigStore } from '@/stores/config'
-import { usePlayer } from '@/hooks/usePlayer'
 const { setPlayer } = usePlayerStore()
+const audioRef = computed(() => useConfigStore().audioRef)
 const config = computed(() => useConfigStore().config)
 const player = computed(() => usePlayerStore().player)
+const analyser = computed(() => usePlayerStore().analyser)
 const playData = computed(() => usePlayerStore().playData)
 const myRequest = ref(null)
-const init = () => {
+const ctx = ref(null)
+const visualizer = () => {
   /* *
    * audio visualizer with html5 audio element
    *
@@ -28,46 +30,34 @@ const init = () => {
    *
    * reference: http://www.patrick-wied.at/blog/how-to-create-audio-visualizations-with-javascript-html
    */
-  window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext
-  var audio = usePlayer().audioRef.value
-  audio.crossOrigin = 'anonymous'
-  audio.preload = 'auto'
-  audio.autoplay = true
-  var ctx = new AudioContext()
-  var analyser = ctx.createAnalyser()
-  var audioSrc = ctx.createMediaElementSource(audio)
-  document.body.appendChild(audio)
-  // we have to connect the MediaElementSource with the analyser
-  audioSrc.connect(analyser)
-  analyser.connect(ctx.destination)
   // we could configure the analyser: e.g. analyser.fftSize (for further infos read the spec)
   // analyser.fftSize = 64;
   // frequencyBinCount tells you how many values you'll receive from the analyser
-  // var frequencyData = new Uint8Array(analyser.frequencyBinCount)
+  // let frequencyData = new Uint8Array(analyser.frequencyBinCount)
 
   // we're ready to receive some data!
-  var canvas = document.getElementById('visualizer')
-  var cwidth = canvas.width
-  var cheight = canvas.height - 2
-  var meterWidth = 12 // width of the meters in the spectrum
-  var gap = 0 // gap between meters
-  var capHeight = 2
-  var meterNum = (cwidth * 1.5) / (meterWidth + gap) // count of the meters
-  var capYPositionArray = [] /// /store the vertical position of hte caps for the preivous frame
-  ctx = canvas.getContext('2d')
+  let canvas = document.getElementById('visualizer')
+  let cwidth = canvas.width
+  let cheight = canvas.height - 2
+  let meterWidth = 12 // width of the meters in the spectrum
+  let gap = 0 // gap between meters
+  let capHeight = 2
+  let meterNum = (cwidth * 1.5) / (meterWidth + gap) // count of the meters
+  let capYPositionArray = [] /// /store the vertical position of hte caps for the preivous frame
+  let ctx = canvas.getContext('2d')
   // gradient.addColorStop(0, '#f00')
   // loop
   function renderFrame() {
-    var capStyle = config.value.theme.primaryColor || '#fff'
+    let capStyle = config.value.theme.primaryColor || '#fff'
     const gradient = ctx.createLinearGradient(0, 0, 0, 1000)
     gradient.addColorStop(1, config.value.theme.primaryColor || '#0f0')
     gradient.addColorStop(0.5, config.value.theme.primaryColor || '#ff0')
-    var array = new Uint8Array(analyser.frequencyBinCount)
-    analyser.getByteFrequencyData(array)
-    var step = Math.floor(array.length / meterNum) // sample limited data from the total array
+    let array = new Uint8Array(analyser.value.frequencyBinCount)
+    analyser.value.getByteFrequencyData(array)
+    let step = Math.floor(array.length / meterNum) // sample limited data from the total array
     ctx.clearRect(0, 0, cwidth, cheight)
-    for (var i = 0; i < meterNum; i++) {
-      var value = array[i * step]
+    for (let i = 0; i < meterNum; i++) {
+      let value = array[i * step]
       if (capYPositionArray.length < Math.round(meterNum)) {
         capYPositionArray.push(value)
       }
@@ -86,6 +76,7 @@ const init = () => {
     myRequest.value = requestAnimationFrame(renderFrame)
   }
   renderFrame()
+  audioRef.value && audioRef.value.play()
 }
 
 watch(player.value, () => {
@@ -94,15 +85,16 @@ watch(player.value, () => {
     return
   }
   document.getElementById('visualizer').style.visibility = 'visible'
-  // !player.value.paused && init()
+  cancelAnimationFrame(myRequest.value)
+  !player.value.paused && analyser.value && visualizer()
+})
+watch(analyser, () => {
+  !player.value.paused && visualizer()
 })
 onUnmounted(() => {
   cancelAnimationFrame(myRequest.value)
 })
-onMounted(() => {
-  usePlayer().initPlayer()
-  init()
-})
+onMounted(() => {})
 </script>
  <style>
 #visualizer {

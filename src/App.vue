@@ -10,7 +10,7 @@ import { usePlayerStore } from '@/stores/player'
 import { setHtmlStyleProp } from '@/utils'
 
 const { config } = useConfigStore()
-const { playData, setPlayer } = usePlayerStore()
+const { playData, initPlay, setPlayer } = usePlayerStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
 const { set } = useConfigStore()
@@ -33,6 +33,7 @@ onMounted(() => {
   window.addEventListener('resize', () => {
     set({ isMobile: document.body.clientWidth < 768 })
   })
+  initPlay()
 })
 </script>
 

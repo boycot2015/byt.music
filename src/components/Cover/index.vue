@@ -28,8 +28,9 @@
       <swiper-slide><Lyric class="w-full" /></swiper-slide>
     </swiper>
     <div class="bottom h-[20vh] mt-2 flex flex-col items-center justify-between md:!hidden">
-      <div class="slider w-full px-5">
-        <Slider class="!w-full" @change="(val) => setPlayer({ withLyric: true, currentTime: val })" />
+      <div class="slider w-full px-5 relative">
+        <el-button loading v-show="player.loading" type="primary" link loading-icon="Loading" class="!absolute left-2 top-[-8px] z-[1]"></el-button>
+        <Slider class="!w-full" :disabled="player.loading" @change="(val) => setPlayer({ withLyric: true, currentTime: val })" />
         <div class="flex items-center justify-between mt-2">
           <div class="text-[12px]">{{ formatTime(player.currentTime) }}</div>
           <div class="text-[12px]">{{ formatTime(player.duration) }}</div>
@@ -99,7 +100,6 @@ import Lyric from './Lyric.vue'
 import { useCollectStore } from '@/stores/collect'
 import { useConfigStore } from '@/stores/config'
 import { formatTime } from '@/utils'
-import { usePlayer } from '@/hooks/usePlayer'
 import { Scrollbar, A11y } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
@@ -111,7 +111,7 @@ const configStore = useConfigStore()
 const collectStore = useCollectStore()
 const { initPlay, play, setPlayData, setPlayer } = playerStore
 const { has, toggleCollect } = collectStore
-const { playNext, playPrev, togglePlay } = usePlayer()
+const { playNext, playPrev, togglePlay } = playerStore
 const { config } = configStore
 const modules = ref([Scrollbar, A11y])
 const lyricVisible = ref(false)

@@ -130,6 +130,15 @@ const playConfigs = ref({
       { label: '右对齐', value: 'right' },
     ],
   },
+  quality: {
+    label: '音质(需播放源支持)',
+    type: 'radio',
+    options: [
+      { label: '128k', value: '128k' },
+      { label: '320k', value: '320k' },
+      { label: 'flac', value: 'flac' },
+    ],
+  },
   // Add more configuration options here
 })
 const brConfigs = ref({

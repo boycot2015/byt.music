@@ -63,7 +63,7 @@
           </el-drawer>
         </div>
         <Cover />
-        <!-- <Analyser /> -->
+        <Analyser />
       </div>
       <div class="bg-cover z-9 absolute top-0 overflow-hidden left-0 w-full h-full bg-cover bg-center bg-no-repeat opacity-50 blur-[100px] transition-all duration-300 ease-in-out" :style="{ backgroundImage: `url(${playData.img_url})` }"></div>
     </el-drawer>
@@ -77,7 +77,7 @@ import Cover from '@/components/Cover/index.vue'
 import { ArrowDown } from '@element-plus/icons-vue'
 import Player from '@/components/Player/index.vue'
 import Slider from '@/components/Player/components/Slider.vue'
-// import Analyser from '@/components/Player/components/Analyser/index.vue'
+import Analyser from '@/components/Player/components/Analyser/index.vue'
 import NProgress from 'nprogress'
 import Playlist from '@/views/components/Playlist.vue'
 const inputValue = ref(0)
@@ -96,7 +96,6 @@ watch(coverVisible, (value) => {
   .el-slider__bar,
   .el-slider__runway {
     height: 5px;
-    border-radius: 0;
   }
   .el-slider__button-wrapper {
     display: none;

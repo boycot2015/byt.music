@@ -85,7 +85,6 @@
 <script setup>
 import { computed, ref, nextTick, onMounted, watch } from 'vue'
 import { formatTime } from '@/utils'
-import { usePlayer } from '@/hooks/usePlayer'
 import { usePlayerStore } from '@/stores/player'
 import { useCollectStore } from '@/stores/collect'
 import { useConfigStore } from '@/stores/config'
@@ -105,7 +104,7 @@ import Slider from './components/Slider.vue'
 const playerStore = usePlayerStore()
 const configStore = useConfigStore()
 const collectStore = useCollectStore()
-const { initPlay, play, setPlayData, setPlayer } = playerStore
+const { audioRef, initPlay, play, setPlayData, playNext, playPrev, togglePlay, setPlayer } = playerStore
 const { has, toggleCollect } = collectStore
 const player = computed(() => usePlayerStore().player)
 const playData = computed(() => usePlayerStore().playData)
@@ -118,23 +117,15 @@ const sliderRef = ref(null)
 const inputValue = ref(0)
 const disabled = computed(() => !playData.value.url || player.value.loading)
 const playlistVisible = ref(false)
-const { audioRef, initPlayer, playNext, playPrev, togglePlay, onUpdate } = usePlayer()
 
 const onSliderChange = (val, prop = 'currentTime') => {
-  audioRef.value[prop] = val
-  nextTick(() => {
-    setPlayer({
-      [prop]: val,
-      muted: prop == 'volume' && val === 0,
-    })
+  setPlayer({
+    withLyric: true,
+    [prop]: val,
+    muted: prop == 'volume' && val === 0,
   })
 }
-onMounted(() => {
-  onUpdate(() => {
-    sliderRef.value?.setActiveItem(playData.value.lyricIndex)
-  })
-  initPlayer()
-})
+onMounted(() => {})
 watch(playData.value, () => {
   sliderRef.value?.setActiveItem(playData.value.lyricIndex)
 })

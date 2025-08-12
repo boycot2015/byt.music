@@ -34,7 +34,7 @@ watch(route, (to, from) => {
       <Aside />
     </el-aside>
     <el-container class="overflow-hidden bg-[var(--el-bg-color)]">
-      <el-header class="bg-[var(--el-bg-color)] flex items-center shadow-[0_0_5px_0_rgba(0,0,0,0.1)]" :class="{ 'md:!shadow-[0_5px_30px_0_rgba(255,255,255,0.1)]': isDark }"><Header /></el-header>
+      <el-header class="bg-[var(--el-bg-color)] !px-3 flex items-center shadow-[0_0_5px_0_rgba(0,0,0,0.1)]" :class="{ 'md:!shadow-[0_5px_30px_0_rgba(255,255,255,0.1)]': isDark }"><Header /></el-header>
       <el-main class="bg-[transparent] md:!overflow-hidden !p-0 rounded layout">
         <el-scrollbar style="height: calc(100vh - 120px)" ref="scrollbarRef">
           <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px]">
@@ -46,7 +46,7 @@ watch(route, (to, from) => {
               </transition>
             </router-view>
             <el-backtop target=".layout .el-scrollbar__wrap" :bottom="80" :right="15">
-              <el-icon><ArrowUpBold /></el-icon>
+              <el-icon><Top /></el-icon>
             </el-backtop>
           </div>
         </el-scrollbar>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-full">
     <el-slider
       :class="{ '!w-[200px]': !config.isMobile && player.playBar == 'small' }"
       size="small"
@@ -39,10 +39,8 @@ watch(player.value, () => {
 })
 const onSliderChange = (val) => {
   emit('change', val)
-  // setPlayer({ currentTime: val })
   nextTick(() => {
     emit('change', inputValue.value)
-    setPlayer({ currentTime: inputValue.value })
   })
 }
 </script>
