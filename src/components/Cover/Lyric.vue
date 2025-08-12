@@ -3,7 +3,7 @@
     <el-scrollbar ref="scrollbar" class="w-full md:w-[auto]" :height="config.isMobile ? '66vh' : 'calc(100vh - 230px)'" @scroll="onScroll">
       <div class="w-full md:w-[500px] drop-shadow-md py-[300px]">
         <div :ref="(el) => (itemRefs[index] = el)" v-for="(item, index) in lyricArr" :key="item" class="h-[48px]" @click="setSlider(index)">
-          <span class="text-xl cursor-pointer line-clamp-1 text-left transition-all delay-0 duration-300 ease-in-out" :class="{ 'text-[var(--el-color-primary)] !text-2xl ': index === activeIndex, '!text-center': player.lyricAlign === 'center', '!text-right': player.lyricAlign === 'right' }">
+          <span class="text-xl cursor-pointer line-clamp-1 text-left transition-all duration-200 ease" :class="{ 'text-[var(--el-color-primary)] !text-2xl ': index === activeIndex, '!text-center': player.lyricAlign === 'center', '!text-right': player.lyricAlign === 'right' }">
             <TextSlider class="md:text-shadow-md" v-show="index === activeIndex" :msg="item.split(']')[1]" />
             <span v-show="index !== activeIndex">{{ item.split(']')[1] }}</span>
           </span>

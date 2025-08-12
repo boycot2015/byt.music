@@ -4,7 +4,7 @@
       <Playlist ref="tableRef" :data="data" :tableProps="{ height: config.isMobile ? null : 'calc(100vh - 300px)' }" :show-actions="true">
         <template #header>
           <div class="md:flex mb-3 min-h-[120px] relative rounded overflow-hidden">
-            <Image :src="data.info.cover_img_url" :size="120" class="h-[300px] md:w-[120px] md:h-[120px] rounded scale-[2] md:scale-[1]"></Image>
+            <Image v-if="data.info.cover_img_url" :src="data.info.cover_img_url" :size="120" class="absolute h-[300px] m-[auto] md:w-[120px] md:h-[120px] rounded scale-[2] md:scale-[1]"></Image>
             <div
               class="info md:ml-4 p-2 rounded overflow-hidden text-shadow-lg md:text-shadow-none text-[var(--vt-c-text-dark-1)] md:text-[var(--el-color-regular)] md:p-0 flex-1 absolute h-full w-full md:relative backdrop-blur-xl md:backdrop-blur-none left-0 top-0 right-0 flex flex-col justify-center"
             >

@@ -249,7 +249,9 @@ export const usePlayerStore = defineStore(
       let timeStr2 = player.value?.currentTime % 60 > 10 ? Math.floor(player.value?.currentTime % 60) : `0${Math.floor(player.value?.currentTime % 60)}`
       let timerStr = `${timeStr1}:${timeStr2}`
       let index = timeArr.filter((el) => el).findIndex((_) => _ === timerStr)
+      // console.log(val.withLyric, 'val.withLyric');
       index !== -1 && setPlayData({ lyricIndex: index })
+      // index !== -1 && index > playData.value.lyricIndex && setPlayData({ lyricIndex: index })
     })
     return {
       audioRef,

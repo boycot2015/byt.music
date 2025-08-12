@@ -104,7 +104,8 @@ const router = createRouter({
       name: 'notFound',
       component: Error,
       meta: {
-        title: '404',
+        title: '页面跑出星球了~',
+        showBack: true,
       },
     },
   ],

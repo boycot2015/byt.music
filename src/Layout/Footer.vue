@@ -1,39 +1,41 @@
 <template>
   <footer class="footer w-full">
-    <div class="absolute bottom-[60px] w-full flex md:z-9999">
-      <el-button size="large" loading v-if="player.loading && player.playBar == 'full'" type="primary" link loading-icon="Loading" class="z-9999 !absolute left-0 top-[-8px]"></el-button>
-      <Slider
-        class="!w-full md:z-999 !h-[auto] text-center"
-        v-show="player.playBar == 'full' || config.isMobile"
-        @change="
-          (value) => {
-            setPlayer({
-              withLyric: true,
-              currentTime: value,
-            })
-          }
-        "
-      />
-    </div>
-    <div class="nav flex items-center justify-between w-full relative md:z-100 px-3">
-      <div class="left flex flex-1 cursor-pointer" @click="coverVisible = !coverVisible">
-        <Image :src="playData.img_url" fit="fill" class="w-10 h-10 mr-2 rounded">
-          <template #placeholder>
-            <el-icon :size="44" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
-          </template>
-          <template #error>
-            <el-icon :size="44" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
-          </template>
-        </Image>
-        <div class="info flex-1">
-          <div v-if="player.loading" class="leading-[42px] line-clamp-1">正在加载资源...</div>
-          <template v-else>
-            <div class="title line-clamp-1">{{ playData.title }}</div>
-            <div class="singer text-xs line-clamp-1">{{ playData.singer }}</div>
-          </template>
-        </div>
+    <div :class="{ 'translate-y-[30px]': player.showCover && config.isMobile }" class="transition-all duration-300">
+      <div class="absolute bottom-[60px] w-full flex md:z-9999">
+        <el-button size="large" loading v-if="player.loading && player.playBar == 'full' && !config.isMobile" type="primary" link loading-icon="Loading" class="z-100 !absolute left-0 top-[-8px]"></el-button>
+        <Slider
+          class="!w-full md:z-99 !h-[auto] text-center"
+          v-show="player.playBar == 'full' || config.isMobile"
+          @change="
+            (value) => {
+              setPlayer({
+                withLyric: true,
+                currentTime: value,
+              })
+            }
+          "
+        />
       </div>
-      <Player />
+      <div class="nav flex items-center justify-between w-full relative md:z-100 px-3">
+        <div class="left flex flex-1 cursor-pointer" @click="coverVisible = !coverVisible">
+          <Image :src="playData.img_url" fit="fill" class="w-10 h-10 mr-2 rounded">
+            <template #placeholder>
+              <el-icon :size="44" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
+            </template>
+            <template #error>
+              <el-icon :size="44" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
+            </template>
+          </Image>
+          <div class="info flex-1">
+            <div v-if="player.loading" class="leading-[42px] line-clamp-1">正在加载资源...</div>
+            <template v-else>
+              <div class="title line-clamp-1">{{ playData.title }}</div>
+              <div class="singer text-xs line-clamp-1">{{ playData.singer }}</div>
+            </template>
+          </div>
+        </div>
+        <Player />
+      </div>
     </div>
     <el-drawer v-model="coverVisible" :z-index="99" :modal-class="`!absolute !bg-[transparent]`" body-class="!p-0" header-class="text-center" direction="btt" :title="playData.title" size="100%" :with-header="false">
       <div class="relative z-10 backdrop-blur-2xl overflow-hidden">
@@ -57,6 +59,21 @@
             </template>
             <Playlist :show-header="false" :data="{ info: playData, tracks: playData.playlist }" :tableProps="{ miniHeight: '200px', showHeader: false }">
               <template #table-action="{ row }">
+                <el-link
+                  type="primary"
+                  :disabled="playData.playlist.length === 0"
+                  size="small"
+                  @click="
+                    () => {
+                      setPlayData({ playIndex: playData.playlist?.findIndex((item) => item.id == row.id) })
+                      play(row)
+                    }
+                  "
+                >
+                  <el-icon :size="24">
+                    <IconPlay />
+                  </el-icon>
+                </el-link>
                 <el-link type="danger" :disabled="playData.playlist.length === 0" size="small" @click="setPlayData({ playlist: playData.playlist.filter((item) => item.id !== row.id) })" icon="Delete"></el-link>
               </template>
             </Playlist>
@@ -85,7 +102,7 @@ const playlistVisible = ref(false)
 const playData = computed(() => usePlayerStore().playData)
 const player = computed(() => usePlayerStore().player)
 const config = computed(() => useConfigStore().config)
-const { setPlayer } = usePlayerStore()
+const { setPlayer, play, setPlayData } = usePlayerStore()
 const coverVisible = ref(player.value.showCover)
 watch(coverVisible, (value) => {
   setPlayer({ showCover: value })

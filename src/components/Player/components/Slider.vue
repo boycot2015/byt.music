@@ -27,6 +27,7 @@ defineProps({
 const emit = defineEmits(['change'])
 const playerStore = usePlayerStore()
 const { playData, initPlay, play, setPlayData, setPlayer } = playerStore
+const audioRef = computed(() => usePlayerStore().audioRef)
 const player = computed(() => usePlayerStore().player)
 const config = computed(() => useConfigStore().config)
 const inputValue = ref(0)
@@ -34,9 +35,7 @@ const formatTime = (str = player.value.currentTime, type = 'time') => {
   if (type === 'percent') return str * 100
   return `${Math.floor((str || 0) / 60)}:${('0' + Math.floor((str || 0) % 60)).slice(-2)}`
 }
-watch(player.value, () => {
-  // console.log('playData', player.value)
-})
+watch(player.value, () => {})
 const onSliderChange = (val) => {
   emit('change', val)
   nextTick(() => {
