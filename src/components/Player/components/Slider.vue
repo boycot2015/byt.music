@@ -9,7 +9,7 @@
       v-model="player.currentTime"
       :min="0"
       :format-tooltip="formatTime"
-      :max="player.duration"
+      :max="player.duration || 0"
       @input="(val) => (inputValue = val)"
       @change="onSliderChange"
     />

@@ -85,7 +85,11 @@ export const usePlayerStore = defineStore(
     }
     const play = async (item, type = playData.value.type || 'qq') => {
       player.value.currentTime = 0
-      player.value.duration = item.duration || item.durationStr
+      let duration = item.duration || item.durationStr
+      if (typeof duration === 'string') {
+        duration = duration.split(':')
+        player.value.duration = Number(duration[0]) * 60 + Number(duration[1])
+      }
       player.value.loading = true
       if (!item) return ElMessage.error('请选择歌曲')
       playData.value.type = type

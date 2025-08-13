@@ -32,7 +32,6 @@
         <Slider class="!w-full" :disabled="player.loading" @change="(val) => setPlayer({ withLyric: true, currentTime: val })" />
         <div class="flex items-center justify-between mt-2">
           <div class="text-[12px]">{{ formatTime(player.currentTime) }}</div>
-          <el-popover></el-popover>
           <div class="text-[12px]">{{ formatTime(player.duration) }}</div>
         </div>
       </div>
@@ -89,11 +88,26 @@
             </el-popover>
           </el-icon>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center" @click="commitVisible = true">
           <el-icon :size="22" :disabled="disabled"> <ChatDotSquare class="cursor-pointer" @click="setPlayer({ loop: false, random: false })" /> </el-icon>
         </div>
       </div>
     </div>
+    <el-drawer size="100%" body-class="!p-0" destroy-on-close header-class="!p-2 !mb-0" modal-class="backdrop-blur-xl" :show-close="false" append-to-body v-model="commitVisible">
+      <template #header="{ close }">
+        <div class="flex items-center justify-between">
+          <el-icon class="cursor-pointer" :size="24" @click="close">
+            <ArrowLeft />
+          </el-icon>
+          <div class="flex-1 flex text-center justify-center items-center">
+            <span class="text-xl line-clamp-1 max-w-[50vw]">{{ playData.title }}</span
+            ><span>-</span>
+            <span class="text-sm text-nowrap">{{ playData.singer }}</span>
+          </div>
+        </div>
+      </template>
+      <Comment />
+    </el-drawer>
   </div>
 </template>
 <script setup>
@@ -108,6 +122,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
 import 'swiper/css/scrollbar'
 import Slider from '../Player/components/Slider.vue'
+import Comment from '@/components/Comment/index.vue'
 
 const playerStore = usePlayerStore()
 const configStore = useConfigStore()
@@ -118,6 +133,7 @@ const { playNext, playPrev, togglePlay } = playerStore
 const { config } = configStore
 const modules = ref([Scrollbar, A11y])
 const lyricVisible = ref(false)
+const commitVisible = ref(false)
 const player = computed(() => playerStore.player)
 const paused = computed(() => player.value.paused)
 const muted = computed(() => player.value.muted)
