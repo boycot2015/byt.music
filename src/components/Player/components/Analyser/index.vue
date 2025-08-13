@@ -1,6 +1,6 @@
 
 <template>
-  <canvas id="visualizer" width="1920" height="200"></canvas>
+  <canvas id="visualizer" width="1920" height="300"></canvas>
 </template>
 <script setup>
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
@@ -102,7 +102,7 @@ onMounted(() => {})
   left: 50%;
   margin-left: -960px;
   position: absolute;
-  opacity: 0.4;
+  opacity: 0.2;
   z-index: 1;
 }
 </style>

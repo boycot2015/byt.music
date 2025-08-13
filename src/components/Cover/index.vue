@@ -29,10 +29,10 @@
     </swiper>
     <div class="bottom h-[20vh] mt-2 flex flex-col items-center justify-between md:!hidden">
       <div class="slider w-full px-5 relative">
-        <el-button loading v-show="player.loading" type="primary" link loading-icon="Loading" class="!absolute left-2 top-[-8px] z-[1]"></el-button>
         <Slider class="!w-full" :disabled="player.loading" @change="(val) => setPlayer({ withLyric: true, currentTime: val })" />
         <div class="flex items-center justify-between mt-2">
           <div class="text-[12px]">{{ formatTime(player.currentTime) }}</div>
+          <el-popover></el-popover>
           <div class="text-[12px]">{{ formatTime(player.duration) }}</div>
         </div>
       </div>
@@ -49,6 +49,9 @@
         </el-icon>
       </div>
       <div class="actions flex items-center justify-between px-5 w-full">
+        <el-icon :size="22" @click="setPlayer({ visualizer: !player.visualizer })">
+          <IconAnalyser class="cursor-pointer" :class="{ 'opacity-50': !player.visualizer }" />
+        </el-icon>
         <el-icon class="cursor-pointer mr-2" :size="22" @click="() => toggleCollect({ ...playData }, 'song')">
           <IconHeartFill class="text-[var(--el-color-primary)]" v-if="has(playData.id, 'song')" />
           <IconHeart v-else />

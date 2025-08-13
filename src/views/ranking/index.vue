@@ -28,7 +28,7 @@
       <el-col :span="0" :sm="18" :md="20">
         <Playlist :loading="loading" ref="playlistRef" :data="{ info: playlistInfo, tracks: playlist, id: playlistInfo.id, type }" :tableProps="{ height: 'calc(100vh - 190px)' }">
           <template #action>
-            <div class="justify-end items-center" v-if="playlistRef">
+            <div class="justify-end items-center mb-2" v-if="playlistRef">
               <el-button type="primary" @click="playlistRef.handlePlayAll" :disabled="!playlist.length || loading"
                 ><el-icon class="mr-2"><VideoPlay /></el-icon> 播放</el-button
               >
@@ -42,6 +42,34 @@
               </el-link>
             </div>
           </template>
+          <template #table-action="scope">
+            <el-link type="primary" size="small" @click="() => playlistRef.handlePlay(scope.row)"
+              ><el-icon :size="22"> <icon-play /> </el-icon
+            ></el-link>
+            <el-link
+              type="primary"
+              size="small"
+              class="ml-2"
+              @click="
+                () => {
+                  collectStore.has(scope.row.id, 'song')
+                    ? ElMessageBox.confirm('确定取消收藏？')
+                        .then(() => {
+                          playlistInfo.id == 0 && (data.tracks = data.tracks.filter((item) => item.id !== scope.row.id))
+                          collectStore.toggleCollect(scope.row, 'song')
+                        })
+                        .catch(() => {})
+                    : collectStore.toggleCollect(scope.row, 'song')
+                }
+              "
+            >
+              <el-icon>
+                <Delete v-if="playlistInfo && playlistInfo.id == 0" />
+                <icon-heart-fill v-else-if="collectStore.has(scope.row.id, 'song')" />
+                <icon-heart v-else />
+              </el-icon>
+            </el-link>
+          </template>
         </Playlist>
       </el-col>
     </el-row>
@@ -51,9 +79,11 @@
 import { getCurrentInstance, ref, computed } from 'vue'
 import Playlist from '@/views/components/Playlist.vue'
 import { useConfigStore } from '@/stores/config'
+import { useCollectStore } from '@/stores/collect'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 const { config } = useConfigStore()
+const collectStore = useCollectStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
 const playlist = ref([])

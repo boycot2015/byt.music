@@ -1,5 +1,6 @@
 <template>
-  <div class="w-full">
+  <div class="w-full relative">
+    <el-button size="large" loading v-if="player.loading" type="primary" link loading-icon="Loading" class="z-100 !absolute left-0 top-[-8px]"></el-button>
     <el-slider
       :class="{ '!w-[200px]': !config.isMobile && player.playBar == 'small' }"
       size="small"

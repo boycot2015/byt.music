@@ -2,7 +2,6 @@
   <footer class="footer w-full">
     <div :class="{ 'translate-y-[30px]': player.showCover && config.isMobile }" class="transition-all duration-300">
       <div class="absolute bottom-[60px] w-full flex md:z-9999">
-        <el-button size="large" loading v-if="player.loading && player.playBar == 'full' && !config.isMobile" type="primary" link loading-icon="Loading" class="z-100 !absolute left-0 top-[-8px]"></el-button>
         <Slider
           class="!w-full md:z-99 !h-[auto] text-center"
           v-show="player.playBar == 'full' || config.isMobile"
@@ -52,7 +51,7 @@
           <el-icon :size="32" v-if="config.isMobile" @click="playlistVisible = true">
             <IconListMusic class="cursor-pointer" />
           </el-icon>
-          <el-drawer trigger="click" :z-index="99" header-class="!leading-[32px] !px-3 !mb-2" :show-close="false" direction="btt" size="80%" body-class="!p-0" v-model="playlistVisible" :show-arrow="false" :width="config.isMobile ? '95vw' : '680px'">
+          <el-drawer trigger="click" :z-index="99" header-class="!leading-[32px] !p-3 !mb-0" :show-close="false" direction="btt" size="80%" body-class="!p-0" v-model="playlistVisible" :show-arrow="false" :width="config.isMobile ? '95vw' : '680px'">
             <template #header>
               <span class="total">共{{ playData.playlist.length }}首歌曲</span>
               <el-button type="danger" :disabled="playData.playlist.length === 0" round @click="setPlayData({ playlist: [] })" icon="Delete">清空</el-button>

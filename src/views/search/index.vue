@@ -51,7 +51,7 @@
     <Playlist
       ref="playlistRef"
       :showHeader="false"
-      header-class="!pl-0"
+      header-class="!pl-0 mb-2"
       action-class="mt-2"
       :loading="loading"
       :data="{ info: { id: keyword, total_song_num: total || playlist.length }, tracks: playlist }"
@@ -144,6 +144,7 @@ const queryKeywords = async (queryString, cb) => {
 }
 const onSearch = async () => {
   loading.value = true
+  playlistRef.value?.setScrollTop(0)
   cates.value.map((el) => {
     if (el.value !== stype.value) {
       el.total = 0

@@ -9,12 +9,14 @@
       <div class="flex flex-col items-center justify-center" :class="{ '!flex-row w-full': player.playBar == 'middle' }">
         <span class="leading-[26px] w-10 mr-4" v-show="!player.loading" :class="{ '!order-2 ml-2': player.playBar == 'middle' }">{{ formatTime(player.currentTime) }}/{{ formatTime(player.duration) }}</span>
         <div class="flex w-full">
-          <el-button loading v-show="player.loading" type="primary" link loading-icon="Loading" class="mr-2"></el-button>
           <Slider @change="onSliderChange" />
         </div>
       </div>
     </div>
     <div class="controls flex items-center justify-end flex-1 ml-5">
+      <el-icon :size="22" class="!hidden md:!block mr-2" title="音频可视化" @click="setPlayer({ visualizer: !player.visualizer })">
+        <IconAnalyser class="cursor-pointer" :class="{ 'opacity-50': !player.visualizer }" />
+      </el-icon>
       <el-icon class="cursor-pointer mr-2" :size="26" @click="() => toggleCollect({ ...playData }, 'song')">
         <IconHeartFill class="text-[var(--el-color-primary)]" v-if="has(playData.id, 'song')" />
         <IconHeart v-else />
