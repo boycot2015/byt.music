@@ -6,6 +6,7 @@ const defaults = {
   player: {
     showCover: false,
     loading: false,
+    lyricLoading: false,
     muted: false,
     withLyric: false,
     visualizer: true, // 歌词可视化
@@ -45,6 +46,7 @@ const defaults = {
     singer: '',
     playlist: [],
     lyric: '',
+    playlistVisible: false,
     playIndex: 0,
     lyricIndex: 0,
     lyricList: []
@@ -85,12 +87,14 @@ export const usePlayerStore = defineStore(
     }
     const play = async (item, type = playData.value.type || 'qq') => {
       player.value.currentTime = 0
+      playData.value.lyricIndex = 0
       let duration = item.duration || item.durationStr
       if (typeof duration === 'string') {
         duration = duration.split(':')
         player.value.duration = Number(duration[0]) * 60 + Number(duration[1])
       }
       player.value.loading = true
+      player.value.lyricLoading = true
       if (!item) return ElMessage.error('请选择歌曲')
       playData.value.type = type
       playData.value.id = item.id
@@ -101,6 +105,7 @@ export const usePlayerStore = defineStore(
       fetch(`${apiUrl}/music/lyric?id=${item.id}&type=${type}`)
         .then((res) => res.json())
         .then((data) => {
+          player.value.lyricLoading = false
           playData.value.lyric = data.data.lyric
           let lyricArr = computed(() => {
             if (!playData.value.lyric) return ['[00:00]纯音乐，请欣赏~']
@@ -116,7 +121,7 @@ export const usePlayerStore = defineStore(
         })
       let url = `${apiUrl}/music/url?id=${item.id}&type=${type}&quality=${player.value.quality}`
       if (source.value.id && source.value.apiKey) url += `&apiUrl=${source.value.apiUrl}&apiKey=${source.value.apiKey}`
-      return await fetch(url)
+      fetch(url)
         .then((res) => res.json())
         .then((data) => {
           playData.value.currentTime = 0
@@ -125,7 +130,8 @@ export const usePlayerStore = defineStore(
             ElMessage({
               type: 'error',
               zIndex: 10000,
-              customClass: 'backdrop-blur',
+              duration: 1000,
+              customClass: 'backdrop-blur !w-[80vw] md:!w-[auto]',
               message: '获取歌曲失败，无法播放此歌曲~',
             })
             playData.value.url = ''
@@ -135,11 +141,11 @@ export const usePlayerStore = defineStore(
           player.value.muted = false
           player.value.paused = false
           audioRef.value.src = playData.value.url
-          return true
+          audioRef.value.play()
         }).catch(() => {
           playData.value.url = ''
           playData.value.paused = true
-          return false
+          audioRef.value.pause()
         }).finally(() => {
           player.value.loading = false
         })
@@ -195,15 +201,7 @@ export const usePlayerStore = defineStore(
       } else {
         setPlayData({ playIndex: (playData.value.playIndex || 0) + 1, lyricIndex: 0 })
       }
-      play(playData.value.playlist[playData.value.playIndex]).then((success) => {
-        if (success) {
-          audioRef.value.src = playData.value.url
-          audioRef.value.play()
-          setPlayer({ paused: false })
-        } else {
-          audioRef.value.pause()
-        }
-      })
+      play(playData.value.playlist[playData.value.playIndex])
     }
     const playPrev = () => {
       audioRef.value.pause()
@@ -215,15 +213,7 @@ export const usePlayerStore = defineStore(
       } else {
         setPlayData({ playIndex: (playData.value.playIndex || 0) - 1, lyricIndex: 0 })
       }
-      play(playData.value.playlist[playData.value.playIndex]).then((success) => {
-        if (success) {
-          audioRef.value.src = playData.value.url
-          audioRef.value.play()
-          setPlayer({ paused: false })
-        } else {
-          audioRef.value.pause()
-        }
-      })
+      play(playData.value.playlist[playData.value.playIndex])
     }
     const togglePlay = () => {      
       if (!playData.value.url) return

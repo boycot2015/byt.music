@@ -3,6 +3,10 @@ import { defineStore } from 'pinia'
 import { setHtmlStyleProp } from '@/utils'
 const defaults = {
   isMobile: false,
+  loaded: false,
+  showTab: true,
+  showPlyerBar: true,
+  activeTab: 0,
   title: 'BytMusic',
   description: '一个基于 Vue3 + Pinia + Element Plus 的音乐播放器',
   theme: {
@@ -27,6 +31,7 @@ export const useConfigStore = defineStore(
   'config',
   () => {
     const config = ref(JSON.parse(JSON.stringify(defaults)))
+    const scrollRef = ref(null)
     const set = (val = {}) => {
       for (const key in val) {
         config.value[key] = val[key]
@@ -39,9 +44,14 @@ export const useConfigStore = defineStore(
         document.body.style.fontFamily = `${val.family}`
       }
     }
-    return { defaults, config, set }
+    const setScrollRef = (val) => {
+      scrollRef.value = val
+    }
+    return { defaults, config, set, scrollRef, setScrollRef }
   },
   {
-    persist: true,
+    persist: {
+      pick: ['config']
+    },
   },
 )

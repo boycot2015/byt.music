@@ -1,8 +1,8 @@
 <template>
   <div class="playlist">
-    <div class="top min-h-[40px] flex justify-between md:mb-4">
-      <div class="flex items-center">
-        <el-popover placement="bottom-start" :show-arrow="false" v-model:visible="modalVisible" popper-class="!w-[95vw] backdrop-blur md:!w-[600px] !p-2 !pl-0" :disabled="cateLoading || (cates[type] && !cates[type].length)" :trigger="config.isMobile ? 'click' : 'hover'">
+    <div class="top min-h-[40px] flex items-center justify-between md:mb-4">
+      <div class="flex order-2 items-center" v-if="!config.isMobile">
+        <el-popover placement="bottom-start" :show-arrow="false" v-model:visible="modalVisible" popper-class="!w-[95vw] backdrop-blur md:!w-[600px] !p-2 !pl-0" :disabled="cateLoading || (cates[type] && !cates[type].length)">
           <template #reference>
             <span class="cursor-pointer el-dropdown-link flex items-center">
               {{ ctypeObj.name || '全部歌单' }}
@@ -40,6 +40,11 @@
           </el-scrollbar>
         </el-popover>
       </div>
+      <span class="flex items-center order-2" v-else @click="modalVisible = true">
+        {{ ctypeObj.name || '全部歌单' }}
+        <el-button loading v-if="cateLoading" type="primary" link loading-icon="Loading" class="ml-2"></el-button>
+        <el-icon class="ml-2" v-else><Menu /></el-icon>
+      </span>
       <div class="hidden md:block">
         <el-segmented
           v-model="type"
@@ -85,7 +90,7 @@
         </el-dropdown>
       </div>
     </div>
-    <GridList v-loading="loading" :playlist="playlist" :type="type" :ctype="ctype" ref="gridRef">
+    <GridList :loading="loading" :playlist="playlist" :type="type" :ctype="ctype" ref="gridRef">
       <template #pagination>
         <div class="flex justify-center md:justify-end mt-2">
           <el-pagination class="!hidden md:!flex" layout="total, prev, pager, next, jumper, ->" :total="total" v-model:current-page="currentPage" @current-change="fetchListData" />
@@ -93,10 +98,36 @@
         </div>
       </template>
     </GridList>
+    <el-drawer :with-header="false" v-if="config.isMobile" v-model="modalVisible" size="90%" body-class="!p-2" modal-class="backdrop-blur" append-to-body>
+      <el-scrollbar max-height="100%" class="cates md:w-full">
+        <el-row :gutter="20" class="!m-0 !mb-2" v-for="(item, index) in cates[type]" :key="index">
+          <el-col :span="24" class="text-xl">
+            {{ item.category || item.name }}
+          </el-col>
+          <el-col :span="6" v-for="(el, index) in item.filters.filter((el) => el.name != '排行榜')" :key="index" class="my-1">
+            <el-link
+              class="cursor-pointer"
+              @click.stop="
+                () => {
+                  ctypeObj = el
+                  currentPage = 1
+                  gridRef.setScrollTop(0)
+                  fetchListData(el)
+                  modalVisible = false
+                }
+              "
+              :type="ctypeObj.name == el.name ? 'danger' : 'default'"
+              >{{ el.name }}</el-link
+            >
+          </el-col>
+        </el-row>
+        <Empty v-if="cates[type] && !cates[type].length && !loading" />
+      </el-scrollbar>
+    </el-drawer>
   </div>
 </template>
 <script name="playlist" setup>
-import { computed, getCurrentInstance, ref } from 'vue'
+import { computed, getCurrentInstance, ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useConfigStore } from '@/stores/config'
 import GridList from '@/views/components/GridList.vue'
@@ -157,13 +188,13 @@ const fetchListData = (item = {}) => {
     currentPage.value = item
     item = {}
   }
+  gridRef.value?.setScrollTop(0)
   ctype.value = item.id || ctype.value
   loading.value = true
   fetch(`${$apiUrl}/music?type=${item.type || type.value}&offset=${currentPage.value - 1}&limit=12&id=${ctype.value}`)
     .then((res) => res.json())
     .then((res) => {
       loading.value = false
-      gridRef.value?.setScrollTop(0)
       if (!res.data) return
       total.value = res.data.total || 999
       if (currentPage.value) playlist.value = res.data.result
@@ -171,15 +202,10 @@ const fetchListData = (item = {}) => {
     })
     .catch(() => {})
 }
-fetchData()
+onMounted(() => {
+  fetchData()
+})
 </script>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 50vh;
-    display: flex;
-    align-items: center;
-  }
-}
+<style scoped>
 </style>

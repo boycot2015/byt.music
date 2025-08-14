@@ -95,7 +95,7 @@
 </template>
 <script name="search" setup>
 import { debounce } from 'lodash-es'
-import { computed, getCurrentInstance, ref } from 'vue'
+import { computed, getCurrentInstance, ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Playlist from '@/views/components/Playlist.vue'
 import { useConfigStore } from '@/stores/config'
@@ -173,7 +173,9 @@ const onSearch = async () => {
     }
   })
 }
-fetchData()
+onMounted(() => {
+  fetchData()
+})
 </script>
 
 <style>

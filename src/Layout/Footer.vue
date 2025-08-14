@@ -1,6 +1,6 @@
 <template>
-  <footer class="footer w-full">
-    <div :class="{ 'translate-y-[30px]': player.showCover && config.isMobile }" class="transition-all duration-300">
+  <div class="footer w-full">
+    <div class="transition-all duration-300">
       <div class="absolute bottom-[60px] w-full flex md:z-9999">
         <Slider
           class="!w-full md:z-99 !h-[auto] text-center"
@@ -16,7 +16,7 @@
         />
       </div>
       <div class="nav flex items-center justify-between w-full relative md:z-100 px-3">
-        <div class="left flex flex-1 cursor-pointer" @click="coverVisible = !coverVisible">
+        <div class="left flex flex-1 cursor-pointer" @click="setPlayer({ showCover: !player.showCover })">
           <Image :src="playData.img_url" fit="fill" class="w-10 h-10 mr-2 rounded">
             <template #placeholder>
               <el-icon :size="44" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
@@ -36,54 +36,7 @@
         <Player />
       </div>
     </div>
-    <el-drawer v-model="coverVisible" :z-index="99" :modal-class="`!absolute !bg-[transparent]`" body-class="!p-0" header-class="text-center" direction="btt" :title="playData.title" size="100%" :with-header="false">
-      <div class="relative z-10 backdrop-blur-2xl overflow-hidden">
-        <div class="flex w-full items-center px-5 leading-[60px]">
-          <div class="close cursor-pointer md:order-2 hover:text-[var(--el-color-primary)]" @click="coverVisible = false">
-            <el-icon :size="24">
-              <ArrowDown />
-            </el-icon>
-          </div>
-          <div class="flex flex-col md:flex-row flex-1 items-center text-center justify-center">
-            <div class="title text-xl line-clamp-1 md:mr-2">{{ playData.title }}<span class="hidden md:inline"> --</span></div>
-            <span class="text-xs md:text-xl">{{ playData.singer }}</span>
-          </div>
-          <el-icon :size="32" v-if="config.isMobile" @click="playlistVisible = true">
-            <IconListMusic class="cursor-pointer" />
-          </el-icon>
-          <el-drawer trigger="click" :z-index="99" header-class="!leading-[32px] !p-3 !mb-0" :show-close="false" direction="btt" size="80%" body-class="!p-0" v-model="playlistVisible" :show-arrow="false" :width="config.isMobile ? '95vw' : '680px'">
-            <template #header>
-              <span class="total">共{{ playData.playlist.length }}首歌曲</span>
-              <el-button type="danger" :disabled="playData.playlist.length === 0" round @click="setPlayData({ playlist: [] })" icon="Delete">清空</el-button>
-            </template>
-            <Playlist :show-header="false" :data="{ info: playData, tracks: playData.playlist }" :tableProps="{ miniHeight: '200px', showHeader: false }">
-              <template #table-action="{ row }">
-                <el-link
-                  type="primary"
-                  :disabled="playData.playlist.length === 0"
-                  size="small"
-                  @click="
-                    () => {
-                      setPlayData({ playIndex: playData.playlist?.findIndex((item) => item.id == row.id) })
-                      play(row)
-                    }
-                  "
-                >
-                  <el-icon :size="24">
-                    <IconPlay />
-                  </el-icon>
-                </el-link>
-                <el-link type="danger" :disabled="playData.playlist.length === 0" size="small" @click="setPlayData({ playlist: playData.playlist.filter((item) => item.id !== row.id) })" icon="Delete"></el-link>
-              </template>
-            </Playlist>
-          </el-drawer>
-        </div>
-        <Cover />
-        <Analyser />
-      </div>
-      <div class="bg-cover z-9 absolute top-0 overflow-hidden left-0 w-full h-full bg-cover bg-center bg-no-repeat opacity-50 blur-[100px] transition-all duration-300 ease-in-out" :style="{ backgroundImage: `url(${playData.img_url})` }"></div>
-    </el-drawer>
-  </footer>
+  </div>
 </template>
 <script setup>
 import { ref, computed, watch, nextTick } from 'vue'
@@ -97,15 +50,10 @@ import Analyser from '@/components/Player/components/Analyser/index.vue'
 import NProgress from 'nprogress'
 import Playlist from '@/views/components/Playlist.vue'
 const inputValue = ref(0)
-const playlistVisible = ref(false)
 const playData = computed(() => usePlayerStore().playData)
 const player = computed(() => usePlayerStore().player)
 const config = computed(() => useConfigStore().config)
 const { setPlayer, play, setPlayData } = usePlayerStore()
-const coverVisible = ref(player.value.showCover)
-watch(coverVisible, (value) => {
-  setPlayer({ showCover: value })
-})
 </script>
 <style lang="scss" scoped>
 :deep(.el-slider) {

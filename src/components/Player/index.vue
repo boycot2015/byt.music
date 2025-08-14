@@ -49,10 +49,10 @@
       <el-icon :size="38" @click="playNext">
         <IconNext class="cursor-pointer" />
       </el-icon>
-      <el-icon :size="32" class="!block md:!hidden" @click="playlistVisible = true">
+      <el-icon :size="32" class="!block md:!hidden" @click="setPlayData({ playlistVisible: true })">
         <IconListMusic class="cursor-pointer" />
       </el-icon>
-      <el-popover trigger="click" :show-arrow="false" popper-class="backdrop-blur" :width="config.isMobile ? '95vw' : '680px'">
+      <el-popover trigger="click" :show-arrow="false" popper-class="backdrop-blur !z-10001" :width="config.isMobile ? '95vw' : '680px'">
         <template #reference>
           <el-icon :size="32" class="!hidden md:!block">
             <IconListMusic class="cursor-pointer" />
@@ -70,17 +70,6 @@
           </Playlist>
         </template>
       </el-popover>
-      <el-drawer trigger="click" :z-index="99" header-class="!leading-[32px] !px-3 !mb-2" :show-close="false" direction="btt" size="80%" body-class="!p-0" v-model="playlistVisible" :show-arrow="false" :width="config.isMobile ? '95vw' : '680px'">
-        <template #header>
-          <span class="total">共{{ playData.playlist.length }}首歌曲</span>
-          <el-button type="danger" :disabled="playData.playlist.length === 0" round @click="setPlayData({ playlist: [] })" icon="Delete">清空</el-button>
-        </template>
-        <Playlist :show-header="false" :data="{ info: playData, tracks: playData.playlist }" :tableProps="{ miniHeight: '200px', showHeader: false }">
-          <template #table-action="{ row }">
-            <el-link type="danger" :disabled="playData.playlist.length === 0" size="small" @click="setPlayData({ playlist: playData.playlist.filter((item) => item.id !== row.id) })" icon="Delete"></el-link>
-          </template>
-        </Playlist>
-      </el-drawer>
     </div>
   </div>
 </template>

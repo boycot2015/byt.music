@@ -74,15 +74,15 @@
 </template>
 
 <script setup>
-import { getCurrentInstance, ref, nextTick } from 'vue'
+import { getCurrentInstance, ref, nextTick, computed, onMounted } from 'vue'
 import { useConfigStore } from '@/stores/config'
 import { setHtmlStyleProp } from '@/utils'
-const { config, set } = useConfigStore()
+const { set } = useConfigStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
 const colors = ref([])
 const colorLoading = ref(false)
-
+const config = computed(() => useConfigStore().config)
 // 图片列表
 const picList = ref([])
 const picCates = ref([])
@@ -98,7 +98,7 @@ const scrollbarRef = ref(null)
 const showColors = ref([])
 const colorSource = ref('https://zhongguose.com')
 const fetchData = async () => {
-  colorLoading.value = true
+  colorLoading.value = !config.loaded
   const target = colorSource.value + '/colors.json'
   fetch(`${$apiUrl}/cors?url=${target}`, {})
     .then((res) => res.json())
@@ -115,7 +115,7 @@ const fetchData = async () => {
   fetchPicData()
 }
 const fetchPicData = async (page = 1) => {
-  picLoading.value = true
+  picLoading.value = !config.loaded
   const target = `${$apiUrl}/wallpaper?source=${picType.value}&id=${picCate.value}&page=${picPage.value || page}&size=16`
   fetch(target, {})
     .then((res) => res.json())
@@ -157,7 +157,9 @@ const setBackground = (item) => {
     set({ theme: { ...config.theme, backgroundImage: item.url } })
   }
 }
-fetchData()
+onMounted(() => {
+  fetchData()
+})
 </script>
 
 <style></style>

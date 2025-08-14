@@ -130,6 +130,10 @@ html.dark {
   border: none !important;
 }
 
+.el-popper__arrow {
+  display: none !important;
+}
+
 .el-loading-mask {
   z-index: 99 !important;
 }

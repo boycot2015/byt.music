@@ -93,7 +93,7 @@
         </div>
       </div>
     </div>
-    <el-drawer size="100%" body-class="!p-0" destroy-on-close header-class="!p-2 !mb-0" modal-class="backdrop-blur-xl" :show-close="false" append-to-body v-model="commitVisible">
+    <el-drawer size="100%" :z-index="10000" body-class="!p-0" destroy-on-close header-class="!p-2 !mb-0" modal-class="backdrop-blur-sm" :show-close="false" append-to-body v-model="commitVisible">
       <template #header="{ close }">
         <div class="flex items-center justify-between">
           <el-icon class="cursor-pointer" :size="24" @click="close">
@@ -102,7 +102,7 @@
           <div class="flex-1 flex text-center justify-center items-center">
             <span class="text-xl line-clamp-1 max-w-[50vw]">{{ playData.title }}</span
             ><span>-</span>
-            <span class="text-sm text-nowrap">{{ playData.singer }}</span>
+            <span class="text-xl text-[var(--el-text-color-secondary)] text-nowrap">{{ playData.singer }}</span>
           </div>
         </div>
       </template>

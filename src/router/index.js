@@ -3,7 +3,7 @@ import Error from '@/views/error.vue'
 import { useConfigStore } from '@/stores/config'
 import NProgress from 'nprogress'
 
-NProgress.configure({ parent: '.el-main', showSpinner: false })
+NProgress.configure({ showSpinner: false })
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -34,6 +34,7 @@ const router = createRouter({
       meta: {
         title: '搜索',
         keepAlive: true,
+        hideInTab: true,
         icon: 'Search',
       },
     },
@@ -111,8 +112,8 @@ const router = createRouter({
   ],
 })
 router.beforeEach((to, from, next) => {
-  if (to.name !== from.name) NProgress.start()
   const { config } = useConfigStore()
+  if (to.name !== from.name && !config.isMobile) NProgress.start()
   document.title = to.meta.title + '-' + (config.title || 'BytMusic')
   next()
 })

@@ -1,7 +1,7 @@
 <template>
   <div class="lyric flex items-center overflow-hidden !px-5 md:px-0 w-full md:w-[auto]">
     <el-scrollbar ref="scrollbar" class="w-full md:w-[auto]" :height="config.isMobile ? '66vh' : 'calc(100vh - 230px)'" @scroll="onScroll">
-      <div class="w-full md:w-[500px] drop-shadow-md py-[300px]">
+      <div class="w-full md:w-[500px] drop-shadow-md py-[300px]" v-if="!player.lyricLoading">
         <div :ref="(el) => (itemRefs[index] = el)" v-for="(item, index) in lyricArr" :key="item" class="h-[48px]" @click="setSlider(index)">
           <span class="text-xl cursor-pointer line-clamp-1 text-left transition-all duration-200 ease" :class="{ 'text-[var(--el-color-primary)] !text-2xl ': index === activeIndex, '!text-center': player.lyricAlign === 'center', '!text-right': player.lyricAlign === 'right' }">
             <TextSlider class="md:text-shadow-md" v-show="index === activeIndex" :msg="item.split(']')[1]" />
@@ -9,6 +9,7 @@
           </span>
         </div>
       </div>
+      <div v-else class="w-full md:w-[500px] drop-shadow-md py-[100px] text-center">歌词加载中...</div>
     </el-scrollbar>
   </div>
 </template>
@@ -53,7 +54,7 @@ const setSlider = (index) => {
     let index = [...timeArr].filter((el) => el).findIndex((_) => _ === timerStr)
     let elementH = itemRefs?.value[activeIndex.value]?.offsetHeight || 48
     let baseTop = 5 * elementH
-    activeIndex.value = index === -1 || index < activeIndex.value ? activeIndex.value : index
+    activeIndex.value = index === -1 ? activeIndex.value : index
     let top = activeIndex.value * elementH - baseTop
     if (!player?.value?.currentTime) {
       activeIndex.value = 0

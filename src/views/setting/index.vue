@@ -3,8 +3,9 @@
     <el-row>
       <el-col :span="0" :md="4" class="relative">
         <el-scrollbar height="calc(100vh - 140px)" class="border-r border-[var(--el-border-color)]">
-          <div class="flex h-full !hidden md:!block !fixed">
-            <el-anchor select-scroll-top type="underline" :offset="0" container=".layout .el-scrollbar__wrap">
+          <div class="h-full !hidden md:!block !fixed">
+            <!-- container=".layout .active .el-scrollbar__wrap" -->
+            <el-anchor ref="anchorRef" container=".layout .active .el-scrollbar__wrap" select-scroll-top type="underline" @click="(e, href) => anchorRef?.scrollTo(href)">
               <el-anchor-link v-for="(item, key) in configs" :href="`#config-${key}`" :key="key"> {{ item.label }} </el-anchor-link>
               <el-anchor-link v-for="(item, key) in playConfigs" :href="`#config-${key}`" :key="key"> {{ item.label }} </el-anchor-link>
               <el-anchor-link v-for="(item, key) in brConfigs" :href="`#config-${key}`" :key="key"> {{ item.label }} </el-anchor-link>
@@ -53,9 +54,10 @@ import Backup from './components/Backup/index.vue'
 import ThemeConfig from './components/ThemeConfig.vue'
 import { useConfigStore } from '@/stores/config'
 import { usePlayerStore } from '@/stores/player'
-import { ref, markRaw, computed } from 'vue'
+import { ref, markRaw, computed, onMounted, onActivated } from 'vue'
 const { config, set } = useConfigStore()
 const { player, setPlayer } = usePlayerStore()
+const anchorRef = ref(null)
 const configs = ref({
   title: {
     label: '标题',
@@ -85,6 +87,22 @@ const configs = ref({
   },
   showTableAction: {
     label: '是否显示表格操作列',
+    type: 'radio',
+    options: [
+      { label: '关闭', value: false },
+      { label: '开启', value: true },
+    ],
+  },
+  showTab: {
+    label: '是否显示底部菜单',
+    type: 'radio',
+    options: [
+      { label: '关闭', value: false },
+      { label: '开启', value: true },
+    ],
+  },
+  showPlyerBar: {
+    label: '是否显示播放器',
     type: 'radio',
     options: [
       { label: '关闭', value: false },
@@ -149,6 +167,12 @@ const brConfigs = ref({
     component: markRaw(Backup),
   },
   // Add more configuration options here
+})
+onMounted(() => {
+  set({ loaded: false })
+})
+onActivated(() => {
+  set({ loaded: true })
 })
 </script>
 <style>

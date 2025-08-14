@@ -19,9 +19,9 @@
           </el-menu>
           <Empty v-if="!collect[current]" />
         </el-scrollbar>
-        <GridList height="calc(100vh - 140px)" class="overflow-hidden pr-0 md:!hidden" v-loading="loading" :playlist="collect.map((el) => ({ ...el.info, id: el.id || el.info.id }))" :type="collect[current]?.type" ref="gridRef">
+        <GridList height="calc(100vh - 140px)" class="overflow-hidden pr-0 md:!hidden" :loading="loading" :playlist="collect.map((el) => ({ ...el.info, id: el.id || el.info.id, type: el.type }))" ref="gridRef">
           <template #action="{ row }">
-            <div v-if="!!row.id" class="close text-[var(--el-color-primary)] cursor-pointer hover:text-[var(--el-color-primary)] absolute bottom-0 right-2 transition-colors duration-300 ease-in-out">
+            <div v-if="!!row.id" class="close text-[var(--el-color-primary)] cursor-pointer hover:text-[var(--el-color-primary)] absolute bottom-16 right-2 transition-colors duration-300 ease-in-out">
               <el-icon @click.stop="collectStore.remove(row.id)"><Delete /></el-icon>
             </div>
           </template>
@@ -110,21 +110,21 @@ const onSelect = (index) => {
   collectStore.setCurrent(index)
   fetchData()
 }
-const fetchData = async () => {
+const fetchData = async (refresh) => {
   if (!collect.value[current.value] || !collect.value[current.value].info.id) {
     playlist.value = collect.value[current.value]?.tracks || []
     loading.value = false
     return
   }
-  loading.value = true
+  loading.value = !!refresh
   const response = await fetch(`${$apiUrl}/music/detail?type=${collect.value[current.value].type}&id=${collect.value[current.value]?.id}`)
   let res = await response.json()
   loading.value = false
   playlist.value = res.data.tracks || []
 }
-fetchData()
+fetchData(true)
 onActivated(() => {
-  fetchData()
+  fetchData(false)
 })
 </script>
 <style></style>
