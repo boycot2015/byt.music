@@ -110,7 +110,6 @@
   </div>
 </template>
 <script setup>
-import { computed, ref } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import { useCollectStore } from '@/stores/collect'
 import { useConfigStore } from '@/stores/config'

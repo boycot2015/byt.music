@@ -4,7 +4,7 @@
       <div class="w-full md:w-[500px] drop-shadow-md py-[300px]" v-if="!player.lyricLoading">
         <div :ref="(el) => (itemRefs[index] = el)" v-for="(item, index) in lyricArr" :key="item" class="h-[48px]" @click="setSlider(index)">
           <span class="text-xl cursor-pointer line-clamp-1 text-left transition-all duration-200 ease" :class="{ 'text-[var(--el-color-primary)] !text-2xl ': index === activeIndex, '!text-center': player.lyricAlign === 'center', '!text-right': player.lyricAlign === 'right' }">
-            <TextSlider class="md:text-shadow-md" v-show="index === activeIndex" :msg="item.split(']')[1]" />
+            <TextSlider v-show="index === activeIndex" :msg="item.split(']')[1]" />
             <span v-show="index !== activeIndex">{{ item.split(']')[1] }}</span>
           </span>
         </div>
@@ -14,7 +14,6 @@
   </div>
 </template>
 <script setup>
-import { ref, watch, onMounted, computed, nextTick } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import { useConfigStore } from '@/stores/config'
 const playerStore = usePlayerStore()

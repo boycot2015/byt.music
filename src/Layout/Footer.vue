@@ -39,7 +39,6 @@
   </div>
 </template>
 <script setup>
-import { ref, computed, watch, nextTick } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import { useConfigStore } from '@/stores/config'
 import NProgress from 'nprogress'

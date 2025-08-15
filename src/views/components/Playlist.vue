@@ -1,8 +1,8 @@
 <template>
   <div class="playlist-detail !overflow-hidden rounded-md">
-    <div class="flex flex-col overflow-hidden md:flex-row md:items-center justify-between md:pl-3" :class="headerClass">
+    <div class="flex flex-col overflow-hidden md:flex-row justify-between md:pl-3 w-full relative" :class="headerClass">
       <slot name="header" v-if="showHeader">
-        <div class="flex items-center hidden lg:flex">
+        <div class="flex items-center hidden w-full md:!w-[auto] lg:flex min-h-[140px] md:min-h-[auto]">
           <div class="text-xs flex items-center" v-if="data?.info?.nickname || data?.info?.title">
             <el-avatar class="mr-2" size="small" v-if="data?.info?.headurl" :src="data?.info?.headurl"></el-avatar>
             <el-icon class="mr-2" :size="20" v-else><User /></el-icon>
@@ -23,7 +23,7 @@
         </div>
       </slot>
       <slot name="action">
-        <div class="actions w-full mb-1 md:mb-0 md:w-[auto] flex md:text-right md:absolute top-20 right-2" :class="actionClass" v-if="showActions && data.info">
+        <div class="actions w-full mb-1 md:mb-0 md:w-[auto] flex md:text-right md:absolute bottom-5 right-2" :class="actionClass" v-if="showActions && data.info">
           <el-button type="primary" @click="handlePlayAll" :disabled="!data.info.id && !data.tracks.length"
             ><el-icon class="mr-2"><VideoPlay /></el-icon>播放全部<span class="text-xs" v-if="data?.info?.total_song_num">({{ data?.info?.total_song_num || 0 }})</span></el-button
           >
@@ -72,7 +72,7 @@
           {{ scope.row.duration || '--' }}
         </template>
       </el-table-column>
-      <el-table-column prop="action" align="center" label="操作" width="70px" v-if="$slots['table-action'] && config.showTableAction">
+      <el-table-column prop="action" align="center" label="操作" width="78px" v-if="$slots['table-action'] && config.showTableAction">
         <template #default="scope">
           <slot name="table-action" :row="scope.row"></slot>
         </template>
@@ -85,7 +85,6 @@
   </div>
 </template>
 <script setup>
-import { ref, computed, watch, nextTick, onMounted } from 'vue'
 import { ElMessageBox } from 'element-plus'
 import IconHeart from '@/components/icons/IconHeart.vue'
 import IconHeartFill from '@/components/icons/IconHeartFill.vue'
@@ -191,4 +190,3 @@ onMounted(() => {
   })
 })
 </script>
-<style></style>

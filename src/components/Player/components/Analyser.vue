@@ -3,7 +3,6 @@
   <canvas id="visualizer" width="1920" height="300"></canvas>
 </template>
 <script setup>
-import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import { useConfigStore } from '@/stores/config'
 const { setPlayer } = usePlayerStore()

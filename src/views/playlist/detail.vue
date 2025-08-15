@@ -3,9 +3,9 @@
     <div class="md:h-[calc(100vh-140px)] min-h-[100vh] md:min-h-[calc(100vh-140px)] rounded-md overflow-y-auto md:!overflow-hidden">
       <Playlist ref="tableRef" :data="data" :tableProps="{ height: config.isMobile ? null : 'calc(100vh - 300px)' }" :show-actions="true">
         <template #header>
-          <div class="md:flex mb-3 min-h-[300px] relative rounded overflow-hidden" v-loading="loading" element-loading-custom-class="backdrop-blur !z-99">
-            <Image v-if="data.info.cover_img_url" :src="data.info.cover_img_url" :size="120" class="absolute h-[300px] m-[auto] md:w-[120px] md:h-[120px] rounded scale-[2] md:scale-[1]"></Image>
-            <div class="info md:ml-4 p-2 rounded overflow-hidden text-shadow-lg md:text-shadow-none md:p-0 flex-1 absolute h-full w-full md:relative backdrop-blur-xl md:backdrop-blur-none left-0 top-0 right-0 flex flex-col justify-center">
+          <div class="md:flex mb-3 min-h-[300px] w-full md:min-h-[100px] relative rounded overflow-hidden" v-loading="loading" element-loading-custom-class="backdrop-blur !z-99">
+            <Image v-if="data.info.cover_img_url" :src="data.info.cover_img_url" :size="120" class="absolute h-[300px] m-[auto] md:w-[120px] md:h-[120px] rounded scale-[2] blur-[200px] md:blur-[0px] md:scale-[1]"></Image>
+            <div class="info md:ml-4 p-2 rounded overflow-hidden md:p-0 flex-1 absolute h-full w-full md:relative backdrop-blur-2xl md:backdrop-blur-none left-0 top-0 right-0 flex flex-col justify-center md:justify-start">
               <div class="title text-3xl mb-2">{{ data.info.title }}</div>
               <div v-if="data.info.desc" class="hidden md:block">
                 <el-tooltip placement="top" v-if="data.info.desc.replace(/<br>/g, '。').length > 100">
@@ -18,7 +18,7 @@
                 </el-tooltip>
                 <div v-else v-html="data.info.desc.replace(/<br>/g, ';')"></div>
               </div>
-              <el-scrollbar max-height="190px" class="md:!hidden" v-if="data.info.desc">
+              <el-scrollbar max-height="190px" class="md:!hidden desc" v-if="data.info.desc">
                 <div v-html="data.info.desc.replace(/<br>/g, ';')"></div>
               </el-scrollbar>
             </div>
@@ -26,7 +26,7 @@
         </template>
         <template #table-action="scope">
           <el-link type="primary" size="small" @click="() => tableRef.handlePlay(scope.row)"
-            ><el-icon :size="22"> <icon-play /> </el-icon
+            ><el-icon :size="28"> <icon-play /> </el-icon
           ></el-link>
           <el-link
             type="primary"
@@ -45,7 +45,7 @@
               }
             "
           >
-            <el-icon>
+            <el-icon :size="18">
               <Delete v-if="data.info && data.info.id == 0" />
               <icon-heart-fill v-else-if="collectStore.has(scope.row.id, 'song')" />
               <icon-heart v-else />
@@ -57,7 +57,6 @@
   </div>
 </template>
 <script setup>
-import { ref, getCurrentInstance, computed, watch, onMounted, onActivated } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import Playlist from '@/views/components/Playlist.vue'
@@ -108,4 +107,12 @@ onActivated(() => {
   tableRef.value?.setScrollTop(0)
 })
 </script>
-<style></style>
+<style scoped>
+.desc {
+  box-shadow: 0px 0px 100px var(--el-bg-color);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #fff 10%, #fff 50%, transparent 100%);
+}
+html.dark .desc {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 10%, #000 50%, transparent 100%);
+}
+</style>

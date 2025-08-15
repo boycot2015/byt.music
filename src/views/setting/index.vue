@@ -13,7 +13,7 @@
         </el-scrollbar>
       </el-col>
       <el-col :span="24" :md="20">
-        <el-form :model="config" class="config-form md:pr-4 md:pl-4 w-full" label-position="left">
+        <el-form size="large" :model="config" class="config-form md:pr-4 md:pl-4 w-full" label-position="left">
           <el-form-item v-for="(item, key) in configs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">
             <el-select popper-class="backdrop-blur" v-if="item.type == 'select'" v-model="config[key]" @change="set({ [key]: config[key] })">
               <el-option v-for="item in item.options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
@@ -25,7 +25,7 @@
             <el-input v-else v-model="config[key]" :type="item.type || 'text'" :placeholder="item.placeholder || '请输入'" :maxlength="item.maxlength" />
           </el-form-item>
         </el-form>
-        <el-form :model="player" class="config-player md:pr-4 md:pl-4 w-full" label-position="left">
+        <el-form size="large" :model="player" class="config-player md:pr-4 md:pl-4 w-full" label-position="left">
           <el-form-item v-for="(item, key) in playConfigs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">
             <el-select popper-class="backdrop-blur" v-if="item.type == 'select'" v-model="player[key]" @change="set({ [key]: player[key] })">
               <el-option v-for="item in item.options" :key="item.value" :label="item.label" :value="item.value"> </el-option>
@@ -37,7 +37,7 @@
             <el-input v-else v-model="player[key]" :type="item.type || 'text'" :placeholder="item.placeholder || '请输入'" :maxlength="item.maxlength" />
           </el-form-item>
         </el-form>
-        <el-form class="config-form md:pr-4 md:pl-4 w-full" label-position="left">
+        <el-form size="large" class="config-form md:pr-4 md:pl-4 w-full" label-position="left">
           <el-form-item v-for="(item, key) in brConfigs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">
             <component v-if="item.component" :is="item.component" />
           </el-form-item>
@@ -49,7 +49,7 @@
 </template>
 <script name="setting" setup>
 import PlaySource from './components/PlaySource/index.vue'
-import Backup from './components/Backup/index.vue'
+import Backup from './components/Backup.vue'
 import ThemeConfig from './components/ThemeConfig.vue'
 import { useConfigStore } from '@/stores/config'
 import { usePlayerStore } from '@/stores/player'
@@ -94,6 +94,14 @@ const configs = ref({
   },
   showTab: {
     label: '是否显示底部菜单',
+    type: 'radio',
+    options: [
+      { label: '关闭', value: false },
+      { label: '开启', value: true },
+    ],
+  },
+  textShadow: {
+    label: '是否显示文字阴影',
     type: 'radio',
     options: [
       { label: '关闭', value: false },
@@ -162,7 +170,7 @@ const brConfigs = ref({
   backup: {
     label: '备份恢复与重置',
     labelPosition: 'top',
-    class: 'md:pl-0',
+    class: 'md:pl-0 !mb-0',
     component: markRaw(Backup),
   },
   // Add more configuration options here

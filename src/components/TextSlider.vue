@@ -4,8 +4,6 @@
   </div>
 </template>
 <script setup>
-import { ref, watch, onMounted, nextTick } from 'vue'
-
 const props = defineProps({
   msg: String,
 })

@@ -23,7 +23,6 @@
 </template>
 
 <script setup>
-import { getCurrentInstance, ref, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { usePlayerStore } from '@/stores/player'
 import { useConfigStore } from '@/stores/config'

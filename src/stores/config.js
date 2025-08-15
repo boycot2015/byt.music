@@ -6,6 +6,7 @@ const defaults = {
   loaded: false,
   showTab: true,
   showPlyerBar: true,
+  textShadow: true,
   activeTab: 0,
   title: 'BytMusic',
   description: '一个基于 Vue3 + Pinia + Element Plus 的音乐播放器',
@@ -35,6 +36,9 @@ export const useConfigStore = defineStore(
     const set = (val = {}) => {
       for (const key in val) {
         config.value[key] = val[key]
+        if (key == 'textShadow') {
+          document.body?.classList?.toggle('!text-shadow-md')
+        }
       }
       if (val.theme) {
         val.theme.primaryColor && setHtmlStyleProp(val.theme.primaryColor)

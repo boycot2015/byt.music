@@ -127,7 +127,6 @@
   </div>
 </template>
 <script name="playlist" setup>
-import { computed, getCurrentInstance, ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useConfigStore } from '@/stores/config'
 import GridList from '@/views/components/GridList.vue'

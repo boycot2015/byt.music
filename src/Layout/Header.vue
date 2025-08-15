@@ -23,7 +23,7 @@
     </template>
     <template #extra>
       <div class="flex">
-        <el-switch v-model="isDark" inline-prompt active-icon="Moon" inactive-icon="Sunny" @change="toggleDark" />
+        <el-switch v-model="isDark" size="large" inline-prompt active-icon="Moon" inactive-icon="Sunny" @change="toggleDark" />
       </div>
     </template>
   </el-page-header>

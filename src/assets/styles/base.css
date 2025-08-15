@@ -35,6 +35,7 @@
   --color-text: var(--vt-c-regular);
   --color-text-secondary: var(--vt-c-secondary);
   --section-gap: 16px;
+  --el-font-size-base: 16px !important;
   --el-text-color-regular: var(--vt-c-regular);
   --el-text-color-secondary: var(--vt-c-secondary) !important;
   --el-bg-color: rgba(255, 255, 255, .8) !important;
@@ -62,6 +63,7 @@ body {
   background: var(--el-bg-color);
   width: 100vw;
   overflow: hidden;
+  font-size: 16px;
   font-family: CangErYuYang, blackFont, OPPOFont, 宋体, 楷体, Microsoft YaHei, Song, KaiTi, sans-serif;
 }
 

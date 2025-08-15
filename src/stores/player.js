@@ -152,15 +152,7 @@ export const usePlayerStore = defineStore(
     }
     const setPlayData = (data = {}) => {
       for (const key in data) {
-        if (key === 'lyricIndex') {
-          if (!player.value.withLyric) {
-            playData.value[key] = data.lyricIndex && data.lyricIndex < playData.value[key] ? playData.value[key] : data.lyricIndex
-          } else {
-            playData.value[key] = data.lyricIndex
-          }
-        } else {
-          playData.value[key] = data[key]
-        }
+        playData.value[key] = data[key]
       }
     }
     const setPlayer = (data = {}) => {
@@ -252,7 +244,7 @@ export const usePlayerStore = defineStore(
       let timeStr2 = player.value?.currentTime % 60 > 10 ? Math.floor(player.value?.currentTime % 60) : `0${Math.floor(player.value?.currentTime % 60)}`
       let timerStr = `${timeStr1}:${timeStr2}`
       let index = timeArr.filter((el) => el).findIndex((_) => _ === timerStr)
-      index !== -1 && setPlayData({ lyricIndex: index })
+      setPlayData({ lyricIndex: index !== -1 ? index : playData.value.lyricIndex })
     })
     return {
       audioRef,

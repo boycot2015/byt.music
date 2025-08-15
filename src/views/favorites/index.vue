@@ -91,7 +91,6 @@
   </div>
 </template>
 <script name="favorites" setup>
-import { computed, ref, getCurrentInstance, onActivated } from 'vue'
 import { useCollectStore } from '@/stores/collect'
 import { ElMessageBox } from 'element-plus'
 import Playlist from '@/views/components/Playlist.vue'

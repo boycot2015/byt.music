@@ -74,7 +74,6 @@
   </div>
 </template>
 <script name="Player" setup>
-import { computed, ref, nextTick, onMounted, watch } from 'vue'
 import { formatTime } from '@/utils'
 import { usePlayerStore } from '@/stores/player'
 import { useCollectStore } from '@/stores/collect'

@@ -1,5 +1,4 @@
 <script name="Layout" setup>
-import { ref, watch, computed, onMounted, nextTick } from 'vue'
 import Aside from './Aside.vue'
 import Header from './Header.vue'
 import Footer from './Footer.vue'
@@ -32,12 +31,12 @@ const keepAliveRoutes = router.options.routes
   .map((el) => el.name)
   .join(',')
 watch(route, (to, from) => {
-  if (!scrollTop.value[activeIndex.value] || to.name == from.name) return
-  // console.log(scrollbarRef.value, activeIndex.value, 'scrollbarRef?.value')
-  scrollTop.value[activeIndex.value] = scrollbarRef.value[activeIndex.value]?.wrapRef?.scrollTop || 0
+  // console.log(scrollbarRef.value[activeIndex.value], to.name, from.name, activeIndex.value, 'scrollbarRef?.value')
   if (!to.meta.keepAlive) {
     scrollbarRef.value[activeIndex.value]?.setScrollTop(0)
   }
+  if (!scrollTop.value[activeIndex.value] || to.name == from.name) return
+  scrollTop.value[activeIndex.value] = scrollbarRef.value[activeIndex.value]?.wrapRef?.scrollTop || 0
   scrollbarRef.value[activeIndex.value]?.setScrollTop(!to.meta.keepAlive ? 0 : scrollTop.value[activeIndex.value])
 })
 watch(activeIndex, () => {
@@ -81,11 +80,6 @@ onMounted(() => {
   })
 })
 router.afterEach(() => {
-  if (!route.meta?.keepAlive || route.meta?.hideInTab) {
-    setScrollRef(scrollbarRef.value[activeIndex.value])
-    scrollRef?.setScrollTop(0)
-    return
-  }
   activeTab.value = route.name
   let index = tabs.findIndex((el) => el.name == activeTab.value)
   activeIndex.value = index == -1 ? activeIndex.value : index
@@ -95,7 +89,7 @@ router.afterEach(() => {
 </script>
 
 <template>
-  <el-container class="text-shadow-2xl">
+  <el-container>
     <el-aside width="64px" class="!transition-all !duration-300 h-[100vh] z-999 hidden md:block shadow-[0_0_5px_0_rgba(0,0,0,0.1)]" :class="{ 'md:!shadow-[0_5px_30px_0_rgba(255,255,255,0.1)]': isDark, 'is-leave': player.showCover }">
       <Aside />
     </el-aside>
@@ -138,7 +132,7 @@ router.afterEach(() => {
           </el-main>
         </swiper-slide>
       </swiper>
-      <el-backtop :key="activeTab" v-if="tabs?.find((el) => el.name == activeTab)" target=".layout .active .el-scrollbar__wrap" class="!z-999" :bottom="120" :right="15">
+      <el-backtop :key="activeTab" v-if="tabs?.find((el) => el.name == activeTab)" target=".layout .active .el-scrollbar__wrap" class="!z-999" :bottom="130" :right="15">
         <el-icon><Top /></el-icon>
       </el-backtop>
       <el-footer
@@ -149,7 +143,7 @@ router.afterEach(() => {
       >
         <Footer />
       </el-footer>
-      <el-tabs v-if="loaded && config.showTab" :tab-position="'bottom'" @tab-click="onTabClick" v-model="activeTab" stretch class="bg-[var(--el-bg-color)] absolute tabs w-full md:!hidden z-1000 bottom-0 left-0 right-0 px-3 py-2">
+      <el-tabs v-if="loaded && config.showTab" :tab-position="'bottom'" @tab-click="onTabClick" v-model="activeTab" stretch class="bg-[var(--el-bg-color)] absolute tabs w-full md:!hidden z-1000 bottom-0 left-0 right-0 px-3 py-2 border-t border-[var(--el-border-color)]">
         <el-tab-pane :label="tab.meta.title" v-for="tab in tabs" :name="tab.name" :key="tab.name">
           <template #label>
             <div class="flex items-center flex-col">
@@ -203,11 +197,15 @@ router.afterEach(() => {
               }
             "
           >
-            <el-icon :size="24">
+            <el-icon :size="28">
               <IconPlay />
             </el-icon>
           </el-link>
-          <el-link type="danger" :disabled="playData.playlist.length === 0" size="small" @click="setPlayData({ playlist: playData.playlist.filter((item) => item.id !== row.id) })" icon="Delete"></el-link>
+          <el-link type="danger" :disabled="playData.playlist.length === 0" size="small" @click="setPlayData({ playlist: playData.playlist.filter((item) => item.id !== row.id) })">
+            <el-icon :size="18">
+              <Delete />
+            </el-icon>
+          </el-link>
         </template>
       </Playlist>
     </el-drawer>
@@ -260,5 +258,8 @@ html.dark .el-aside {
 }
 :deep(.tabs .el-tabs__header.is-bottom) {
   margin-top: 0;
+}
+:deep(.el-tabs__nav-wrap:after) {
+  height: 0;
 }
 </style>

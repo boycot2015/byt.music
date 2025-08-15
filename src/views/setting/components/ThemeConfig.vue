@@ -74,7 +74,6 @@
 </template>
 
 <script setup>
-import { getCurrentInstance, ref, nextTick, computed, onMounted } from 'vue'
 import { useConfigStore } from '@/stores/config'
 import { setHtmlStyleProp } from '@/utils'
 const { set } = useConfigStore()

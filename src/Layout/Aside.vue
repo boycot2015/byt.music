@@ -1,5 +1,4 @@
 <script setup>
-import { ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useConfigStore } from '@/stores/config'
 const { config, set } = useConfigStore()
@@ -31,7 +30,7 @@ const handleOpen = (key) => {
         <el-segmented v-model="path" direction="vertical" :options="menus" size="large" :props="{ label: 'title', value: 'path' }" @change="handleOpen">
           <template #default="scope">
             <div class="flex flex-col items-center gap-2 p-2">
-              <el-icon class="text-shadow-2xl" size="20" :title="scope.item.title">
+              <el-icon size="20" :title="scope.item.title">
                 <component :is="scope.item.icon" />
               </el-icon>
             </div>
@@ -41,7 +40,7 @@ const handleOpen = (key) => {
       <div class="block md:hidden">
         <el-menu @select="handleOpen" class="!border-0">
           <el-menu-item v-for="item in menus" :key="item.path" :index="item.path">
-            <el-icon class="text-shadow-2xl" size="20" :title="item.title">
+            <el-icon size="20" :title="item.title">
               <component :is="item.icon" :key="item.icon" />
             </el-icon>
             <span>{{ item.title }}</span>

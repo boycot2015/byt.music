@@ -55,7 +55,7 @@
           </template>
           <template #table-action="scope">
             <el-link type="primary" size="small" @click="() => playlistRef.handlePlay(scope.row)"
-              ><el-icon :size="22"> <icon-play /> </el-icon
+              ><el-icon :size="28"> <icon-play /> </el-icon
             ></el-link>
             <el-link
               type="primary"
@@ -74,7 +74,7 @@
                 }
               "
             >
-              <el-icon>
+              <el-icon :size="18">
                 <Delete v-if="playlistInfo && playlistInfo.id == 0" />
                 <icon-heart-fill v-else-if="collectStore.has(scope.row.id, 'song')" />
                 <icon-heart v-else />
@@ -87,7 +87,6 @@
   </div>
 </template>
 <script name="search" setup>
-import { getCurrentInstance, ref, computed, onMounted } from 'vue'
 import Playlist from '@/views/components/Playlist.vue'
 import { useConfigStore } from '@/stores/config'
 import { useCollectStore } from '@/stores/collect'

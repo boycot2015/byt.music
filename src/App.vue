@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { RouterView } from 'vue-router'
 import Layout from './Layout/index.vue'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
@@ -29,6 +29,7 @@ onMounted(() => {
   setHtmlStyleProp(config.theme.primaryColor)
   document.body.style.background = `url(${config.theme.backgroundImage}) no-repeat center/cover`
   document.body.style.fontFamily = `${config.family}`
+  document.body.classList[config.textShadow ? 'add' : 'remove'](['!text-shadow-md'])
   set({ isMobile: document.body.clientWidth < 768 })
   window.addEventListener('resize', () => {
     set({ isMobile: document.body.clientWidth < 768 })
