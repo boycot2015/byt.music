@@ -8,13 +8,10 @@ import { useRoute, useRouter } from 'vue-router'
 import { usePlayerStore } from '@/stores/player'
 import { useConfigStore } from '@/stores/config'
 import { set, useDark } from '@vueuse/core'
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import 'swiper/css'
-import 'swiper/css/scrollbar'
-import { Scrollbar, A11y } from 'swiper/modules'
+import { useSwiper } from '@/hooks/useSwiper'
 
+const { Swiper, SwiperSlide, modules, swiperOptions } = useSwiper()
 const swiperInstance = ref(null)
-const modules = ref([Scrollbar, A11y])
 const scrollbarRef = ref(null)
 const loaded = ref(false)
 const scrollTop = ref([])
@@ -79,12 +76,14 @@ onMounted(() => {
   nextTick(() => {
     setTimeout(() => {
       loaded.value = true
-    }, 300)
+    }, 150)
     swiperInstance.value?.slideTo(activeIndex.value)
   })
 })
 router.afterEach(() => {
   if (!route.meta?.keepAlive || route.meta?.hideInTab) {
+    setScrollRef(scrollbarRef.value[activeIndex.value])
+    scrollRef?.setScrollTop(0)
     return
   }
   activeTab.value = route.name
@@ -122,10 +121,10 @@ router.afterEach(() => {
         <Footer />
       </el-footer> -->
       <el-header class="bg-[var(--el-bg-color)] !px-3 flex items-center shadow-[0_0_5px_0_rgba(0,0,0,0.1)]" :class="{ 'md:!shadow-[0_5px_30px_0_rgba(255,255,255,0.1)]': isDark }"><Header /></el-header>
-      <swiper :modules="modules" class="swipper w-full h-full" :space-between="0" @swiper="onSwiper" @slideChangeTransitionStart="onSlideChange" @slideChangeTransitionEnd="onSlideChangeEnd">
+      <swiper :modules="modules" class="swipper w-full h-full" v-bind="swiperOptions" @swiper="onSwiper" @slideChangeTransitionStart="onSlideChange" @slideChangeTransitionEnd="onSlideChangeEnd">
         <swiper-slide class="swipper-item h-full" v-for="tab in tabs" :key="tab.name">
           <el-main class="bg-[transparent] md:!overflow-hidden !p-0 rounded layout">
-            <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="{ height: config.showTab ? (config.showPlyerBar ? `calc(100vh - 160px)` : `calc(100vh - 99px)`) : !config.showPlyerBar ? `calc(100vh - 60px)` : `calc(100vh - 120px)` }" ref="scrollbarRef" :class="{ active: tab.name == activeTab }">
+            <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="{ height: config.showTab ? (config.showPlyerBar ? `calc(100vh - 180px)` : `calc(100vh - 115px)`) : !config.showPlyerBar ? `calc(100vh - 60px)` : `calc(100vh - 120px)` }" ref="scrollbarRef" :class="{ active: tab.name == activeTab }">
               <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px] md:!pb-[10px]">
                 <router-view v-slot="{ Component }">
                   <transition :name="!config.isMobile || !route.meta?.keepAlive || route.meta?.hideInTab ? 'slide-fade' : 'fade'">
@@ -145,17 +144,17 @@ router.afterEach(() => {
       <el-footer
         @click.prevent
         v-show="config.showPlyerBar"
-        class="bg-[var(--el-bg-color)] absolute md:static md:!flex bottom-[38px] md:bottom-0 w-full z-999 md:z-10001 !p-0 shadow-[0_-5px_30px_0_rgba(0,0,0,0.1)]"
+        class="bg-[var(--el-bg-color)] absolute md:static md:!flex bottom-[55px] md:bottom-0 w-full z-999 md:z-10001 !p-0 shadow-[0_-5px_30px_0_rgba(0,0,0,0.1)]"
         :class="{ 'md:!shadow-[0_-5px_30px_0_rgba(255,255,255,0.1)]': isDark, '!static': !config.showTab }"
       >
         <Footer />
       </el-footer>
-      <el-tabs v-if="loaded && config.showTab" :tab-position="'bottom'" @tab-click="onTabClick" v-model="activeTab" stretch class="bg-[var(--el-bg-color)] absolute tabs w-full md:!hidden z-1000 bottom-0 left-0 right-0 px-3">
+      <el-tabs v-if="loaded && config.showTab" :tab-position="'bottom'" @tab-click="onTabClick" v-model="activeTab" stretch class="bg-[var(--el-bg-color)] absolute tabs w-full md:!hidden z-1000 bottom-0 left-0 right-0 px-3 py-2">
         <el-tab-pane :label="tab.meta.title" v-for="tab in tabs" :name="tab.name" :key="tab.name">
           <template #label>
             <div class="flex items-center flex-col">
               <el-icon :size="24"><component :is="tab.meta.icon" /></el-icon>
-              <!-- <span class="text-xs">{{ tab.meta.title }}</span> -->
+              <span class="text-xs">{{ tab.meta.title }}</span>
             </div>
           </template>
         </el-tab-pane>

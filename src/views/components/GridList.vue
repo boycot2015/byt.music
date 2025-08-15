@@ -6,7 +6,7 @@
           <el-skeleton :loading="loading" animated>
             <template #template>
               <div class="!flex w-full">
-                <el-skeleton-item variant="image" class="rounded" style="width: 140px; height: 140px" />
+                <el-skeleton-item variant="image" class="!rounded" style="width: 140px; height: 140px" />
                 <div class="flex-1 ml-2">
                   <el-skeleton-item variant="h3" style="width: 50%" />
                   <div style="margin-top: 10px; height: 16px">

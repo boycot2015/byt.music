@@ -73,7 +73,7 @@
     </div>
   </div>
 </template>
-<script setup>
+<script name="Player" setup>
 import { computed, ref, nextTick, onMounted, watch } from 'vue'
 import { formatTime } from '@/utils'
 import { usePlayerStore } from '@/stores/player'

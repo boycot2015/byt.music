@@ -99,10 +99,9 @@
           <el-icon class="cursor-pointer" :size="24" @click="close">
             <ArrowLeft />
           </el-icon>
-          <div class="flex-1 flex text-center justify-center items-center">
-            <span class="text-xl line-clamp-1 max-w-[50vw]">{{ playData.title }}</span
-            ><span>-</span>
-            <span class="text-xl text-[var(--el-text-color-secondary)] text-nowrap">{{ playData.singer }}</span>
+          <div class="flex-1 flex flex-col text-center justify-center items-center">
+            <span class="text-xl line-clamp-1 max-w-[50vw]">{{ playData.title }}</span>
+            <span class="text-sm text-[var(--el-text-color-secondary)] text-nowrap">{{ playData.singer }}</span>
           </div>
         </div>
       </template>
@@ -113,16 +112,11 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { usePlayerStore } from '@/stores/player'
-import Lyric from './Lyric.vue'
 import { useCollectStore } from '@/stores/collect'
 import { useConfigStore } from '@/stores/config'
 import { formatTime } from '@/utils'
-import { Scrollbar, A11y } from 'swiper/modules'
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import 'swiper/css'
-import 'swiper/css/scrollbar'
-import Slider from '../Player/components/Slider.vue'
-import Comment from '@/components/Comment/index.vue'
+import { useSwiper } from '@/hooks/useSwiper'
+const { Swiper, SwiperSlide, modules, swiperOptions } = useSwiper()
 
 const playerStore = usePlayerStore()
 const configStore = useConfigStore()
@@ -131,7 +125,6 @@ const { initPlay, play, setPlayData, setPlayer } = playerStore
 const { has, toggleCollect } = collectStore
 const { playNext, playPrev, togglePlay } = playerStore
 const { config } = configStore
-const modules = ref([Scrollbar, A11y])
 const lyricVisible = ref(false)
 const commitVisible = ref(false)
 const player = computed(() => playerStore.player)

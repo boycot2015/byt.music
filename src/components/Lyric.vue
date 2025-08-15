@@ -17,7 +17,6 @@
 import { ref, watch, onMounted, computed, nextTick } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import { useConfigStore } from '@/stores/config'
-import TextSlider from '@/components/TextSlider/index.vue'
 const playerStore = usePlayerStore()
 const { config } = useConfigStore()
 const player = computed(() => usePlayerStore().player)

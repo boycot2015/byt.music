@@ -1,6 +1,6 @@
 <template>
   <div class="ranking">
-    <el-row :gutter="20" class="overflow-hidden flex flex-col md:flex-row">
+    <el-row :gutter="20" class="overflow-hidden">
       <el-col :span="24" :sm="6" :md="4" class="flex flex-col border-r border-[var(--el-border-color)]">
         <el-select v-model="type" @change="fetchData" size="large" popper-class="backdrop-blur">
           <el-option v-for="item in types" :key="item.type" :label="item.title" :value="item.type" />
@@ -17,13 +17,24 @@
         </el-scrollbar>
         <el-row :gutter="16" class="overflow-hidden pt-2" v-else>
           <el-col :xs="8" :sm="6" class="overflow-hidden rounded mb-2" v-for="item in cates[type]?.playlist || []" :key="item.id">
-            <div class="flex flex-col items-center flex-wrap cursor-pointer" @click="router.push({ path: `/playlist/${item.id}`, query: { type: type } })">
-              <Image lazy class="w-full h-full min-w-[100px] min-h-[105px] mr-2 rounded" :src="item.cover_img_url" :size="100" fit="cover" />
-              <h3 class="line-clamp-2 flex-1 leading-[22px] mt-1">{{ item.title }}</h3>
-            </div>
+            <el-skeleton :loading="animateLoading" animated>
+              <template #template>
+                <div class="w-full mb-1">
+                  <el-skeleton-item variant="image" class="!rounded" style="width: 100%; height: 105px" />
+                  <el-skeleton-item variant="p" class="mb-[0] mt-2" style="width: 100%" />
+                  <el-skeleton-item variant="p" style="width: 80%" />
+                </div>
+              </template>
+              <template #default>
+                <div class="flex flex-col items-center flex-wrap cursor-pointer" @click="router.push({ path: `/playlist/${item.id}`, query: { type: type } })">
+                  <Image lazy class="w-full h-full min-w-[100px] min-h-[105px] mr-2 rounded" :src="item.cover_img_url" :size="100" fit="cover" />
+                  <h3 class="line-clamp-2 flex-1 leading-[22px] mt-1">{{ item.title }}</h3>
+                </div>
+              </template>
+            </el-skeleton>
           </el-col>
         </el-row>
-        <Empty v-if="!pageLoading && !cates[type]?.playlist.length" />
+        <Empty v-if="!animateLoading && !cates[type]?.playlist.length" />
       </el-col>
       <el-col :span="0" :sm="18" :md="20">
         <Playlist :loading="loading" ref="playlistRef" :data="{ info: playlistInfo, tracks: playlist, id: playlistInfo.id, type }" :tableProps="{ height: 'calc(100vh - 190px)' }">
@@ -90,6 +101,7 @@ const playlist = ref([])
 const playlistRef = ref(null)
 const loading = ref(false)
 const pageLoading = ref(false)
+const animateLoading = ref(true)
 const keyword = ref('')
 const type = ref('qq')
 const ctype = ref('toplist')
@@ -98,25 +110,35 @@ const types = computed(() => config.types)
 const cates = ref({})
 const playlistInfo = ref({})
 const scrollbarRef = ref(null)
-const fetchData = async () => {
+const fetchData = () => {
+  pageLoading.value = true
+  animateLoading.value = true
   scrollbarRef.value?.setScrollTop(0)
   if (cates.value[type.value]?.playlist?.length) {
     fetchPlayList(cates.value[type.value].playlist[0]?.id + '')
+    pageLoading.value = false
+    animateLoading.value = false
     return
   }
   cates.value[type.value] = { playlist: [], hasMore: false, total: 0 }
-  pageLoading.value = true
-  let results = await fetch(`${$apiUrl}/music?type=${type.value}&id=${type.value == 'netease' ? '排行榜' : ctype.value}&limit=20&offset=0`)
+  cates.value[type.value].playlist = new Array(9).fill('').map((_, index) => ({
+    id: (index + 1).toString(),
+  }))
+  fetch(`${$apiUrl}/music?type=${type.value}&id=${type.value == 'netease' ? '排行榜' : ctype.value}&limit=20&offset=0`)
     .then((res) => res.json())
     .then((res) => res.data)
+    .then((results) => {
+      cates.value[type.value].playlist = results.result
+      cates.value[type.value].hasMore = results.hasMore || results.hasNextPage || false
+      cates.value[type.value].total = results.total
+      fetchPlayList(cates.value[type.value].playlist[0]?.id + '')
+      pageLoading.value = false
+      animateLoading.value = false
+    })
     .catch(() => {
       pageLoading.value = false
+      animateLoading.value = false
     })
-  cates.value[type.value].playlist = results.result
-  cates.value[type.value].hasMore = results.hasMore || results.hasNextPage || false
-  cates.value[type.value].total = results.total
-  fetchPlayList(cates.value[type.value].playlist[0]?.id + '')
-  pageLoading.value = false
 }
 const fetchPlayList = async (id) => {
   activePlayIndex.value = id

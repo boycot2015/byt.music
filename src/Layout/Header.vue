@@ -1,5 +1,5 @@
 <template>
-  <el-page-header @back="goBack" :icon="route.meta.showBack ? ArrowLeft : ''" class="w-full">
+  <el-page-header @back="goBack" :icon="route.meta.showBack ? 'ArrowLeft' : ''" class="w-full">
     <template #title>
       <div class="flex items-center">
         <div class="md:hidden flex items-center md:mr-3 mr-[0px]" v-if="route.meta.keepAlive">
@@ -29,7 +29,6 @@
   </el-page-header>
 </template>
 <script lang="ts" setup>
-import { ArrowLeft } from '@element-plus/icons-vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useDark, useToggle } from '@vueuse/core'
 import { useConfigStore } from '@/stores/config'

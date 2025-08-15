@@ -26,7 +26,6 @@
 
 <script setup>
 import { getCurrentInstance, ref, computed } from 'vue'
-import { Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { usePlayerStore } from '@/stores/player'
 const { source, setSource, removeSource } = usePlayerStore()
