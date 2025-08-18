@@ -129,9 +129,8 @@ export const usePlayerStore = defineStore(
             playData.value.paused = true
             ElMessage({
               type: 'error',
-              zIndex: 10000,
               duration: 1000,
-              customClass: 'backdrop-blur !w-[80vw] md:!w-[auto]',
+              customClass: '!z-100002 backdrop-blur !w-[80vw] md:!w-[auto]',
               message: '获取歌曲失败，无法播放此歌曲~',
             })
             playData.value.url = ''

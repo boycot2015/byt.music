@@ -1,49 +1,67 @@
 <template>
-  <div class="scroll-wrap relative" ref="scrollWrap">
-    {{ msg || '--' }}
+  <div class="scroll-wrap">
+    <span ref="scrollWrap" class="relative">{{ msg || '--' }}</span>
   </div>
 </template>
 <script setup>
+import { usePlayerStore } from '@/stores/player'
+import { computed, onUnmounted } from 'vue'
 const props = defineProps({
   msg: String,
+  max: {
+    type: Number,
+    default: 12,
+  },
+  duration: {
+    type: Number,
+    default: 30,
+  },
 })
+const msg = computed(() => props.msg)
+const timer = ref(null)
+const timeoutTimer = ref(null)
+const { player, playData } = usePlayerStore()
+const lyricIndex = computed(() => usePlayerStore().playData.lyricIndex)
 const scrollWrap = ref(null)
-const textMove = (oCon, max = 8) => {
-  if (oCon && oCon !== null) {
-    oCon._move = null
+const textMove = (max) => {
+  if (scrollWrap.value && scrollWrap.value !== null) {
+    timer.value = null
     const step = -1
-    if (oCon.textContent.length <= max) {
-      clearInterval(oCon._move)
+    if (scrollWrap.value.textContent.length <= max) {
+      clearInterval(timer.value)
       return
     } else {
-      autoRoll(oCon, step)
+      autoRoll(step)
     }
-    oCon._move = setInterval(() => {
-      autoRoll(oCon, step)
-    }, 30)
+    timer.value = setInterval(() => {
+      autoRoll(step)
+    }, props.duration)
   }
 }
-const autoRoll = (oCon, step) => {
-  console.log(-oCon.offsetWidth + oCon.parentNode.offsetWidth, oCon.offsetLeft, step, 'textMove')
-  if (oCon.offsetLeft < -oCon.offsetWidth + oCon.parentNode.offsetWidth) {
-    oCon.style.left = -oCon.offsetWidth + oCon.parentNode.offsetWidth + 'px'
-    if (oCon.offsetLeft > 0) oCon.style.left = 0 + 'px'
-    clearInterval(oCon._move)
+const autoRoll = (step) => {
+  if (scrollWrap.value.offsetLeft < -scrollWrap.value.offsetWidth + scrollWrap.value.parentNode.offsetWidth) {
+    scrollWrap.value.style.left = -scrollWrap.value.offsetWidth + scrollWrap.value.parentNode.offsetWidth + 'px'
+    if (scrollWrap.value.offsetLeft > 0) scrollWrap.value.style.left = 0 + 'px'
+    clearInterval(timer.value)
     return
   }
-  if (oCon.offsetLeft > 0) {
-    oCon.style.left = -oCon.offsetWidth / 2 + 'px'
+  if (scrollWrap.value.offsetLeft >= 0) {
+    scrollWrap.value.style.left = -scrollWrap.value.offsetWidth / 2 + 'px'
   }
-  oCon.style.left = -oCon.offsetLeft + step + 'px'
+  scrollWrap.value.style.left = scrollWrap.value.offsetLeft + step + 'px'
 }
-onMounted(() => {
-  // nextTick(() => {
-  //   textMove(scrollWrap.value, 10)
-  // })
+onMounted(() => {})
+onUnmounted(() => {
+  clearInterval(timer.value)
 })
-watch(props, () => {
-  if (scrollWrap.value._move) clearInterval(scrollWrap.value._move)
-  // textMove(scrollWrap.value, 20)
+watch(playData, () => {
+  clearInterval(timer.value)
+  clearTimeout(timeoutTimer.value)
+  if (!player.paused && player.showCover) {
+    timeoutTimer.value = setTimeout(() => {
+      textMove(props.max)
+    }, 600)
+  }
 })
 </script>
 <style scoped>

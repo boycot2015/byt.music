@@ -54,7 +54,7 @@ const router = useRouter()
 defineProps({
   loading: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   playlist: {
     type: Array,
