@@ -8,6 +8,7 @@ export const useSwiper = () => {
   return {
     swiper,
     swiperOptions: {
+        // rewind: true,
         spaceBetween: 0,
     },
     Swiper,
