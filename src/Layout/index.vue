@@ -9,10 +9,22 @@ import { useConfigStore } from '@/stores/config'
 import { set, useDark } from '@vueuse/core'
 import { useSwiper } from '@/hooks/useSwiper'
 
+import playlist from '@/views/playlist/index.vue'
+import favorites from '@/views/favorites/index.vue'
+import app from '@/views/app/index.vue'
+import setting from '@/views/setting/index.vue'
+import ranking from '@/views/ranking/index.vue'
+
+const tabsComponents = {
+  playlist,
+  favorites,
+  app,
+  setting,
+  ranking,
+}
 const { Swiper, SwiperSlide, modules, swiperOptions } = useSwiper()
 const swiperInstance = ref(null)
 const scrollbarRef = ref(null)
-const loaded = ref(false)
 const scrollTop = ref([])
 const isDark = useDark()
 const { scrollRef, setScrollRef } = useConfigStore()
@@ -41,7 +53,7 @@ watch(route, (to, from) => {
 })
 watch(activeIndex, () => {
   set({ activeTab: activeIndex.value })
-  router.push({ name: activeTab.value })
+  router.replace({ name: activeTab.value })
 })
 watch(playData.value, () => {
   listVisible.value = playData.value.playlistVisible
@@ -54,7 +66,7 @@ const onSwiper = (swiper) => {
   swiperInstance.value = swiper
   let index = tabs.findIndex((el) => el.name == activeTab.value)
   activeIndex.value = index == -1 ? activeIndex.value : index
-  swiperInstance.value.slideTo(activeIndex.value)
+  swiperInstance.value?.slideTo(activeIndex.value)
 }
 const onSlideChange = (value) => {
   if (value.activeIndex == activeIndex.value) return
@@ -63,19 +75,15 @@ const onSlideChange = (value) => {
     activeIndex.value = value.activeIndex
   })
 }
-const onSlideChangeEnd = (value) => {}
 const onTabClick = (tab) => {
   nextTick(() => {
     activeIndex.value = tabs.findIndex((el) => el.name == activeTab.value)
-    swiperInstance.value.slideTo(activeIndex.value)
+    swiperInstance.value?.slideTo(activeIndex.value)
   })
 }
 onMounted(() => {
-  setScrollRef(scrollbarRef.value[activeIndex.value])
+  scrollbarRef.value && setScrollRef(scrollbarRef.value[activeIndex.value])
   nextTick(() => {
-    setTimeout(() => {
-      loaded.value = true
-    }, 150)
     swiperInstance.value?.slideTo(activeIndex.value)
   })
 })
@@ -83,7 +91,7 @@ router.afterEach(() => {
   activeTab.value = route.name
   let index = tabs.findIndex((el) => el.name == activeTab.value)
   activeIndex.value = index == -1 ? activeIndex.value : index
-  swiperInstance.value.slideTo(activeIndex.value)
+  swiperInstance.value?.slideTo(activeIndex.value)
   set({ activeTab: activeIndex.value })
 })
 </script>
@@ -94,34 +102,19 @@ router.afterEach(() => {
       <Aside />
     </el-aside>
     <el-container class="overflow-hidden bg-[var(--el-bg-color)]">
-      <!-- <el-header class="bg-[var(--el-bg-color)] !px-3 flex items-center shadow-[0_0_5px_0_rgba(0,0,0,0.1)]" :class="{ 'md:!shadow-[0_5px_30px_0_rgba(255,255,255,0.1)]': isDark }"><Header /></el-header>
-      <el-main class="bg-[transparent] md:!overflow-hidden !p-0 rounded layout">
-        <el-scrollbar style="height: calc(100vh - 120px)" ref="scrollbarRef">
-          <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px]">
-            <router-view v-slot="{ Component }">
-              <transition name="slide-fade">
-                <keep-alive :include="keepAliveRoutes">
-                  <component :is="Component" />
-                </keep-alive>
-              </transition>
-            </router-view>
-            <el-backtop target=".layout .el-scrollbar__wrap" :bottom="80" :right="15">
-              <el-icon><Top /></el-icon>
-            </el-backtop>
-          </div>
-        </el-scrollbar>
-      </el-main>
-      <el-footer class="bg-[var(--el-bg-color)] z-999 !p-0 shadow-[0_-5px_30px_0_rgba(0,0,0,0.1)]" :class="{ 'md:!shadow-[0_-5px_30px_0_rgba(255,255,255,0.1)]': isDark }">
-        <Footer />
-      </el-footer> -->
       <el-header class="bg-[var(--el-bg-color)] !px-3 flex items-center shadow-[0_0_5px_0_rgba(0,0,0,0.1)]" :class="{ 'md:!shadow-[0_5px_30px_0_rgba(255,255,255,0.1)]': isDark }"><Header /></el-header>
-      <swiper :modules="modules" class="swipper w-full h-full" v-bind="swiperOptions" @swiper="onSwiper" @slideChangeTransitionStart="onSlideChange" @slideChangeTransitionEnd="onSlideChangeEnd">
+      <swiper v-if="config.isMobile" :modules="modules" class="swipper w-full h-full" v-bind="{ ...swiperOptions, virtual: false, history: false }" @swiper="onSwiper" @slideChange="onSlideChange">
         <swiper-slide class="swipper-item h-full" v-for="tab in tabs" :key="tab.name">
           <el-main class="bg-[transparent] md:!overflow-hidden !p-0 rounded layout">
             <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="{ height: config.showTab ? (config.showPlyerBar ? `calc(100vh - 180px)` : `calc(100vh - 115px)`) : !config.showPlyerBar ? `calc(100vh - 60px)` : `calc(100vh - 120px)` }" ref="scrollbarRef" :class="{ active: tab.name == activeTab }">
               <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px] md:!pb-[10px]">
-                <router-view v-slot="{ Component }">
-                  <transition :name="!config.isMobile || !route.meta?.keepAlive || route.meta?.hideInTab ? 'slide-fade' : 'fade'">
+                <transition :name="'slide-fade'" v-show="tabsComponents[tab.name] && activeTab == tab.name">
+                  <keep-alive :include="keepAliveRoutes">
+                    <component :is="tabsComponents[tab.name] || Component" />
+                  </keep-alive>
+                </transition>
+                <router-view v-slot="{ Component }" v-show="!tabsComponents[route.name]">
+                  <transition :name="'slide-fade'">
                     <keep-alive :include="keepAliveRoutes">
                       <component :is="Component" />
                     </keep-alive>
@@ -132,7 +125,29 @@ router.afterEach(() => {
           </el-main>
         </swiper-slide>
       </swiper>
-      <el-backtop :key="activeTab" v-if="tabs?.find((el) => el.name == activeTab)" target=".layout .active .el-scrollbar__wrap" class="!z-999" :bottom="130" :right="15">
+      <el-main class="bg-[transparent] md:!overflow-hidden !p-0 rounded layout" v-else>
+        <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="{ height: config.showTab ? (config.showPlyerBar ? `calc(100vh - 180px)` : `calc(100vh - 115px)`) : !config.showPlyerBar ? `calc(100vh - 60px)` : `calc(100vh - 120px)` }" ref="scrollbarRef">
+          <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px] md:!pb-[10px]">
+            <router-view v-slot="{ Component }">
+              <transition :name="'slide-fade'">
+                <keep-alive :include="keepAliveRoutes">
+                  <component :is="Component" />
+                </keep-alive>
+              </transition>
+            </router-view>
+          </div>
+        </el-scrollbar>
+      </el-main>
+      <!-- <el-backtop v-if="swiperInstance && config.isMobile" target=".layout .el-scrollbar__wrap" class="!z-999" :bottom="130" :right="15">
+        <el-icon><Top /></el-icon>
+      </el-backtop>
+      <el-backtop :key="activeTab" v-else-if="swiperInstance && scrollbarRef && scrollbarRef[activeIndex.value]" target=".layout .active .el-scrollbar__wrap" class="!z-999" :bottom="130" :right="15">
+        <el-icon><Top /></el-icon>
+      </el-backtop> -->
+      <el-backtop :key="route.name" v-if="swiperInstance && tabs?.find((el) => el.name == activeTab)" target=".layout .active .el-scrollbar__wrap" class="!z-999" :bottom="130" :right="15">
+        <el-icon><Top /></el-icon>
+      </el-backtop>
+      <el-backtop :key="route.name" v-else target=".layout .el-scrollbar__wrap" class="!z-999" :bottom="130" :right="15">
         <el-icon><Top /></el-icon>
       </el-backtop>
       <el-footer
@@ -143,7 +158,7 @@ router.afterEach(() => {
       >
         <Footer />
       </el-footer>
-      <el-tabs v-if="loaded && config.showTab" :tab-position="'bottom'" @tab-click="onTabClick" v-model="activeTab" stretch class="bg-[var(--el-bg-color)] absolute tabs w-full md:!hidden z-1000 bottom-0 left-0 right-0 px-3 py-2 border-t border-[var(--el-border-color)]">
+      <el-tabs v-if="swiperInstance && config.showTab" :tab-position="'bottom'" @tab-click="onTabClick" v-model="activeTab" stretch class="bg-[var(--el-bg-color)] absolute tabs w-full md:!hidden z-1000 bottom-0 left-0 right-0 px-3 py-2 border-t border-[var(--el-border-color)]">
         <el-tab-pane :label="tab.meta.title" v-for="tab in tabs" :name="tab.name" :key="tab.name">
           <template #label>
             <div class="flex items-center flex-col">

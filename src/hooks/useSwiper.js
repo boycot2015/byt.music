@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
 import 'swiper/css/scrollbar'
-import { Scrollbar, A11y } from 'swiper/modules'
+import { Scrollbar, A11y, Virtual } from 'swiper/modules'
 export const useSwiper = () => {
   const swiper = ref(null)
   return {
@@ -12,6 +12,6 @@ export const useSwiper = () => {
     },
     Swiper,
     SwiperSlide,
-    modules: [Scrollbar, A11y],
+    modules: [Scrollbar, A11y, Virtual],
   }
 }

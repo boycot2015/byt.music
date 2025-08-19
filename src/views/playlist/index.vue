@@ -190,7 +190,7 @@ const fetchListData = (item = {}) => {
   gridRef.value?.setScrollTop(0)
   ctype.value = item.id || ctype.value
   loading.value = true
-  playlist.value = new Array(9).fill('').map((_, index) => ({
+  playlist.value = new Array(12).fill('').map((_, index) => ({
     id: (index + 1).toString(),
   }))
   fetch(`${$apiUrl}/music?type=${item.type || type.value}&offset=${currentPage.value - 1}&limit=12&id=${ctype.value}`)

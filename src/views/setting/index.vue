@@ -3,8 +3,8 @@
     <el-row>
       <el-col :span="0" :md="4" class="relative">
         <el-scrollbar height="calc(100vh - 140px)" class="border-r border-[var(--el-border-color)]">
-          <div class="!hidden md:!block !fixed top-2">
-            <el-anchor ref="anchorRef" container=".layout .active .el-scrollbar__wrap" select-scroll-top type="underline" @click="(e, href) => anchorRef?.scrollTo(href)">
+          <div class="!hidden md:!block !fixed">
+            <el-anchor ref="anchorRef" container=".layout .el-scrollbar__wrap" select-scroll-top type="underline" @click="(e, href) => anchorRef?.scrollTo(href)">
               <el-anchor-link v-for="(item, key) in configs" :href="`#config-${key}`" :key="key"> {{ item.label }} </el-anchor-link>
               <el-anchor-link v-for="(item, key) in playConfigs" :href="`#config-${key}`" :key="key"> {{ item.label }} </el-anchor-link>
               <el-anchor-link v-for="(item, key) in brConfigs" :href="`#config-${key}`" :key="key"> {{ item.label }} </el-anchor-link>

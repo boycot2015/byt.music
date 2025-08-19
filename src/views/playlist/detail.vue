@@ -1,7 +1,7 @@
 <template>
   <div class="playlist-detail !overflow-hidden">
     <div class="md:h-[calc(100vh-140px)] min-h-[100vh] md:min-h-[calc(100vh-140px)] rounded-md overflow-y-auto md:!overflow-hidden">
-      <Playlist ref="tableRef" :data="data" :tableProps="{ height: config.isMobile ? null : 'calc(100vh - 300px)' }" :show-actions="true">
+      <Playlist ref="tableRef" :loading="loading" :data="data" :tableProps="{ height: config.isMobile ? null : 'calc(100vh - 300px)' }" :show-actions="true">
         <template #header>
           <div class="md:flex mb-3 min-h-[300px] w-full md:min-h-[100px] relative rounded overflow-hidden" v-loading="loading" element-loading-custom-class="backdrop-blur !z-99">
             <Image v-if="data.info.cover_img_url" :src="data.info.cover_img_url" :size="120" class="absolute h-[300px] m-[auto] md:w-[120px] md:h-[120px] rounded scale-[2] blur-[200px] md:blur-[0px] md:scale-[1]"></Image>

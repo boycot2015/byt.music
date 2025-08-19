@@ -111,6 +111,7 @@ const playlistInfo = ref({})
 const scrollbarRef = ref(null)
 const fetchData = () => {
   pageLoading.value = true
+  loading.value = true
   animateLoading.value = true
   scrollbarRef.value?.setScrollTop(0)
   if (cates.value[type.value]?.playlist?.length) {
@@ -152,7 +153,7 @@ const fetchPlayList = async (id) => {
   playlist.value = results.tracks || []
   playlistInfo.value = results.info || {}
   loading.value = false
-  playlistRef.value.setScrollTop(0)
+  playlistRef.value?.setScrollTop(0)
 }
 onMounted(() => {
   fetchData()

@@ -1,7 +1,7 @@
 import './assets/styles/main.css'
 import 'element-plus/dist/index.css'
 import 'nprogress/nprogress.css'
-import { createApp, defineAsyncComponent } from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './stores' // 引入store

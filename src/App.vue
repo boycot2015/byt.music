@@ -8,7 +8,6 @@ import { useRouter } from 'vue-router'
 import { useConfigStore } from '@/stores/config'
 import { usePlayerStore } from '@/stores/player'
 import { setHtmlStyleProp } from '@/utils'
-import { debounce } from 'lodash-es'
 const { config } = useConfigStore()
 const { playData, initPlay, setPlayer } = usePlayerStore()
 const { proxy } = getCurrentInstance()
@@ -31,12 +30,9 @@ onMounted(() => {
   document.body.style.fontFamily = `${config.family}`
   document.body.classList[config.textShadow ? 'add' : 'remove'](['!text-shadow-md'])
   set({ isMobile: document.body.clientWidth < 768 })
-  window.addEventListener(
-    'resize',
-    debounce(() => {
-      set({ isMobile: document.body.clientWidth < 768 })
-    }, 300)
-  )
+  window.addEventListener('resize', () => {
+    set({ isMobile: document.body.clientWidth < 768 })
+  })
   initPlay()
 })
 </script>

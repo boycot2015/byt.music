@@ -29,10 +29,10 @@
             <div v-if="player.loading" class="leading-[42px] line-clamp-1">正在加载资源...</div>
             <template v-else>
               <div class="title line-clamp-1">{{ playData.title }}</div>
-              <div class="singer !text-xs line-clamp-1 hidden md:block">{{ playData.singer }}</div>
+              <div class="singer !text-md line-clamp-1 hidden md:block">{{ playData.singer }}</div>
               <el-carousel v-if="config.isMobile" :initial-index="playData.lyricIndex" indicator-position="none" ref="sliderRef" height="30px" class="flex-1 md:!hidden" direction="vertical" :autoplay="false">
                 <el-carousel-item v-for="(item, index) in playData.lyricList" :key="item">
-                  <TextSlider class="text-xs leading-[30px]" v-show="playData.lyricIndex == index" :msg="item.split(']')[1]" :max="6" />
+                  <TextSlider v-show="playData.lyricIndex == index" :msg="item.split(']')[1]" :max="6" />
                   <span v-show="playData.lyricIndex != index">{{ item.split(']')[1] }}</span>
                 </el-carousel-item>
               </el-carousel>

@@ -57,10 +57,10 @@ onUnmounted(() => {
 watch(playData, () => {
   clearInterval(timer.value)
   clearTimeout(timeoutTimer.value)
-  if (!player.paused && player.showCover) {
+  if (!player.paused) {
     timeoutTimer.value = setTimeout(() => {
       textMove(props.max)
-    }, 600)
+    }, 800)
   }
 })
 </script>

@@ -58,7 +58,11 @@ export const useCollectStore = defineStore(
           current.tracks = current.tracks.filter((item) => item.id != data.id)
         } else {
           current.tracks.unshift(data)
-          ElMessage.success('收藏成功')
+          ElMessage.success({
+            type: 'success',
+            customClass: '!z-10002 backdrop-blur-xl',
+            message: '收藏成功'
+          })
         }
         collect.value = collect.value?.map(item => {
           if (item.info.id == current.info.id) {

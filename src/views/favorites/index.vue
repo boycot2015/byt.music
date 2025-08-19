@@ -104,10 +104,11 @@ const playlistRef = ref(null)
 const playlist = ref([])
 const loading = ref(false)
 const onSelect = (index) => {
+  if (loading.value) return
   loading.value = true
   playlistRef.value?.setScrollTop(0)
   collectStore.setCurrent(index)
-  fetchData()
+  fetchData(true)
 }
 const fetchData = async (refresh) => {
   if (!collect.value[current.value] || !collect.value[current.value].info.id) {

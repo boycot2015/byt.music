@@ -37,7 +37,7 @@
               () => {
                 picPage = 1
                 picCate = ''
-                scrollbarRef.setScrollTop(0)
+                scrollbarRef?.setScrollTop(0)
                 fetchPicData()
               }
             "
@@ -49,7 +49,7 @@
       <el-tab-pane v-for="(item, index) in picCates" :disabled="picLoading" :key="index" :label="item.name" :name="item.id + ''" />
     </el-tabs>
     <el-scrollbar
-      height="490px"
+      max-height="490px"
       ref="scrollbarRef"
       class="rounded-md"
       v-loading="picLoading"
@@ -65,7 +65,7 @@
       <el-row class="flex items-center" :gutter="10">
         <el-col class="mb-2" v-for="(item, index) in picList" :key="index" :span="12" :sm="8" :lg="6" :xl="4">
           <div class="img rounded-md h-full md:h-40 overflow-hidden border border-2 border-[transparent]" :class="{ 'border-[var(--el-color-primary)]': item.id === active }">
-            <Image fit="cover" :size="config.isMobile ? 60 : 100" class="rounded-md transition-all duration-400 scale-150 lg:scale-120 hover:!scale-160 cursor-pointer" :src="item.url" lazy @click="setBackground(item)"> </Image>
+            <Image fit="cover" :size="config.isMobile ? 60 : 100" class="rounded-md transition-all duration-400 scale-150 lg:scale-120 hover:!scale-160 cursor-pointer w-full h-full" :src="item.url" lazy @click="setBackground(item)"> </Image>
           </div>
         </el-col>
       </el-row>
@@ -144,7 +144,7 @@ const onPickerChange = (val) => {
 const onPicCateChange = () => {
   nextTick(() => {
     picPage.value = 1
-    scrollbarRef.value.setScrollTop(0)
+    scrollbarRef.value?.setScrollTop(0)
     fetchPicData()
   })
 }
