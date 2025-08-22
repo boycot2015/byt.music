@@ -30,12 +30,14 @@
       </div>
       <div class="mr-3 hidden md:flex items-center">
         <el-icon :size="30" @click="setPlayer({ muted: !player.muted })" :disabled="disabled">
-          <el-popover trigger="hover" popper-class="backdrop-blur" :show-arrow="false">
+          <el-popover :trigger="'hover'" popper-class="backdrop-blur !z-100002" :show-arrow="false">
             <template #reference>
               <IconVolume class="cursor-pointer" v-if="!player.muted" />
               <IconVolumeOff class="cursor-pointer" v-else />
             </template>
-            <el-slider :step="0.1" size="small" class="!h-[auto] text-center w-full" v-model="player.volume" :min="0" :format-tooltip="() => formatTime(player.volume, 'percent')" :max="1" @input="(val) => (inputValue = val)" @change="(val) => onSliderChange(val, 'volume')" />
+            <div class="flex">
+              <el-slider :step="0.1" size="small" class="!h-[auto] text-center w-full" v-model="player.volume" :min="0" :format-tooltip="() => formatTime(player.volume, 'percent')" :max="1" @input="(val) => (inputValue = val)" @change="(val) => onSliderChange(val, 'volume')" />
+            </div>
           </el-popover>
         </el-icon>
       </div>
@@ -92,13 +94,12 @@ import Playlist from '@/views/components/Playlist.vue'
 import Slider from './components/Slider.vue'
 
 const playerStore = usePlayerStore()
-const configStore = useConfigStore()
 const collectStore = useCollectStore()
 const { audioRef, initPlay, play, setPlayData, playNext, playPrev, togglePlay, setPlayer } = playerStore
 const { has, toggleCollect } = collectStore
 const player = computed(() => usePlayerStore().player)
 const playData = computed(() => usePlayerStore().playData)
-const { config } = configStore
+const config = computed(() => useConfigStore().config)
 const paused = computed(() => player.value.paused)
 const muted = computed(() => player.value.muted)
 const url = computed(() => playData.value.url)

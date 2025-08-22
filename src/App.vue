@@ -1,5 +1,4 @@
 <script setup>
-import { ref, watch } from 'vue'
 import { RouterView } from 'vue-router'
 import Layout from './Layout/index.vue'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
@@ -8,7 +7,7 @@ import { useRouter } from 'vue-router'
 import { useConfigStore } from '@/stores/config'
 import { usePlayerStore } from '@/stores/player'
 import { setHtmlStyleProp } from '@/utils'
-const { config } = useConfigStore()
+const config = computed(() => useConfigStore().config)
 const { playData, initPlay, setPlayer } = usePlayerStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
@@ -25,10 +24,10 @@ const fetchCateData = async () => {
 fetchCateData()
 onMounted(() => {
   // Set the primary color from the config store on mount
-  setHtmlStyleProp(config.theme.primaryColor)
-  document.body.style.background = `url(${config.theme.backgroundImage}) no-repeat center/cover`
-  document.body.style.fontFamily = `${config.family}`
-  document.body.classList[config.textShadow ? 'add' : 'remove'](['!text-shadow-md'])
+  setHtmlStyleProp(config.value.theme.primaryColor)
+  document.body.style.background = `url(${config.value.theme.backgroundImage}) no-repeat center/cover`
+  document.body.style.fontFamily = `${config.value.family}`
+  document.body.classList[config.value.textShadow ? 'add' : 'remove'](['!text-shadow-md'])
   set({ isMobile: document.body.clientWidth < 768 })
   window.addEventListener('resize', () => {
     set({ isMobile: document.body.clientWidth < 768 })

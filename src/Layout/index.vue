@@ -38,6 +38,11 @@ const route = useRoute()
 const activeIndex = ref(config.activeTab || 0)
 const tabs = router.options.routes.filter((el) => el.meta?.keepAlive && !el.meta?.hideInTab && !el.meta?.hideInMenu)
 const activeTab = ref(tabs[activeIndex]?.name || 'playlist')
+
+const scrollStyle = computed(() => ({ height: config.value.showTab ? (config.value.showPlyerBar ? `calc(100vh - 175px)` : `calc(100vh - 115px)`) : !config.value.showPlyerBar ? `calc(100vh - 60px)` : `calc(100vh - 120px)` }))
+watch(isDark, () => {
+  nextTick(() => swiperInstance.value?.update())
+})
 const keepAliveRoutes = router.options.routes
   .filter((el) => el.meta?.keepAlive)
   .map((el) => el.name)
@@ -106,7 +111,7 @@ router.afterEach(() => {
       <swiper v-if="config.isMobile" :modules="modules" class="swipper w-full h-full" v-bind="{ ...swiperOptions, virtual: false, history: false }" @swiper="onSwiper" @slideChange="onSlideChange">
         <swiper-slide class="swipper-item h-full" v-for="tab in tabs" :key="tab.name">
           <el-main class="bg-[transparent] md:!overflow-hidden !p-0 rounded layout">
-            <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="{ height: config.showTab ? (config.showPlyerBar ? `calc(100vh - 180px)` : `calc(100vh - 115px)`) : !config.showPlyerBar ? `calc(100vh - 60px)` : `calc(100vh - 120px)` }" ref="scrollbarRef" :class="{ active: tab.name == activeTab }">
+            <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="scrollStyle" ref="scrollbarRef" :class="{ active: tab.name == activeTab }">
               <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px] md:!pb-[10px]">
                 <transition :name="'slide-fade'" v-show="tabsComponents[tab.name] && activeTab == tab.name">
                   <keep-alive :include="keepAliveRoutes">
@@ -126,7 +131,7 @@ router.afterEach(() => {
         </swiper-slide>
       </swiper>
       <el-main class="bg-[transparent] md:!overflow-hidden !p-0 rounded layout" v-else>
-        <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="{ height: config.showTab ? (config.showPlyerBar ? `calc(100vh - 180px)` : `calc(100vh - 115px)`) : !config.showPlyerBar ? `calc(100vh - 60px)` : `calc(100vh - 120px)` }" ref="scrollbarRef">
+        <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="scrollStyle" ref="scrollbarRef">
           <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px] md:!pb-[10px]">
             <router-view v-slot="{ Component }">
               <transition :name="'slide-fade'">
@@ -138,13 +143,7 @@ router.afterEach(() => {
           </div>
         </el-scrollbar>
       </el-main>
-      <!-- <el-backtop v-if="swiperInstance && config.isMobile" target=".layout .el-scrollbar__wrap" class="!z-999" :bottom="130" :right="15">
-        <el-icon><Top /></el-icon>
-      </el-backtop>
-      <el-backtop :key="activeTab" v-else-if="swiperInstance && scrollbarRef && scrollbarRef[activeIndex.value]" target=".layout .active .el-scrollbar__wrap" class="!z-999" :bottom="130" :right="15">
-        <el-icon><Top /></el-icon>
-      </el-backtop> -->
-      <el-backtop :key="route.name" v-if="swiperInstance && tabs?.find((el) => el.name == activeTab)" target=".layout .active .el-scrollbar__wrap" class="!z-999" :bottom="130" :right="15">
+      <el-backtop :key="route.name" v-if="config.isMobile && swiperInstance && tabs?.find((el) => el.name == activeTab)" target=".layout .active .el-scrollbar__wrap" class="!z-999" :bottom="130" :right="15">
         <el-icon><Top /></el-icon>
       </el-backtop>
       <el-backtop :key="route.name" v-else target=".layout .el-scrollbar__wrap" class="!z-999" :bottom="130" :right="15">

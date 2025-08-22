@@ -15,7 +15,7 @@
     <el-row v-loading="colorLoading" class="min-h-[200px] rounded-md overflow-hidden">
       <el-col v-for="(item, index) in showColors" :key="index" :span="4" :md="2">
         <div class="flex flex-col items-center justify-center ml-[-20px]">
-          <el-color-picker popper-class="backdrop-blur z-9999" size="large" v-model="item.value" :predefine="colors.map((el) => el.value).slice(index * 16, index * 16 + 16)" @change="onPickerChange" />
+          <el-color-picker popper-class="backdrop-blur z-100002" size="large" v-model="item.value" :predefine="colors.map((el) => el.value).slice(index * 16, index * 16 + 16)" @change="onPickerChange" />
           <div class="text-md">{{ item.name }}</div>
         </div>
       </el-col>
@@ -81,6 +81,7 @@ const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
 const colors = ref([])
 const colorLoading = ref(false)
+const loaded = ref(false)
 const config = computed(() => useConfigStore().config)
 // 图片列表
 const picList = ref([])
@@ -97,7 +98,7 @@ const scrollbarRef = ref(null)
 const showColors = ref([])
 const colorSource = ref('https://zhongguose.com')
 const fetchData = async () => {
-  colorLoading.value = !config.loaded
+  colorLoading.value = !loaded.value
   const target = colorSource.value + '/colors.json'
   fetch(`${$apiUrl}/cors?url=${target}`, {})
     .then((res) => res.json())
@@ -114,7 +115,7 @@ const fetchData = async () => {
   fetchPicData()
 }
 const fetchPicData = async (page = 1) => {
-  picLoading.value = !config.loaded
+  picLoading.value = !loaded.value
   const target = `${$apiUrl}/wallpaper?source=${picType.value}&id=${picCate.value}&page=${picPage.value || page}&size=16`
   fetch(target, {})
     .then((res) => res.json())
@@ -136,7 +137,7 @@ const onPickerChange = (val) => {
   setHtmlStyleProp(val)
   set({
     theme: {
-      ...config.theme,
+      ...config.value.theme,
       primaryColor: val,
     },
   })
@@ -153,11 +154,12 @@ const setBackground = (item) => {
   img.src = item.url
   img.onload = () => {
     active.value = item.id + ''
-    set({ theme: { ...config.theme, backgroundImage: item.url } })
+    set({ theme: { ...config.value.theme, backgroundImage: item.url } })
   }
 }
 onMounted(() => {
   fetchData()
+  loaded.value = true
 })
 </script>
 

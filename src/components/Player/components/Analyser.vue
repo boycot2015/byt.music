@@ -1,10 +1,20 @@
 
 <template>
-  <canvas id="visualizer" width="1920" height="300"></canvas>
+  <canvas ref="visualizerRef" class="visualizer" :width="props.width" :height="props.height" />
 </template>
 <script setup>
 import { usePlayerStore } from '@/stores/player'
 import { useConfigStore } from '@/stores/config'
+const props = defineProps({
+  width: {
+    type: Number,
+    default: 1920,
+  },
+  height: {
+    type: Number,
+    default: 300,
+  },
+})
 const { setPlayer } = usePlayerStore()
 const audioRef = computed(() => useConfigStore().audioRef)
 const config = computed(() => useConfigStore().config)
@@ -12,6 +22,7 @@ const player = computed(() => usePlayerStore().player)
 const analyser = computed(() => usePlayerStore().analyser)
 const playData = computed(() => usePlayerStore().playData)
 const myRequest = ref(null)
+const visualizerRef = ref(null)
 const ctx = ref(null)
 const visualizer = () => {
   /* *
@@ -35,7 +46,7 @@ const visualizer = () => {
   // let frequencyData = new Uint8Array(analyser.frequencyBinCount)
 
   // we're ready to receive some data!
-  let canvas = document.getElementById('visualizer')
+  let canvas = visualizerRef.value
   let cwidth = canvas.width
   let cheight = canvas.height - 2
   let meterWidth = 12 // width of the meters in the spectrum
@@ -79,11 +90,12 @@ const visualizer = () => {
 }
 
 watch(player.value, () => {
+  if (!visualizerRef.value) return
   if (!player.value.visualizer) {
-    document.getElementById('visualizer').style.visibility = 'hidden'
+    visualizerRef.value.style.visibility = 'hidden'
     return
   }
-  document.getElementById('visualizer').style.visibility = 'visible'
+  visualizerRef.value.style.visibility = 'visible'
   cancelAnimationFrame(myRequest.value)
   !player.value.paused && analyser.value && visualizer()
 })
@@ -93,10 +105,12 @@ watch(analyser, () => {
 onUnmounted(() => {
   cancelAnimationFrame(myRequest.value)
 })
-onMounted(() => {})
+onMounted(() => {
+  //   visualizer()
+})
 </script>
  <style>
-#visualizer {
+canvas.visualizer {
   bottom: 0;
   left: 50%;
   margin-left: -960px;

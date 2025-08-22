@@ -4,7 +4,7 @@
       <div class="absolute bottom-[60px] w-full flex md:z-9999">
         <Slider
           class="!w-full md:z-99 !h-[auto] text-center"
-          v-show="player.playBar == 'full' || config.isMobile"
+          v-show="player.playBar == 'full' && !config.isMobile"
           @change="
             (value) => {
               setPlayer({
@@ -29,10 +29,22 @@
             <div v-if="player.loading" class="leading-[42px] line-clamp-1">正在加载资源...</div>
             <template v-else>
               <div class="title line-clamp-1">{{ playData.title }}</div>
+              <Slider
+                class="!w-32 md:z-99 is-inner !absolute text-center top-9"
+                v-if="config.isMobile"
+                @change="
+                  (value) => {
+                    setPlayer({
+                      withLyric: true,
+                      currentTime: value,
+                    })
+                  }
+                "
+              />
               <div class="singer !text-md line-clamp-1 hidden md:block">{{ playData.singer }}</div>
               <el-carousel v-if="config.isMobile" :initial-index="playData.lyricIndex" indicator-position="none" ref="sliderRef" height="30px" class="flex-1 md:!hidden" direction="vertical" :autoplay="false">
                 <el-carousel-item v-for="(item, index) in playData.lyricList" :key="item">
-                  <TextSlider v-show="playData.lyricIndex == index" :msg="item.split(']')[1]" :max="6" />
+                  <TextSlider v-show="playData.lyricIndex == index" :duration="playData.lyricList[index + 1] ? (playData.lyricList[index + 1].split(']')[0].split(':')[1] - item.split(']')[0].split(':')[1]) * 1000 : 1000" :msg="item.split(']')[1]" :max="6" />
                   <span v-show="playData.lyricIndex != index">{{ item.split(']')[1] }}</span>
                 </el-carousel-item>
               </el-carousel>
@@ -64,6 +76,15 @@ watch(playData.value, () => {
   .el-slider__bar,
   .el-slider__runway {
     height: 5px;
+  }
+  .el-slider__button-wrapper {
+    display: none;
+  }
+}
+:deep(.is-inner .el-slider) {
+  .el-slider__bar,
+  .el-slider__runway {
+    height: 24px;
   }
   .el-slider__button-wrapper {
     display: none;

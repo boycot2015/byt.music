@@ -67,10 +67,17 @@ export const usePlayerStore = defineStore(
       audioRef.value.crossOrigin = 'anonymous'
       audioRef.value.autoplay = true
       player.value.paused = true
+      audioRef.value.volume = player.value.volume
+      audioRef.value.muted = player.value.muted
       audioRef.value.addEventListener('timeupdate', () => {
         onUpdate()
       })
       audioRef.value.addEventListener('ended', () => {
+        if (player.value.loop) {
+          audioRef.value.currentTime = 0
+          audioRef.value.play()
+          return
+        }
         playNext()
       })
       audioRef.value.addEventListener('play', () => {
@@ -157,7 +164,7 @@ export const usePlayerStore = defineStore(
     const setPlayer = (data = {}) => {
       for (const key in data) {
         player.value[key] = data[key]
-        if (['volume', 'muted'].includes(key)) {
+        if (['volume', 'muted', 'loop'].includes(key)) {
           audioRef.value[key] = data[key]
         }
       }
@@ -185,6 +192,10 @@ export const usePlayerStore = defineStore(
     const playNext = () => {
       audioRef.value.pause()
       audioRef.value.currentTime = 0
+      // 切换歌曲时重置播放模式和循环状态
+      if (player.value.loop) {
+        setPlayer({ random: false, loop: false })
+      }
       setPlayer({ currentTime: 0, duration: 0, paused: true })
       if (playData.value.playIndex === playData.value.playlist.length - 1 && !player.value.random) return
       if (player.value.random) {
@@ -233,6 +244,7 @@ export const usePlayerStore = defineStore(
         audioRef.value.play()
       }
     })
+    // 歌词同步
     watch(player.value, (val) => {
       if (!player.value || !audioRef.value) return
       if (val.withLyric) {

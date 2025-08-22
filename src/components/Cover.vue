@@ -63,28 +63,32 @@
           </el-icon>
         </div>
         <div class="flex items-center">
-          <el-icon :size="24" @click="setPlayer({ muted: !player.muted })" :disabled="disabled">
-            <el-popover trigger="hover" popper-class="backdrop-blur" :show-arrow="false">
+          <el-icon :size="24" :disabled="disabled">
+            <el-popover trigger="click" popper-class="backdrop-blur !z-10002" :show-arrow="false">
               <template #reference>
                 <IconVolume class="cursor-pointer" v-if="!player.muted" />
                 <IconVolumeOff class="cursor-pointer" v-else />
               </template>
-              <el-slider
-                :step="0.1"
-                size="small"
-                class="!h-[auto] text-center w-full"
-                v-model="player.volume"
-                :min="0"
-                :format-tooltip="() => formatTime(player.volume, 'percent')"
-                :max="1"
-                @input="(val) => (inputValue = val)"
-                @change="
-                  (val) =>
-                    setPlayer({
-                      volume: val,
-                    })
-                "
-              />
+              <div class="flex">
+                <IconVolume @click="setPlayer({ muted: !player.muted })" class="cursor-pointer mr-2" v-if="!player.muted" />
+                <IconVolumeOff @click="setPlayer({ muted: !player.muted })" class="cursor-pointer mr-2" v-else />
+                <el-slider
+                  :step="0.1"
+                  size="small"
+                  class="!h-[auto] text-center w-full"
+                  v-model="player.volume"
+                  :min="0"
+                  :format-tooltip="() => formatTime(player.volume, 'percent')"
+                  :max="1"
+                  @input="(val) => (inputValue = val)"
+                  @change="
+                    (val) =>
+                      setPlayer({
+                        volume: val,
+                      })
+                  "
+                />
+              </div>
             </el-popover>
           </el-icon>
         </div>

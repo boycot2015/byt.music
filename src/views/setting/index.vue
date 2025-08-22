@@ -93,7 +93,7 @@ const configs = ref({
     ],
   },
   showTab: {
-    label: '是否显示底部菜单',
+    label: '是否显示底部菜单(移动端生效)',
     type: 'radio',
     options: [
       { label: '关闭', value: false },
@@ -109,7 +109,7 @@ const configs = ref({
     ],
   },
   showPlyerBar: {
-    label: '是否显示播放器',
+    label: '是否显示播放器(移动端生效)',
     type: 'radio',
     options: [
       { label: '关闭', value: false },

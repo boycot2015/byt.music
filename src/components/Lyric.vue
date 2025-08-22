@@ -2,11 +2,11 @@
   <div class="lyric flex items-center overflow-hidden !px-5 md:px-0 w-full md:w-[auto]">
     <el-scrollbar ref="scrollbar" class="w-full md:w-[auto]" :height="config.isMobile ? '66vh' : 'calc(100vh - 230px)'" @scroll="onScroll">
       <div class="w-full md:w-[500px] drop-shadow-md py-[300px]" v-if="!player.lyricLoading">
-        <div :ref="(el) => (itemRefs[index] = el)" v-for="(item, index) in lyricArr" :key="item" class="h-[48px]" @click="setSlider(index)">
-          <span class="text-xl cursor-pointer line-clamp-1 text-left transition-all duration-200 ease" :class="{ 'text-[var(--el-color-primary)] !text-2xl ': index === activeIndex, '!text-center': player.lyricAlign === 'center', '!text-right': player.lyricAlign === 'right' }">
-            <TextSlider v-show="index === activeIndex" :msg="item.split(']')[1]" />
-            <span v-show="index !== activeIndex">{{ item.split(']')[1] }}</span>
-          </span>
+        <div :ref="(el) => (itemRefs[index] = el)" v-for="(item, index) in lyricArr" :key="item" @click="setSlider(index)">
+          <div class="text-xl cursor-pointer line-clamp-1 text-left transition-all duration-200 ease leading-[48px]" :class="{ 'text-[var(--el-color-primary)] !text-2xl ': index === activeIndex, '!text-center': player.lyricAlign === 'center', '!text-right': player.lyricAlign === 'right' }">
+            <TextSlider v-if="index === activeIndex" :duration="lyricArr[index + 1] ? (lyricArr[index + 1].split(']')[0].split(':')[1] - item.split(']')[0].split(':')[1]) * 1000 : 1000" :msg="item.split(']')[1]" />
+            <div v-show="index !== activeIndex">{{ item.split(']')[1] }}</div>
+          </div>
         </div>
       </div>
       <div v-else class="w-full md:w-[500px] drop-shadow-md py-[100px] text-center">歌词加载中...</div>
@@ -19,18 +19,19 @@ import { useConfigStore } from '@/stores/config'
 const playerStore = usePlayerStore()
 const { config } = useConfigStore()
 const player = computed(() => usePlayerStore().player)
-const { playData, setPlayer, setPlayData } = playerStore
+const playData = computed(() => usePlayerStore().playData)
+const { setPlayer, setPlayData } = playerStore
 const activeIndex = ref(0)
 const isScroll = ref(false)
 const scrollbar = ref(null)
 const scrollTop = ref(0)
 const itemRefs = ref([])
 let timer = ref(null)
-let lyricArr = computed(() => playData.lyricList || [])
+let lyricArr = computed(() => playData.value.lyricList || [])
 
 let timeArr = lyricArr.value?.filter((el) => el).map((el) => el.split(']')[0]?.split('[')[1]?.split('.')[0] || '0:00') || []
 const setSlider = (index) => {
-  activeIndex.value = index || playData.lyricIndex || activeIndex.value
+  activeIndex.value = index || playData.value.lyricIndex || activeIndex.value
   if (index) {
     setPlayer({
       withLyric: true,
@@ -52,7 +53,7 @@ const setSlider = (index) => {
     let index = [...timeArr].filter((el) => el).findIndex((_) => _ === timerStr)
     let elementH = itemRefs?.value[activeIndex.value]?.offsetHeight || 48
     let baseTop = 5 * elementH
-    activeIndex.value = index === -1 ? activeIndex.value : index
+    activeIndex.value = index === -1 ? activeIndex.value : index < activeIndex.value && !player.value?.withLyric ? activeIndex.value : index
     let top = activeIndex.value * elementH - baseTop
     if (!player?.value?.currentTime) {
       activeIndex.value = 0
@@ -71,6 +72,7 @@ const setSlider = (index) => {
     setPlayData({
       lyricIndex: activeIndex.value,
     })
+    // console.log(index, activeIndex.value, ' activeIndex.value')
   }
 }
 const onScroll = ({ scrollTop: top }) => {

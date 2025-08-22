@@ -42,7 +42,7 @@ export const useConfigStore = defineStore(
       }
       if (val.theme) {
         val.theme.primaryColor && setHtmlStyleProp(val.theme.primaryColor)
-        document.body.style.background = `url(${val.theme.backgroundImage}) no-repeat center/cover`
+        if(val.theme.backgroundImage) document.body.style.background = `url(${val.theme.backgroundImage}) no-repeat center/cover`
       }
       if (val.family) {
         document.body.style.fontFamily = `${val.family}`

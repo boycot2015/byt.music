@@ -1,5 +1,5 @@
 <template>
-  <div class="scroll-wrap">
+  <div class="scroll-wrap w-full">
     <span ref="scrollWrap" class="relative">{{ msg || '--' }}</span>
   </div>
 </template>
@@ -8,13 +8,9 @@ import { usePlayerStore } from '@/stores/player'
 import { computed, onUnmounted } from 'vue'
 const props = defineProps({
   msg: String,
-  max: {
-    type: Number,
-    default: 12,
-  },
   duration: {
-    type: Number,
-    default: 30,
+    type: [Number, String],
+    default: 2000,
   },
 })
 const msg = computed(() => props.msg)
@@ -23,11 +19,13 @@ const timeoutTimer = ref(null)
 const { player, playData } = usePlayerStore()
 const lyricIndex = computed(() => usePlayerStore().playData.lyricIndex)
 const scrollWrap = ref(null)
-const textMove = (max) => {
+const repeatCount = ref(0)
+const textMove = () => {
   if (scrollWrap.value && scrollWrap.value !== null) {
     timer.value = null
     const step = -1
-    if (scrollWrap.value.textContent.length <= max) {
+    if (scrollWrap.value.offsetWidth < scrollWrap.value.parentNode.offsetWidth) {
+      scrollWrap.value.style.left = 0 + 'px'
       clearInterval(timer.value)
       return
     } else {
@@ -35,7 +33,7 @@ const textMove = (max) => {
     }
     timer.value = setInterval(() => {
       autoRoll(step)
-    }, props.duration)
+    }, 30)
   }
 }
 const autoRoll = (step) => {
@@ -50,17 +48,17 @@ const autoRoll = (step) => {
   }
   scrollWrap.value.style.left = scrollWrap.value.offsetLeft + step + 'px'
 }
-onMounted(() => {})
 onUnmounted(() => {
   clearInterval(timer.value)
+  clearTimeout(timeoutTimer.value)
 })
 watch(playData, () => {
   clearInterval(timer.value)
   clearTimeout(timeoutTimer.value)
   if (!player.paused) {
     timeoutTimer.value = setTimeout(() => {
-      textMove(props.max)
-    }, 800)
+      textMove()
+    }, Math.min(Math.floor(props.duration / 2), 2000))
   }
 })
 </script>

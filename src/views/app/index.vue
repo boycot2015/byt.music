@@ -139,7 +139,7 @@ watchEffect(() => {
   appId.value = appStore.current
 })
 onActivated(() => {
-  loading.value = current.value?.affix ? false : true
+  loading.value = false
 })
 onMounted(() => {
   Sortable.create(document.querySelector('.tabs .el-tabs__nav'), {

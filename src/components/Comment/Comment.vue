@@ -3,7 +3,7 @@
     <el-tabs v-model="ctype" @tab-click="() => scrollbarRef.setScrollTop(0)">
       <el-tab-pane :label="item.name" :name="item.type" v-for="item in commentList" :key="item.type"> </el-tab-pane>
     </el-tabs>
-    <el-scrollbar ref="scrollbarRef" height="calc(100vh - 110px)" class="pr-3" @end-reached="() => getComments({ page: commentList[1].page, limit: commentList[1].limit })">
+    <el-scrollbar ref="scrollbarRef" height="calc(100vh - 110px)" class="pr-3" @end-reached="(direction) => direction === 'bottom' && getComments({ page: commentList[1].page, limit: commentList[1].limit })">
       <div v-for="item in commentList" :key="item.type">
         <div v-if="!loading || item.comments?.length" class="py-3" v-show="ctype == item.type">
           <div v-for="commit in item.comments" :key="commit.id">
