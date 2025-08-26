@@ -69,12 +69,6 @@ importers:
       globals:
         specifier: ^16.2.0
         version: 16.3.0
-      less:
-        specifier: ^4.4.1
-        version: 4.4.1
-      less-loader:
-        specifier: ^12.3.0
-        version: 12.3.0(less@4.4.1)
       prettier:
         specifier: 3.5.3
         version: 3.5.3
@@ -1527,19 +1521,6 @@ packages:
 
   kolorist@1.8.0:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
-
-  less-loader@12.3.0:
-    resolution: {integrity: sha512-0M6+uYulvYIWs52y0LqN4+QM9TqWAohYSNTo4htE8Z7Cn3G/qQMEmktfHmyJT23k+20kU9zHH2wrfFXkxNLtVw==}
-    engines: {node: '>= 18.12.0'}
-    peerDependencies:
-      '@rspack/core': 0.x || 1.x
-      less: ^3.5.0 || ^4.0.0
-      webpack: ^5.0.0
-    peerDependenciesMeta:
-      '@rspack/core':
-        optional: true
-      webpack:
-        optional: true
 
   less@4.4.1:
     resolution: {integrity: sha512-X9HKyiXPi0f/ed0XhgUlBeFfxrlDP3xR4M7768Zl+WXLUViuL9AOPPJP4nCV0tgRWvTYvpNmN0SFhZOQzy16PA==}
@@ -3147,6 +3128,7 @@ snapshots:
   copy-anything@2.0.6:
     dependencies:
       is-what: 3.14.1
+    optional: true
 
   copy-anything@3.0.5:
     dependencies:
@@ -3562,7 +3544,8 @@ snapshots:
 
   is-unicode-supported@2.1.0: {}
 
-  is-what@3.14.1: {}
+  is-what@3.14.1:
+    optional: true
 
   is-what@4.1.16: {}
 
@@ -3604,10 +3587,6 @@ snapshots:
 
   kolorist@1.8.0: {}
 
-  less-loader@12.3.0(less@4.4.1):
-    dependencies:
-      less: 4.4.1
-
   less@4.4.1:
     dependencies:
       copy-anything: 2.0.6
@@ -3621,6 +3600,7 @@ snapshots:
       mime: 1.6.0
       needle: 3.3.1
       source-map: 0.6.1
+    optional: true
 
   levn@0.4.1:
     dependencies:
@@ -3820,7 +3800,8 @@ snapshots:
 
   parse-ms@4.0.0: {}
 
-  parse-node-version@1.0.1: {}
+  parse-node-version@1.0.1:
+    optional: true
 
   path-exists@4.0.0: {}
 
@@ -4032,7 +4013,8 @@ snapshots:
 
   totalist@3.0.1: {}
 
-  tslib@2.8.1: {}
+  tslib@2.8.1:
+    optional: true
 
   type-check@0.4.0:
     dependencies:

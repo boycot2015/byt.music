@@ -20,7 +20,7 @@
     </template>
   </div>
 </template>
-<style scoped lang="less">
+<style scoped lang="scss">
 css-doodle {
   width: 100%;
   height: 100%;
@@ -73,7 +73,7 @@ css-doodle {
     &.load {
       background-size: 100% 100%;
       // cubic-bezier(0, 0.38, 0.28, 0.1)
-      animation: scan var(--lyirc-time) ease-out //   slideInOut var(--lyirc-animate-time) ease-out;;
+      animation: scan var(--lyirc-time) ease-out; //   slideInOut var(--lyirc-animate-time) ease-out;;
     }
     &.loadV {
       background-size: 100% 100%;
@@ -555,7 +555,7 @@ const list = ref([
   },
 ])
 
-const myDoodle = ref(null)
+const doodle = ref([])
 const emit = defineEmits(['close'])
 const playData = computed(() => usePlayerStore().playData)
 const player = computed(() => usePlayerStore().player)
@@ -583,10 +583,7 @@ watch(currentlyric, (newVal, oldVal) => {
   setTimeout(() => {
     isChange.value = false
   }, 10)
-
-  //   console.log(myDoodle.value)
-
-  current.value['click-to-update'] && myDoodle.value?.update()
+  doodle.value[list.value.findIndex((el) => el.id == current.value.id)]?.update()
 })
 watch(player, (newVal) => {
   player.value.paused && togglePlay()
@@ -612,15 +609,9 @@ onMounted(() => {
   document.body.appendChild(script)
   nextTick(() => {
     togglePlay()
+    script.onload = () => {
+      doodle.value = document.querySelectorAll('css-doodle')
+    }
   })
-  script.onload = () => {
-    myDoodle.value = document.querySelector('.doodle')
-    current.value['click-to-update'] &&
-      myDoodle.value &&
-      myDoodle.value.addEventListener('click', () => {
-        myDoodle.value.update()
-      })
-    // console.log('css-doodle 加载完成')
-  }
 })
 </script>
