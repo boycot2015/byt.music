@@ -52,6 +52,7 @@ css-doodle {
     position: absolute;
     top: 50%;
     left: 50%;
+    // left: 0;
     color: #333;
     max-width: 600px;
     font-size: 30px;
@@ -61,6 +62,8 @@ css-doodle {
     align-items: center;
     flex-wrap: wrap;
     --lyirc-time: 4s;
+    --lyirc-animate-delay-time: 2s;
+    --lyirc-animate-time: 4s;
     line-height: 38px;
     background: #fff -webkit-linear-gradient(left, var(--lyirc-color), var(--lyirc-color)) no-repeat 0 0;
     -webkit-text-fill-color: transparent;
@@ -70,7 +73,7 @@ css-doodle {
     &.load {
       background-size: 100% 100%;
       // cubic-bezier(0, 0.38, 0.28, 0.1)
-      animation: scan var(--lyirc-time) ease-out;
+      animation: scan var(--lyirc-time) ease-out //   slideInOut var(--lyirc-animate-time) ease-out;;
     }
     &.loadV {
       background-size: 100% 100%;
@@ -81,12 +84,15 @@ css-doodle {
       -webkit-animation-play-state: paused;
       animation-play-state: paused;
     }
-    @keyframes marquee {
+    @keyframes slideInOut {
       0% {
-        transform: translateX(-50%);
+        left: 0%;
+      }
+      50% {
+        left: 50%;
       }
       100% {
-        transform: translateX(0%);
+        left: 180%;
       }
     }
     @keyframes scan {
@@ -549,13 +555,20 @@ const list = ref([
   },
 ])
 
+const myDoodle = ref(null)
 const emit = defineEmits(['close'])
 const playData = computed(() => usePlayerStore().playData)
 const player = computed(() => usePlayerStore().player)
 const currentlyric = computed(() => {
   const lyricList = usePlayerStore().playData.lyricList
   const lyricIndex = usePlayerStore().playData.lyricIndex
-  return { ...({ text: lyricList[lyricIndex]?.split(']')[1], time: lyricList[lyricIndex]?.split(']')[0].substring(1) } || {}), style: {} }
+  return {
+    ...({ text: lyricList[lyricIndex]?.split(']')[1], time: lyricList[lyricIndex]?.split(']')[0].substring(1) } || {}),
+    style: {
+      left: (current.value.style && current.value.style.left) || (current.value.style && current.value.style.width ? Math.random() * 90 : Math.random() * 40) + '%',
+      top: (current.value.style && current.value.style.top) || (current.value.style && current.value.style.width ? Math.random() * 30 : Math.random() * 90) + '%',
+    },
+  }
 })
 watch(currentlyric, (newVal, oldVal) => {
   const arr1 = newVal.time.split(':')
@@ -563,13 +576,17 @@ watch(currentlyric, (newVal, oldVal) => {
   const arr2 = oldVal.time.split(':')
   const time2 = Number(arr2[0]) * 60 + Number(arr2[1])
   let time = Number(time2) - Number(time1)
-  console.log(time, 'time')
+  //   console.log(time, 'time')
   time = time > 0 && time < 20 ? time : time >= 20 ? 3 : 1
   lyricBox.value && lyricBox.value.style.setProperty('--lyirc-time', time + 's')
   isChange.value = true
   setTimeout(() => {
     isChange.value = false
   }, 10)
+
+  //   console.log(myDoodle.value)
+
+  current.value['click-to-update'] && myDoodle.value?.update()
 })
 watch(player, (newVal) => {
   player.value.paused && togglePlay()
@@ -595,12 +612,15 @@ onMounted(() => {
   document.body.appendChild(script)
   nextTick(() => {
     togglePlay()
-    const myDoodle = document.querySelector('.doodle')
-    current.value['click-to-update'] &&
-      myDoodle &&
-      myDoodle.addEventListener('click', () => {
-        myDoodle.update()
-      })
   })
+  script.onload = () => {
+    myDoodle.value = document.querySelector('.doodle')
+    current.value['click-to-update'] &&
+      myDoodle.value &&
+      myDoodle.value.addEventListener('click', () => {
+        myDoodle.value.update()
+      })
+    // console.log('css-doodle 加载完成')
+  }
 })
 </script>
