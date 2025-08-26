@@ -32,6 +32,7 @@ const playData = computed(() => usePlayerStore().playData)
 const player = computed(() => usePlayerStore().player)
 const config = computed(() => useConfigStore().config)
 const listVisible = ref(playData.value.playlistVisible || false)
+const lyricAnimationVisible = ref(false)
 const { setPlayer, play, setPlayData } = usePlayerStore()
 const router = useRouter()
 const route = useRoute()
@@ -176,7 +177,7 @@ router.afterEach(() => {
     <el-drawer v-model="player.showCover" :z-index="9999" :modal-class="`!bg-[transparent]`" body-class="!p-0" header-class="text-center" direction="btt" :title="playData.title" size="100%" :with-header="false">
       <div class="relative z-10 backdrop-blur-2xl overflow-hidden">
         <div class="flex w-full items-center px-5 leading-[60px]">
-          <div class="close cursor-pointer md:order-2 hover:text-[var(--el-color-primary)]" @click="setPlayer({ showCover: false })">
+          <div class="close cursor-pointer hover:text-[var(--el-color-primary)]" @click="setPlayer({ showCover: false })">
             <el-icon :size="24">
               <ArrowDown />
             </el-icon>
@@ -188,6 +189,11 @@ router.afterEach(() => {
           <el-icon :size="32" v-if="config.isMobile" @click="setPlayData({ playlistVisible: true })">
             <IconListMusic class="cursor-pointer" />
           </el-icon>
+          <el-tooltip content="音乐视效" popper-class="!z-10002">
+            <el-icon :size="32" v-if="!config.isMobile" @click="lyricAnimationVisible = true">
+              <IconMusic class="cursor-pointer" />
+            </el-icon>
+          </el-tooltip>
         </div>
         <Cover />
         <Analyser />
@@ -223,6 +229,9 @@ router.afterEach(() => {
           </el-link>
         </template>
       </Playlist>
+    </el-drawer>
+    <el-drawer v-model="lyricAnimationVisible" :z-index="10002" size="100%">
+      <LyricAnimation @close="lyricAnimationVisible = false" />
     </el-drawer>
     <!-- <audio :controls="false" crossorigin="anonymous" :src="playData.url" ref="audioRef"></audio> -->
   </el-container>
