@@ -15,22 +15,22 @@
           "
         />
       </div>
-      <div class="nav flex items-center justify-between h-full w-full relative md:z-100 px-3">
+      <div class="nav flex items-center justify-between h-full w-full relative md:z-100 px-1.5">
         <div class="left items-center flex flex-1 cursor-pointer" @click="setPlayer({ showCover: !player.showCover })">
-          <Image :src="playData.img_url" fit="fill" class="w-10 h-10 mr-2 rounded">
+          <Image :src="playData.img_url" fit="fill" class="w-[46px] h-[46px] mr-2 rounded">
             <template #placeholder>
-              <el-icon :size="48" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
+              <el-icon :size="48" class="h-[46px] !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
             </template>
             <template #error>
-              <el-icon :size="48" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
+              <el-icon :size="48" class="h-[46px] !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
             </template>
           </Image>
-          <div class="info flex-1">
+          <div class="info flex-1 relative flex flex-col justify-center">
             <div v-if="player.loading" class="leading-[42px] line-clamp-1">正在加载资源...</div>
             <template v-else>
               <div class="title line-clamp-1">{{ playData.title }}</div>
               <Slider
-                class="!w-32 md:z-99 is-inner !absolute text-center top-9"
+                class="!w-full md:z-99 !absolute is-inner text-center top-[33px]"
                 v-if="config.isMobile"
                 @change="
                   (value) => {
@@ -42,7 +42,7 @@
                 "
               />
               <div class="singer !text-md line-clamp-1 hidden md:block">{{ playData.singer }}</div>
-              <el-carousel v-if="config.isMobile" :initial-index="playData.lyricIndex" indicator-position="none" ref="sliderRef" height="30px" class="flex-1 md:!hidden" direction="vertical" :autoplay="false">
+              <el-carousel v-if="config.isMobile" :initial-index="playData.lyricIndex" indicator-position="none" ref="sliderRef" height="20px" class="flex-1 md:!hidden" direction="vertical" :autoplay="false">
                 <el-carousel-item v-for="(item, index) in playData.lyricList" :key="item">
                   <TextSlider v-show="playData.lyricIndex == index" :duration="playData.lyricList[index + 1] ? (playData.lyricList[index + 1].split(']')[0].split(':')[1] - item.split(']')[0].split(':')[1]) * 1000 : 1000" :msg="item.split(']')[1]" :max="6" />
                   <span v-show="playData.lyricIndex != index">{{ item.split(']')[1] }}</span>
@@ -84,7 +84,7 @@ watch(playData.value, () => {
 :deep(.is-inner .el-slider) {
   .el-slider__bar,
   .el-slider__runway {
-    height: 24px;
+    height: 20px;
   }
   .el-slider__button-wrapper {
     display: none;

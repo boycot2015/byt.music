@@ -48,7 +48,7 @@
 <script name="GridList" setup>
 import { useRouter } from 'vue-router'
 import { useConfigStore } from '@/stores/config'
-const { config } = useConfigStore()
+const { config, setScrollRef } = useConfigStore()
 const scrollbarRef = ref(null)
 const router = useRouter()
 const emit = defineEmits(['end-reached'])
@@ -76,12 +76,12 @@ defineProps({
 })
 defineExpose({
   setScrollTop: (top) => {
+    const scrollbarRef = computed(() => useConfigStore().scrollRef)
     if (config.isMobile) {
-      const scrollbarRef = computed(() => useConfigStore().scrollRef)
-      scrollbarRef.value?.setScrollTop(top)
+      scrollbarRef.value?.setScrollTop(top || 0)
       return
     }
-    scrollbarRef.value?.setScrollTop(top)
+    scrollbarRef.value?.setScrollTop(top || 0)
   },
 })
 </script>

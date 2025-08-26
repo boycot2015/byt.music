@@ -90,6 +90,7 @@ onMounted(() => {
   scrollbarRef.value && setScrollRef(scrollbarRef.value[activeIndex.value])
   nextTick(() => {
     swiperInstance.value?.slideTo(activeIndex.value)
+    scrollbarRef.value && setScrollRef(scrollbarRef.value[activeIndex.value])
   })
 })
 router.afterEach(() => {

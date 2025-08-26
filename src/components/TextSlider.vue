@@ -52,7 +52,7 @@ onUnmounted(() => {
   clearInterval(timer.value)
   clearTimeout(timeoutTimer.value)
 })
-watch(playData, () => {
+watch(lyricIndex, () => {
   clearInterval(timer.value)
   clearTimeout(timeoutTimer.value)
   if (!player.paused) {

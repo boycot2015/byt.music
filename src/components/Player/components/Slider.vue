@@ -8,6 +8,7 @@
       :disabled="disabled"
       v-model="player.currentTime"
       :min="0"
+      tooltip-class="!z-10002"
       :format-tooltip="formatTime"
       :max="player.duration || 0"
       @input="(val) => (inputValue = val)"

@@ -11,7 +11,7 @@ const config = computed(() => useConfigStore().config)
 const { playData, initPlay, setPlayer } = usePlayerStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
-const { set } = useConfigStore()
+const { set, setScrollRef } = useConfigStore()
 const router = useRouter()
 const keepAliveRoutes = router.options.routes
   .filter((el) => el.meta?.keepAlive)
@@ -31,6 +31,7 @@ onMounted(() => {
   set({ isMobile: document.body.clientWidth < 768 })
   window.addEventListener('resize', () => {
     set({ isMobile: document.body.clientWidth < 768 })
+    document.body.clientWidth < 768 && setScrollRef(null)
   })
   initPlay()
 })

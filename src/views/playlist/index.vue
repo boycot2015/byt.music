@@ -98,13 +98,13 @@
         </div>
       </template>
     </GridList>
-    <el-drawer :with-header="false" v-if="config.isMobile" v-model="modalVisible" size="90%" body-class="!p-2" modal-class="backdrop-blur" append-to-body>
+    <el-drawer :with-header="false" v-if="config.isMobile" v-model="modalVisible" size="88%" body-class="!p-2" modal-class="backdrop-blur" append-to-body>
       <el-scrollbar max-height="100%" class="cates md:w-full">
         <el-row :gutter="20" class="!m-0 !mb-2" v-for="(item, index) in cates[type]" :key="index">
           <el-col :span="24" class="text-xl">
             {{ item.category || item.name }}
           </el-col>
-          <el-col :span="6" v-for="(el, index) in item.filters.filter((el) => el.name != '排行榜')" :key="index" class="my-1">
+          <el-col :span="8" v-for="(el, index) in item.filters.filter((el) => el.name != '排行榜')" :key="index" class="my-1">
             <el-link
               class="cursor-pointer"
               @click.stop="

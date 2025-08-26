@@ -20,6 +20,7 @@ const playerStore = usePlayerStore()
 const { config } = useConfigStore()
 const player = computed(() => usePlayerStore().player)
 const playData = computed(() => usePlayerStore().playData)
+const lyricIndex = computed(() => usePlayerStore().playData.lyricIndex)
 const { setPlayer, setPlayData } = playerStore
 const activeIndex = ref(0)
 const isScroll = ref(false)
@@ -35,6 +36,7 @@ const setSlider = (index) => {
   if (index) {
     setPlayer({
       withLyric: true,
+      lyricIndex: activeIndex.value,
       currentTime: timeArr[index]?.split(':')[0] * 60 + Number(timeArr[index]?.split(':')[1] || 0),
     })
   }
@@ -47,13 +49,8 @@ const setSlider = (index) => {
       })
       return
     }
-    let timeStr1 = player.value?.currentTime / 60 > 10 ? Math.floor(player.value?.currentTime / 60) : `0${Math.floor(player.value?.currentTime / 60)}`
-    let timeStr2 = player.value?.currentTime % 60 > 10 ? Math.floor(player.value?.currentTime % 60) : `0${Math.floor(player.value?.currentTime % 60)}`
-    let timerStr = `${timeStr1}:${timeStr2}`
-    let index = [...timeArr].filter((el) => el).findIndex((_) => _ === timerStr)
     let elementH = itemRefs?.value[activeIndex.value]?.offsetHeight || 48
     let baseTop = 5 * elementH
-    activeIndex.value = index === -1 ? activeIndex.value : index < activeIndex.value && !player.value?.withLyric ? activeIndex.value : index
     let top = activeIndex.value * elementH - baseTop
     if (!player?.value?.currentTime) {
       activeIndex.value = 0
@@ -84,6 +81,9 @@ const onScroll = ({ scrollTop: top }) => {
   }, 1000)
 }
 watch(player.value, () => setSlider())
+watch(lyricIndex, () => {
+  if (!player.value.withLyric) activeIndex.value = lyricIndex.value || 0
+})
 
 onMounted(() => {
   setSlider()
