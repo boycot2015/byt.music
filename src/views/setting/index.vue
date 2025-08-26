@@ -1,7 +1,7 @@
 <template>
   <div class="setting">
     <el-row>
-      <el-col :span="0" :md="4" class="relative">
+      <el-col :span="0" :md="6" :lg="4" class="relative">
         <el-scrollbar height="calc(100vh - 140px)" class="border-r border-[var(--el-border-color)]">
           <div class="!hidden md:!block !fixed">
             <el-anchor ref="anchorRef" container=".layout .el-scrollbar__wrap" select-scroll-top type="underline" @click="(e, href) => anchorRef?.scrollTo(href)">
@@ -12,7 +12,7 @@
           </div>
         </el-scrollbar>
       </el-col>
-      <el-col :span="24" :md="20">
+      <el-col :span="24" :md="18" :lg="20">
         <el-form size="large" :model="config" class="config-form md:pr-4 md:pl-4 w-full" label-position="left">
           <el-form-item v-for="(item, key) in configs" :id="'config-' + key" :label="item.label" :prop="key" :key="key" :label-position="item.labelPosition" :class="item.class">
             <el-select popper-class="backdrop-blur" v-if="item.type == 'select'" v-model="config[key]" @change="set({ [key]: config[key] })">
