@@ -15,7 +15,7 @@
     <el-row v-loading="colorLoading" class="min-h-[200px] rounded-md overflow-hidden">
       <el-col v-for="(item, index) in showColors" :key="index" :span="4" :md="2">
         <div class="flex flex-col items-center justify-center ml-[-20px]">
-          <el-color-picker popper-class="backdrop-blur z-100002" size="large" v-model="item.value" :predefine="colors.map((el) => el.value).slice(index * 16, index * 16 + 16)" @change="onPickerChange" />
+          <el-color-picker popper-class="backdrop-blur !z-100002" size="large" v-model="item.value" :predefine="colors.map((el) => el.value).slice(index * 16, index * 16 + 16)" @change="onPickerChange" />
           <div class="text-md">{{ item.name }}</div>
         </div>
       </el-col>
@@ -115,7 +115,7 @@ const fetchData = async () => {
   fetchPicData()
 }
 const fetchPicData = async (page = 1) => {
-  picLoading.value = !loaded.value
+  picLoading.value = !loaded.value || page == 1
   const target = `${$apiUrl}/wallpaper?source=${picType.value}&id=${picCate.value}&page=${picPage.value || page}&size=16`
   fetch(target, {})
     .then((res) => res.json())

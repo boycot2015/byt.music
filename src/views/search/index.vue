@@ -94,7 +94,7 @@
   </div>
 </template>
 <script name="search" setup>
-import { debounce } from 'lodash-es'
+import { debounce } from '@/utils'
 import { computed, getCurrentInstance, ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Playlist from '@/views/components/Playlist.vue'

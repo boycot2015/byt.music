@@ -1,6 +1,6 @@
 <template>
   <div class="grid-list rounded overflow-hidden">
-    <el-scrollbar ref="scrollbarRef" :height="config.isMobile ? 'auto' : height || 'calc(100vh - 240px)'" class="flex flex-col min-h-[calc(100vh-240px)] rounded-md" @end-reached="(val) => val == 'bottom' && emit('end-reached')">
+    <el-scrollbar ref="scrollbarRef" :height="config.isMobile ? 'auto' : height || 'calc(100vh - 240px)'" :class="`flex flex-col ${height && !config.isMobile ? '' : 'min-h-[calc(100vh-240px)]'} rounded-md`" @end-reached="(val) => val == 'bottom' && emit('end-reached')">
       <el-row :gutter="10" class="!m-0">
         <el-col v-for="item in playlist" :key="item.id" :span="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb-3 last:mb-0 md:mb-5">
           <el-skeleton :loading="loading" animated>

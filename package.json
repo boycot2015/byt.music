@@ -1,6 +1,6 @@
 {
-  "name": "music",
-  "version": "0.0.0",
+  "name": "byt-music",
+  "version": "0.0.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -15,7 +15,6 @@
     "@vueuse/core": "^13.5.0",
     "axios": "^1.10.0",
     "element-plus": "^2.10.2",
-    "lodash-es": "^4.17.21",
     "nprogress": "^0.2.0",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.4.1",

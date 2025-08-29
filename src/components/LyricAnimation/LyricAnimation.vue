@@ -593,7 +593,9 @@ const togglePlay = () => {
   loading.value = true
   current.value = list.value[Math.floor(Math.random() * list.value.length)] || list.value[0]
   isPlay.value = !isPlay.value
-  loading.value = false
+  nextTick(() => {
+    loading.value = false
+  })
 }
 const onClose = (item) => {
   //   isPlay.value = false

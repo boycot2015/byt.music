@@ -1,5 +1,16 @@
 <template>
-  <div class="playlist">
+  <div class="playlist h-[calc(100vh-300px)]">
+    <div class="banner md:px-2">
+      <el-carousel ref="bannerCarousel" :height="config.isMobile ? '20vh' : '36vh'" :indicator-position="!config.isMobile ? '' : 'none'" :interval="4000" :type="!config.isMobile ? 'card' : ''" arrow="hover">
+        <el-carousel-item v-for="(item, index) in banner" :key="index">
+          <div @click="(e) => bannerCarousel && bannerCarousel.activeIndex == index && handleBannerClick(e, item)" class="relative">
+            <el-image v-if="config.isMobile" :src="item.bigImageUrl" alt="" class="rounded-lg h-[20vh] w-full" fit="cover" />
+            <el-image v-else :src="item.imageUrl" alt="" class="rounded-lg h-[35vh] w-full" fit="cover" />
+            <el-tag class="absolute right-0 bottom-1.5 md:bottom-8" v-if="item.typeTitle">{{ item.typeTitle }}</el-tag>
+          </div>
+        </el-carousel-item>
+      </el-carousel>
+    </div>
     <div class="top min-h-[40px] flex items-center justify-between md:mb-4">
       <div class="flex order-2 items-center" v-if="!config.isMobile">
         <el-popover placement="bottom-start" :show-arrow="false" v-model:visible="modalVisible" popper-class="!w-[95vw] backdrop-blur md:!w-[600px] !p-2 !pl-0" :disabled="cateLoading || (cates[type] && !cates[type].length)">
@@ -90,7 +101,7 @@
         </el-dropdown>
       </div>
     </div>
-    <GridList :loading="loading" :playlist="playlist" :type="type" :ctype="ctype" ref="gridRef">
+    <GridList :loading="loading" :height="'calc(100vh - 540px)'" :playlist="playlist" :type="type" :ctype="ctype" ref="gridRef">
       <template #pagination>
         <div class="flex justify-center md:justify-end mt-2">
           <el-pagination class="!hidden md:!flex" layout="total, prev, pager, next, jumper, ->" :total="total" v-model:current-page="currentPage" @current-change="fetchListData" />
@@ -134,13 +145,17 @@ defineOptions({ name: 'playlist' })
 const { config } = useConfigStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
+const $musicApiUrl = proxy.$musicApiUrl
 const route = useRoute()
 const type = ref(route.query.type || 'qq')
 const ctype = ref(route.query.ctype || '')
 const types = computed(() => config.types)
 const cates = ref({})
 const playlist = ref([])
+const banner = ref([])
 const loading = ref(true)
+const bannerCarousel = ref(null)
+const bannerLoading = ref(false)
 const cateLoading = ref(false)
 const modalVisible = ref(false)
 const total = ref(0)
@@ -155,6 +170,20 @@ const fetchData = (el) => {
   ctype.value = !el ? route.query.ctype || '' : ''
   fetchCatesData(current)
   fetchListData(current)
+}
+const fetchBannerData = (item) => {
+  banner.value = [1, 2, 3].concat(new Array(3).fill('')).map((_, index) => ({
+    id: index + 1,
+    imageUrl: `https://p3.music.126.net/obj/wo3DlcOGw6DClTvDisK1/4950782523/e9a6/d9b6/c92f/4950782523-1_1_.jpg`,
+  }))
+  bannerLoading.value = true
+  fetch(`${$musicApiUrl}/banner`)
+    .then((res) => res.json())
+    .then((res) => {
+      bannerLoading.value = false
+      if (!res.banners) return
+      banner.value = res.banners
+    })
 }
 const fetchCatesData = (item = { type: type.value }) => {
   if (cates.value[type.value] && cates.value[type.value].length) {
@@ -204,8 +233,13 @@ const fetchListData = (item = {}) => {
     })
     .catch(() => {})
 }
+const handleBannerClick = (e, item) => {
+  e.stopPropagation()
+  window.open(item.url)
+}
 onMounted(() => {
   fetchData()
+  fetchBannerData()
 })
 </script>
 

@@ -50,3 +50,20 @@ export const formatTime = (str, type = 'time') => {
   if (type === 'percent') return str * 100
   return `${Math.floor((str || 0) / 60)}:${('0' + Math.floor((str || 0) % 60)).slice(-2)}`
 }
+
+export function debounce(func, delay, immediate = false) {
+  let timer;
+  return function(...args) {
+    const callNow = immediate &&!timer;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      timer = null;
+      if (!immediate) {
+        func.apply(this, args);
+      }
+    }, delay);
+    if (callNow) {
+      func.apply(this, args);
+    }
+  };
+}
