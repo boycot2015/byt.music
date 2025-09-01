@@ -7,7 +7,7 @@
             <el-menu-item v-for="(item, index) in collect" :key="item.info?.id || index" :index="index + ''" @mouseenter="collectStore.update({ ...item, showClose: true })" @mouseleave="collectStore.update({ ...item, showClose: false })">
               <div class="flex items-center">
                 <Image class="basis-[32px] rounded" lazy v-if="item.info.cover_img_url" :src="item.info.cover_img_url"></Image>
-                <el-icon :size="42" v-else><IconMusic /></el-icon>
+                <el-icon class="basis-[32px] rounded" :size="32" v-else><IconMusic /></el-icon>
                 <div class="flex-1 ml-2">
                   <div class="text-xs line-clamp-2 text-wrap pr-[10px]" v-html="item.info.title"></div>
                 </div>

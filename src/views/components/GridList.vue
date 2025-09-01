@@ -76,8 +76,8 @@ defineProps({
 })
 defineExpose({
   setScrollTop: (top) => {
-    const scrollbarRef = computed(() => useConfigStore().scrollRef)
     if (config.isMobile) {
+      scrollbarRef.value = useConfigStore().scrollRef
       scrollbarRef.value?.setScrollTop(top || 0)
       return
     }

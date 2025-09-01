@@ -2,20 +2,20 @@
   <div class="playlist-detail !overflow-hidden rounded-md">
     <div class="flex flex-col overflow-hidden md:flex-row justify-between md:pl-3 w-full relative" :class="headerClass">
       <slot name="header" v-if="showHeader">
-        <div class="flex items-center hidden w-full md:!w-[auto] lg:flex min-h-[140px] md:min-h-[auto]">
+        <div class="flex items-center w-full md:!w-[auto] min-h-[140px] md:min-h-[auto]">
           <div class="text-xs flex items-center" v-if="data?.info?.nickname || data?.info?.title">
             <el-avatar class="mr-2" size="small" v-if="data?.info?.headurl" :src="data?.info?.headurl"></el-avatar>
             <el-icon class="mr-2" :size="20" v-else><User /></el-icon>
             <span class="line-clamp-1">{{ data?.info?.nickname || data?.info?.title }}</span>
-            <el-divider direction="vertical" />
+            <el-divider class="!border-l-[var(--color-text)]" direction="vertical" />
           </div>
-          <template v-if="data?.info?.ctime">
-            <div class="text-xs line-clamp-1">{{ data?.info?.ctime ? new Date(data?.info?.ctime).toLocaleString().split(' ')[0].replace(/\//g, '-') : '--' }}</div>
-            <el-divider direction="vertical" />
-          </template>
-          <div class="text-xs line-clamp-1" v-if="data?.info?.play_count">
-            {{ data?.info?.play_count ? (data?.info.play_count > 10000 ? (data?.info?.play_count / 10000).toFixed(1) + '万次播放' : data?.info.play_count + '次播放') : '--' }}
-            <el-divider direction="vertical" />
+          <div class="text-xs flex items-center line-clamp-1 hidden lg:flex" v-if="data?.info?.ctime">
+            <span class="text-xs line-clamp-1">{{ data?.info?.ctime ? new Date(data?.info?.ctime).toLocaleString().split(' ')[0].replace(/\//g, '-') : '--' }}</span>
+            <el-divider class="!border-l-[var(--color-text)]" direction="vertical" />
+          </div>
+          <div class="text-xs line-clamp-1 hidden lg:flex" v-if="data?.info?.play_count">
+            <span>{{ data?.info?.play_count ? (data?.info.play_count > 10000 ? (data?.info?.play_count / 10000).toFixed(1) + '万次播放' : data?.info.play_count + '次播放') : '--' }}</span>
+            <el-divider class="!border-l-[var(--color-text)]" direction="vertical" />
           </div>
           <div class="text-xs line-clamp-1">
             <span class="text-[var(--el-color-primary)]">{{ data?.info?.total_song_num || data.tracks.length || 0 }}</span> 首歌曲

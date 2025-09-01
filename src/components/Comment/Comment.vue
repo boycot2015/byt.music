@@ -55,7 +55,7 @@ const commentList = ref([
 ])
 const page = ref(1)
 const loading = ref(false)
-const getComments = (params = { limit: 20 }) => {
+const getComments = async (params = { limit: 20 }) => {
   if (params.page && ctype.value == 'hot') {
     loading.value = false
     return
@@ -65,7 +65,14 @@ const getComments = (params = { limit: 20 }) => {
     commentList.value[1].page = params.page
   }
   loading.value = true
-  fetch(`${$musicApiUrl}/comment/music?id=${playData.value.id?.split('_')[1]}&limit=${params.limit}&offset=${params.page ? (params.page - 1) * params.limit : 0}`)
+  let type = playData.value.type
+  let id = playData.value.id?.split('_')[1]
+  if (type != 'netease') {
+    let res = await fetch(`${$apiUrl}/music/search?keyword=${playData.value.title}`).then((res) => res.json())
+    id = res.data?.result[0].id?.split('_')[1]
+    // console.log(res, id, type, playData.value, 'prefix')
+  }
+  fetch(`${$musicApiUrl}/comment/music?id=${id}&limit=${params.limit}&offset=${params.page ? (params.page - 1) * params.limit : 0}`)
     .then((res) => res.json())
     .then((data) => {
         loading.value = false

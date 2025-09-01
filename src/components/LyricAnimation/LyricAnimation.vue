@@ -609,11 +609,11 @@ onMounted(() => {
   const script = document.createElement('script')
   script.src = 'https://unpkg.com/css-doodle@0.37.4/css-doodle.min.js'
   document.body.appendChild(script)
-  nextTick(() => {
-    togglePlay()
-    script.onload = () => {
-      doodle.value = document.querySelectorAll('css-doodle')
-    }
-  })
+  script.onload = () => {
+    doodle.value = document.querySelectorAll('css-doodle')
+    nextTick(() => {
+      togglePlay()
+    })
+  }
 })
 </script>
