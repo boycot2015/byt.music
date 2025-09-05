@@ -1,15 +1,26 @@
 <template>
   <div class="playlist h-[calc(100vh-300px)]">
     <div class="banner md:px-2">
-      <el-carousel ref="bannerCarousel" :height="config.isMobile ? '20vh' : '36vh'" :indicator-position="!config.isMobile ? '' : 'none'" :interval="4000" :type="!config.isMobile ? 'card' : ''" arrow="hover" autoplay>
-        <el-carousel-item v-for="(item, index) in banner" :key="index">
-          <div @click="(e) => bannerCarousel && bannerCarousel.activeIndex == index && handleBannerClick(e, item)" class="relative">
-            <el-image v-if="config.isMobile" :src="item.bigImageUrl" alt="" class="rounded-lg h-[20vh] w-full" fit="cover" />
-            <el-image v-else :src="item.imageUrl" alt="" class="rounded-lg h-[35vh] w-full" fit="cover" />
-            <el-tag class="absolute right-0 bottom-1.5 md:bottom-8" v-if="item.typeTitle">{{ item.typeTitle }}</el-tag>
-          </div>
-        </el-carousel-item>
-      </el-carousel>
+      <el-skeleton :loading="loading" animated class="w-full h-[20vh] md:h-[36vh]">
+        <template #template>
+          <el-carousel ref="bannerCarousel" :height="config.isMobile ? '20vh' : '36vh'" :indicator-position="!config.isMobile ? '' : 'none'" :interval="4000" :type="!config.isMobile ? 'card' : ''" arrow="hover">
+            <el-carousel-item v-for="item in 6" :key="item">
+              <el-skeleton-item variant="image" class="!h-[20vh] md:!h-[36vh] !rounded-lg"></el-skeleton-item>
+            </el-carousel-item>
+          </el-carousel>
+        </template>
+        <template #default>
+          <el-carousel :key="config.isMobile ? 'mobile' : 'desktop'" :pause-on-hover="false" ref="bannerCarousel" :height="config.isMobile ? '20vh' : '36vh'" :indicator-position="!config.isMobile ? '' : 'none'" :interval="4000" :type="!config.isMobile ? 'card' : ''" arrow="hover">
+            <el-carousel-item v-for="(item, index) in banner" :key="index">
+              <div @click="(e) => bannerCarousel && bannerCarousel.activeIndex == index && handleBannerClick(e, item)" class="relative">
+                <el-image lazy v-if="config.isMobile" :src="item.imageUrl" alt="" class="rounded-lg h-[20vh] w-full" fit="cover" />
+                <el-image v-else lazy :src="item.imageUrl" alt="" class="rounded-lg h-[35vh] w-full" fit="cover" />
+                <el-tag class="absolute right-0 bottom-1.5 md:bottom-8" v-if="item.typeTitle">{{ item.typeTitle }}</el-tag>
+              </div>
+            </el-carousel-item>
+          </el-carousel>
+        </template>
+      </el-skeleton>
     </div>
     <div class="top min-h-[40px] flex items-center justify-between md:mb-4">
       <div class="flex order-2 items-center" v-if="!config.isMobile">

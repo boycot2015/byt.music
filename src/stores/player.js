@@ -46,6 +46,7 @@ const defaults = {
     singer: '',
     playlist: [],
     lyric: '',
+    commitVisible: false,
     playlistVisible: false,
     playIndex: 0,
     lyricIndex: 0,

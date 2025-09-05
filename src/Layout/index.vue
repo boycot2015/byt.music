@@ -32,6 +32,7 @@ const playData = computed(() => usePlayerStore().playData)
 const player = computed(() => usePlayerStore().player)
 const config = computed(() => useConfigStore().config)
 const listVisible = ref(playData.value.playlistVisible || false)
+const commitVisible = ref(playData.value.commitVisible)
 const lyricAnimationVisible = ref(false)
 const { setPlayer, play, setPlayData } = usePlayerStore()
 const router = useRouter()
@@ -63,9 +64,13 @@ watch(activeIndex, () => {
 })
 watch(playData.value, () => {
   listVisible.value = playData.value.playlistVisible
+  commitVisible.value = playData.value.commitVisible
 })
 watch(listVisible, () => {
   setPlayData({ playlistVisible: listVisible.value })
+})
+watch(commitVisible, () => {
+  setPlayData({ commitVisible: commitVisible.value })
 })
 const onSwiper = (swiper) => {
   // 打印swiper对象
@@ -171,9 +176,11 @@ router.afterEach(() => {
       </el-tabs>
       <div class="transition-all duration-300" :class="{ 'translate-y-[30px]': player.showCover && config.isMobile }"></div>
     </el-container>
+    <!-- 侧边栏 -->
     <el-drawer v-model="config.showAside" direction="ltr" modal-class="md:hidden backdrop-blur" size="30vw" :with-header="false" :z-index="99999" class="h-[100vh] md:hidden" body-class="!p-0">
       <Aside />
     </el-drawer>
+    <!-- 播放器弹框 -->
     <el-drawer v-model="player.showCover" :z-index="9999" :modal-class="`!bg-[transparent]`" body-class="!p-0" header-class="text-center" direction="btt" :title="playData.title" size="100%" :with-header="false">
       <div class="relative z-10 backdrop-blur-2xl overflow-hidden">
         <div class="flex w-full items-center px-5 leading-[60px]">
@@ -200,6 +207,7 @@ router.afterEach(() => {
       </div>
       <div class="bg-cover z-9 absolute top-0 overflow-hidden left-0 w-full h-full bg-cover bg-center bg-no-repeat opacity-50 blur-[100px] transition-all duration-300 ease-in-out" :style="{ backgroundImage: `url(${playData.img_url})` }"></div>
     </el-drawer>
+    <!-- 播放列表弹框 -->
     <el-drawer v-model="listVisible" modal-class="backdrop-blur-sm" trigger="click" :z-index="10001" header-class="!leading-[32px] !p-3 !mb-0" :show-close="false" direction="btt" size="80%" body-class="!p-0" :show-arrow="false" :width="config.isMobile ? '95vw' : '680px'">
       <template #header>
         <span class="total">共{{ playData.playlist.length }}首歌曲</span>
@@ -230,8 +238,33 @@ router.afterEach(() => {
         </template>
       </Playlist>
     </el-drawer>
+    <!-- 歌词动效弹框 -->
     <el-drawer v-model="lyricAnimationVisible" :z-index="10002" size="100%">
       <LyricAnimation @close="lyricAnimationVisible = false" />
+    </el-drawer>
+    <!-- 歌曲评论弹框 -->
+    <el-drawer :size="config.isMobile ? '100%' : '400px'" :z-index="10002" body-class="!p-0" header-class="!p-2 !mb-0" modal-class="backdrop-blur-sm" :show-close="false" append-to-body v-model="commitVisible" @close="commitVisible = false">
+      <template #header="{ close }">
+        <div class="flex items-center justify-between">
+          <el-icon
+            class="cursor-pointer"
+            :size="24"
+            @click="
+              () => {
+                close()
+                commitVisible = false
+              }
+            "
+          >
+            <ArrowLeft />
+          </el-icon>
+          <div class="flex-1 flex flex-col text-center justify-center items-center">
+            <span class="text-xl line-clamp-1 max-w-[50vw]">{{ playData.title }}</span>
+            <span class="text-sm text-[var(--el-text-color-secondary)] text-nowrap">{{ playData.singer }}</span>
+          </div>
+        </div>
+      </template>
+      <Comment />
     </el-drawer>
     <!-- <audio :controls="false" crossorigin="anonymous" :src="playData.url" ref="audioRef"></audio> -->
   </el-container>

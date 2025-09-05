@@ -12,7 +12,7 @@
           <div class="time text-xs text-[var(--el-text-color-regular)]">{{ comment.timeStr || new Date(comment.time || Date.now()).toLocaleString() }}</div>
         </div>
       </div>
-      <div class="like-count flex items-center text-[var(--el-text-color-regular)]" @click="onStar(comment)">
+      <div class="like-count cursor-pointer flex items-center text-[var(--el-text-color-regular)]" @click="onStar(comment)">
         <el-icon :size="20"><IconLike v-if="!comment.liked" /><IconLiked class="text-[var(--el-color-primary)]" v-else /></el-icon>
         <span class="text-xs" v-if="comment.likedCount">{{ comment.likedCount > 1000 ? (comment.likedCount / 1000).toFixed(1) + 'k' : comment.likedCount }}</span>
       </div>

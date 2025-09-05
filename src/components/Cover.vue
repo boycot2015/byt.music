@@ -10,12 +10,14 @@
             <el-icon :size="300" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
           </template>
         </Image>
+        <div class="title line-clamp-1 hidden md:block" v-if="playData.title">歌曲：{{ playData.title }}</div>
+        <div class="singer !text-md line-clamp-1 hidden md:block" v-if="playData.singer">歌手：{{ playData.singer }}</div>
       </div>
       <Lyric />
     </div>
     <swiper class="md:!hidden h-[68vh]" :modules="modules" :space-between="0" @swiper="onSwiper" @slideChange="onSlideChange">
       <swiper-slide>
-        <div class="cover-img flex justify-center h-full items-center">
+        <div class="flex cover-img justify-center h-full items-center">
           <Image class="w-[300px] rounded" :src="playData.img_url">
             <template #placeholder>
               <el-icon :size="300" class="h-10 !text-[var(--el-menu-text-color)]"><IconMusic /></el-icon>
@@ -92,25 +94,11 @@
             </el-popover>
           </el-icon>
         </div>
-        <div class="flex items-center" @click="commitVisible = true">
+        <div class="flex items-center" @click="setPlayData({ commitVisible: true })">
           <el-icon :size="22" :disabled="disabled"> <ChatDotSquare class="cursor-pointer" @click="setPlayer({ loop: false, random: false })" /> </el-icon>
         </div>
       </div>
     </div>
-    <el-drawer size="100%" :z-index="10000" body-class="!p-0" destroy-on-close header-class="!p-2 !mb-0" modal-class="backdrop-blur-sm" :show-close="false" append-to-body v-model="commitVisible">
-      <template #header="{ close }">
-        <div class="flex items-center justify-between">
-          <el-icon class="cursor-pointer" :size="24" @click="close">
-            <ArrowLeft />
-          </el-icon>
-          <div class="flex-1 flex flex-col text-center justify-center items-center">
-            <span class="text-xl line-clamp-1 max-w-[50vw]">{{ playData.title }}</span>
-            <span class="text-sm text-[var(--el-text-color-secondary)] text-nowrap">{{ playData.singer }}</span>
-          </div>
-        </div>
-      </template>
-      <Comment />
-    </el-drawer>
   </div>
 </template>
 <script setup>

@@ -1,6 +1,6 @@
 <template>
   <div class="comment pl-2">
-    <el-tabs v-model="ctype" @tab-click="() => scrollbarRef.setScrollTop(0)">
+    <el-tabs v-model="ctype" @tab-click="() => scrollbarRef.setScrollTop(0)" class="border-b border-solid border-[var(--el-bg-color)]">
       <el-tab-pane :label="item.name" :name="item.type" v-for="item in commentList" :key="item.type"> </el-tab-pane>
     </el-tabs>
     <el-scrollbar ref="scrollbarRef" height="calc(100vh - 110px)" class="pr-3" @end-reached="(direction) => direction === 'bottom' && getComments({ page: commentList[1].page, limit: commentList[1].limit })">
@@ -10,12 +10,12 @@
             <CommentTree :comment="commit" />
           </div>
         </div>
+        <Empty v-show="!item.comments?.length && !loading && ctype == item.type" />
       </div>
       <div class="loading flex py-2 justify-center items-center w-full" v-show="loading">
         <el-button loading link loading-icon="Loading"></el-button>
         <span class="ml-2">加载中...</span>
       </div>
-      <Empty v-show="!commentList[0]?.comments?.length && !loading" />
     </el-scrollbar>
     <el-backtop target=".comment .el-scrollbar__wrap" :bottom="80" :right="15">
       <el-icon><Top /></el-icon>
@@ -28,7 +28,8 @@ import { computed, getCurrentInstance, ref } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 const playerStore = usePlayerStore()
 const { proxy } = getCurrentInstance()
-const playData = computed(() => playerStore.playData)
+const playDataStore = computed(() => playerStore.playData)
+const playData = ref(Object.assign({}, playDataStore.value))
 const $apiUrl = proxy.$apiUrl
 const ctype = ref('hot')
 const scrollbarRef = ref(null)
@@ -107,6 +108,20 @@ const getComments = async (params = { limit: 20 }) => {
     })
 }
 getComments()
+watch(playDataStore.value, () => {
+  if (playDataStore.value.id != playData.value.id) {
+    ctype.value = 'hot'
+    // console.log(playDataStore.value.id, playData.value.id);
+    playData.value = Object.assign({}, playDataStore.value)
+    commentList.value.forEach((item) => {
+      item.comments = []
+      item.total = 0
+      item.page = 1
+    })
+    scrollbarRef.value?.setScrollTop(0)
+    getComments()
+  }
+})
 </script>
 
 <style scoped>

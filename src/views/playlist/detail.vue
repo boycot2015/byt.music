@@ -1,9 +1,9 @@
 <template>
   <div class="playlist-detail !overflow-hidden">
-    <div class="md:h-[calc(100vh-140px)] min-h-[100vh] md:min-h-[calc(100vh-140px)] rounded-md overflow-y-auto md:!overflow-hidden">
-      <Playlist ref="tableRef" :loading="loading" :data="data" :tableProps="{ height: config.isMobile ? null : 'calc(100vh - 300px)' }" :show-actions="true">
+    <div class="md:h-[calc(100vh-140px)] min-h-[calc(100vh-180px)] md:min-h-[calc(100vh-140px)] rounded-md overflow-y-auto md:!overflow-hidden">
+      <Playlist ref="tableRef" showSkeleton :loading="loading" :data="data" :tableProps="{ height: config.isMobile ? null : 'calc(100vh - 300px)' }" :show-actions="true">
         <template #header>
-          <div class="md:flex mb-3 min-h-[300px] w-full md:min-h-[100px] relative rounded overflow-hidden" v-loading="loading" element-loading-custom-class="backdrop-blur !z-99">
+          <div class="md:flex mb-3 min-h-[300px] w-full md:min-h-[100px] relative rounded overflow-hidden" element-loading-custom-class="backdrop-blur !z-99">
             <Image v-if="data.info.cover_img_url" :src="data.info.cover_img_url" :size="120" class="absolute h-[300px] m-[auto] md:w-[120px] md:h-[120px] rounded scale-[2] blur-[200px] md:blur-[0px] md:scale-[1]"></Image>
             <div class="info md:ml-4 p-2 rounded overflow-hidden md:p-0 flex-1 absolute h-full w-full md:relative backdrop-blur-2xl md:backdrop-blur-none left-0 top-0 right-0 flex flex-col justify-center md:justify-start">
               <div class="title text-3xl mb-2">{{ data.info.title }}</div>
@@ -53,6 +53,9 @@
           </el-link>
         </template>
       </Playlist>
+      <el-backtop target=".playlist-detail .el-scrollbar__wrap" :bottom="80" :right="15">
+      <el-icon><Top /></el-icon>
+    </el-backtop>
     </div>
   </div>
 </template>

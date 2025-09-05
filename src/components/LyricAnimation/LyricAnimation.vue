@@ -99,6 +99,9 @@ css-doodle {
       0% {
         background-size: 0 100%;
       }
+      50% {
+        background-size: 50% 100%;
+      }
       100% {
         background-size: 100% 100%;
       }
@@ -575,9 +578,9 @@ watch(currentlyric, (newVal, oldVal) => {
   const time1 = Number(arr1[0]) * 60 + Number(arr1[1])
   const arr2 = oldVal.time.split(':')
   const time2 = Number(arr2[0]) * 60 + Number(arr2[1])
-  let time = Number(time2) - Number(time1)
-  //   console.log(time, 'time')
-  time = time > 0 && time < 20 ? time : time >= 20 ? 3 : 1
+  let time = Math.floor(Math.abs(Number(time2) - Number(time1)))
+  // console.log(time, 'time')
+  time = time > 0 && time < 20 ? time : 1
   lyricBox.value && lyricBox.value.style.setProperty('--lyirc-time', time + 's')
   isChange.value = true
   setTimeout(() => {
