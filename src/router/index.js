@@ -73,6 +73,16 @@ const router = createRouter({
       },
     },
     {
+      path: '/video',
+      name: 'video',
+      component: () => import('@/views/video/index.vue'),
+      meta: {
+        title: '视频',
+        keepAlive: true,
+        icon: 'VideoCamera',
+      },
+    },
+    {
       path: '/favorites',
       name: 'favorites',
       component: () => import('@/views/favorites/index.vue'),
