@@ -1,4 +1,4 @@
-import baseUrl from '../baseUrl'
+import { musicApiUrl  as baseUrl } from '../baseUrl'
 const prefix = '/video'
 export default {
     category: baseUrl + prefix + '/category/list', // 视频分类列表
