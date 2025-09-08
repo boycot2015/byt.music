@@ -28,6 +28,27 @@
   --vt-c-text-light-2: var(--vt-c-secondary);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+
+  --primary-color: var(--el-color-primary);
+  --white: var(--vt-c-white);
+  --c-000: var(--vt-c-black);
+  --c-333: var(--vt-c-regular);
+  --c-666: var(--vt-c-secondary);
+  --c-777: var(--vt-c-text-light-2);
+  --c-999: var(--vt-c-text-dark-2);
+  --c-e8: var(--vt-c-bg);
+  --c-f5: var(--vt-c-white-soft);
+  --c-ccc: var(--vt-c-divider-light-2);
+  --c-ddd: var(--vt-c-divider-dark-2);
+  --c-eee: var(--vt-c-white-mute);
+  --c-aaa: var(--vt-c-text-dark-2);
+  --c-f8: var(--vt-c-white-soft);
+  --warning: var(--el-color-warning);
+  --success: var(--el-color-success);
+  --color-picker: var(--el-color-primary);
+  --footer-theme: var(--el-color-primary);
+  --box-radius: 5px;
+  --lyirc-color: var(--el-color-primary);
 }
 
 /* semantic color variables for this project */

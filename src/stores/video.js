@@ -1,8 +1,8 @@
-import { video, MV } from '@/api/apiList'
-import { filterPlayCount, store } from '@/utils'
-export default {
-    namespaced: true,
-    state: {
+import { video, MV } from '@/api/index.js'
+import { filterPlayCount } from '@/utils'
+import { defineStore } from 'pinia'
+export const useVideoStore = defineStore('video', {
+    state: () => ({
         tab1Data: {
             all: {},
             categories: [], // 分类
@@ -11,7 +11,7 @@ export default {
             list: []
         },
         tab2Data: {
-            personalized: store.get('videoTab2Data') !== null ? store.get('videoTab2Data').personalized : [], // 推荐歌单列表
+            personalized: [], // 推荐歌单列表
             // privatecontent: [], // 独家放送列表
             // topSong: [], // 新歌速递列表
             // mv: [], // 推荐 mv
@@ -21,47 +21,24 @@ export default {
             exclusive: [],
             topMV: []
         },
+        videoDetail: {
+            total: 0,
+            hasMore: true,
+            countData: {},
+            playData: {},
+            hotComments: [], // 精彩评论
+            comments: [], // 所有评论
+            videos: []
+        },
         videoParams: {},
         showVideoPlayer: false
-    },
-    mutations: {
-        setTab1Data (state, data) {
-            for (const key in data) {
-                state.tab1Data[key] = data[key]
-            }
-            store.set('videoTab1Data', { ...data }, new Date().getTime() + 300 * 1000)
-        },
-        setTab2Data (state, data) {
-            for (const key in data) {
-                state.tab2Data[key] = data[key]
-            }
-            const localData = store.get('videoTab2Data')
-            store.set('videoTab2Data', { ...localData, ...data }, new Date().getTime() + 300 * 1000)
-        },
-        updateTab1Data (state, list) {
-            state.tab1Data.list = list
-            const localData = store.get('videoTab1Data')
-            store.set('videoTab1Data', { ...localData, list }, new Date().getTime() + 300 * 1000)
-        },
-        setVideoPlayer (state, val) {
-            val && (state.videoParams = val)
-            val && store.set('videoParams', val)
-        },
-        showVideoPlayer (state, val) {
-            state.showVideoPlayer = val
-        }
-    },
+    }),
     actions: {
-        async getTab1Data ({ commit }, params) {
-            const localData = store.get('videoTab1Data')
+        async getTab1Data (params) {
             const data = {}
-            if (localData !== null) {
-                commit('setTab1Data', localData)
-                return Promise.resolve({ code: 200, success: true })
-            }
             const catlistRes = await video.groupList(params)
-            const allVideosRes = await video.all(params)
-            const categoryRes = await video.category(params)
+            // const allVideosRes = await video.all(params)
+            // const categoryRes = await video.category(params)
             if (catlistRes && catlistRes.code === 200) {
                 const subs = []
                 const categories = {
@@ -76,26 +53,22 @@ export default {
                 data.subs = subs
                 data.categories = categories
             }
-            if (allVideosRes && allVideosRes.code === 200) {
-                allVideosRes.datas.map(el => {
-                    el.data.playTime = filterPlayCount(el.data.playTime)
-                    el.data.playCount = filterPlayCount(el.data.playCount)
-                })
-                data.list = allVideosRes.datas
+            // if (allVideosRes && allVideosRes.code === 200) {
+            //     allVideosRes.datas.map(el => {
+            //         el.data.playTime = filterPlayCount(el.data.playTime)
+            //         el.data.playCount = filterPlayCount(el.data.playCount)
+            //     })
+            //     data.list = allVideosRes.datas
+            // }
+            // if (categoryRes && categoryRes.code === 200) {
+            //     data.tags = categoryRes.data
+            // }
+            for (const key in data) {
+                this.tab1Data[key] = data[key]
             }
-            if (categoryRes && categoryRes.code === 200) {
-                data.tags = categoryRes.data
-            }
-            commit('setTab1Data', data)
             return Promise.resolve({ code: 200, success: true })
         },
-        async getTab2Data ({ commit }, params) {
-            const localData = store.get('videoTab2Data')
-            const data = {}
-            if (localData !== null) {
-                commit('setTab2Data', localData)
-                return Promise.resolve({ code: 200, success: true })
-            }
+        async getTab2Data (params) {
             const firstRes = await MV.first(params)
             const hotMVRes = await MV.all(params)
             const exclusiveRes = await MV.exclusive(params)
@@ -104,6 +77,7 @@ export default {
             // data.personalized.map(el => {
             //     el.playCount = filterPlayCount(el.playCount)
             // })
+            const data = {}
             firstRes.data.map(el => {
                 el.playCount = filterPlayCount(el.playCount)
             })
@@ -116,7 +90,7 @@ export default {
             topMVRes.data.map(el => {
                 el.playCount = filterPlayCount(el.playCount)
             })
-            data.personalized = (firstRes && firstRes.data.slice(0, 6)) || []
+            data.personalized = (firstRes && firstRes.data?.slice(0, 6)) || []
             data.topMV = (topMVRes && topMVRes.data) || []
             data.exclusive = (exclusiveRes && exclusiveRes.data) || []
             let res = (hotMVRes && hotMVRes.data) || []
@@ -124,11 +98,13 @@ export default {
             data.hotMV = res
             // data.mv = (mvRes && mvRes.result.slice(0, 3)) || {}
             // data.djrecommend = (djprogramRes && djprogramRes.result.slice(0, 5)) || []
-            commit('setTab2Data', data)
+            for (const key in data) {
+                this.tab2Data[key] = data[key]
+            }
             return Promise.resolve({ code: 200, success: true })
         },
         // 根据分类标签获取列表数据
-        getVideoByParams ({ commit }, {
+        getVideoByParams ({
             offset = 0,
             limit = 9,
             ctype = 1,
@@ -175,7 +151,9 @@ export default {
                             el.playCount = filterPlayCount(el.playCount)
                         })
                         data[apiStr] = res.data
-                        commit('setTab2Data', data)
+                        for (const key in data) {
+                            this.tab2Data[key] = data[key]
+                        }
                         resolve({ code: 200, success: true })
                     }
                 }).catch(err => {
@@ -184,7 +162,7 @@ export default {
             })
         },
         // 根据分类标签获取列表数据
-        getListByCate ({ commit }, { offset = 0, id }) {
+        getListByCate ({ offset = 0, id }) {
             return new Promise((resolve, reject) => {
                 let api = 'group'
                 if (!id) {
@@ -196,7 +174,7 @@ export default {
                             el.data.playTime = filterPlayCount(el.data.playTime)
                             el.data.playCount = filterPlayCount(el.data.playCount)
                         })
-                        commit('updateTab1Data', res.datas)
+                        this.tab1Data.list = res.datas
                         resolve(res)
                     }
                 }).catch(err => {
@@ -204,12 +182,66 @@ export default {
                 })
             })
         },
-        setVideoPlayer ({ commit, dispatch }, val) {
-            commit('setVideoPlayer', val)
-            commit('showVideoPlayer', val.show)
+        setVideoPlayer (val) {
+            this.videoParams = val
         },
-        setVideoPlayerShow ({ commit }, val) {
-            commit('showVideoPlayer', val)
-        }
+        setVideoPlayerShow (val) {
+            this.showVideoPlayer = val
+        },
+        async getVideoData (params) {
+            const state = {
+                total: 0,
+                countData: {},
+                videos: [],
+                hotComments: [], // 精彩评论
+                comments: [], // 所有评论
+                playData: {}
+            }
+            const videoRes = params.type === 'mv' ? await MV.detail({ mvid: params.id }) : await video.detail(params)
+            const videoInfoRes = params.type === 'mv' ? await MV.info({ mvid: params.id }) : await video.info({ vid: params.id })
+            const videoCommentRes = await video.comment({ id: params.id })
+            const relatedRes = await video.related({ id: params.id })
+            let videoUrlRes = params.type === 'mv' ? await MV.url({ id: params.id }) : await video.url({ id: params.id })
+            if (videoRes && videoRes.code === 200) {
+                state.playData = videoRes.data
+                state.playData.playCount = filterPlayCount(state.playData.playCount)
+                state.playData.playTime = filterPlayCount(state.playData.playTime)
+            }
+            if (videoInfoRes && videoInfoRes.code === 200) {
+                state.countData = videoInfoRes
+            }
+            if (videoCommentRes && videoCommentRes.code === 200) {
+                state.comments = videoCommentRes.comments
+                state.hotComments = videoCommentRes.hotComments
+                state.total = videoCommentRes.total
+            }
+            if (relatedRes && relatedRes.code === 200) {
+                state.videos = relatedRes.data
+                state.videos.map(el => {
+                    el.playCount = filterPlayCount(el.playCount)
+                    el.playTime = filterPlayCount(el.playTime)
+                })
+            }
+            if (videoUrlRes && videoUrlRes.code === 200) {
+                videoUrlRes = videoUrlRes.urls ? videoUrlRes.urls[0] : videoUrlRes.data
+                state.playData = { ...state.playData, ...videoUrlRes }
+            }
+            // console.log(state, 'state')
+            for (const key in state) {
+                this.videoDetail[key] = state[key]
+            }
+            return Promise.resolve({ code: 200, success: true })
+        },
+        async getVideoCommentByPage (params) {
+            const videoCommentRes = await video.comment(params)
+            if (videoCommentRes && videoCommentRes.code === 200) {
+                this.videoDetail.total = videoCommentRes.total
+                this.videoDetail.hasMore = videoCommentRes.more
+                this.videoDetail.comments = videoCommentRes.comments
+                return Promise.resolve({ code: 200, success: true })
+            }
+        },
     }
-}
+}, {
+    persist: true
+})

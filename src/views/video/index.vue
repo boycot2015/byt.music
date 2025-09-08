@@ -1,10 +1,11 @@
 <template>
   <div class="music-home">
-    <div class="tab-list flexbox-h just-c">
-      <div v-for="item in tabMenu" :key="item.name" :class="{ active: item.type === activeTab }" @click="onTabClick(item)" class="tab-list-item js-tab-item" data-type="home">{{ item.name }}</div>
-    </div>
-    <video-tab1 v-if="activeTab === tabMenu[0].type"></video-tab1>
-    <video-tab2 v-show="activeTab === tabMenu[1].type"></video-tab2>
+    <!-- <el-tabs class="tab-list flex justify-center mb-2" v-model="activeTab">
+      <el-tab-pane v-for="item in tabMenu" :key="item.name" :label="item.name" :name="item.type" :class="{ active: item.type === activeTab }" @click="onTabClick(item)" class="tab-list-item js-tab-item" data-type="home">
+        <component :is="item.component"></component>
+      </el-tab-pane>
+    </el-tabs> -->
+    <videoTab2></videoTab2>
   </div>
 </template>
 <script>
@@ -35,18 +36,20 @@ export default {
   setup() {
     const router = useRouter()
     // console.log(router.currentRoute.value, 'router.currentRoute')
-    const query = router.currentRoute.value.query.tabName || 'video'
+    const query = router.currentRoute.value.query.tabName || 'MV'
     const state = reactive({
       activeTab: query,
       tabMenu: [
         {
-          name: '视频',
-          type: 'video',
-        },
-        {
           name: 'MV',
           type: 'MV',
+          component: markRaw(videoTab2),
         },
+        // {
+        //   name: '视频',
+        //   type: 'video',
+        //   component: markRaw(videoTab1),
+        // },
       ],
     })
     // 点击tab切换数据

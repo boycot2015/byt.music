@@ -26,6 +26,17 @@
 <script name="Comment" lang="js" setup>
 import { computed, getCurrentInstance, ref } from 'vue'
 import { usePlayerStore } from '@/stores/player'
+
+const props = defineProps({
+  data: {
+    type: Object,
+    default: () => ({}),
+  },
+  type: {
+    type: String,
+    default: () => 'music', // music, mv, video
+  },
+})
 const playerStore = usePlayerStore()
 const { proxy } = getCurrentInstance()
 const playDataStore = computed(() => playerStore.playData)
@@ -56,6 +67,37 @@ const commentList = ref([
 ])
 const page = ref(1)
 const loading = ref(false)
+
+const setData = (data) => {
+  commentList.value.forEach((item) => {
+    let temp = {}
+    item.total = data.total
+    let comments = data[item.prop]?.filter((item) => item.content && item.parentCommentId) || []
+    if (item && item.page) {
+      item.comments =[...item.comments, ...(data[item.prop]?.filter((item) => item.content && !item.parentCommentId) || [])]
+    } else {
+      item.comments = data[item.prop]?.filter((item) => item.content && !item.parentCommentId) || []
+    }
+    comments.map((item) => {
+        if (item.beReplied?.length) {
+            const { beReplied, ...others  } = item
+            if(temp[item.parentCommentId]) {
+                temp[item.parentCommentId].beReplied = [...(temp[item.parentCommentId].beReplied || []), others]
+            } else {
+                temp[item.parentCommentId] = item.beReplied[0]
+            }
+        } else {
+            temp[item.parentCommentId] = item
+            temp[item.parentCommentId].beReplied = []
+        }
+    })
+    for (const key in temp) {
+        if (Object.prototype.hasOwnProperty.call(temp, key)) {
+            item.comments.push(temp[key])
+        }
+    }
+})
+}
 const getComments = async (params = { limit: 20 }) => {
   if (params.page && ctype.value == 'hot') {
     loading.value = false
@@ -68,46 +110,28 @@ const getComments = async (params = { limit: 20 }) => {
   loading.value = true
   let type = playData.value.type
   let id = playData.value.id?.split('_')[1]
-  if (type != 'netease') {
-    let res = await fetch(`${$apiUrl}/music/search?keyword=${playData.value.title}`).then((res) => res.json())
+  if (type != 'netease' && props.type == 'music') {
+    let res = await fetch(`${$apiUrl}/${props.type}/search?keyword=${playData.value.title}`).then((res) => res.json())
     id = res.data?.result[0].id?.split('_')[1]
     // console.log(res, id, type, playData.value, 'prefix')
   }
-  fetch(`${$musicApiUrl}/comment/music?id=${id}&limit=${params.limit}&offset=${params.page ? (params.page - 1) * params.limit : 0}`)
+  if (props.type == 'video') {
+    debugger
+    setData(props.data)
+    loading.value = false
+    return
+  }
+  if (!id) {
+    loading.value = false
+    return
+  }
+  fetch(`${$musicApiUrl}/comment/${props.type}?id=${id||props.data.id}&limit=${params.limit}&offset=${params.page ? (params.page - 1) * params.limit : 0}`)
     .then((res) => res.json())
     .then((data) => {
         loading.value = false
-        commentList.value.forEach((item) => {
-            let temp = {}
-            item.total = data.total
-            let comments = data[item.prop]?.filter((item) => item.content && item.parentCommentId) || []
-            if (item && item.page) {
-              item.comments =[...item.comments, ...(data[item.prop]?.filter((item) => item.content && !item.parentCommentId) || [])]
-            } else {
-              item.comments = data[item.prop]?.filter((item) => item.content && !item.parentCommentId) || []
-            }
-            comments.map((item) => {
-                if (item.beReplied?.length) {
-                    const { beReplied, ...others  } = item
-                    if(temp[item.parentCommentId]) {
-                        temp[item.parentCommentId].beReplied = [...(temp[item.parentCommentId].beReplied || []), others]
-                    } else {
-                        temp[item.parentCommentId] = item.beReplied[0]
-                    }
-                } else {
-                    temp[item.parentCommentId] = item
-                    temp[item.parentCommentId].beReplied = []
-                }
-            })
-            for (const key in temp) {
-                if (Object.prototype.hasOwnProperty.call(temp, key)) {
-                    item.comments.push(temp[key])
-                }
-            }
-        })
+        setData(data)
     })
 }
-getComments()
 watch(playDataStore.value, () => {
   if (playDataStore.value.id != playData.value.id) {
     ctype.value = 'hot'
@@ -121,6 +145,9 @@ watch(playDataStore.value, () => {
     scrollbarRef.value?.setScrollTop(0)
     getComments()
   }
+})
+onMounted(() => {
+  getComments()
 })
 </script>
 

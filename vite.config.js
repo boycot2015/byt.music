@@ -58,8 +58,9 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
+        api:'modern-compiler',
         javascriptEnabled: true,
-        additionalData: '@use "@/assets/styles/variables.scss";',
+        additionalData: '@use "@/assets/styles/variables.scss" as *;',
       },
     },
   },

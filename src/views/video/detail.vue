@@ -1,7 +1,7 @@
 <template>
-  <div class="video-detail flexbox-v active">
-    <div class="scroll-view video-detail-scroll flexbox-h" ref="scrollDom">
-      <div class="left flex-3 flexbox-v">
+  <div class="video-detail active">
+    <div class="scroll-view video-detail-scroll flex" ref="scrollDom">
+      <el-scrollbar class="left flex-3 pr-2" height="100%">
         <h3 class="title flexbox-h">
           <span class="back-btn icon-music-left" @click="turnBack"></span>
           <span class="level red bd-red pad2 font12">{{ playData.level === 'exhigh' ? '极高音质' : '标准音质' }}</span>
@@ -15,7 +15,7 @@
             <img :src="playData.picUrl" alt="" />
           </div>
         </div>
-        <div class="operation flexbox-h">
+        <div class="operation flex">
           <div class="play-btn collect">
             <i class="icon-music-star"></i>
             <span>点赞({{ playData.praisedCount || countData.commentCount }})</span>
@@ -34,13 +34,13 @@
           </div>
         </div>
         <div class="div" v-loading="loading">
-          <comment :data="data" :title="'评论'"></comment>
+          <comment v-if="playData.id" :data="{ ...data, ...playData }" :title="'评论'" type="video"></comment>
         </div>
-      </div>
+      </el-scrollbar>
       <div class="right flex-1 flexbox-v">
         <div class="lyric-text-content">
           <div class="title">MV介绍</div>
-          <div class="time-times flexbox-h just-b">
+          <div class="flex text-md justify-between">
             <span class="time">发布时间: {{ new Date(playData.publishTime).toLocaleDateString().split('/').join('-') }}</span>
             <span class="times" v-if="playData.playTime">播放次数: {{ playData.playTime }}</span>
           </div>
@@ -53,7 +53,7 @@
           >
             简介：{{ playData.description || playData.desc }}
           </div>
-          <div class="tags clearfix">
+          <div class="tags flex">
             <p class="name fl">标签：</p>
             <template v-if="playData.videoGroup && playData.videoGroup.length">
               <span class="tag fl" v-for="(tag, tindex) in playData.videoGroup" :key="tag.id" v-html="tag.name + (tindex < playData.videoGroup.length - 1 ? ' / ' : '')"> </span>
@@ -83,11 +83,184 @@
           </div>
         </div>
       </div>
-      <to-top selector=".video-detail-scroll"></to-top>
     </div>
+    <el-backtop selector=".video-detail-scroll"></el-backtop>
   </div>
 </template>
-
+<style lang="scss" scoped>
+.video-detail {
+  align-items: flex-start;
+  height: 100%;
+  position: relative;
+  background-color: $white;
+  overflow: hidden;
+  .scroll-view {
+    padding: 30px;
+    margin: 0 auto;
+    align-items: flex-start;
+    overflow: hidden;
+    overflow-y: auto;
+  }
+  .cover {
+    width: 100%;
+    height: 420px;
+    margin-top: 10px;
+    background-color: $c-000;
+    margin-bottom: 15px;
+    #play-video {
+      height: 100%;
+      width: 100%;
+    }
+  }
+  .left {
+    width: 630px;
+    margin-right: 30px;
+    > .title {
+      // font-family: 微软雅黑;
+      font-size: 16px;
+      line-height: 22px;
+      .singer {
+        margin-left: 10px;
+        color: $c-666;
+        font-size: 12px;
+      }
+      .name {
+        max-width: 480px;
+      }
+      .back-btn {
+        margin-right: 5px;
+        &::after {
+          font-size: 24px;
+        }
+      }
+      .level {
+        margin-right: 8px;
+        padding: 0px 5px;
+        border-radius: 2px;
+        white-space: nowrap;
+      }
+    }
+    .operation {
+      margin-bottom: 30px;
+      .play-btn {
+        min-width: 50px;
+        line-height: 26px;
+        font-size: 12px;
+        color: $c-333;
+        padding: 0 10px;
+        border-radius: $border-radius;
+        background-color: $white;
+        border: 1px solid $c-e8;
+        margin-right: 15px;
+        cursor: pointer;
+        i {
+          margin-right: 2px;
+        }
+        &.play {
+          width: 100px;
+          border: 1px solid $primary;
+          background-color: $primary;
+          color: $white;
+          i::after {
+            color: $white;
+            font-size: 12px;
+            padding: 0px;
+            background-color: transparent;
+            border: 1px solid $white;
+          }
+          i.icon-plus {
+            margin-right: 0;
+            margin-left: 12px;
+            &::after {
+              border: 0;
+            }
+          }
+          span {
+            padding: 8px 10px 8px 0;
+            border-right: 1px solid $c-ccc;
+          }
+        }
+      }
+    }
+    .comment {
+      padding-right: 0;
+      .comment-item .text {
+        width: 560px;
+      }
+    }
+  }
+  .right {
+    // font-family: 微软雅黑;
+    color: $c-666;
+    width: 290px;
+    .title {
+      font-size: 18px;
+      color: $c-333;
+      // font-family: 微软雅黑;
+      padding-bottom: 10px;
+      border-bottom: 1px solid $c-e8;
+      span {
+        padding-left: 10px;
+        font-size: 12px;
+        color: $c-999;
+      }
+    }
+    .info {
+      // font-family: 宋体;
+      line-height: 20px;
+      margin-bottom: 20px;
+      &.more {
+        max-height: 200px;
+        overflow: hidden;
+        overflow-y: auto;
+      }
+    }
+    .time-times {
+      line-height: 32px;
+      color: $c-999;
+    }
+    .tags {
+      margin-bottom: 40px;
+      .tag {
+        color: deepskyblue;
+      }
+    }
+    .grid-list-item.ftype-0 {
+      .name {
+        max-width: 215px;
+      }
+    }
+    .same-play-list-item {
+      height: 90px;
+      .img {
+        width: 120px;
+        height: 70px;
+      }
+      .text {
+        .name,
+        .singer {
+          max-width: 140px;
+        }
+      }
+    }
+  }
+}
+.video-detail {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  z-index: 999;
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s;
+  &.hide {
+    transform: translateY(9999px);
+  }
+  &.show {
+    transform: translateY(0px);
+  }
+}
+</style>
 <script>
 import {
   ref,
@@ -99,7 +272,7 @@ import {
   onMounted,
   onBeforeMount,
 } from 'vue'
-import { useStore } from 'vuex'
+import { useVideoStore } from '@/stores/video'
 import { useRouter } from 'vue-router'
 // import { animate } from '@/utils'
 import Comment from '@/components/Comment/Comment.vue'
@@ -108,10 +281,10 @@ export default {
     Comment,
   },
   setup(props) {
-    const store = useStore()
-    const rootStore = store.state
-    const detailStore = rootStore.detail.videoDetail
-    const videoParams = rootStore.video.videoParams
+    const store = useVideoStore()
+    const rootStore = store
+    const detailStore = rootStore.videoDetail
+    const videoParams = rootStore.videoParams
     const router = useRouter()
     const lyricScrollDom = ref(null)
     const scrollDom = ref(null)
@@ -150,7 +323,7 @@ export default {
       }
     )
     watch(
-      () => rootStore.video.videoParams,
+      () => rootStore.videoParams,
       (value) => {
         value.id &&
           getData({
@@ -190,21 +363,21 @@ export default {
     const getData = async (params) => {
       if (state.offset > 0) {
         state.loading = true
-        await store.dispatch('detail/getVideoCommentByPage', params).then((res) => {
+        await store.getVideoCommentByPage(params).then((res) => {
           state.loading = false
         })
         return
       }
-      await store.dispatch('detail/getVideoData', params).then((res) => {
+      await store.getVideoData(params).then((res) => {
         state.loading = false
       })
     }
     const onItemlistClick = (item, type) => {
-      store.dispatch('video/setVideoPlayer', {
+      store.setVideoPlayer({
         id: item.id || item.vid || item.mvid,
-        show: true,
         type: router.currentRoute.value.query.name === 'MV' ? 'mv' : 'video',
       })
+      store.setVideoPlayerShow(true)
     }
     // const initSwiper = () => {
     //     /* eslint-disable */
@@ -215,7 +388,7 @@ export default {
     }
     const turnBack = () => {
       document.getElementById('play-video').pause()
-      store.dispatch('video/setVideoPlayerShow', false)
+      store.setVideoPlayerShow(false)
     }
     return {
       ...toRefs(state),

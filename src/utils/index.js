@@ -67,3 +67,9 @@ export function debounce(func, delay, immediate = false) {
     }
   };
 }
+export const filterPlayCount = (num) => {
+  num = num >= 100000000
+      ? parseFloat(num / 100000000).toFixed(2) + '亿' : num >= 10000
+          ? parseFloat(num / 10000).toFixed(2) + '万' : num
+  return num
+}

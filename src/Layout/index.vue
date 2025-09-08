@@ -6,6 +6,7 @@ import Playlist from '@/views/components/Playlist.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePlayerStore } from '@/stores/player'
 import { useConfigStore } from '@/stores/config'
+import { useVideoStore } from '@/stores/video'
 import { set, useDark } from '@vueuse/core'
 import { useSwiper } from '@/hooks/useSwiper'
 
@@ -14,6 +15,7 @@ import favorites from '@/views/favorites/index.vue'
 import app from '@/views/app/index.vue'
 import setting from '@/views/setting/index.vue'
 import ranking from '@/views/ranking/index.vue'
+import videoDetail from '@/views/video/detail.vue'
 
 const tabsComponents = {
   playlist,
@@ -28,10 +30,14 @@ const scrollbarRef = ref(null)
 const scrollTop = ref([])
 const isDark = useDark()
 const { scrollRef, setScrollRef } = useConfigStore()
+const { setVideoPlayerShow } = useVideoStore()
 const playData = computed(() => usePlayerStore().playData)
 const player = computed(() => usePlayerStore().player)
 const config = computed(() => useConfigStore().config)
+const showVideoPlayer = computed(() => useVideoStore().showVideoPlayer)
+
 const listVisible = ref(playData.value.playlistVisible || false)
+const videoVisible = ref(showVideoPlayer.value || false)
 const commitVisible = ref(playData.value.commitVisible)
 const lyricAnimationVisible = ref(false)
 const { setPlayer, play, setPlayData } = usePlayerStore()
@@ -65,6 +71,9 @@ watch(activeIndex, () => {
 watch(playData.value, () => {
   listVisible.value = playData.value.playlistVisible
   commitVisible.value = playData.value.commitVisible
+})
+watch(showVideoPlayer, () => {
+  videoVisible.value = showVideoPlayer.value
 })
 watch(listVisible, () => {
   setPlayData({ playlistVisible: listVisible.value })
@@ -265,6 +274,10 @@ router.afterEach(() => {
         </div>
       </template>
       <Comment />
+    </el-drawer>
+    <!-- 视频播放弹框 -->
+    <el-drawer v-model="videoVisible" show-close direction="btt" :z-index="10002" size="100%" @close="setVideoPlayerShow(false)">
+      <videoDetail />
     </el-drawer>
     <!-- <audio :controls="false" crossorigin="anonymous" :src="playData.url" ref="audioRef"></audio> -->
   </el-container>
