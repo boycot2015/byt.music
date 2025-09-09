@@ -100,6 +100,7 @@ const router = createRouter({
         title: '应用',
         keepAlive: true,
         icon: 'IconApp',
+        hideInTab: true,
       },
     },
     {

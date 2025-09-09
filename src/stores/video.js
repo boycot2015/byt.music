@@ -1,8 +1,10 @@
 import { video, MV } from '@/api/index.js'
 import { filterPlayCount } from '@/utils'
 import { defineStore } from 'pinia'
+const expires = 1000 * 60 * 60 // 有效期1小时
 export const useVideoStore = defineStore('video', {
     state: () => ({
+        expires: Date.now() + expires,  // 有效期
         tab1Data: {
             all: {},
             categories: [], // 分类
@@ -69,14 +71,14 @@ export const useVideoStore = defineStore('video', {
             return Promise.resolve({ code: 200, success: true })
         },
         async getTab2Data (params) {
+            if(Date.now() < this.expires) return
+            if (Date.now() > this.expires) {
+                this.expires = Date.now() + expires
+            }
             const firstRes = await MV.first(params)
             const hotMVRes = await MV.all(params)
             const exclusiveRes = await MV.exclusive(params)
             const topMVRes = await MV.all(params)
-            // const djprogramRes = await home.djprogram(params)
-            // data.personalized.map(el => {
-            //     el.playCount = filterPlayCount(el.playCount)
-            // })
             const data = {}
             firstRes.data.map(el => {
                 el.playCount = filterPlayCount(el.playCount)
@@ -90,14 +92,12 @@ export const useVideoStore = defineStore('video', {
             topMVRes.data.map(el => {
                 el.playCount = filterPlayCount(el.playCount)
             })
-            data.personalized = (firstRes && firstRes.data?.slice(0, 6)) || []
-            data.topMV = (topMVRes && topMVRes.data) || []
-            data.exclusive = (exclusiveRes && exclusiveRes.data) || []
+            data.personalized = (firstRes && firstRes.data.reverse()) || []
+            data.topMV = (topMVRes && topMVRes.data.reverse()) || []
+            data.exclusive = (exclusiveRes && exclusiveRes.data.reverse()) || []
             let res = (hotMVRes && hotMVRes.data) || []
-            res = hotMVRes.data.slice(0, 10)
+            res = hotMVRes.data?.reverse().slice(0, 10)
             data.hotMV = res
-            // data.mv = (mvRes && mvRes.result.slice(0, 3)) || {}
-            // data.djrecommend = (djprogramRes && djprogramRes.result.slice(0, 5)) || []
             for (const key in data) {
                 this.tab2Data[key] = data[key]
             }
@@ -112,6 +112,7 @@ export const useVideoStore = defineStore('video', {
             type = '游戏',
             ...ohters
         }) {
+            this.expires = null
             return new Promise((resolve, reject) => {
                 let api = 'first'
                 let apiStr = 'personalized'
@@ -150,7 +151,7 @@ export const useVideoStore = defineStore('video', {
                             el.score = filterPlayCount(el.score)
                             el.playCount = filterPlayCount(el.playCount)
                         })
-                        data[apiStr] = res.data
+                        data[apiStr] = res.data.reverse()
                         for (const key in data) {
                             this.tab2Data[key] = data[key]
                         }
@@ -163,6 +164,7 @@ export const useVideoStore = defineStore('video', {
         },
         // 根据分类标签获取列表数据
         getListByCate ({ offset = 0, id }) {
+            this.expires = null
             return new Promise((resolve, reject) => {
                 let api = 'group'
                 if (!id) {
@@ -241,7 +243,8 @@ export const useVideoStore = defineStore('video', {
                 return Promise.resolve({ code: 200, success: true })
             }
         },
+    },
+    persist: {
+        enabled: true
     }
-}, {
-    persist: true
 })

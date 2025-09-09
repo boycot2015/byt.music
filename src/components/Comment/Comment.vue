@@ -1,23 +1,23 @@
 <template>
-  <div class="comment pl-2">
-    <el-tabs v-model="ctype" @tab-click="() => scrollbarRef.setScrollTop(0)" class="border-b border-solid border-[var(--el-bg-color)]">
+  <div class="comment pl-2 relative">
+    <el-tabs v-model="ctype" @tab-click="() => scrollbarRef.setScrollTop(0)" class="!sticky border-b border-solid border-[var(--el-bg-color)]">
       <el-tab-pane :label="item.name" :name="item.type" v-for="item in commentList" :key="item.type"> </el-tab-pane>
     </el-tabs>
-    <el-scrollbar ref="scrollbarRef" height="calc(100vh - 110px)" class="pr-3" @end-reached="(direction) => direction === 'bottom' && getComments({ page: commentList[1].page, limit: commentList[1].limit })">
+    <el-scrollbar ref="scrollbarRef" :height="type == 'music' ? 'calc(100vh - 110px)' : '100%'" class="pr-3" @end-reached="(direction) => direction === 'bottom' && getComments({ page: commentList[1].page, limit: commentList[1].limit })">
       <div v-for="item in commentList" :key="item.type">
         <div v-if="!loading || item.comments?.length" class="py-3" v-show="ctype == item.type">
           <div v-for="commit in item.comments" :key="commit.id">
             <CommentTree :comment="commit" />
           </div>
         </div>
-        <Empty v-show="!item.comments?.length && !loading && ctype == item.type" />
+        <Empty class="w-full" v-show="!item.comments?.length && !loading && ctype == item.type" />
       </div>
       <div class="loading flex py-2 justify-center items-center w-full" v-show="loading">
         <el-button loading link loading-icon="Loading"></el-button>
         <span class="ml-2">加载中...</span>
       </div>
     </el-scrollbar>
-    <el-backtop target=".comment .el-scrollbar__wrap" :bottom="80" :right="15">
+    <el-backtop target=".comment .el-scrollbar__wrap" v-if="type == 'music'" :bottom="80" :right="15">
       <el-icon><Top /></el-icon>
     </el-backtop>
   </div>
@@ -110,13 +110,16 @@ const getComments = async (params = { limit: 20 }) => {
   loading.value = true
   let type = playData.value.type
   let id = playData.value.id?.split('_')[1]
+  if (!id) {
+    loading.value = false
+    return
+  }
   if (type != 'netease' && props.type == 'music') {
     let res = await fetch(`${$apiUrl}/${props.type}/search?keyword=${playData.value.title}`).then((res) => res.json())
     id = res.data?.result[0].id?.split('_')[1]
     // console.log(res, id, type, playData.value, 'prefix')
   }
   if (props.type == 'video') {
-    debugger
     setData(props.data)
     loading.value = false
     return

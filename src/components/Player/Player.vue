@@ -14,13 +14,13 @@
       </div>
     </div>
     <div class="controls flex items-center justify-end flex-1 ml-5">
-      <div class="flex items-center mr-2" @click="setPlayData({ commitVisible: !playData.commitVisible })">
+      <div class="hidden md:flex items-center mr-2" @click="setPlayData({ commitVisible: !playData.commitVisible })">
         <el-icon :size="22" :disabled="disabled"> <ChatDotSquare class="cursor-pointer" @click="setPlayer({ loop: false, random: false })" /> </el-icon>
       </div>
       <el-icon :size="22" class="!hidden md:!block mr-2" title="音频可视化" @click="setPlayer({ visualizer: !player.visualizer })">
         <IconAnalyser class="cursor-pointer" :class="{ 'opacity-50': !player.visualizer }" />
       </el-icon>
-      <el-icon class="cursor-pointer mr-2" :size="26" @click="() => toggleCollect({ ...playData }, 'song')">
+      <el-icon class="cursor-pointer mr-2" :size="26" @click="() => playData.id && toggleCollect({ ...playData }, 'song')">
         <IconHeartFill class="text-[var(--el-color-primary)]" v-if="has(playData.id, 'song')" />
         <IconHeart v-else />
       </el-icon>

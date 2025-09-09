@@ -1,26 +1,77 @@
 <template>
-  <div class="tab-content tab-cate-content tab-singer-content" v-loading="loading">
+  <div class="tab-content tab-cate-content tab-singer-content md:mr-1">
     <div class="recommend" v-for="obj in tabData.list" :key="obj.title">
-      <div class="title flex align-center w-full my-2">
-        <h3 class="name" style="margin-right: 20px">{{ obj.title || '推荐歌单' }}</h3>
-        <div class="tags flex-1 flex-4" style="margin-bottom: 0">
+      <div class="title flex align-center w-full mb-2 justify-between">
+        <h3 class="name mr-2 md:mr-8">{{ obj.title || '推荐歌单' }}</h3>
+        <div class="tags flex md:flex-4" style="margin-bottom: 0">
           <div class="name top flex" v-for="(formItem, key) in obj.form" :key="formItem.title">
-            <div class="cates flex fl">
+            <div class="cates hidden md:flex fl">
               <div class="cursor-pointer" v-for="(item, index) in formItem.options" :key="item.id">
                 <span class="cates-item" :class="{ active: item.code === formItem.value || item === formItem.value }" @click="onCateTagClick(item, formItem, key, obj)">{{ item.name || item }}</span>
                 <i class="line mx-3" v-html="index < formItem.options.length - 1 ? '|' : ''"></i>
               </div>
             </div>
+            <div class="block md:hidden flex items-center" v-if="formItem.options">
+              <el-dropdown
+                trigger="click"
+                :show-arrow="false"
+                popper-class="backdrop-blur"
+                @command="
+                  (item) => {
+                    onCateTagClick(item, formItem, key, obj)
+                  }
+                "
+              >
+                <span class="el-dropdown-link flex flex-1 items-center">
+                  {{ formItem.options?.find((el) => el.code === formItem.value)?.name || formItem.title }}
+                  <el-icon class="el-icon--right">
+                    <arrow-down />
+                  </el-icon>
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item v-for="item in formItem.options" :key="item.code" :command="item">{{ item.name }}</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </div>
           </div>
         </div>
-        <span class="tr more" @click="onMoreClick(obj)">更多<i class="icon-music-right"></i></span>
+        <!-- <span class="tr more" @click="onMoreClick(obj)">更多<i class="icon-music-right"></i></span> -->
       </div>
-      <el-row class="grid-list flex flex-wrap" :gutter="10" :style="{ ...obj.styles }" v-loading="obj.loading">
-        <grid-list v-for="(item, index) in obj.data" :item="item" :category="obj.category" :index="index" :type="obj.type" @click.stop="onListClick(item)" :key="item.id"></grid-list>
-      </el-row>
+      <el-skeleton :loading="obj.loading" animated>
+        <template #template>
+          <el-row class="grid-list flex flex-wrap overflow-hidden rounded-md md:mb-2" :gutter="10">
+            <el-col v-for="(item, index) in 8" :span="12" :sm="obj.type == 4 ? 12 : 8" :md="obj.type == 4 ? 12 : 6" :xl="obj.type == 4 ? 12 : 4" :item="item" :category="obj.category" :index="index" :type="obj.type" :key="item.id">
+              <div class="flex flex-col w-full mb-2">
+                <el-skeleton-item variant="image" class="!rounded w-full !h-[100px] md:!h-[160px]" />
+                <div class="mt-2" v-if="obj.type != 4">
+                  <el-skeleton-item variant="text" style="width: 100%" />
+                  <el-skeleton-item variant="text" style="width: 60%" />
+                </div>
+              </div>
+            </el-col>
+          </el-row>
+        </template>
+        <template #default>
+          <el-row class="grid-list flex flex-wrap overflow-hidden rounded-md md:mb-2" :gutter="10" :style="{ ...obj.styles }" v-loading="obj.loading">
+            <grid-list v-for="(item, index) in obj.data" :item="item" :category="obj.category" :index="index" :type="obj.type" @click.stop="onListClick(item)" :key="item.id"></grid-list>
+          </el-row>
+        </template>
+      </el-skeleton>
     </div>
   </div>
 </template>
+<style lang="scss" scoped>
+.cates-item {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--el-text-color-regular);
+  &.active {
+    color: var(--el-color-primary);
+  }
+}
+</style>
 <script>
 import {
   // ref,
@@ -36,7 +87,7 @@ import { useVideoStore } from '@/stores/video'
 import { useRouter } from 'vue-router'
 import GridList from './GridList.vue'
 export default {
-  name: 'videoTab1',
+  name: 'videoTab2',
   components: {
     // Swiper,
     // SwiperSlide,
@@ -69,7 +120,7 @@ export default {
             query: {
               tabName: 'personalized',
             },
-            data: [],
+            data: tabData.personalized || [],
             form: {
               area: {
                 title: '语种',
@@ -117,7 +168,7 @@ export default {
             query: {
               tabName: 'hotMV',
             },
-            data: [],
+            data: tabData.hotMV || [],
             styles: {},
           },
           {
@@ -129,7 +180,7 @@ export default {
             query: {
               tabName: 'exclusive',
             },
-            data: [],
+            data: tabData.exclusive || [],
             styles: {
               marginBottom: '20px',
             },
@@ -143,7 +194,7 @@ export default {
             query: {
               tabName: 'topMV',
             },
-            data: [],
+            data: tabData.topMV || [],
             form: {
               area: {
                 title: '语种',
@@ -201,7 +252,7 @@ export default {
       () => [tabData.personalized, tabData.hotMV, tabData.exclusive, tabData.topMV],
       (value) => {
         state.tabData.list.map((el, i) => {
-          el.data = value[i].slice(0, 6)
+          el.data = value[i].slice(0, 8)
           if (i === 3) {
             el.data = value[3].slice(0, 10)
           }
@@ -247,13 +298,13 @@ export default {
       state.offset = 1
       obj.data = []
       const data = sortData(obj)
-      router.push({
-        path: router.currentRoute.value.path,
-        query: {
-          ...router.currentRoute.value.query,
-          ...data,
-        },
-      })
+      //   router.push({
+      //     path: router.currentRoute.value.path,
+      //     query: {
+      //       ...router.currentRoute.value.query,
+      //       ...data,
+      //     },
+      //   })
       data.limit = state.limit
       data.ctype = obj.category
       obj.loading = true

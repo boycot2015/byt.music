@@ -1,5 +1,5 @@
 <template>
-  <div class="music-home">
+  <div class="video">
     <!-- <el-tabs class="tab-list flex justify-center mb-2" v-model="activeTab">
       <el-tab-pane v-for="item in tabMenu" :key="item.name" :label="item.name" :name="item.type" :class="{ active: item.type === activeTab }" @click="onTabClick(item)" class="tab-list-item js-tab-item" data-type="home">
         <component :is="item.component"></component>
@@ -20,14 +20,14 @@ import {
   // onMounted
 } from 'vue'
 import { useRouter } from 'vue-router'
-import videoTab1 from './components/videoTab1.vue'
+// import videoTab1 from './components/videoTab1.vue'
 import videoTab2 from './components/videoTab2.vue'
 export default {
   name: 'videos',
   components: {
     // Swiper,
     // SwiperSlide,
-    videoTab1,
+    // videoTab1,
     videoTab2,
   },
   // directives: {

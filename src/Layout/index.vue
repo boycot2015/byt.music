@@ -7,7 +7,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { usePlayerStore } from '@/stores/player'
 import { useConfigStore } from '@/stores/config'
 import { useVideoStore } from '@/stores/video'
-import { set, useDark } from '@vueuse/core'
+import { useDark } from '@vueuse/core'
 import { useSwiper } from '@/hooks/useSwiper'
 
 import playlist from '@/views/playlist/index.vue'
@@ -29,12 +29,13 @@ const swiperInstance = ref(null)
 const scrollbarRef = ref(null)
 const scrollTop = ref([])
 const isDark = useDark()
-const { scrollRef, setScrollRef } = useConfigStore()
+const { scrollRef, setScrollRef, set } = useConfigStore()
 const { setVideoPlayerShow } = useVideoStore()
 const playData = computed(() => usePlayerStore().playData)
 const player = computed(() => usePlayerStore().player)
 const config = computed(() => useConfigStore().config)
 const showVideoPlayer = computed(() => useVideoStore().showVideoPlayer)
+const videoData = computed(() => useVideoStore().videoDetail.playData)
 
 const listVisible = ref(playData.value.playlistVisible || false)
 const videoVisible = ref(showVideoPlayer.value || false)
@@ -86,13 +87,14 @@ const onSwiper = (swiper) => {
   swiperInstance.value = swiper
   let index = tabs.findIndex((el) => el.name == activeTab.value)
   activeIndex.value = index == -1 ? activeIndex.value : index
-  swiperInstance.value?.slideTo(activeIndex.value)
+  // swiperInstance.value?.slideTo(activeIndex.value)
 }
 const onSlideChange = (value) => {
   if (value.activeIndex == activeIndex.value) return
   nextTick(() => {
     activeTab.value = tabs[value.activeIndex].name
     activeIndex.value = value.activeIndex
+    set({ activeTab: activeIndex.value })
   })
 }
 const onTabClick = (tab) => {
@@ -124,14 +126,14 @@ router.afterEach(() => {
     </el-aside>
     <el-container class="overflow-hidden bg-[var(--el-bg-color)]">
       <el-header class="bg-[var(--el-bg-color)] !px-3 flex items-center shadow-[0_0_5px_0_rgba(0,0,0,0.1)]" :class="{ 'md:!shadow-[0_5px_30px_0_rgba(255,255,255,0.1)]': isDark }"><Header /></el-header>
-      <swiper v-if="config.isMobile" :modules="modules" class="swipper w-full h-full" v-bind="{ ...swiperOptions, virtual: false, history: false }" @swiper="onSwiper" @slideChange="onSlideChange">
+      <swiper v-if="config.isMobile" :modules="modules" class="swipper w-full h-full" v-bind="{ ...swiperOptions, virtual: false, history: false, initialSlide: config.activeTab }" @swiper="onSwiper" @slideChange="onSlideChange">
         <swiper-slide class="swipper-item h-full" v-for="tab in tabs" :key="tab.name">
           <el-main class="bg-[transparent] md:!overflow-hidden !p-0 rounded layout">
             <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="scrollStyle" ref="scrollbarRef" :class="{ active: tab.name == activeTab }">
               <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px] md:!pb-[10px]">
                 <transition :name="'slide-fade'" v-show="tabsComponents[tab.name] && activeTab == tab.name">
                   <keep-alive :include="keepAliveRoutes">
-                    <component :is="tabsComponents[tab.name] || Component" />
+                    <component :is="tabsComponents[tab.name]" />
                   </keep-alive>
                 </transition>
                 <router-view v-slot="{ Component }" v-show="!tabsComponents[route.name]">
@@ -276,7 +278,7 @@ router.afterEach(() => {
       <Comment />
     </el-drawer>
     <!-- 视频播放弹框 -->
-    <el-drawer v-model="videoVisible" show-close direction="btt" :z-index="10002" size="100%" @close="setVideoPlayerShow(false)">
+    <el-drawer v-model="videoVisible" :title="videoData.name" :with-header="config.isMobile" destroy-on-close show-close direction="btt" :z-index="10002" size="100%" body-class="!p-0 !overflow-hidden" modal-class="backdrop-blur-sm" @close="setVideoPlayerShow(false)">
       <videoDetail />
     </el-drawer>
     <!-- <audio :controls="false" crossorigin="anonymous" :src="playData.url" ref="audioRef"></audio> -->

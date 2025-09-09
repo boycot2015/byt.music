@@ -1,90 +1,92 @@
 <template>
-  <div class="video-detail active">
-    <div class="scroll-view video-detail-scroll flex" ref="scrollDom">
-      <el-scrollbar class="left flex-3 pr-2" height="100%">
-        <h3 class="title flexbox-h">
-          <span class="back-btn icon-music-left" @click="turnBack"></span>
-          <span class="level red bd-red pad2 font12">{{ playData.level === 'exhigh' ? '极高音质' : '标准音质' }}</span>
-          <span v-if="playData.type" class="type red bd-red pad2 font12">{{ playData.type.toUpperCase() }}</span>
-          <p class="name line-one">{{ playData.title || playData.name }}</p>
-          <span class="singer" v-if="playData.creator">{{ playData.creator.nickname }}</span>
-        </h3>
-        <div class="cover">
-          <video id="play-video" volume="0.3" autoplay :src="playData.url" controls="controls"></video>
-          <div class="img">
-            <img :src="playData.picUrl" alt="" />
+  <div class="video-detail top-0 md:absolute md:pt-2 active">
+    <el-scrollbar class="scroll-view video-detail-scroll" ref="scrollDom" height="100vh" v-loading="loading">
+      <div class="flex flex-col md:flex-row relative md:!pr-5">
+        <div class="left w-full flex-3">
+          <h3 class="title px-2 flex flex-col md:flex-row items-center">
+            <el-icon class="back-btn !hidden md:!block icon-music-left cursor-pointer" :size="24" @click="turnBack"><Close /></el-icon>
+            <p class="name hidden md:block line-clamp-1">{{ playData.title || playData.name }}</p>
+            <span class="level !rounded-sm hidden md:block text-[red] border-[1px] border-[red] ml-2">{{ playData.level === 'exhigh' ? '极高音质' : '标准音质' }}</span>
+            <span v-if="playData.type" class="type red pad2 font12">{{ playData.type.toUpperCase() }}</span>
+            <span class="singer" v-if="playData.creator">{{ playData.creator.nickname }}</span>
+          </h3>
+          <div class="cover md:mt-4 h-[auto] md:h-[420px]">
+            <video id="play-video" volume="0.3" autoplay :src="playData.url" controls="controls"></video>
+            <div class="img">
+              <img :src="playData.picUrl" alt="" />
+            </div>
+          </div>
+          <div class="operation px-2 flex flex-nowrap">
+            <div class="play-btn collect">
+              <i class="icon-music-star"></i>
+              <span>点赞({{ playData.praisedCount || countData.commentCount }})</span>
+            </div>
+            <div class="play-btn collect">
+              <i class="icon-music-collect"></i>
+              <span>收藏({{ playData.subscribeCount || countData.likedCount }})</span>
+            </div>
+            <div class="play-btn share">
+              <i class="icon-music-share"></i>
+              <span>分享({{ playData.shareCount }})</span>
+            </div>
+            <div class="play-btn download !mr-0" @click="downloadMV">
+              <i class="icon-music-download"></i>
+              <span>下载MV</span>
+            </div>
           </div>
         </div>
-        <div class="operation flex">
-          <div class="play-btn collect">
-            <i class="icon-music-star"></i>
-            <span>点赞({{ playData.praisedCount || countData.commentCount }})</span>
+        <div class="right px-3 md:!sticky md:px-0 !w-full flex flex-1 flex-col">
+          <div class="lyric-text-content">
+            <div class="title">MV介绍</div>
+            <div class="flex text-md justify-between">
+              <span class="time">发布时间: {{ new Date(playData.publishTime).toLocaleDateString().split('/').join('-') }}</span>
+              <span class="times" v-if="playData.playTime">播放次数: {{ playData.playTime }}</span>
+            </div>
+            <div
+              class="info"
+              :class="{
+                more: (playData.description && playData.description.length > 100) || (playData.desc && playData.desc.length > 100),
+              }"
+              v-if="(playData.description && playData.description !== null) || (playData.desc && playData.desc !== null)"
+            >
+              简介：{{ playData.description || playData.desc }}
+            </div>
+            <div class="tags flex">
+              <p class="name fl">标签：</p>
+              <template v-if="playData.videoGroup && playData.videoGroup.length">
+                <span class="tag fl" v-for="(tag, tindex) in playData.videoGroup" :key="tag.id" v-html="tag.name + (tindex < playData.videoGroup.length - 1 ? ' / ' : '')"> </span>
+              </template>
+              <span v-else>暂无~</span>
+            </div>
           </div>
-          <div class="play-btn collect">
-            <i class="icon-music-collect"></i>
-            <span>收藏({{ playData.subscribeCount || countData.likedCount }})</span>
-          </div>
-          <div class="play-btn share">
-            <i class="icon-music-share"></i>
-            <span>分享({{ playData.shareCount }})</span>
-          </div>
-          <div class="play-btn download">
-            <i class="icon-music-download"></i>
-            <span>下载MV</span>
-          </div>
-        </div>
-        <div class="div" v-loading="loading">
-          <comment v-if="playData.id" :data="{ ...data, ...playData }" :title="'评论'" type="video"></comment>
-        </div>
-      </el-scrollbar>
-      <div class="right flex-1 flexbox-v">
-        <div class="lyric-text-content">
-          <div class="title">MV介绍</div>
-          <div class="flex text-md justify-between">
-            <span class="time">发布时间: {{ new Date(playData.publishTime).toLocaleDateString().split('/').join('-') }}</span>
-            <span class="times" v-if="playData.playTime">播放次数: {{ playData.playTime }}</span>
-          </div>
-          <div
-            class="info"
-            :class="{
-              more: (playData.description && playData.description.length > 100) || (playData.desc && playData.desc.length > 100),
-            }"
-            v-if="(playData.description && playData.description !== null) || (playData.desc && playData.desc !== null)"
-          >
-            简介：{{ playData.description || playData.desc }}
-          </div>
-          <div class="tags flex">
-            <p class="name fl">标签：</p>
-            <template v-if="playData.videoGroup && playData.videoGroup.length">
-              <span class="tag fl" v-for="(tag, tindex) in playData.videoGroup" :key="tag.id" v-html="tag.name + (tindex < playData.videoGroup.length - 1 ? ' / ' : '')"> </span>
-            </template>
-            <span v-else>暂无~</span>
-          </div>
-        </div>
-        <div class="same-content">
-          <div class="same-music-list grid-list" v-if="videos && videos.length">
-            <h2 class="title">相关推荐</h2>
-            <div v-for="item in videos" @click="onItemlistClick(item, 2)" :key="item.id" class="grid-list-item ftype-0" data-id="{{item.id}}" data-url="{{item.mp3Url}}" data-type="{{item.type}}">
-              <div class="same-play-list-item grid-list-item js-list-detail ftype-0" data-id="{{item.id}}" data-type="{{item.type}}" data-url="{{item.mp3Url}}">
-                <div class="img fl">
-                  <!-- <span class="icon icon-music-video"></span> -->
-                  <div class="right" v-if="item.playCount || item.playTime">
-                    <span class="icon-video" :class="`icon-music-video`"></span>
-                    <span class="play-count">{{ item.score || item.playCount || item.playTime }}</span>
+          <div class="same-content">
+            <div class="same-music-list grid-list" v-if="videos && videos.length">
+              <h2 class="title">相关推荐</h2>
+              <div v-for="item in videos" @click="onItemlistClick(item, 2)" :key="item.id" class="grid-list-item ftype-0 cursor-pointer" data-id="{{item.id}}" data-url="{{item.mp3Url}}" data-type="{{item.type}}">
+                <div class="same-play-list-item grid-list-item js-list-detail flex ftype-0 mb-2" data-id="{{item.id}}" data-type="{{item.type}}" data-url="{{item.mp3Url}}">
+                  <div class="img !relative">
+                    <!-- <span class="icon icon-music-video"></span> -->
+                    <div class="right absolute left-0 top-0 w-full flex justify-between" v-if="item.playCount || item.playTime">
+                      <el-icon class="icon-video"><VideoCamera /></el-icon>
+                      <span class="play-count">{{ item.score || item.playCount || item.playTime }}</span>
+                    </div>
+                    <img :src="item.coverUrl" alt="" />
                   </div>
-                  <img :src="item.coverUrl" alt="" />
-                </div>
-                <div class="text fl" :title="item.title">
-                  <p class="name line-two">{{ item.title }}</p>
-                  <p v-for="(singer, index) in item.creator" :key="singer.id" class="singer line-one" v-html="singer.userName + (index < item.creator.length - 1 ? '/' : '')"></p>
+                  <div class="text flex-1 ml-2 flex flex-col justify-between" :title="item.title">
+                    <p class="name line-clamp-2">{{ item.title }}</p>
+                    <p v-for="(singer, index) in item.creator" :key="singer.id" class="singer line-one" v-html="singer.userName + (index < item.creator.length - 1 ? '/' : '')"></p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <el-backtop selector=".video-detail-scroll"></el-backtop>
+      <div class="div">
+        <comment v-if="playData.id" :data="{ ...data, ...playData }" :title="'评论'" type="video"></comment>
+      </div>
+    </el-scrollbar>
+    <el-backtop selector=".video-detail .el-scrollbar__wrap"></el-backtop>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -92,20 +94,13 @@
   align-items: flex-start;
   height: 100%;
   position: relative;
-  background-color: $white;
   overflow: hidden;
   .scroll-view {
-    padding: 30px;
     margin: 0 auto;
     align-items: flex-start;
-    overflow: hidden;
-    overflow-y: auto;
   }
   .cover {
     width: 100%;
-    height: 420px;
-    margin-top: 10px;
-    background-color: $c-000;
     margin-bottom: 15px;
     #play-video {
       height: 100%;
@@ -113,7 +108,6 @@
     }
   }
   .left {
-    width: 630px;
     margin-right: 30px;
     > .title {
       // font-family: 微软雅黑;
@@ -128,6 +122,9 @@
         max-width: 480px;
       }
       .back-btn {
+        position: fixed;
+        right: 0px;
+        top: 15px;
         margin-right: 5px;
         &::after {
           font-size: 24px;
@@ -192,7 +189,6 @@
   .right {
     // font-family: 微软雅黑;
     color: $c-666;
-    width: 290px;
     .title {
       font-size: 18px;
       color: $c-333;
@@ -220,14 +216,9 @@
       color: $c-999;
     }
     .tags {
-      margin-bottom: 40px;
+      margin-bottom: 10px;
       .tag {
         color: deepskyblue;
-      }
-    }
-    .grid-list-item.ftype-0 {
-      .name {
-        max-width: 215px;
       }
     }
     .same-play-list-item {
@@ -236,18 +227,10 @@
         width: 120px;
         height: 70px;
       }
-      .text {
-        .name,
-        .singer {
-          max-width: 140px;
-        }
-      }
     }
   }
 }
 .video-detail {
-  position: absolute;
-  top: 60px;
   left: 0;
   z-index: 999;
   width: 100%;
@@ -272,9 +255,10 @@ import {
   onMounted,
   onBeforeMount,
 } from 'vue'
+import { ElMessage, ElLoading } from 'element-plus'
 import { useVideoStore } from '@/stores/video'
 import { useRouter } from 'vue-router'
-// import { animate } from '@/utils'
+import { downloadFile } from '@/utils'
 import Comment from '@/components/Comment/Comment.vue'
 export default {
   components: {
@@ -347,7 +331,7 @@ export default {
         })
         getData(params)
       }
-      document.querySelector('.scroll-view').addEventListener('scroll', function (e) {
+      document.querySelector('.scroll-view')?.addEventListener('scroll', function (e) {
         // 获取定义好的scroll盒子
         // const el = scrollDom.value
         state.scrollTop = this.scrollTop
@@ -387,8 +371,29 @@ export default {
       scrollDom.value.scrollTop = 0
     }
     const turnBack = () => {
-      document.getElementById('play-video').pause()
+      document.getElementById('play-video')?.pause()
       store.setVideoPlayerShow(false)
+    }
+    const downloadMV = () => {
+      const url = state.playData.url
+      let loading = ElLoading.service({
+        lock: true,
+        fullscreen: true,
+        text: '下载中',
+        target: '.video-detail',
+        customClass: '!z-100002 backdrop-blur',
+      })
+      fetch(url)
+        .then((res) => res.arrayBuffer())
+        .then((data) => {
+          ElMessage({
+            message: '下载成功',
+            type: 'success',
+            customClass: '!z-100002 backdrop-blur !w-[80vw] md:!w-[auto]',
+          })
+          loading.close()
+          downloadFile(data, state.playData.name + '.mp4')
+        })
     }
     return {
       ...toRefs(state),
@@ -398,6 +403,7 @@ export default {
       scrollDom,
       turnBack,
       scrollToTop,
+      downloadMV,
     }
   },
 }

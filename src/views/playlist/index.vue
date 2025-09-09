@@ -1,7 +1,7 @@
 <template>
   <div class="playlist h-[calc(100vh-300px)]">
     <div class="banner md:px-2">
-      <el-skeleton :loading="loading" animated class="w-full h-[20vh] md:h-[36vh]">
+      <el-skeleton :loading="bannerLoading" animated class="w-full h-[20vh] md:h-[36vh]">
         <template #template>
           <el-carousel ref="bannerCarousel" :height="config.isMobile ? '20vh' : '36vh'" :indicator-position="!config.isMobile ? '' : 'none'" :interval="4000" :type="!config.isMobile ? 'card' : ''" arrow="hover">
             <el-carousel-item v-for="item in 6" :key="item">
@@ -112,9 +112,9 @@
         </el-dropdown>
       </div>
     </div>
-    <GridList :loading="loading" :height="'calc(100vh - 36vh - 230px)'" :playlist="playlist" :type="type" :ctype="ctype" ref="gridRef">
+    <GridList :loading="loading" :height="'calc(100vh - 36vh - 235px)'" :playlist="playlist" :type="type" :ctype="ctype" ref="gridRef">
       <template #pagination>
-        <div class="flex justify-center md:justify-end mt-2">
+        <div class="flex justify-center md:justify-end my-2">
           <el-pagination class="!hidden md:!flex" layout="total, prev, pager, next, jumper, ->" :total="total" v-model:current-page="currentPage" @current-change="fetchListData" />
           <el-pagination class="!flex md:!hidden" layout="total, prev, next, jumper, ->" :total="total" v-model:current-page="currentPage" @current-change="fetchListData" />
         </div>

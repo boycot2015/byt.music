@@ -1,10 +1,13 @@
 <template>
   <el-col
-    :span="6"
-    class="grid-list-item flex flex-col rounded js-list-detail relative"
+    :span="12"
+    :sm="8"
+    :md="6"
+    :xl="4"
+    class="grid-list-item flex-col md:flex-row rounded js-list-detail relative mb-2 md:mb-3"
     v-if="(item.list && item.list.length) || item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl"
     :title="item.rcmdtext || item.name"
-    :class="`type-${type || item.type} ftype-${item.ftype}`"
+    :class="`type-${type || item.type} ${(type || item.type) == 4 ? '!h-[auto] !flex !py-0 md:!pt-[10px]' : ''} ftype-${item.ftype}`"
   >
     <ul v-if="item.list" class="grid-list js-child-list fl !overflow-hidden">
       <li class="grid-list-item flex js-list-detail" :class="`type-${child.type} ftype-${child.ftype}`" :title="child.name" v-for="(child, cindex) in item.list" :key="cindex" data-url="{{child.mp3Url}}">
@@ -14,7 +17,7 @@
           <el-image lazy fit="contain" :src="child.album && child.album.picUrl" alt="" />
         </div>
         <div class="text" :class="`${child.ftype == 0 ? 'fl' : ''}`" :title="child.rcmdtext || child.name">
-          <p class="name line-two tl">{{ child.name }}</p>
+          <p class="name line-clamp-2 tl">{{ child.name }}</p>
           <p class="desc tl" v-if="child.album">
             <i class="icon-play-video"></i>
             <span class="singer" v-for="(singer, index) in child.album.artists" :key="index" v-html="singer.name + (index < child.album.artists.length - 1 ? '/' : '')"> </span>
@@ -23,15 +26,15 @@
       </li>
     </ul>
     <template v-else>
-      <span class="order float-left" v-if="type === 4" v-html="index < 9 ? '0' + (index + 1) : index + 1"></span>
-      <div class="img" :class="`${item.ftype == 0 ? 'fl' : ''}`">
+      <span class="order hidden md:block float-left" v-if="type === 4" v-html="index < 9 ? '0' + (index + 1) : index + 1"></span>
+      <div class="img h-[100px] md:h-[auto] max-h-[180px] !overflow-hidden" :class="`${item.ftype == 0 ? 'fl' : ''} ${(type || item.type) == 4 ? 'md:!h-[120px] !w-full md:!w-[180px]' : ''}`">
         <!-- :style="{
               background: `url(${item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl
           }) no-repeat center/cover`}" -->
         <!-- <img :src="item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl" alt=""> -->
         <!-- v-if="(item.type == 0 || category == 3) && item.copywriter" -->
         <span class="copy-writer" v-if="(item.type == 0 || category == 3) && item.copywriter">{{ item.copywriter }}</span>
-        <div class="right" v-if="item.playCount || item.playTime">
+        <div class="right" :class="type == 4 ? '!right-2 !top-2 md:!right-0 md:!top-0' : 'md:!right-2 md:!top-2'" v-if="item.playCount || item.playTime">
           <span class="icon" v-if="type !== 4" :class="`icon-music-${item.type == 5 || type == 3 ? 'video' : 'erphone'}`"></span>
           <span v-else>热度:</span>
           <span class="play-count">{{ item.score || item.playCount || item.playTime }}</span>
@@ -39,18 +42,18 @@
         <div class="left" v-if="item.type == 5 && category !== 3">
           <span class="icon icon-music-video"></span>
         </div>
-        <p class="desc line-one" v-if="item.rcmdtext">{{ item.name }}</p>
-        <el-image lazy fit="contain" :src="item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl" alt="" />
+        <p class="desc line-clamp-1" v-if="item.rcmdtext">{{ item.name }}</p>
+        <el-image class="h-full !w-full min-h-[80px] md:min-h-[180px]" lazy fit="cover" :src="item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl" alt="" />
         <p class="time" v-if="type === 2">{{ new Date().toLocaleDateString().split('/').join('-') }}</p>
         <span class="creator" v-if="item.creator && type !== 3"><i class="icon-music-user"></i>{{ item.creator.nickname }}</span>
       </div>
-      <div class="text" :class="`${item.ftype == 0 ? 'fl' : ''}`">
-        <p class="name line-two tl" :class="{ 'line-one': type === 3 || type === 4 }">{{ item.rcmdtext || item.name || item.title }}</p>
-        <span class="rcmdText line-one" v-if="item.rcmdText">{{ item.rcmdText }}</span>
-        <span class="lastProgramName line-one" v-if="item.lastProgramName">{{ item.lastProgramName }}</span>
+      <div class="text flex-1" :class="`${item.ftype == 0 ? 'fl' : ''}`">
+        <p class="name line-clamp-2 tl" :class="{ 'line-clamp-1': type === 3 || type === 4 }">{{ item.rcmdtext || item.name || item.title }}</p>
+        <span class="rcmdText line-clamp-1" v-if="item.rcmdText">{{ item.rcmdText }}</span>
+        <span class="lastProgramName line-clamp-1" v-if="item.lastProgramName">{{ item.lastProgramName }}</span>
         <div class="price red" v-if="item.originalPrice">￥{{ item.originalPrice / 100 }}</div>
         <span class="creator" v-if="item.creator && type === 3"><i>by</i>{{ item.creator.nickname }}</span>
-        <p class="creator line-one" v-if="item.artists">
+        <p class="creator line-clamp-1 hidden md:block" v-if="item.artists">
           <span v-for="(art, index) in item.artists" :key="art.id" v-html="art.name + `${index < item.artists.length - 1 ? '/' : ''}`"></span>
         </p>
       </div>
@@ -60,7 +63,6 @@
 <style lang="scss" scoped>
 .grid-list-item {
   // width: 18%;
-  margin-bottom: 30px;
   overflow: hidden;
   position: relative;
   cursor: pointer;
@@ -130,7 +132,7 @@
   .right {
     right: 10px;
     top: 0;
-    max-width: 120px;
+    max-width: 140px;
     line-height: 18px;
     padding: 0px 10px;
     opacity: 1;
@@ -150,7 +152,6 @@
     box-sizing: border-box;
     width: calc(100% - 10px);
     line-height: 30px;
-    // background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.8));
 
     i::after {
       color: $white;
@@ -260,7 +261,6 @@
     }
 
     .img {
-      height: 180px;
       &:hover {
         .left {
           position: absolute;
@@ -277,6 +277,7 @@
       }
 
       .creator {
+        background-image: linear-gradient(to right, rgba(255, 255, 255, 0.8), rgba(0, 0, 0, 0));
         color: $c-666;
       }
     }
@@ -291,7 +292,7 @@
     border-right: 1px solid $c-e8;
     border-bottom: 1px solid $c-e8;
     box-sizing: border-box;
-
+    border-radius: 0;
     &:nth-child(2n) {
       border-right: 0;
     }
@@ -328,7 +329,7 @@
 
     .text {
       padding-top: 10px;
-      max-width: 140px;
+      // max-width: 140px;
       float: left;
       margin-left: 10px;
 
@@ -337,6 +338,9 @@
         margin-top: 5px;
         padding-left: 0;
       }
+    }
+    .right {
+      right: 0;
     }
   }
 
