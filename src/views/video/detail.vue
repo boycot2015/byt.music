@@ -12,8 +12,8 @@
           </h3>
           <div class="cover md:pl-2 md:mt-4 h-[225px] sm:h-[360px]">
             <video id="play-video" class="w-full" v-if="playData.url" volume="0.3" :autoplay="true" :src="playData.url" controls="controls"></video>
-            <div class="img overflow-hidden h-[225px] sm:h-[360px]" v-else>
-              <el-image loading="lazy" class="h-full rounded" :src="playData.cover" alt="" />
+            <div class="img overflow-hidden md:min-w-[600px] xl:min-w-[800px] h-[225px] sm:h-[360px]" v-else>
+              <el-image loading="lazy" class="h-[225px] sm:h-[360px] w-full rounded" :src="playData.cover" alt="" />
             </div>
           </div>
           <div class="operation px-2 flex flex-nowrap">
@@ -73,7 +73,7 @@
                       <el-icon class="icon-video"><VideoCamera /></el-icon>
                       <span class="play-count">{{ item.score || item.playCount || item.playTime }}</span>
                     </div>
-                    <img :src="item.coverUrl" alt="" />
+                    <el-image loading="lazy" class="rounded-md" :src="item.coverUrl" alt="" />
                   </div>
                   <div class="text flex-1 ml-2 flex flex-col justify-between" :title="item.title">
                     <p class="name line-clamp-2">{{ item.title }}</p>
@@ -357,11 +357,16 @@ export default {
         state.loading = false
       })
     }
-    const onItemlistClick = (item, type) => {
-      store.setVideoPlayer({
+    const onItemlistClick = (item) => {
+      state.loading = true
+      let params = {
         id: item.id || item.vid || item.mvid,
+        cover: item.coverUrl,
         type: router.currentRoute.value.query.name === 'MV' ? 'mv' : 'video',
-      })
+      }
+      state.playData = params
+      scrollToTop()
+      store.setVideoPlayer(params)
       store.setVideoPlayerShow(true)
     }
     // const initSwiper = () => {
@@ -369,7 +374,7 @@ export default {
     //     new Swiper('.lyric-swiper-container', state.swiperOption)
     // }
     const scrollToTop = () => {
-      scrollDom.value.scrollTop = 0
+      scrollDom.value?.setScrollTop(0)
     }
     const turnBack = () => {
       document.getElementById('play-video')?.pause()
