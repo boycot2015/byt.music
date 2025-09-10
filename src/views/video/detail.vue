@@ -11,7 +11,7 @@
             <span class="singer" v-if="playData.creator">{{ playData.creator.nickname }}</span>
           </h3>
           <div class="cover md:pl-2 md:mt-4 h-[225px] sm:h-[360px]">
-            <video id="play-video" class="w-full" v-if="playData.url" volume="0.3" :autoplay="false" :src="playData.url" controls="controls"></video>
+            <video id="play-video" class="w-full" v-if="playData.url" volume="0.3" :autoplay="true" :src="playData.url" controls="controls"></video>
             <div class="img overflow-hidden h-[225px] sm:h-[360px]" v-else>
               <el-image loading="lazy" class="h-full rounded" :src="playData.cover" alt="" />
             </div>
