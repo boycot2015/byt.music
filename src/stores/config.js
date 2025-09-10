@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { setHtmlStyleProp } from '@/utils'
 const defaults = {
+  reachedEnd: false,
   isMobile: false,
   loaded: false,
   showTab: true,

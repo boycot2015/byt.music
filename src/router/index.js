@@ -74,12 +74,24 @@ const router = createRouter({
     },
     {
       path: '/video',
-      name: 'video',
+      name: 'videoHome',
       component: () => import('@/views/video/index.vue'),
       meta: {
         title: '视频',
         keepAlive: true,
         icon: 'VideoCamera',
+      },
+    },
+    {
+      path: '/video/:id',
+      name: 'videoList',
+      component: () => import('@/views/video/list.vue'),
+      meta: {
+        title: '视频列表',
+        hideInTab: true,
+        hideInMenu: true,
+        icon: 'VideoCamera',
+        showBack: true,
       },
     },
     {

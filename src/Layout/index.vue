@@ -16,6 +16,7 @@ import app from '@/views/app/index.vue'
 import setting from '@/views/setting/index.vue'
 import ranking from '@/views/ranking/index.vue'
 import videoDetail from '@/views/video/detail.vue'
+import { nextTick } from 'vue'
 
 const tabsComponents = {
   playlist,
@@ -104,10 +105,10 @@ const onTabClick = (tab) => {
   })
 }
 onMounted(() => {
-  scrollbarRef.value && setScrollRef(scrollbarRef.value[activeIndex.value])
+  scrollbarRef.value && setScrollRef(scrollbarRef.value[activeIndex.value] || scrollbarRef.value)
   nextTick(() => {
     swiperInstance.value?.slideTo(activeIndex.value)
-    scrollbarRef.value && setScrollRef(scrollbarRef.value[activeIndex.value])
+    scrollbarRef.value && setScrollRef(scrollbarRef.value[activeIndex.value] || scrollbarRef.value)
   })
 })
 router.afterEach(() => {
@@ -117,6 +118,14 @@ router.afterEach(() => {
   swiperInstance.value?.slideTo(activeIndex.value)
   set({ activeTab: activeIndex.value })
 })
+
+const onReached = (val) => {
+  if (val !== 'bottom') return
+  set({ reachedEnd: true })
+  setTimeout(() => {
+    set({ reachedEnd: false })
+  }, 500)
+}
 </script>
 
 <template>
@@ -129,7 +138,7 @@ router.afterEach(() => {
       <swiper v-if="config.isMobile" :modules="modules" class="swipper w-full h-full" v-bind="{ ...swiperOptions, virtual: false, history: false, initialSlide: config.activeTab }" @swiper="onSwiper" @slideChange="onSlideChange">
         <swiper-slide class="swipper-item h-full" v-for="tab in tabs" :key="tab.name">
           <el-main class="bg-[transparent] md:!overflow-hidden !p-0 rounded layout">
-            <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="scrollStyle" ref="scrollbarRef" :class="{ active: tab.name == activeTab }">
+            <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="scrollStyle" ref="scrollbarRef" :class="{ active: tab.name == activeTab }" @end-reached="onReached">
               <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px] md:!pb-[10px]">
                 <transition :name="'slide-fade'" v-show="tabsComponents[tab.name] && activeTab == tab.name">
                   <keep-alive :include="keepAliveRoutes">
@@ -149,7 +158,7 @@ router.afterEach(() => {
         </swiper-slide>
       </swiper>
       <el-main class="bg-[transparent] md:!overflow-hidden !p-0 rounded layout" v-else>
-        <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="scrollStyle" ref="scrollbarRef">
+        <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="scrollStyle" ref="scrollbarRef" @end-reached="onReached" @scroll="set({ reachedEnd: false })">
           <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px] md:!pb-[10px]">
             <router-view v-slot="{ Component }">
               <transition :name="'slide-fade'">
@@ -278,7 +287,7 @@ router.afterEach(() => {
       <Comment />
     </el-drawer>
     <!-- 视频播放弹框 -->
-    <el-drawer v-model="videoVisible" :title="videoData.name" :with-header="config.isMobile" destroy-on-close show-close direction="btt" :z-index="10002" size="100%" body-class="!p-0 !overflow-hidden" modal-class="backdrop-blur-sm" @close="setVideoPlayerShow(false)">
+    <el-drawer v-model="videoVisible" :title="videoData.name" header-class="!border-0" destroy-on-close show-close direction="btt" :z-index="10002" size="100%" body-class="!p-0 !overflow-hidden" modal-class="backdrop-blur-sm" @close="setVideoPlayerShow(false)">
       <videoDetail />
     </el-drawer>
     <!-- <audio :controls="false" crossorigin="anonymous" :src="playData.url" ref="audioRef"></audio> -->

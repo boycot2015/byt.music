@@ -13,7 +13,7 @@
           <el-carousel :key="config.isMobile ? 'mobile' : 'desktop'" :pause-on-hover="false" ref="bannerCarousel" :height="config.isMobile ? '20vh' : '36vh'" :indicator-position="!config.isMobile ? '' : 'none'" :interval="4000" :type="!config.isMobile ? 'card' : ''" arrow="hover">
             <el-carousel-item v-for="(item, index) in banner" :key="index">
               <div @click="(e) => bannerCarousel && bannerCarousel.activeIndex == index && handleBannerClick(e, item)" class="relative">
-                <el-image lazy v-if="config.isMobile" :src="item.imageUrl" alt="" class="rounded-lg h-[20vh] w-full" fit="cover" />
+                <el-image loading="lazy" v-if="config.isMobile" :src="item.imageUrl" alt="" class="rounded-lg h-[20vh] w-full" fit="cover" />
                 <el-image v-else lazy :src="item.imageUrl" alt="" class="rounded-lg h-[35vh] w-full" fit="cover" />
                 <el-tag class="absolute right-0 bottom-1.5 md:bottom-8" v-if="item.typeTitle">{{ item.typeTitle }}</el-tag>
               </div>

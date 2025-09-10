@@ -1,19 +1,19 @@
 <template>
-  <div class="video-detail top-0 md:absolute md:pt-2 active">
-    <el-scrollbar class="scroll-view video-detail-scroll" ref="scrollDom" height="100vh" v-loading="loading">
-      <div class="flex flex-col md:flex-row relative md:!pr-5">
-        <div class="left w-full flex-3">
-          <h3 class="title px-2 flex flex-col md:flex-row items-center">
-            <el-icon class="back-btn !hidden md:!block icon-music-left cursor-pointer" :size="24" @click="turnBack"><Close /></el-icon>
+  <div class="video-detail top-0 md:absolute md:pt-2 active" v-loading="loading" element-loading-text="资源加载中...">
+    <el-scrollbar class="scroll-view video-detail-scroll" ref="scrollDom" height="calc(100vh - 80px)">
+      <div class="flex flex-col md:flex-row justify-center md:w-[1000px] xl:w-[1200px] mx-auto">
+        <div class="left md:mr-10">
+          <h3 class="title px-2 hidden md:flex flex-col md:flex-row items-center">
+            <!-- <el-icon class="back-btn icon-music-left cursor-pointer" :size="24" @click="turnBack"><Close /></el-icon> -->
             <p class="name hidden md:block line-clamp-1">{{ playData.title || playData.name }}</p>
             <span class="level !rounded-sm hidden md:block text-[red] border-[1px] border-[red] ml-2">{{ playData.level === 'exhigh' ? '极高音质' : '标准音质' }}</span>
             <span v-if="playData.type" class="type red pad2 font12">{{ playData.type.toUpperCase() }}</span>
             <span class="singer" v-if="playData.creator">{{ playData.creator.nickname }}</span>
           </h3>
-          <div class="cover md:mt-4 h-[auto] md:h-[420px]">
-            <video id="play-video" volume="0.3" autoplay :src="playData.url" controls="controls"></video>
-            <div class="img">
-              <img :src="playData.picUrl" alt="" />
+          <div class="cover md:pl-2 md:mt-4 h-[225px] sm:h-[360px]">
+            <video id="play-video" class="w-full" v-if="playData.url" volume="0.3" :autoplay="false" :src="playData.url" controls="controls"></video>
+            <div class="img overflow-hidden h-[225px] sm:h-[360px]" v-else>
+              <el-image loading="lazy" class="h-full rounded" :src="playData.cover" alt="" />
             </div>
           </div>
           <div class="operation px-2 flex flex-nowrap">
@@ -34,11 +34,14 @@
               <span>下载MV</span>
             </div>
           </div>
+          <div class="div hidden md:block">
+            <comment v-if="playData.id" :data="{ ...data, ...playData }" :title="'评论'" type="video"></comment>
+          </div>
         </div>
-        <div class="right px-3 md:!sticky md:px-0 !w-full flex flex-1 flex-col">
-          <div class="lyric-text-content">
+        <div class="right px-3 md:px-0 !w-full flex flex-1 flex-col">
+          <div class="content">
             <div class="title">MV介绍</div>
-            <div class="flex text-md justify-between">
+            <div class="flex text-md justify-between pt-2">
               <span class="time">发布时间: {{ new Date(playData.publishTime).toLocaleDateString().split('/').join('-') }}</span>
               <span class="times" v-if="playData.playTime">播放次数: {{ playData.playTime }}</span>
             </div>
@@ -82,7 +85,7 @@
           </div>
         </div>
       </div>
-      <div class="div">
+      <div class="div md:hidden">
         <comment v-if="playData.id" :data="{ ...data, ...playData }" :title="'评论'" type="video"></comment>
       </div>
     </el-scrollbar>
@@ -100,15 +103,13 @@
     align-items: flex-start;
   }
   .cover {
-    width: 100%;
     margin-bottom: 15px;
     #play-video {
       height: 100%;
-      width: 100%;
+      object-fit: cover;
     }
   }
   .left {
-    margin-right: 30px;
     > .title {
       // font-family: 微软雅黑;
       font-size: 16px;
@@ -231,8 +232,6 @@
   }
 }
 .video-detail {
-  left: 0;
-  z-index: 999;
   width: 100%;
   height: 100%;
   transition: all 0.3s;
@@ -273,7 +272,9 @@ export default {
     const lyricScrollDom = ref(null)
     const scrollDom = ref(null)
     const state = reactive({
-      playData: {},
+      playData: {
+        ...videoParams,
+      },
       countData: {},
       data: {
         total: 0,

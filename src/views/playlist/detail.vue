@@ -1,5 +1,5 @@
 <template>
-  <div class="playlist-detail !overflow-hidden">
+  <div class="playlist-detail !overflow-hidden backdrop-blur-sm">
     <div class="md:h-[calc(100vh-140px)] min-h-[calc(100vh-180px)] md:min-h-[calc(100vh-140px)] rounded-md overflow-y-auto md:!overflow-hidden">
       <Playlist ref="tableRef" showSkeleton :loading="loading" :data="data" :tableProps="{ height: config.isMobile ? null : 'calc(100vh - 300px)' }" :show-actions="true">
         <template #header>
@@ -54,8 +54,8 @@
         </template>
       </Playlist>
       <el-backtop target=".playlist-detail .el-scrollbar__wrap" :bottom="80" :right="15">
-      <el-icon><Top /></el-icon>
-    </el-backtop>
+        <el-icon><Top /></el-icon>
+      </el-backtop>
     </div>
   </div>
 </template>

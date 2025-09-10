@@ -23,7 +23,7 @@ import { useRouter } from 'vue-router'
 // import videoTab1 from './components/videoTab1.vue'
 import videoTab2 from './components/videoTab2.vue'
 export default {
-  name: 'videos',
+  name: 'videoHome',
   components: {
     // Swiper,
     // SwiperSlide,

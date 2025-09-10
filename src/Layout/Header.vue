@@ -19,7 +19,7 @@
           <el-icon class="mr-3" :size="24" v-if="route.meta.showBack && route.meta?.icon" @click.stop>
             <component :is="route.meta.icon" />
           </el-icon>
-          <span class="text-large font-600" v-if="route.meta && (!route.meta.showSearch || !config.isMobile)">{{ route.meta.title }}</span>
+          <span class="text-large font-600" v-if="route.meta && (!route.meta.showSearch || !config.isMobile)">{{ route.query.title || route.meta.title }}</span>
         </div>
         <div class="flex-1 relative overflow-hidden z-9" v-if="route.meta && route.meta.showSearch">
           <el-carousel class="!absolute left-10 top-1.5 w-full" :interval="3000" indicator-position="none" ref="sliderRef" height="40px" direction="vertical" :autoplay="true">

@@ -3,7 +3,7 @@
     <div class="recommend" v-for="obj in tabData.list" :key="obj.title">
       <div class="title flex align-center w-full mb-2 justify-between">
         <h3 class="name mr-2 md:mr-8">{{ obj.title || '推荐歌单' }}</h3>
-        <div class="tags flex md:flex-4" style="margin-bottom: 0">
+        <div class="tags flex flex-4" style="margin-bottom: 0">
           <div class="name top flex" v-for="(formItem, key) in obj.form" :key="formItem.title">
             <div class="cates hidden md:flex fl">
               <div class="cursor-pointer" v-for="(item, index) in formItem.options" :key="item.id">
@@ -37,7 +37,9 @@
             </div>
           </div>
         </div>
-        <!-- <span class="tr more" @click="onMoreClick(obj)">更多<i class="icon-music-right"></i></span> -->
+        <span class="tr more flex items-center cursor-pointer" @click="onMoreClick(obj)"
+          >更多<el-icon class="icon-music-right"><arrow-right /></el-icon
+        ></span>
       </div>
       <el-skeleton :loading="obj.loading" animated>
         <template #template>
@@ -116,11 +118,12 @@ export default {
             title: '最新MV',
             category: 1,
             type: 3,
-            path: '/common/page',
+            path: '/video/personalized',
             query: {
+              type: '最新',
               tabName: 'personalized',
             },
-            data: tabData.personalized || [],
+            data: tabData.personalized?.slice(0, 8) || [],
             form: {
               area: {
                 title: '语种',
@@ -164,23 +167,23 @@ export default {
             title: '热播MV',
             category: 2,
             type: 3,
-            path: '/common/page',
+            path: '/video/hotMV',
             query: {
               tabName: 'hotMV',
             },
-            data: tabData.hotMV || [],
+            data: tabData.hotMV?.slice(0, 8) || [],
             styles: {},
           },
           {
             loading: true,
             title: '网易出品',
-            category: 4,
+            category: 3,
             type: 3,
-            path: '/common/page',
+            path: '/video/exclusive',
             query: {
               tabName: 'exclusive',
             },
-            data: tabData.exclusive || [],
+            data: tabData.exclusive?.slice(0, 8) || [],
             styles: {
               marginBottom: '20px',
             },
@@ -190,11 +193,11 @@ export default {
             title: 'MV排行榜',
             category: 5,
             type: 4,
-            path: '/common/page',
+            path: '/video/topMV',
             query: {
               tabName: 'topMV',
             },
-            data: tabData.topMV || [],
+            data: tabData.topMV?.slice(0, 10) || [],
             form: {
               area: {
                 title: '语种',
@@ -239,7 +242,7 @@ export default {
       limit: 39,
     })
     // const { ctx } = getCurrentInstance()
-    onMounted(async () => {
+    onMounted(() => {
       getData()
     })
     watch(
@@ -281,6 +284,7 @@ export default {
       store.setVideoPlayer({
         id: item.id || item.vid || item.mvid,
         type: 'mv',
+        cover: item.cover,
       })
       store.setVideoPlayerShow(true)
     }
@@ -295,7 +299,6 @@ export default {
     const onCateTagClick = (item, formItem, key, obj) => {
       // console.log(item, formItem, key, 'item, formItem, key')
       formItem.value = item.code !== undefined ? item.code : item
-      state.offset = 1
       obj.data = []
       const data = sortData(obj)
       //   router.push({
@@ -307,6 +310,7 @@ export default {
       //   })
       data.limit = state.limit
       data.ctype = obj.category
+      obj.query = { ...obj.query, ...data }
       obj.loading = true
       store.getVideoByParams(data).then((res) => {
         obj.loading = false

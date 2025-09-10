@@ -71,7 +71,7 @@ export const useVideoStore = defineStore('video', {
             return Promise.resolve({ code: 200, success: true })
         },
         async getTab2Data (params) {
-            if(Date.now() < this.expires) return
+            if(Date.now() < this.expires && this.tab2Data.personalized.length) return
             if (Date.now() > this.expires) {
                 this.expires = Date.now() + expires
             }
@@ -92,11 +92,11 @@ export const useVideoStore = defineStore('video', {
             topMVRes.data.map(el => {
                 el.playCount = filterPlayCount(el.playCount)
             })
-            data.personalized = (firstRes && firstRes.data.reverse()) || []
-            data.topMV = (topMVRes && topMVRes.data.reverse()) || []
-            data.exclusive = (exclusiveRes && exclusiveRes.data.reverse()) || []
+            data.personalized = (firstRes && firstRes.data) || []
+            data.topMV = (topMVRes && topMVRes.data) || []
+            data.exclusive = (exclusiveRes && exclusiveRes.data?.slice(0, 16)) || []
             let res = (hotMVRes && hotMVRes.data) || []
-            res = hotMVRes.data?.reverse().slice(0, 10)
+            res = hotMVRes.data?.slice(0, 16)
             data.hotMV = res
             for (const key in data) {
                 this.tab2Data[key] = data[key]
@@ -116,8 +116,9 @@ export const useVideoStore = defineStore('video', {
             return new Promise((resolve, reject) => {
                 let api = 'first'
                 let apiStr = 'personalized'
-                // console.log(ctype)
-                switch (ctype) {
+                // console.log(ctype, 'ctype')
+                let isPage = false
+                switch (+ctype) {
                 case 1:
                     api = 'first'
                     apiStr = 'personalized'
@@ -129,13 +130,18 @@ export const useVideoStore = defineStore('video', {
                 case 3:
                     api = 'exclusive'
                     apiStr = 'exclusive'
+                    isPage = true
                     break
                 case 5:
                     api = 'top'
                     apiStr = 'topMV'
+                    isPage = true
                     break
                 default:
                     break
+                }
+                if (!isPage && offset != 0) {
+                    return resolve({ code: 200, data: offset != 0 ? [] : this.tab2Data[apiStr] || [], more: false, success: true })
                 }
                 MV[api]({
                     limit,
@@ -151,11 +157,13 @@ export const useVideoStore = defineStore('video', {
                             el.score = filterPlayCount(el.score)
                             el.playCount = filterPlayCount(el.playCount)
                         })
-                        data[apiStr] = res.data.reverse()
-                        for (const key in data) {
-                            this.tab2Data[key] = data[key]
+                        data[apiStr] = res.data
+                        if (offset == 0) {
+                            for (const key in data) {
+                                this.tab2Data[key] = data[key]
+                            }
                         }
-                        resolve({ code: 200, success: true })
+                        resolve({ code: 200, data: res.data, more: res.more, success: true })
                     }
                 }).catch(err => {
                     reject(err)
