@@ -66,19 +66,31 @@
           :data="data.tracks"
           @row-dblclick="handlePlay"
         >
-          <el-table-column prop="title" min-width="130px" label="歌曲名" show-overflow-tooltip>
+          <el-table-column v-if="!showTableHeader" width="30px" type="index" :index="(val) => val + 1" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="title" min-width="130px" label="歌曲名" :show-overflow-tooltip="showTableHeader">
             <template #default="scope">
-              {{ scope.row.title }}
-              <span v-if="scope.row.quality == 'HQ'" class="text-[green] text-[12px]">{{ scope.row.quality }}</span>
-              <span v-else class="text-[purple] text-[12px]">{{ scope.row.quality }}</span>
+              <div v-if="showTableHeader">
+                {{ scope.row.title }}
+                <span v-if="scope.row.quality == 'HQ'" class="text-[green] text-[12px]">{{ scope.row.quality }}</span>
+                <span v-else class="text-[purple] text-[12px]">{{ scope.row.quality }}</span>
+              </div>
+              <div v-else>
+                <p class="line-clamp-1 text-xl">{{ scope.row.title }}</p>
+                <div class="text-[12px] line-clamp-1">
+                  <span v-if="scope.row.quality == 'HQ'" class="text-[green]">{{ scope.row.quality }}</span>
+                  <span v-else class="text-[purple] ml-1">{{ scope.row.quality }}</span>
+                  {{ scope.row.artist || scope.row.singer || '--' }}
+                  <span class="ml-1" v-if="scope.row.album?.name || scope.row.album">- {{ scope.row.album?.name || scope.row.album || '--' }}</span>
+                </div>
+              </div>
             </template>
           </el-table-column>
-          <el-table-column prop="artist" show-overflow-tooltip label="艺术家">
+          <el-table-column prop="artist" show-overflow-tooltip label="艺术家" v-if="showTableHeader">
             <template #default="scope">
               {{ scope.row.artist || scope.row.singer || '--' }}
             </template>
           </el-table-column>
-          <el-table-column prop="album" show-overflow-tooltip label="专辑名">
+          <el-table-column prop="album" show-overflow-tooltip label="专辑名" v-if="showTableHeader">
             <template #default="scope">
               {{ scope.row.album?.name || scope.row.album || '--' }}
             </template>
@@ -88,7 +100,7 @@
               {{ scope.row.duration || '--' }}
             </template>
           </el-table-column>
-          <el-table-column prop="action" align="center" label="操作" width="78px" v-if="$slots['table-action'] && config.showTableAction">
+          <el-table-column prop="action" align="center" label="操作" :width="showTableHeader ? '78px' : '40px'" v-if="$slots['table-action'] && config.showTableAction">
             <template #default="scope">
               <slot name="table-action" :row="scope.row"></slot>
             </template>
@@ -102,8 +114,13 @@
     <slot name="pagination"></slot>
   </div>
 </template>
+<style lang="scss" scoped>
+:deep(.el-table .el-table__inner-wrapper:before) {
+  height: 0;
+}
+</style>
 <script setup>
-import { ElMessageBox } from 'element-plus'
+import { ElMessageBox, tabBarProps } from 'element-plus'
 import IconHeart from '@/components/icons/IconHeart.vue'
 import IconHeartFill from '@/components/icons/IconHeartFill.vue'
 import { usePlayerStore } from '@/stores/player'
@@ -159,7 +176,7 @@ const slots = defineSlots()
 const { play, playData, setPlayData } = playerStore
 const config = computed(() => configStore.config)
 const playIndex = computed(() => playData.playIndex)
-
+const showTableHeader = computed(() => props.tableProps.showHeader || props.tableProps.showHeader == undefined)
 const emit = defineEmits(['action'])
 const data = computed(() => props.data)
 const tableRef = ref(null)

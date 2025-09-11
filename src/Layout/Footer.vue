@@ -31,7 +31,7 @@
               <div class="title line-clamp-1">{{ playData.title }}</div>
               <Slider
                 class="!w-full md:z-99 !absolute is-inner text-center top-[33px]"
-                v-if="config.isMobile"
+                v-if="config.isMobile && playData.url"
                 @change="
                   (value) => {
                     setPlayer({

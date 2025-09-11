@@ -126,6 +126,17 @@ const onReached = (val) => {
     set({ reachedEnd: false })
   }, 500)
 }
+const onAction = (command, row) => {
+  if (command == 'play') {
+    setPlayData({ playIndex: playData.value.playlist?.findIndex((item) => item.id == row.id) })
+    play(row)
+    return
+  }
+  if (command == 'delete') {
+    setPlayData({ playlist: playData.value.playlist.filter((item) => item.id !== row.id) })
+    return
+  }
+}
 </script>
 
 <template>
@@ -235,26 +246,41 @@ const onReached = (val) => {
       </template>
       <Playlist :show-header="false" :data="{ info: playData, tracks: playData.playlist }" :tableProps="{ miniHeight: '200px', showHeader: false }">
         <template #table-action="{ row }">
-          <el-link
-            type="primary"
-            :disabled="playData.playlist.length === 0"
-            size="small"
-            @click="
-              () => {
-                setPlayData({ playIndex: playData.playlist?.findIndex((item) => item.id == row.id) })
-                play(row)
-              }
-            "
-          >
-            <el-icon :size="28">
-              <IconPlay />
-            </el-icon>
-          </el-link>
-          <el-link type="danger" :disabled="playData.playlist.length === 0" size="small" @click="setPlayData({ playlist: playData.playlist.filter((item) => item.id !== row.id) })">
-            <el-icon :size="18">
-              <Delete />
-            </el-icon>
-          </el-link>
+          <div v-if="!config.isMobile">
+            <el-link
+              type="primary"
+              :disabled="playData.playlist.length === 0"
+              size="small"
+              @click="
+                () => {
+                  setPlayData({ playIndex: playData.playlist?.findIndex((item) => item.id == row.id) })
+                  play(row)
+                }
+              "
+            >
+              <el-icon :size="28">
+                <IconPlay />
+              </el-icon>
+            </el-link>
+            <el-link type="danger" :disabled="playData.playlist.length === 0" size="small" @click="setPlayData({ playlist: playData.playlist.filter((item) => item.id !== row.id) })">
+              <el-icon :size="18">
+                <Delete />
+              </el-icon>
+            </el-link>
+          </div>
+          <el-dropdown trigger="click" :show-arrow="false" popper-class="backdrop-blur !z-30000" @command="(command) => onAction(command, row)" v-else>
+            <el-icon class="transform rotate-90"><MoreFilled /></el-icon>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="play"
+                  ><el-icon class="mr-2 !text-[var(--el-color-primary)]"><video-play /></el-icon>播放</el-dropdown-item
+                >
+                <el-dropdown-item command="delete"
+                  ><el-icon class="mr-2 !text-[var(--el-color-danger)]"><Delete /></el-icon>移除</el-dropdown-item
+                >
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </template>
       </Playlist>
     </el-drawer>
@@ -290,7 +316,7 @@ const onReached = (val) => {
     <el-drawer
       v-model="videoVisible"
       :title="videoData.name + ' -- ' + videoData.artistName"
-      header-class="!border-0 text-center"
+      header-class="!border-0 text-center !mb-5"
       destroy-on-close
       show-close
       direction="btt"

@@ -93,7 +93,8 @@ export const usePlayerStore = defineStore(
         analyser.value.connect(audioCtx.destination)
       })
     }
-    const play = async (item, type = playData.value.type || 'qq') => {
+    const play = async (item = {}, type = playData.value.type || 'qq') => {
+      if (!item || !item.id) return ElMessage.error('请选择歌曲')
       player.value.currentTime = 0
       playData.value.lyricIndex = 0
       let duration = item.duration || item.durationStr
@@ -103,7 +104,6 @@ export const usePlayerStore = defineStore(
       }
       player.value.loading = true
       player.value.lyricLoading = true
-      if (!item) return ElMessage.error('请选择歌曲')
       playData.value.type = type
       playData.value.id = item.id
       playData.value.title = item.title

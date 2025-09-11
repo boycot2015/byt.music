@@ -12,7 +12,7 @@
         </div>
         <Empty class="w-full" v-show="!item.comments?.length && !loading && ctype == item.type" />
       </div>
-      <div class="loading flex py-2 justify-center items-center w-full" v-show="loading">
+      <div class="loading flex py-2 mb-2 justify-center items-center w-full" v-show="loading">
         <el-button loading link loading-icon="Loading"></el-button>
         <span class="ml-2">加载中...</span>
       </div>
@@ -27,7 +27,6 @@
 import { computed, getCurrentInstance, ref } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import { useVideoStore } from '@/stores/video'
-import { useConfigStore } from '@/stores/config'
 
 const props = defineProps({
   data: {
@@ -39,11 +38,9 @@ const props = defineProps({
     default: () => 'music', // music, mv, video
   },
 })
-const { config } = useConfigStore()
 const playerStore = usePlayerStore()
 const videoStore = useVideoStore()
 const { proxy } = getCurrentInstance()
-const reachedEnd = computed(() => config.reachedEnd)
 const playDataStore = computed(() => props.type == 'mv' || props.type == 'video' ? ({ ...videoStore.videoParams.value, ...videoStore.videoDetail.playData }) : playerStore.playData)
 let playData = ref(Object.assign({}, props.type == 'mv' || props.type == 'video' ? { ...videoStore.videoParams.value, ...videoStore.videoDetail.playData } : playDataStore.value))
 const $apiUrl = proxy.$apiUrl
@@ -145,8 +142,8 @@ const getComments = async (params = { limit: 20 }) => {
 }
 watch(playDataStore, () => {
   if (playDataStore.value.id != playData.value.id) {
-    ctype.value = 'hot'
-    // console.log(playDataStore.value.id, playData.value.id);
+    ctype.value = 'new'
+    console.log(playDataStore.value.id, playData.value.id);
     playData.value = Object.assign({}, playDataStore.value)
     commentList.value.forEach((item) => {
       item.comments = []
@@ -157,14 +154,11 @@ watch(playDataStore, () => {
     getComments()
   }
 })
-watch(reachedEnd, (val) => {
-  if (val && props.type != 'music') {
-    loading.value = true
-    getComments({ page: commentList.value[1].page, limit: commentList.value[1].limit })
-  }
-})
 onMounted(() => {
   getComments()
+})
+defineExpose({
+  fetchComments: () => getComments({ page: commentList.value[1].page, limit: commentList.value[1].limit }),
 })
 </script>
 

@@ -67,10 +67,11 @@ export function debounce(func, delay, immediate = false) {
     }
   };
 }
-export const filterPlayCount = (num) => {
+export const filterPlayCount = (num, fix = 2) => {
   num = num >= 100000000
-      ? parseFloat(num / 100000000).toFixed(2) + '亿' : num >= 10000
-          ? parseFloat(num / 10000).toFixed(2) + '万' : num
+      ? parseFloat(num / 100000000).toFixed(fix) + '亿' : num >= 10000
+          ? parseFloat(num / 10000).toFixed(fix) + '万' : num >= 1000
+          ? parseFloat(num / 1000).toFixed(fix) + 'k' : num
   return num
 }
 

@@ -15,7 +15,7 @@
               <el-dropdown
                 trigger="click"
                 :show-arrow="false"
-                popper-class="backdrop-blur"
+                popper-class="backdrop-blur !z-10000"
                 @command="
                   (item) => {
                     onCateTagClick(item, formItem, key, obj)

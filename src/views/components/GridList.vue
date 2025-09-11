@@ -25,7 +25,7 @@
                   <div class="text-[var(--color-text)] line-clamp-2">{{ item.title || '--' }}</div>
                   <div class="text-[var(--color-text-secondary)] text-sm line-clamp-1 flex items-center">
                     <el-avatar class="mr-1" v-if="item.creator?.avatarUrl" :src="item.creator?.avatarUrl" size="small"></el-avatar>
-                    <span class="line-clamp-1 flex-1">{{ item.creator?.nickname || item?.desc }}</span>
+                    <span class="line-clamp-1 flex-1 max-w-[160px]" v-html="(item.creator?.nickname || item?.desc || '').replace(/<br>/g, '')"></span>
                   </div>
                   <div v-if="item.create_time || item.ctime || item.createTime">{{ item.create_time || new Date(item.ctime || item.createTime).toLocaleString().replace(/\//g, '-').split(' ')[0] }}</div>
                   <div class="flex justify-between text-xs w-full">

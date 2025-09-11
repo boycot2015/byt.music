@@ -1,63 +1,64 @@
 <template>
   <div class="video-detail top-0 md:absolute md:pt-2 active" v-loading="loading" element-loading-text="资源加载中...">
-    <el-scrollbar class="scroll-view video-detail-scroll" ref="scrollDom" height="calc(100vh - 80px)">
-      <div class="flex flex-col lg:flex-row justify-center w-[1000px] xl:w-[1200px] 2xl:w-[1440px] mx-auto">
-        <div class="left lg:mr-10 max-w-[100%] lg:max-w-[800px]">
-          <h3 class="title px-2 md:px-0 hidden md:flex flex-col md:flex-row items-center">
+    <el-scrollbar class="scroll-view video-detail-scroll" ref="scrollDom" height="calc(100vh - 60px)" @end-reached="onReached">
+      <div class="flex flex-col lg:flex-row justify-center lg:w-[1000px] xl:w-[1200px] 2xl:w-[1440px] mx-auto">
+        <div class="left lg:mr-10 max-w-[100%] lg:max-w-[600px] xl:max-w-[800px]">
+          <h3 class="title md:px-0 hidden md:flex flex-col md:flex-row items-center">
             <!-- <el-icon class="back-btn icon-music-left cursor-pointer" :size="24" @click="turnBack"><Close /></el-icon> -->
             <p class="name mr-2 hidden md:block line-clamp-1">{{ playData.title || playData.name }}</p>
             <span class="level !rounded-sm hidden md:block text-[red] border-[1px] border-[red]">{{ playData.level === 'exhigh' ? '极高音质' : '标准音质' }}</span>
-            <span v-if="playData.type" class="type red pad2 font12">{{ playData.type.toUpperCase() }}</span>
+            <span v-if="playData.type" class="type font12">{{ playData.type.toUpperCase() }}</span>
             <span class="singer" v-if="playData.creator">{{ playData.creator.nickname }}</span>
           </h3>
-          <div class="cover lg:pl-2 md:mt-4 xs:h-[200px] lg:h-[420px] 2xl:h-[540px]">
-            <video id="play-video" class="w-full" v-if="playData.url" volume="0.3" :autoplay="true" :src="playData.url" controls="controls"></video>
-            <div class="img overflow-hidden md:min-w-[600px] xl:min-w-[800px] h-[auto] sm:h-[360px]" v-else>
+          <div class="cover md:mt-4 xs:h-[200px] xl:h-[460px]">
+            <video id="play-video" class="w-full xl:min-w-[800px]" v-if="playData.url" volume="0.3" :autoplay="true" :src="playData.url" controls="controls"></video>
+            <div class="img overflow-hidden md:min-w-[600px] xl:min-w-[800px] h-[auto] md:h-[360px]" v-else>
               <el-image loading="lazy" fit="contain" class="h-full w-full rounded" :src="playData.cover" alt="" />
             </div>
           </div>
-          <div class="operation px-2 flex flex-nowrap">
-            <div class="play-btn collect">
-              <i class="icon-music-star"></i>
-              <span>点赞({{ playData.praisedCount || countData.commentCount }})</span>
-            </div>
-            <div class="play-btn collect">
-              <i class="icon-music-collect"></i>
-              <span>收藏({{ playData.subscribeCount || countData.likedCount }})</span>
-            </div>
-            <div class="play-btn share">
-              <i class="icon-music-share"></i>
-              <span>分享({{ playData.shareCount }})</span>
-            </div>
-            <div class="play-btn download !mr-0" @click="downloadMV">
-              <i class="icon-music-download"></i>
-              <span>下载MV</span>
-            </div>
+          <div class="operation px-2 flex flex-nowrap !space-x-2">
+            <el-tag type="primary" class="cursor-pointer md:!text-md">
+              <el-icon class="mr-1 md:mr-0"><IconLike /></el-icon>
+              <span><span class="hidden md:inline">点赞</span>({{ filterPlayCount(playData.praisedCount || countData.commentCount, 1) }})</span>
+            </el-tag>
+            <el-tag type="primary" class="cursor-pointer md:!text-md">
+              <el-icon class="mr-1 md:mr-0"><icon-heart /></el-icon>
+              <span><span class="hidden md:inline">收藏</span>({{ filterPlayCount(playData.subscribeCount || countData.likedCount, 1) }})</span>
+            </el-tag>
+            <el-tag type="primary" class="cursor-pointer md:!text-md">
+              <el-icon class="mr-1 md:mr-0"><Share /></el-icon>
+              <span><span class="hidden md:inline">分享</span>({{ filterPlayCount(playData.shareCount, 1) }})</span>
+            </el-tag>
+            <el-tag type="primary" class="cursor-pointer md:!text-md" @click="downloadMV">
+              <el-icon><Download /></el-icon>
+              <span class="hidden md:inline">下载MV</span>
+            </el-tag>
           </div>
-          <div class="div hidden lg:block">
-            <comment v-if="playData.id" :data="{ ...data, ...playData }" :title="'评论'" type="mv"></comment>
+          <div class="div hidden lg:block" v-if="playData.id">
+            <h2 class="title mb-0 border-b pb-2 border-b-[var(--el-border-color)]">MV评论</h2>
+            <comment ref="commentRef" :data="{ ...data, ...playData }" :title="'评论'" type="mv"></comment>
           </div>
         </div>
         <div class="right px-3 flex-1 lg:px-0 !w-full flex flex-col">
           <div class="content">
             <div class="title">MV介绍</div>
             <div class="flex text-md justify-between pt-2">
-              <span class="time">发布时间: {{ new Date(playData.publishTime).toLocaleDateString().split('/').join('-') }}</span>
+              <span class="time mb-2">发布时间: {{ new Date(playData.publishTime).toLocaleDateString().split('/').join('-') }}</span>
               <span class="times" v-if="playData.playTime">播放次数: {{ playData.playTime }}</span>
             </div>
             <div
               class="info text-justify"
               :class="{
-                more: (playData.description && playData.description.length > 100) || (playData.desc && playData.desc.length > 100),
+                'blur-bg more': (playData.description && playData.description.length > 200) || (playData.desc && playData.desc.length > 200),
               }"
               v-if="(playData.description && playData.description !== null) || (playData.desc && playData.desc !== null)"
             >
               简介：{{ playData.description || playData.desc }}
             </div>
             <div class="tags flex">
-              <p class="name fl">标签：</p>
+              <p class="name whitespace-nowrap">标签：</p>
               <template v-if="playData.videoGroup && playData.videoGroup.length">
-                <span class="tag fl" v-for="(tag, tindex) in playData.videoGroup" :key="tag.id" v-html="tag.name + (tindex < playData.videoGroup.length - 1 ? ' / ' : '')"> </span>
+                <span class="tag whitespace-nowrap cursor-pointer" v-for="(tag, tindex) in playData.videoGroup" :key="tag.id" v-html="tag.name + (tindex < playData.videoGroup.length - 1 ? ' / ' : '')"> </span>
               </template>
               <span v-else>暂无~</span>
             </div>
@@ -85,11 +86,12 @@
           </div>
         </div>
       </div>
-      <div class="div lg:hidden">
-        <comment v-if="playData.id" :data="{ ...data, ...playData }" :title="'评论'" type="mv"></comment>
+      <div class="div lg:hidden" v-if="playData.id">
+        <h2 class="title mb-0 border-b pb-2 border-b-[var(--el-border-color)]">MV评论</h2>
+        <comment ref="commentRef2" :data="{ ...data, ...playData }" :title="'评论'" type="mv"></comment>
       </div>
     </el-scrollbar>
-    <el-backtop selector=".video-detail .el-scrollbar__wrap"></el-backtop>
+    <el-backtop target=".scroll-view .el-scrollbar__wrap"></el-backtop>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -106,7 +108,7 @@
     margin-bottom: 15px;
     #play-video {
       height: 100%;
-      object-fit: cover;
+      // object-fit: cover;
     }
   }
   .left {
@@ -116,7 +118,6 @@
       line-height: 22px;
       .singer {
         margin-left: 10px;
-        color: $c-666;
         font-size: 12px;
       }
       .name {
@@ -139,46 +140,7 @@
       }
     }
     .operation {
-      margin-bottom: 30px;
-      .play-btn {
-        min-width: 50px;
-        line-height: 26px;
-        font-size: 12px;
-        color: $c-333;
-        padding: 0 10px;
-        border-radius: $border-radius;
-        background-color: $white;
-        border: 1px solid $c-e8;
-        margin-right: 15px;
-        cursor: pointer;
-        i {
-          margin-right: 2px;
-        }
-        &.play {
-          width: 100px;
-          border: 1px solid $primary;
-          background-color: $primary;
-          color: $white;
-          i::after {
-            color: $white;
-            font-size: 12px;
-            padding: 0px;
-            background-color: transparent;
-            border: 1px solid $white;
-          }
-          i.icon-plus {
-            margin-right: 0;
-            margin-left: 12px;
-            &::after {
-              border: 0;
-            }
-          }
-          span {
-            padding: 8px 10px 8px 0;
-            border-right: 1px solid $c-ccc;
-          }
-        }
-      }
+      margin-bottom: 10px;
     }
     .comment {
       padding-right: 0;
@@ -189,17 +151,14 @@
   }
   .right {
     // font-family: 微软雅黑;
-    color: $c-666;
     .title {
       font-size: 18px;
-      color: $c-333;
       // font-family: 微软雅黑;
       padding-bottom: 10px;
-      border-bottom: 1px solid $c-e8;
+      border-bottom: 1px solid var(--el-border-color);
       span {
         padding-left: 10px;
         font-size: 12px;
-        color: $c-999;
       }
     }
     .info {
@@ -214,7 +173,6 @@
     }
     .time-times {
       line-height: 32px;
-      color: $c-999;
     }
     .tags {
       margin-bottom: 10px;
@@ -256,8 +214,9 @@ import {
 } from 'vue'
 import { ElMessage, ElLoading } from 'element-plus'
 import { useVideoStore } from '@/stores/video'
+import { useConfigStore } from '@/stores/config'
 import { useRouter } from 'vue-router'
-import { downloadFile } from '@/utils'
+import { downloadFile, filterPlayCount } from '@/utils'
 import Comment from '@/components/Comment/Comment.vue'
 export default {
   components: {
@@ -265,12 +224,15 @@ export default {
   },
   setup(props) {
     const store = useVideoStore()
+    const { config } = useConfigStore()
     const rootStore = store
     const detailStore = rootStore.videoDetail
     const videoParams = rootStore.videoParams
     const router = useRouter()
     const lyricScrollDom = ref(null)
     const scrollDom = ref(null)
+    const commentRef = ref(null)
+    const commentRef2 = ref(null)
     const state = reactive({
       playData: {
         ...videoParams,
@@ -403,15 +365,26 @@ export default {
           downloadFile(data, state.playData.name + '.mp4')
         })
     }
+    const onReached = (direction) => {
+      if (direction === 'bottom') {
+        commentRef.value?.fetchComments()
+        commentRef2.value?.fetchComments()
+      }
+    }
     return {
       ...toRefs(state),
       router,
+      config,
       lyricScrollDom,
-      onItemlistClick,
+      commentRef,
+      commentRef2,
       scrollDom,
+      onItemlistClick,
       turnBack,
       scrollToTop,
+      filterPlayCount,
       downloadMV,
+      onReached,
     }
   },
 }
