@@ -1,19 +1,19 @@
 <template>
   <div class="video-detail top-0 md:absolute md:pt-2 active" v-loading="loading" element-loading-text="资源加载中...">
     <el-scrollbar class="scroll-view video-detail-scroll" ref="scrollDom" height="calc(100vh - 80px)">
-      <div class="flex flex-col md:flex-row justify-center md:w-[1000px] xl:w-[1200px] mx-auto">
-        <div class="left md:mr-10">
-          <h3 class="title px-2 hidden md:flex flex-col md:flex-row items-center">
+      <div class="flex flex-col lg:flex-row justify-center w-[1000px] xl:w-[1200px] 2xl:w-[1440px] mx-auto">
+        <div class="left lg:mr-10 max-w-[100%] lg:max-w-[800px]">
+          <h3 class="title px-2 md:px-0 hidden md:flex flex-col md:flex-row items-center">
             <!-- <el-icon class="back-btn icon-music-left cursor-pointer" :size="24" @click="turnBack"><Close /></el-icon> -->
-            <p class="name hidden md:block line-clamp-1">{{ playData.title || playData.name }}</p>
-            <span class="level !rounded-sm hidden md:block text-[red] border-[1px] border-[red] ml-2">{{ playData.level === 'exhigh' ? '极高音质' : '标准音质' }}</span>
+            <p class="name mr-2 hidden md:block line-clamp-1">{{ playData.title || playData.name }}</p>
+            <span class="level !rounded-sm hidden md:block text-[red] border-[1px] border-[red]">{{ playData.level === 'exhigh' ? '极高音质' : '标准音质' }}</span>
             <span v-if="playData.type" class="type red pad2 font12">{{ playData.type.toUpperCase() }}</span>
             <span class="singer" v-if="playData.creator">{{ playData.creator.nickname }}</span>
           </h3>
-          <div class="cover md:pl-2 md:mt-4 h-[225px] sm:h-[360px]">
+          <div class="cover lg:pl-2 md:mt-4 xs:h-[200px] lg:h-[420px] 2xl:h-[540px]">
             <video id="play-video" class="w-full" v-if="playData.url" volume="0.3" :autoplay="true" :src="playData.url" controls="controls"></video>
-            <div class="img overflow-hidden md:min-w-[600px] xl:min-w-[800px] h-[225px] sm:h-[360px]" v-else>
-              <el-image loading="lazy" class="h-[225px] sm:h-[360px] w-full rounded" :src="playData.cover" alt="" />
+            <div class="img overflow-hidden md:min-w-[600px] xl:min-w-[800px] h-[auto] sm:h-[360px]" v-else>
+              <el-image loading="lazy" fit="contain" class="h-full w-full rounded" :src="playData.cover" alt="" />
             </div>
           </div>
           <div class="operation px-2 flex flex-nowrap">
@@ -34,11 +34,11 @@
               <span>下载MV</span>
             </div>
           </div>
-          <div class="div hidden md:block">
-            <comment v-if="playData.id" :data="{ ...data, ...playData }" :title="'评论'" type="video"></comment>
+          <div class="div hidden lg:block">
+            <comment v-if="playData.id" :data="{ ...data, ...playData }" :title="'评论'" type="mv"></comment>
           </div>
         </div>
-        <div class="right px-3 md:px-0 !w-full flex flex-1 flex-col">
+        <div class="right px-3 flex-1 lg:px-0 !w-full flex flex-col">
           <div class="content">
             <div class="title">MV介绍</div>
             <div class="flex text-md justify-between pt-2">
@@ -46,7 +46,7 @@
               <span class="times" v-if="playData.playTime">播放次数: {{ playData.playTime }}</span>
             </div>
             <div
-              class="info"
+              class="info text-justify"
               :class="{
                 more: (playData.description && playData.description.length > 100) || (playData.desc && playData.desc.length > 100),
               }"
@@ -64,7 +64,7 @@
           </div>
           <div class="same-content">
             <div class="same-music-list grid-list" v-if="videos && videos.length">
-              <h2 class="title">相关推荐</h2>
+              <h2 class="title mb-4">相关推荐</h2>
               <div v-for="item in videos" @click="onItemlistClick(item, 2)" :key="item.id" class="grid-list-item ftype-0 cursor-pointer" data-id="{{item.id}}" data-url="{{item.mp3Url}}" data-type="{{item.type}}">
                 <div class="same-play-list-item grid-list-item js-list-detail flex ftype-0 mb-2" data-id="{{item.id}}" data-type="{{item.type}}" data-url="{{item.mp3Url}}">
                   <div class="img !relative">
@@ -85,8 +85,8 @@
           </div>
         </div>
       </div>
-      <div class="div md:hidden">
-        <comment v-if="playData.id" :data="{ ...data, ...playData }" :title="'评论'" type="video"></comment>
+      <div class="div lg:hidden">
+        <comment v-if="playData.id" :data="{ ...data, ...playData }" :title="'评论'" type="mv"></comment>
       </div>
     </el-scrollbar>
     <el-backtop selector=".video-detail .el-scrollbar__wrap"></el-backtop>
@@ -319,18 +319,18 @@ export default {
     )
     onMounted(() => {
       // console.log(router, 'playlistRes')
-      const params = {
-        id: videoParams.id,
-        type: videoParams.type || 'video',
-        limit: state.limit,
-        offset: state.offset,
-      }
+      // const params = {
+      //   id: videoParams.id,
+      //   type: videoParams.type || 'video',
+      //   limit: state.limit,
+      //   offset: state.offset,
+      // }
       if (videoParams.id) {
         getData({
           id: videoParams.id,
           type: videoParams.type || 'video',
         })
-        getData(params)
+        // getData(params)
       }
       document.querySelector('.scroll-view')?.addEventListener('scroll', function (e) {
         // 获取定义好的scroll盒子
@@ -360,9 +360,11 @@ export default {
     const onItemlistClick = (item) => {
       state.loading = true
       let params = {
+        name: item.name || item.title,
         id: item.id || item.vid || item.mvid,
         cover: item.coverUrl,
-        type: router.currentRoute.value.query.name === 'MV' ? 'mv' : 'video',
+        artistName: item.creator?.map((el) => el.userName || el.name).join('/'),
+        type: 'mv',
       }
       state.playData = params
       scrollToTop()

@@ -99,7 +99,7 @@
           "
         >
           <span class="el-dropdown-link flex items-center">
-            {{ types.find((el) => el.type == type).title }}
+            {{ types.find((el) => el.type == type)?.title }}
             <el-icon class="el-icon--right">
               <arrow-down />
             </el-icon>

@@ -194,6 +194,7 @@ export const useVideoStore = defineStore('video', {
         },
         setVideoPlayer (val) {
             this.videoParams = val
+            this.tab2Data.playData = {...this.tab2Data.playData, ...val}
         },
         setVideoPlayerShow (val) {
             this.showVideoPlayer = val
@@ -209,7 +210,7 @@ export const useVideoStore = defineStore('video', {
             }
             const videoRes = params.type === 'mv' ? await MV.detail({ mvid: params.id }) : await video.detail(params)
             const videoInfoRes = params.type === 'mv' ? await MV.info({ mvid: params.id }) : await video.info({ vid: params.id })
-            const videoCommentRes = await video.comment({ id: params.id })
+            // const videoCommentRes = await video.comment({ id: params.id })
             const relatedRes = await video.related({ id: params.id })
             let videoUrlRes = params.type === 'mv' ? await MV.url({ id: params.id }) : await video.url({ id: params.id })
             if (videoRes && videoRes.code === 200) {
@@ -220,11 +221,11 @@ export const useVideoStore = defineStore('video', {
             if (videoInfoRes && videoInfoRes.code === 200) {
                 state.countData = videoInfoRes
             }
-            if (videoCommentRes && videoCommentRes.code === 200) {
-                state.comments = videoCommentRes.comments
-                state.hotComments = videoCommentRes.hotComments
-                state.total = videoCommentRes.total
-            }
+            // if (videoCommentRes && videoCommentRes.code === 200) {
+            //     state.comments = videoCommentRes.comments
+            //     state.hotComments = videoCommentRes.hotComments
+            //     state.total = videoCommentRes.total
+            // }
             if (relatedRes && relatedRes.code === 200) {
                 state.videos = relatedRes.data
                 state.videos.map(el => {

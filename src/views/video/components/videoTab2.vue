@@ -65,6 +65,18 @@
   </div>
 </template>
 <style lang="scss" scoped>
+.recommend {
+  padding-top: 10px;
+  .title {
+    margin-bottom: 20px;
+    h3 {
+      line-height: 24px;
+      font-size: 24px;
+      border-left: 3px solid var(--el-color-primary);
+      padding-left: 10px;
+    }
+  }
+}
 .cates-item {
   font-size: 14px;
   font-weight: 500;

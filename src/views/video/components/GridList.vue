@@ -27,33 +27,33 @@
     </ul>
     <template v-else>
       <span class="order hidden md:block float-left" v-if="type === 4" v-html="index < 9 ? '0' + (index + 1) : index + 1"></span>
-      <div class="img h-[100px] min-h-[80px] sm:min-h-[180px] max-h-[180px] !overflow-hidden" :class="`${item.ftype == 0 ? 'fl' : ''} ${(type || item.type) == 4 ? 'md:!h-[120px] !w-full md:!w-[180px]' : ''}`">
+      <div class="img h-[100px] min-h-[80px] sm:min-h-[180px] max-h-[180px] !overflow-hidden" :class="`${item.ftype == 0 ? 'fl' : ''} ${(type || item.type) == 4 ? 'md:!min-h-[120px] !w-full md:!w-[180px]' : ''}`">
         <!-- :style="{
               background: `url(${item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl
           }) no-repeat center/cover`}" -->
         <!-- <img :src="item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl" alt=""> -->
         <!-- v-if="(item.type == 0 || category == 3) && item.copywriter" -->
         <span class="copy-writer" v-if="(item.type == 0 || category == 3) && item.copywriter">{{ item.copywriter }}</span>
-        <div class="right z-9999 !right-1 !rounded-t-md md:!top-0" :class="type == 4 ? '!top-2 md:!rounded-none md:!right-0 md:!top-0' : ''" v-if="item.playCount || item.playTime">
-          <span class="icon" v-if="type !== 4" :class="`icon-music-${item.type == 5 || type == 3 ? 'video' : 'erphone'}`"></span>
-          <span v-else>热度:</span>
+        <div class="right z-9999 flex items-center !right-1 !rounded-t-md md:!top-0" :class="type == 4 ? '!top-2 md:!rounded-none md:!right-0 md:!top-0' : ''" v-if="item.playCount || item.playTime">
+          <el-icon class="icon mr-2"><VideoCamera v-if="type !== 4" /><Headset v-else /></el-icon>
+          <!-- <span v-else>热度:</span> -->
           <span class="play-count">{{ item.score || item.playCount || item.playTime }}</span>
         </div>
-        <div class="left" v-if="item.type == 5 && category !== 3">
-          <span class="icon icon-music-video"></span>
+        <div class="left absolute left-[50%] hidden md:block top-[24%] ml-[-38px] z-999" v-if="type != 4">
+          <el-icon :size="76"><VideoPlay /></el-icon>
         </div>
         <p class="desc line-clamp-1" v-if="item.rcmdtext">{{ item.name }}</p>
-        <el-image class="h-full !w-full min-h-[80px] sm:min-h-[120px] md:h-[180px] rounded-md" loading="lazy" fit="cover" :src="item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl" alt="" />
+        <el-image class="h-full !w-full min-h-[80px] sm:min-h-[120px] md:h-[180px] rounded-md" :class="type == 4 ? 'md:!h-[120px]' : ''" loading="lazy" fit="cover" :src="item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl" alt="" />
         <p class="time" v-if="type === 2">{{ new Date().toLocaleDateString().split('/').join('-') }}</p>
         <span class="creator" v-if="item.creator && type !== 3"><i class="icon-music-user"></i>{{ item.creator.nickname }}</span>
       </div>
-      <div class="text flex-1" :class="`${item.ftype == 0 ? 'fl' : ''}`">
+      <div class="text flex-1" :class="`${item.ftype == 0 ? 'fl' : ''} ${type == 4 ? 'md:relative' : ''}`">
         <p class="name line-clamp-2 tl" :class="{ 'line-clamp-1': type === 3 || type === 4 }">{{ item.rcmdtext || item.name || item.title }}</p>
         <span class="rcmdText line-clamp-1" v-if="item.rcmdText">{{ item.rcmdText }}</span>
         <span class="lastProgramName line-clamp-1" v-if="item.lastProgramName">{{ item.lastProgramName }}</span>
         <div class="price red" v-if="item.originalPrice">￥{{ item.originalPrice / 100 }}</div>
         <span class="creator" v-if="item.creator && type === 3"><i>by</i>{{ item.creator.nickname }}</span>
-        <p class="creator top-[70px] sm:top-[150px] rounded-b-md line-clamp-1" v-if="item.artists">
+        <p class="creator top-[70px] sm:top-[150px] rounded-b-md line-clamp-1" :class="{ 'md:!left-0 sm:!top-[160px] md:!top-[auto] md:!bottom-[0] !h-[30px] md:!bg-none': type == 4 }" v-if="item.artists">
           <span v-for="(art, index) in item.artists" :key="art.id" v-html="art.name + `${index < item.artists.length - 1 ? '/' : ''}`"></span>
         </p>
       </div>
@@ -66,6 +66,12 @@
   overflow: hidden;
   position: relative;
   cursor: pointer;
+  .left {
+    visibility: hidden;
+    opacity: 0;
+    scale: 1.5;
+    transition: all 0.5s;
+  }
   &.type-1 {
     &:nth-child(5n) {
       margin-right: 0;
@@ -151,7 +157,7 @@
     box-sizing: border-box;
     width: calc(100% - 10px);
     line-height: 30px;
-
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.8), rgba(0, 0, 0, 0));
     i::after {
       color: $white;
     }
@@ -262,10 +268,9 @@
     .img {
       &:hover {
         .left {
-          position: absolute;
-          display: block;
-          left: 50%;
-          top: 50%;
+          opacity: 1;
+          scale: 1;
+          visibility: visible;
         }
       }
     }
@@ -333,9 +338,7 @@
       margin-left: 10px;
 
       .creator {
-        z-index: 99999;
-        position: relative;
-        margin-top: 5px;
+        z-index: 99;
         padding-left: 0;
       }
     }

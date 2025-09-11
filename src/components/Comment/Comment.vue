@@ -26,6 +26,8 @@
 <script name="Comment" lang="js" setup>
 import { computed, getCurrentInstance, ref } from 'vue'
 import { usePlayerStore } from '@/stores/player'
+import { useVideoStore } from '@/stores/video'
+import { useConfigStore } from '@/stores/config'
 
 const props = defineProps({
   data: {
@@ -37,12 +39,15 @@ const props = defineProps({
     default: () => 'music', // music, mv, video
   },
 })
+const { config } = useConfigStore()
 const playerStore = usePlayerStore()
+const videoStore = useVideoStore()
 const { proxy } = getCurrentInstance()
-const playDataStore = computed(() => playerStore.playData)
-const playData = ref(Object.assign({}, playDataStore.value))
+const reachedEnd = computed(() => config.reachedEnd)
+const playDataStore = computed(() => props.type == 'mv' || props.type == 'video' ? ({ ...videoStore.videoParams.value, ...videoStore.videoDetail.playData }) : playerStore.playData)
+let playData = ref(Object.assign({}, props.type == 'mv' || props.type == 'video' ? { ...videoStore.videoParams.value, ...videoStore.videoDetail.playData } : playDataStore.value))
 const $apiUrl = proxy.$apiUrl
-const ctype = ref('hot')
+const ctype = ref('new')
 const scrollbarRef = ref(null)
 const $musicApiUrl = proxy.$musicApiUrl
 const commentList = ref([
@@ -109,7 +114,10 @@ const getComments = async (params = { limit: 20 }) => {
   }
   loading.value = true
   let type = playData.value.type
-  let id = playData.value.id?.split('_')[1]
+  let id = playData.value.id
+  if (props.type == 'music') {
+    id = playData.value.id?.split('_')[1]
+  }
   if (!id) {
     loading.value = false
     return
@@ -119,11 +127,11 @@ const getComments = async (params = { limit: 20 }) => {
     id = res.data?.result[0].id?.split('_')[1]
     // console.log(res, id, type, playData.value, 'prefix')
   }
-  if (props.type == 'video') {
-    setData(props.data)
-    loading.value = false
-    return
-  }
+  // if (props.type == 'video') {
+  //   setData(props.data)
+  //   loading.value = false
+  //   return
+  // }
   if (!id) {
     loading.value = false
     return
@@ -135,7 +143,7 @@ const getComments = async (params = { limit: 20 }) => {
         setData(data)
     })
 }
-watch(playDataStore.value, () => {
+watch(playDataStore, () => {
   if (playDataStore.value.id != playData.value.id) {
     ctype.value = 'hot'
     // console.log(playDataStore.value.id, playData.value.id);
@@ -147,6 +155,12 @@ watch(playDataStore.value, () => {
     })
     scrollbarRef.value?.setScrollTop(0)
     getComments()
+  }
+})
+watch(reachedEnd, (val) => {
+  if (val && props.type != 'music') {
+    loading.value = true
+    getComments({ page: commentList.value[1].page, limit: commentList.value[1].limit })
   }
 })
 onMounted(() => {

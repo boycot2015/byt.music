@@ -287,7 +287,19 @@ const onReached = (val) => {
       <Comment />
     </el-drawer>
     <!-- 视频播放弹框 -->
-    <el-drawer v-model="videoVisible" :title="videoData.name" header-class="!border-0" destroy-on-close show-close direction="btt" :z-index="10002" size="100%" body-class="!p-0 !overflow-hidden" modal-class="backdrop-blur-sm" @close="setVideoPlayerShow(false)">
+    <el-drawer
+      v-model="videoVisible"
+      :title="videoData.name + ' -- ' + videoData.artistName"
+      header-class="!border-0 text-center"
+      destroy-on-close
+      show-close
+      direction="btt"
+      :z-index="10002"
+      size="100%"
+      body-class="!p-0 !overflow-hidden"
+      modal-class="backdrop-blur-sm"
+      @close="setVideoPlayerShow(false)"
+    >
       <videoDetail />
     </el-drawer>
     <!-- <audio :controls="false" crossorigin="anonymous" :src="playData.url" ref="audioRef"></audio> -->
