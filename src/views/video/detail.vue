@@ -75,7 +75,9 @@
         <comment ref="commentRef2" :data="{ ...data, ...playData }" :title="'评论'" type="mv"></comment>
       </div>
     </el-scrollbar>
-    <el-backtop target=".scroll-view .el-scrollbar__wrap"></el-backtop>
+    <el-backtop target=".scroll-view .el-scrollbar__wrap"
+      ><el-icon><Top /></el-icon
+    ></el-backtop>
   </div>
 </template>
 <style lang="scss" scoped>

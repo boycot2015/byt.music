@@ -50,8 +50,9 @@ const props = defineProps({
 const playerStore = usePlayerStore()
 const videoStore = useVideoStore()
 const { proxy } = getCurrentInstance()
-const playDataStore = computed(() => props.type == 'mv' || props.type == 'video' ? { ...videoStore.videoParams.value, ...videoStore.videoDetail.playData } : playerStore.playData)
-let playData = ref(Object.assign({}, props.type == 'mv' || props.type == 'video' ? { ...videoStore.videoParams.value, ...videoStore.videoDetail.playData } : playDataStore.value))
+const playDataStore = computed(() => playerStore.playData)
+const playVideoDataStore = computed(() => videoStore.videoDetail.playData)
+let playData = ref(Object.assign({}, props.type == 'music' ? playDataStore.value : playVideoDataStore.value))
 const $apiUrl = proxy.$apiUrl
 const ctype = ref('new')
 const scrollbarRef = ref(null)
@@ -151,13 +152,15 @@ const getComments = async (params = { limit: 20 }) => {
         setData(data)
     })
 }
-watch(playDataStore.value, () => {  
-  if (playDataStore.value.id != playData.value.id) {
+watch([playDataStore.value, playVideoDataStore.value], () => {  
+  if ((playDataStore.value.id != playData.value.id && props.type == 'music') || (playVideoDataStore.value.id != playData.value.id && props.type == 'mv')) {
     ctype.value = 'new'
     playData.value = Object.assign({}, playDataStore.value)
     commentList.value.forEach((item) => {
       item.comments = []
       item.total = 0
+      item.more = true
+      item.label = item.name
       item.page = 1
     })
     scrollbarRef.value?.setScrollTop(0)

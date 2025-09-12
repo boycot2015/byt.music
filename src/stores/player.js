@@ -96,9 +96,10 @@ export const usePlayerStore = defineStore(
       })
     }
     const play = async (item = {}, type = playData.value.type || 'qq') => {
-      if (!item || !item.id) return ElMessage.error('请选择歌曲')
       player.value.currentTime = 0
       playData.value.lyricIndex = 0
+      audioRef.value.currentTime = 0
+      if (!item || !item.id) return ElMessage.error('请选择歌曲')
       let duration = item.duration || item.durationStr
       if (typeof duration === 'string') {
         duration = duration.split(':')
@@ -134,7 +135,6 @@ export const usePlayerStore = defineStore(
       fetch(url)
         .then((res) => res.json())
         .then((data) => {
-          playData.value.currentTime = 0
           if (!data.data) {
             playData.value.paused = true
             ElMessage({

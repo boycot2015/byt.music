@@ -66,8 +66,8 @@
           :data="data.tracks"
           @row-dblclick="handlePlay"
         >
-          <el-table-column v-if="!showTableHeader" width="30px" type="index" :index="(val) => val + 1" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="title" min-width="130px" label="歌曲名" :show-overflow-tooltip="showTableHeader">
+          <el-table-column v-if="!showTableHeader" align="center" min-width="30px" type="index" :index="(val) => val + 1" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="title" min-width="220px" label="歌曲名" :show-overflow-tooltip="showTableHeader">
             <template #default="scope">
               <div v-if="showTableHeader">
                 {{ scope.row.title }}
@@ -75,8 +75,8 @@
                 <span v-else class="text-[purple] text-[12px]">{{ scope.row.quality }}</span>
               </div>
               <div v-else>
-                <p class="line-clamp-1 text-xl">{{ scope.row.title }}</p>
-                <div class="text-[12px] line-clamp-1">
+                <p class="line-clamp-1 text-lg text-[var(--el-text-color-primary)]">{{ scope.row.title }}</p>
+                <div class="text-[12px] line-clamp-1 text-[var(--el-text-color-secondary)]">
                   <span v-if="scope.row.quality == 'HQ'" class="text-[green]">{{ scope.row.quality }}</span>
                   <span v-else class="text-[purple] ml-1">{{ scope.row.quality }}</span>
                   {{ scope.row.artist || scope.row.singer || '--' }}
@@ -95,7 +95,7 @@
               {{ scope.row.album?.name || scope.row.album || '--' }}
             </template>
           </el-table-column>
-          <el-table-column prop="duration" align="center" sortable label="歌曲时长" v-if="!config.isMobile">
+          <el-table-column prop="duration" align="center" sortable label="歌曲时长" v-if="showTableHeader">
             <template #default="scope">
               {{ scope.row.duration || '--' }}
             </template>
