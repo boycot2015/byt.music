@@ -52,6 +52,7 @@ export const useCollectStore = defineStore(
       current.value = collect.value[index] ? index : '0'
     }
     const toggleCollect = (data, type = 'playlist') => {
+      if (data && !data.id) return
       if (type == 'song') {
         let current = collect.value.find((item) => item.info.id == 0)
         if (current?.tracks.find((item) => item.id == data.id)) {

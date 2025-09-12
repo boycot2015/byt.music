@@ -294,6 +294,7 @@ export default {
       const audio = document.getElementsByTagName('audio')[0]
       audio?.pause()
       store.setVideoPlayer({
+        ...item,
         id: item.id || item.vid || item.mvid,
         type: 'mv',
         cover: item.cover,

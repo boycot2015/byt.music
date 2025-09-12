@@ -19,7 +19,7 @@
     </div>
     <div class="content ml-10 text-sm">
       {{ comment.content }}
-      <div v-if="comment.beReplied && comment.beReplied.filter((item) => item.content).length > 0">
+      <div v-if="comment.beReplied && comment.beReplied?.filter((val) => val.commentId !== comment.commentId).filter((item) => item.content).length > 0">
         <CommentTree v-for="item in comment.beReplied" :key="item.id" :comment="item" />
       </div>
     </div>

@@ -27,7 +27,7 @@
             </template>
           </Image></div
       ></swiper-slide>
-      <swiper-slide><Lyric class="w-full" /></swiper-slide>
+      <swiper-slide v-if="playData.lyric"><Lyric class="w-full" /></swiper-slide>
     </swiper>
     <div class="bottom h-[20vh] mt-2 flex flex-col items-center justify-between md:!hidden">
       <div class="slider w-full px-5 relative">

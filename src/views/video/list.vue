@@ -79,6 +79,7 @@ watch(reachedEnd, (val) => {
 })
 const onListClick = (item) => {
   videoStore.setVideoPlayer({
+    ...item,
     id: item.id || item.vid || item.mvid,
     type: 'mv',
     cover: item.cover,

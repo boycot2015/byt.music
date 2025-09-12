@@ -157,7 +157,7 @@
     box-sizing: border-box;
     width: calc(100% - 10px);
     line-height: 30px;
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.8), rgba(0, 0, 0, 0));
+    background-image: linear-gradient(to right, var(--el-fill-color-blank), rgba(0, 0, 0, 0));
     i::after {
       color: $white;
     }
@@ -278,11 +278,6 @@
     .text {
       .name {
         margin-bottom: 5px;
-      }
-
-      .creator {
-        background-image: linear-gradient(to right, rgba(255, 255, 255, 0.8), rgba(0, 0, 0, 0));
-        color: $c-666;
       }
     }
   }

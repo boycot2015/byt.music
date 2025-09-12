@@ -42,10 +42,10 @@
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item class="text-xs" command="play"
-                  ><el-icon class="mr-2 !text-[var(--el-color-primary)]"><video-play /></el-icon>播放歌曲</el-dropdown-item
+                  ><el-icon :size="20" class="mr-2 !text-[var(--el-color-primary)]"><video-play /></el-icon>播放歌曲</el-dropdown-item
                 >
                 <el-dropdown-item class="text-xs" command="star">
-                  <el-icon :size="16" v-if="data.info && data.info.id == 0" class="!text-[var(--el-color-danger)]">
+                  <el-icon :size="20" v-if="data.info && data.info.id == 0" class="!text-[var(--el-color-danger)]">
                     <Delete />
                   </el-icon>
                   <el-icon :size="20" class="mr-2 !text-[var(--el-color-danger)]" v-else> <icon-heart-fill v-if="collectStore.has(scope.row.id, 'song')" /> <icon-heart v-else /></el-icon

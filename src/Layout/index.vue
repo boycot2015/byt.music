@@ -221,14 +221,14 @@ const onAction = (command, row) => {
             </el-icon>
           </div>
           <div class="flex flex-col md:flex-row flex-1 items-center text-center justify-center">
-            <div class="title text-xl line-clamp-1 md:mr-2">{{ playData.title }}<span class="hidden md:inline"> --</span></div>
+            <div class="title text-xl line-clamp-1 md:mr-2">{{ playData.title || '请选择歌曲' }}<span class="hidden md:inline" v-if="playData.singer"> --</span></div>
             <span class="text-xs md:text-xl">{{ playData.singer }}</span>
           </div>
           <el-icon :size="32" v-if="config.isMobile" @click="setPlayData({ playlistVisible: true })">
             <IconListMusic class="cursor-pointer" />
           </el-icon>
           <el-tooltip content="音乐视效" popper-class="!z-10002">
-            <el-icon :size="32" v-if="!config.isMobile" @click="lyricAnimationVisible = true">
+            <el-icon :size="32" v-if="!config.isMobile && playData.id" @click="lyricAnimationVisible = true">
               <IconMusic class="cursor-pointer" />
             </el-icon>
           </el-tooltip>
@@ -313,19 +313,10 @@ const onAction = (command, row) => {
       <Comment />
     </el-drawer>
     <!-- 视频播放弹框 -->
-    <el-drawer
-      v-model="videoVisible"
-      :title="videoData.name + ' -- ' + videoData.artistName"
-      header-class="!border-0 text-center !mb-5"
-      destroy-on-close
-      show-close
-      direction="btt"
-      :z-index="10002"
-      size="100%"
-      body-class="!p-0 !overflow-hidden"
-      modal-class="backdrop-blur-sm"
-      @close="setVideoPlayerShow(false)"
-    >
+    <el-drawer v-model="videoVisible" header-class="!border-0 text-center !mb-5" destroy-on-close show-close direction="btt" :z-index="10002" size="100%" body-class="!p-0 !overflow-hidden" modal-class="backdrop-blur-sm" @close="setVideoPlayerShow(false)">
+      <template #header>
+        <div class="line-clamp-1">{{ videoData.name + ' -- ' + videoData.artistName }}</div>
+      </template>
       <videoDetail />
     </el-drawer>
     <!-- <audio :controls="false" crossorigin="anonymous" :src="playData.url" ref="audioRef"></audio> -->

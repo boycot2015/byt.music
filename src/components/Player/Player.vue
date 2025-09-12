@@ -17,10 +17,10 @@
       <div class="hidden md:flex items-center mr-2" @click="setPlayData({ commitVisible: !playData.commitVisible })">
         <el-icon :size="22" :disabled="disabled"> <ChatDotSquare class="cursor-pointer" @click="setPlayer({ loop: false, random: false })" /> </el-icon>
       </div>
-      <el-icon :size="22" class="!hidden md:!block mr-2" title="音频可视化" @click="setPlayer({ visualizer: !player.visualizer })">
+      <el-icon :size="22" :disabled="disabled" class="!hidden md:!block mr-2" title="音频可视化" @click="setPlayer({ visualizer: !player.visualizer })">
         <IconAnalyser class="cursor-pointer" :class="{ 'opacity-50': !player.visualizer }" />
       </el-icon>
-      <el-icon class="cursor-pointer mr-2" :size="26" @click="() => playData.id && toggleCollect({ ...playData }, 'song')">
+      <el-icon class="cursor-pointer mr-2" :disabled="disabled" :size="26" @click="() => playData.id && toggleCollect({ ...playData }, 'song')">
         <IconHeartFill class="text-[var(--el-color-primary)]" v-if="has(playData.id, 'song')" />
         <IconHeart v-else />
       </el-icon>
@@ -44,17 +44,17 @@
           </el-popover>
         </el-icon>
       </div>
-      <el-icon class="!hidden md:!block" :size="38" @click="playPrev">
+      <el-icon class="!hidden md:!block" :disabled="disabled" :size="38" @click="playPrev">
         <IconPrev class="cursor-pointer" />
       </el-icon>
       <el-icon :size="38" @click="togglePlay" :disabled="disabled">
         <IconPlay class="cursor-pointer" v-if="paused" />
         <IconPause class="cursor-pointer" v-else />
       </el-icon>
-      <el-icon :size="38" @click="playNext">
+      <el-icon :size="38" :disabled="disabled" @click="playNext">
         <IconNext class="cursor-pointer" />
       </el-icon>
-      <el-icon :size="32" class="!block md:!hidden" @click="setPlayData({ playlistVisible: true })">
+      <el-icon :size="32" :disabled="disabled" class="!block md:!hidden" @click="setPlayData({ playlistVisible: true })">
         <IconListMusic class="cursor-pointer" />
       </el-icon>
       <el-popover trigger="click" :show-arrow="false" popper-class="backdrop-blur !z-10001" :width="config.isMobile ? '95vw' : '680px'">

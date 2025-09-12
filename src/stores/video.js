@@ -194,7 +194,7 @@ export const useVideoStore = defineStore('video', {
         },
         setVideoPlayer (val) {
             this.videoParams = val
-            this.tab2Data.playData = {...this.tab2Data.playData, ...val}
+            this.videoDetail.playData = {...this.videoDetail.playData, ...val}
         },
         setVideoPlayerShow (val) {
             this.showVideoPlayer = val

@@ -39,6 +39,8 @@ const defaults = {
     ]
   },
   playData: {
+    album: '',
+    id: '',
     url: '',
     type: 'qq',
     title: '',
