@@ -344,6 +344,7 @@ export default {
       route.query = obj.query
       route.query.title = obj.title
       route.query.type = obj.type
+      route.query.area = obj.form?.area.value
       route.query.category = obj.category
       router.push(route)
     }

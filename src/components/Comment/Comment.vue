@@ -50,7 +50,7 @@ const props = defineProps({
 const playerStore = usePlayerStore()
 const videoStore = useVideoStore()
 const { proxy } = getCurrentInstance()
-const playDataStore = computed(() => playerStore.playData)
+const playDataStore = computed(() => props.type == 'mv' || props.type == 'video' ? { ...videoStore.videoParams.value, ...videoStore.videoDetail.playData } : playerStore.playData)
 let playData = ref(Object.assign({}, props.type == 'mv' || props.type == 'video' ? { ...videoStore.videoParams.value, ...videoStore.videoDetail.playData } : playDataStore.value))
 const $apiUrl = proxy.$apiUrl
 const ctype = ref('new')
@@ -151,7 +151,7 @@ const getComments = async (params = { limit: 20 }) => {
         setData(data)
     })
 }
-watch(playDataStore, () => {
+watch(playDataStore.value, () => {  
   if (playDataStore.value.id != playData.value.id) {
     ctype.value = 'new'
     playData.value = Object.assign({}, playDataStore.value)

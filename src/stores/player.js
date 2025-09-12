@@ -220,7 +220,7 @@ export const usePlayerStore = defineStore(
       }
       play(playData.value.playlist[playData.value.playIndex])
     }
-    const togglePlay = () => {      
+    const togglePlay = (paused = '') => {      
       if (!playData.value.url) return
       setPlayer({ paused: !player.value.paused })
       if (audioRef.value.paused) {

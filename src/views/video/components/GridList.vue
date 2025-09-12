@@ -26,7 +26,7 @@
       </li>
     </ul>
     <template v-else>
-      <span class="order hidden md:block float-left" v-if="type === 4" v-html="index < 9 ? '0' + (index + 1) : index + 1"></span>
+      <span class="order hidden md:block float-left" v-if="type == 4" v-html="index < 9 ? '0' + (index + 1) : index + 1"></span>
       <div class="img h-[100px] min-h-[80px] sm:min-h-[180px] max-h-[180px] !overflow-hidden" :class="`${item.ftype == 0 ? 'fl' : ''} ${(type || item.type) == 4 ? 'md:!min-h-[120px] !w-full md:!w-[180px]' : ''}`">
         <!-- :style="{
               background: `url(${item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl

@@ -41,8 +41,9 @@ const videoData = computed(() => useVideoStore().videoDetail.playData)
 const listVisible = ref(playData.value.playlistVisible || false)
 const videoVisible = ref(showVideoPlayer.value || false)
 const commitVisible = ref(playData.value.commitVisible)
+const isPlaying = ref(false)
 const lyricAnimationVisible = ref(false)
-const { setPlayer, play, setPlayData } = usePlayerStore()
+const { setPlayer, play, togglePlay, setPlayData } = usePlayerStore()
 const router = useRouter()
 const route = useRoute()
 const activeIndex = ref(config.activeTab || 0)
@@ -76,6 +77,8 @@ watch(playData.value, () => {
 })
 watch(showVideoPlayer, () => {
   videoVisible.value = showVideoPlayer.value
+  if (showVideoPlayer.value) isPlaying.value = !player.value.paused
+  if (isPlaying.value) togglePlay()
 })
 watch(listVisible, () => {
   setPlayData({ playlistVisible: listVisible.value })

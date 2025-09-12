@@ -337,6 +337,7 @@ export default {
         artistName: item.creator?.map((el) => el.userName || el.name).join('/'),
         type: 'mv',
       }
+      state.playData.url = ''
       state.playData = params
       scrollToTop()
       store.setVideoPlayer(params)
