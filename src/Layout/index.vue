@@ -131,6 +131,7 @@ const onReached = (val) => {
 }
 const onAction = (command, row) => {
   if (command == 'play') {
+    !player.showCover && setPlayer({ showCover: true })
     setPlayData({ playIndex: playData.value.playlist?.findIndex((item) => item.id == row.id) })
     play(row)
     return
@@ -256,6 +257,7 @@ const onAction = (command, row) => {
               size="small"
               @click="
                 () => {
+                  setPlayer({ showCover: true })
                   setPlayData({ playIndex: playData.playlist?.findIndex((item) => item.id == row.id) })
                   play(row)
                 }

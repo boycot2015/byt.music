@@ -35,7 +35,7 @@
         <!-- v-if="(item.type == 0 || category == 3) && item.copywriter" -->
         <span class="copy-writer" v-if="(item.type == 0 || category == 3) && item.copywriter">{{ item.copywriter }}</span>
         <div class="right z-9999 flex items-center !right-1 !rounded-t-md md:!top-0" :class="type == 4 ? '!top-2 md:!rounded-none md:!right-0 md:!top-0' : ''" v-if="item.playCount || item.playTime">
-          <el-icon class="icon mr-2"><VideoCamera v-if="type !== 4" /><Headset v-else /></el-icon>
+          <el-icon class="icon mr-2"><VideoCamera v-if="type != 4" /><Headset v-else /></el-icon>
           <!-- <span v-else>热度:</span> -->
           <span class="play-count">{{ item.score || item.playCount || item.playTime }}</span>
         </div>
@@ -44,11 +44,11 @@
         </div>
         <p class="desc line-clamp-1" v-if="item.rcmdtext">{{ item.name }}</p>
         <el-image class="h-full !w-full min-h-[80px] sm:min-h-[120px] md:h-[180px] rounded-md" :class="type == 4 ? 'md:!h-[120px]' : ''" loading="lazy" fit="cover" :src="item.img1v1Url || item.coverImgUrl || item.coverUrl || item.cover || item.sPicUrl || item.picUrl" alt="" />
-        <p class="time" v-if="type === 2">{{ new Date().toLocaleDateString().split('/').join('-') }}</p>
-        <span class="creator" v-if="item.creator && type !== 3"><i class="icon-music-user"></i>{{ item.creator.nickname }}</span>
+        <p class="time" v-if="type == 2">{{ new Date().toLocaleDateString().split('/').join('-') }}</p>
+        <span class="creator" v-if="item.creator && type != 3"><i class="icon-music-user"></i>{{ item.creator.nickname }}</span>
       </div>
       <div class="text flex-1" :class="`${item.ftype == 0 ? 'fl' : ''} ${type == 4 ? 'md:relative' : ''}`">
-        <p class="name line-clamp-2 tl" :class="{ 'line-clamp-1': type === 3 || type === 4 }">{{ item.rcmdtext || item.name || item.title }}</p>
+        <p class="name line-clamp-2 tl" :class="{ 'line-clamp-1': type == 3 || type == 4 }">{{ item.rcmdtext || item.name || item.title }}</p>
         <span class="rcmdText line-clamp-1" v-if="item.rcmdText">{{ item.rcmdText }}</span>
         <span class="lastProgramName line-clamp-1" v-if="item.lastProgramName">{{ item.lastProgramName }}</span>
         <div class="price red" v-if="item.originalPrice">￥{{ item.originalPrice / 100 }}</div>
@@ -303,7 +303,6 @@
 
     .order {
       line-height: 92px;
-      color: $c-666;
       font-style: italic;
       font-size: 18px;
       position: relative;
@@ -423,15 +422,15 @@ export default {
       default: () => ({}),
     },
     category: {
-      type: Number,
+      type: [Number, String],
       default: 3,
     },
     index: {
-      type: Number,
+      type: [Number, String],
       default: 0,
     },
     type: {
-      type: Number,
+      type: [Number, String],
       default: 1, // 3.视频列表,2.左右列表, 1.歌单列表
     },
   },
