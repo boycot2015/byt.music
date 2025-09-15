@@ -19,11 +19,8 @@
             <CommentTree :comment="commit" />
           </div>
         </div>
+        <PageLoading class="" v-show="item.more && loading" text="加载中..." />
         <Empty class="w-full" v-show="!item.comments?.length && !loading && ctype == item.type" />
-      </div>
-      <div class="loading flex py-2 mb-4 justify-center items-center w-full" v-show="loading">
-        <el-button loading link loading-icon="Loading"></el-button>
-        <span class="ml-2">加载中...</span>
       </div>
     </el-scrollbar>
     <el-backtop target=".comment .el-scrollbar__wrap" v-if="type == 'music'" :bottom="80" :right="15">

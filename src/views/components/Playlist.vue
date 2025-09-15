@@ -4,15 +4,25 @@
       <template #template>
         <div class="w-full md:flex">
           <el-skeleton-item variant="image" class="!rounded w-full md:!w-[160px]" style="width: 100%; height: 160px" />
-          <div class="flex md:flex-col flex-1 space-x-2 my-2 md:my-0 md:ml-4">
+          <div class="flex md:flex-col flex-1 space-x-2 my-4 md:my-0 md:ml-4">
             <el-skeleton-item variant="h1" class="!w-[30%] mr-2 mb-2 !hidden md:!block" />
             <el-skeleton-item variant="p" v-for="item in 4" :key="item" class="w-[100%] mr-2 md:my-2 !hidden md:!block" :class="{ '!w-[50%]': item == 4 }" />
-            <el-skeleton-item variant="button" v-for="item in 3" :key="item" class="!w-[30%] mr-2 md:!hidden" />
+            <el-skeleton-item variant="button" v-for="item in 3" :key="item" class="!w-[33.33%] mr-2 last:mr-0 md:!hidden" />
           </div>
         </div>
         <div style="margin-top: 10px">
-          <el-skeleton-item v-for="item in 5" :key="item" variant="text" style="width: 20%; height: 34px" />
-          <el-skeleton-item v-for="item in 12" :key="item" variant="p" style="width: 100%; height: 34px" />
+          <el-skeleton-item v-for="item in 5" :key="item" variant="text" class="!hidden md:!inline-block" style="width: 20%; height: 34px" />
+          <div class="flex mb-2 justify-between items-center" v-for="item in 8" :key="item">
+            <el-skeleton-item variant="button" style="width: 5%; margin-right: 5px" />
+            <div class="flex-1">
+              <el-skeleton-item variant="h3" style="width: 50%" />
+              <div>
+                <el-skeleton-item variant="text" style="width: 10%; margin-right: 5px" />
+                <el-skeleton-item variant="text" style="width: 80%" />
+              </div>
+            </div>
+            <el-skeleton-item variant="button" style="width: 5%" />
+          </div>
         </div>
       </template>
       <template #default>
@@ -59,11 +69,13 @@
           class="rounded overflow-hidden"
           v-loading="loading"
           element-loading-custom-class="backdrop-blur !z-99"
-          v-if="data.tracks"
+          v-if="tableData"
           :row-class-name="({ row, rowIndex }) => (playData.id == row.id ? 'current-row' : '')"
           v-bind="tableProps"
           v-on="tableEvents"
-          :data="data.tracks"
+          :data="tableData"
+          @scroll="loadMore"
+          :infinite-scroll-immediate="false"
           @row-dblclick="handlePlay"
         >
           <el-table-column v-if="!showTableHeader" align="center" min-width="30px" type="index" :index="(val) => val + 1" show-overflow-tooltip></el-table-column>
@@ -108,6 +120,9 @@
           <template v-slot:empty>
             <Empty></Empty>
           </template>
+          <template v-slot:append>
+            <PageLoading v-if="total > tableData.length" />
+          </template>
         </el-table>
       </template>
     </el-skeleton>
@@ -127,6 +142,7 @@ import { usePlayerStore } from '@/stores/player'
 import { useCollectStore } from '@/stores/collect'
 import { useConfigStore } from '@/stores/config'
 import { useRoute } from 'vue-router'
+import { computed } from 'vue'
 const props = defineProps({
   data: {
     type: Object,
@@ -180,7 +196,15 @@ const showTableHeader = computed(() => props.tableProps.showHeader || props.tabl
 const emit = defineEmits(['action'])
 const data = computed(() => props.data)
 const tableRef = ref(null)
+const pageLoading = ref(false)
+const currentPage = ref(1)
+const pageSize = ref(20)
+const total = ref(props.data.tracks?.length || 0)
+const tracks = computed(() => props.data.tracks)
+const tableData = ref(props.data.tracks?.slice(0, pageSize.value) || [])
 const tableHeight = ref('calc(100vh - 402px)')
+
+const scrollPosition = ref(0) // 滚动位置
 const handlePlayAll = () => {
   ElMessageBox.confirm('此操作会替换播放列表，是否播放？', {
     modalClass: '!z-99999 backdrop-blur',
@@ -203,13 +227,13 @@ const toggleCollect = () => {
 watch(playIndex, () => {
   tableRef.value?.setScrollTop(playIndex.value * 40)
 })
-defineExpose({
-  handlePlayAll,
-  handlePlay,
-  toggleCollect,
-  isCollect: (...arg) => collectStore.has(...arg),
-  setScrollTop: (val) => tableRef.value?.setScrollTop(val === 0 ? 0 : playIndex.value * 40),
+watch(tracks, () => {
+  currentPage.value = 1
+  pageLoading.value = false
+  tableData.value = props.data.tracks?.slice(0, pageSize.value) || []
+  total.value = props.data.tracks?.length || 0
 })
+
 const getParentTop = (el) => {
   var actualTop = el.offsetTop
   var current = el.offsetParent
@@ -218,6 +242,25 @@ const getParentTop = (el) => {
     current = current.offsetParent
   }
   return actualTop
+}
+const loadData = () => {
+  pageLoading.value = true
+  currentPage.value++
+  setTimeout(() => {
+    pageLoading.value = false
+    tableData.value = [...tableData.value, ...props.data.tracks.slice(tableData.value.length, currentPage.value * pageSize.value)]
+  }, 200)
+}
+const loadMore = (params) => {
+  const wrapper = tableRef.value?.scrollBarRef?.wrapRef
+  scrollPosition.value = wrapper.scrollTop
+  const scrollHeight = wrapper.scrollHeight
+  const scrollTop = wrapper.scrollTop
+  const clientHeight = wrapper.clientHeight
+  const reachedBottom = scrollTop + clientHeight >= scrollHeight
+  if (reachedBottom && currentPage.value * pageSize.value < total.value) {
+    loadData()
+  }
 }
 onMounted(() => {
   nextTick(() => {
@@ -228,5 +271,13 @@ onMounted(() => {
       tableHeight.value = 'calc(100vh - ' + (parentTop + 100 + (slots.pagination ? 30 : 0)) + 'px)'
     })
   })
+})
+defineExpose({
+  handlePlayAll,
+  handlePlay,
+  toggleCollect,
+  isCollect: (...arg) => collectStore.has(...arg),
+  setScrollTop: (val) => tableRef.value?.setScrollTop(val === 0 ? 0 : playIndex.value * 40),
+  loadData,
 })
 </script>

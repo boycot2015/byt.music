@@ -78,6 +78,7 @@ const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
 const loading = ref(true)
 const playIndex = computed(() => playData.playIndex)
+const reachedEnd = computed(() => config.reachedEnd)
 const tableRef = ref(null)
 const data = ref({
   info: {},
@@ -102,6 +103,9 @@ const fetchData = async () => {
     console.log(err)
   }
 }
+watch(reachedEnd, () => {
+  tableRef.value?.loadData()
+})
 watch(playIndex, () => {
   tableRef.value?.setScrollTop(playIndex.value * 40)
 })
@@ -126,7 +130,6 @@ const onAction = (command, row) => {
             .then(() => {
               if (data.value.info.id == 0) {
                 data.value.tracks = data.value.tracks.filter((item) => item.id !== row.id)
-                ElMessage.success('操作成功')
               }
               collectStore.toggleCollect(row, 'song')
             })

@@ -18,10 +18,7 @@
         <el-row class="grid-list flex flex-wrap overflow-hidden rounded-md md:mb-2" :gutter="10">
           <grid-list v-for="(item, index) in tabData[type] || []" :index="index" :type="query.type" :item="item" @click.stop="onListClick(item)" :key="item.id"></grid-list>
           <el-col :span="24" v-if="loading">
-            <div class="flex justify-center items-center w-full mt-2">
-              <el-button loading link loading-icon="Loading"></el-button>
-              <span>数据加载中...</span>
-            </div>
+            <PageLoading />
           </el-col>
         </el-row>
       </template>

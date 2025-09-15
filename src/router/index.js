@@ -33,7 +33,7 @@ const router = createRouter({
       component: () => import('@/views/search/index.vue'),
       meta: {
         title: '搜索',
-        hideInMenu: true,
+        // hideInMenu: true,
         keepAlive: true,
         hideInTab: true,
         icon: 'Search',

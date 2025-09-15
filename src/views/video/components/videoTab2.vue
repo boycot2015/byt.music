@@ -46,7 +46,7 @@
           <el-row class="grid-list flex flex-wrap overflow-hidden rounded-md md:mb-2" :gutter="10">
             <el-col v-for="(item, index) in 8" :span="12" :sm="obj.type == 4 ? 12 : 8" :md="obj.type == 4 ? 12 : 6" :xl="obj.type == 4 ? 12 : 4" :item="item" :category="obj.category" :index="index" :type="obj.type" :key="item.id">
               <div class="flex flex-col w-full mb-2">
-                <el-skeleton-item variant="image" class="!rounded w-full !h-[100px] md:!h-[160px]" />
+                <el-skeleton-item variant="image" class="!rounded w-full !h-[100px] md:!h-[175px]" />
                 <div class="mt-2" v-if="obj.type != 4">
                   <el-skeleton-item variant="text" style="width: 100%" />
                   <el-skeleton-item variant="text" style="width: 60%" />

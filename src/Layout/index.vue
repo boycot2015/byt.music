@@ -12,7 +12,7 @@ import { useSwiper } from '@/hooks/useSwiper'
 
 import playlist from '@/views/playlist/index.vue'
 import favorites from '@/views/favorites/index.vue'
-import app from '@/views/app/index.vue'
+import videoHome from '@/views/video/index.vue'
 import setting from '@/views/setting/index.vue'
 import ranking from '@/views/ranking/index.vue'
 import videoDetail from '@/views/video/detail.vue'
@@ -21,7 +21,7 @@ import { nextTick } from 'vue'
 const tabsComponents = {
   playlist,
   favorites,
-  app,
+  videoHome,
   setting,
   ranking,
 }
@@ -42,6 +42,7 @@ const listVisible = ref(playData.value.playlistVisible || false)
 const videoVisible = ref(showVideoPlayer.value || false)
 const commitVisible = ref(playData.value.commitVisible)
 const isPlaying = ref(false)
+const playlistRef = ref(null)
 const lyricAnimationVisible = ref(false)
 const { setPlayer, play, togglePlay, setPlayData } = usePlayerStore()
 const router = useRouter()
@@ -248,46 +249,48 @@ const onAction = (command, row) => {
         <span class="total">共{{ playData.playlist.length }}首歌曲</span>
         <el-button type="danger" :disabled="playData.playlist.length === 0" round @click="setPlayData({ playlist: [] })" icon="Delete">清空</el-button>
       </template>
-      <Playlist :show-header="false" :data="{ info: playData, tracks: playData.playlist }" :tableProps="{ miniHeight: '200px', showHeader: false }">
-        <template #table-action="{ row }">
-          <div v-if="!config.isMobile">
-            <el-link
-              type="primary"
-              :disabled="playData.playlist.length === 0"
-              size="small"
-              @click="
-                () => {
-                  setPlayer({ showCover: true })
-                  setPlayData({ playIndex: playData.playlist?.findIndex((item) => item.id == row.id) })
-                  play(row)
-                }
-              "
-            >
-              <el-icon :size="28">
-                <IconPlay />
-              </el-icon>
-            </el-link>
-            <el-link type="danger" :disabled="playData.playlist.length === 0" size="small" @click="setPlayData({ playlist: playData.playlist.filter((item) => item.id !== row.id) })">
-              <el-icon :size="18">
-                <Delete />
-              </el-icon>
-            </el-link>
-          </div>
-          <el-dropdown trigger="click" :show-arrow="false" popper-class="backdrop-blur !z-30000" @command="(command) => onAction(command, row)" v-else>
-            <el-icon class="transform rotate-90"><MoreFilled /></el-icon>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item command="play"
-                  ><el-icon class="mr-2 !text-[var(--el-color-primary)]"><video-play /></el-icon>播放</el-dropdown-item
-                >
-                <el-dropdown-item command="delete"
-                  ><el-icon class="mr-2 !text-[var(--el-color-danger)]"><Delete /></el-icon>移除</el-dropdown-item
-                >
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </template>
-      </Playlist>
+      <el-scrollbar @end-reached="(direction) => direction === 'bottom' && playlistRef.loadData()">
+        <Playlist ref="playlistRef" :show-header="false" :data="{ info: playData, tracks: playData.playlist }" :tableProps="{ miniHeight: '200px', showHeader: false }">
+          <template #table-action="{ row }">
+            <div v-if="!config.isMobile">
+              <el-link
+                type="primary"
+                :disabled="playData.playlist.length === 0"
+                size="small"
+                @click="
+                  () => {
+                    setPlayer({ showCover: true })
+                    setPlayData({ playIndex: playData.playlist?.findIndex((item) => item.id == row.id) })
+                    play(row)
+                  }
+                "
+              >
+                <el-icon :size="28">
+                  <IconPlay />
+                </el-icon>
+              </el-link>
+              <el-link type="danger" :disabled="playData.playlist.length === 0" size="small" @click="setPlayData({ playlist: playData.playlist.filter((item) => item.id !== row.id) })">
+                <el-icon :size="18">
+                  <Delete />
+                </el-icon>
+              </el-link>
+            </div>
+            <el-dropdown trigger="click" :show-arrow="false" popper-class="backdrop-blur !z-30000" @command="(command) => onAction(command, row)" v-else>
+              <el-icon class="transform rotate-90"><MoreFilled /></el-icon>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="play"
+                    ><el-icon class="mr-2 !text-[var(--el-color-primary)]"><video-play /></el-icon>播放</el-dropdown-item
+                  >
+                  <el-dropdown-item command="delete"
+                    ><el-icon class="mr-2 !text-[var(--el-color-danger)]"><Delete /></el-icon>移除</el-dropdown-item
+                  >
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </template>
+        </Playlist>
+      </el-scrollbar>
     </el-drawer>
     <!-- 歌词动效弹框 -->
     <el-drawer v-model="lyricAnimationVisible" :z-index="10002" size="100%">

@@ -17,14 +17,24 @@ export const useCollectStore = defineStore(
     function add(el) {
       current.value = '0'
       collect.value.push({ ...el, showClose: false })
+      ElMessage.success({
+        type: 'success',
+        customClass: '!z-10002 backdrop-blur-xl',
+        message: '收藏成功'
+      })
     }
     function remove(id, type = 'playlist') {
       if (!id && type == 'song') {
         collect.value[0].tracks = []
         return
       }
-      collect.value = collect.value.filter((item) => item.info.id != id)
+      collect.value = collect.value.filter((item) => type == 'playlist' ? item.id != id : item.info.id != id)
       current.value = '0'
+      // ElMessage.success({
+      //   type: 'success',
+      //   customClass: '!z-10002 backdrop-blur-xl',
+      //   message: '取消收藏成功'
+      // })
     }
     function update(row) {
       if (row && row instanceof Array && !row.length) {
@@ -57,6 +67,11 @@ export const useCollectStore = defineStore(
         let current = collect.value.find((item) => item.info.id == 0)
         if (current?.tracks.find((item) => item.id == data.id)) {
           current.tracks = current.tracks.filter((item) => item.id != data.id)
+          ElMessage.success({
+            type: 'success',
+            customClass: '!z-10002 backdrop-blur-xl',
+            message: '取消收藏成功'
+          })
         } else {
           current.tracks.unshift(data)
           ElMessage.success({
