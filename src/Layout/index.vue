@@ -124,6 +124,7 @@ router.afterEach(() => {
 })
 
 const onReached = (val) => {
+  // console.log(val, 'onReached layout')
   if (val !== 'bottom') return
   set({ reachedEnd: true })
   setTimeout(() => {
@@ -244,12 +245,12 @@ const onAction = (command, row) => {
       <div class="bg-cover z-9 absolute top-0 overflow-hidden left-0 w-full h-full bg-cover bg-center bg-no-repeat opacity-50 blur-[100px] transition-all duration-300 ease-in-out" :style="{ backgroundImage: `url(${playData.img_url})` }"></div>
     </el-drawer>
     <!-- 播放列表弹框 -->
-    <el-drawer v-model="listVisible" modal-class="backdrop-blur-sm" trigger="click" :z-index="10001" header-class="!leading-[32px] !p-3 !mb-0" :show-close="false" direction="btt" size="80%" body-class="!p-0" :show-arrow="false" :width="config.isMobile ? '95vw' : '680px'">
+    <el-drawer v-model="listVisible" modal-class="backdrop-blur-sm" trigger="click" :z-index="10001" header-class="!leading-[32px] !p-3 !mb-0" :show-close="false" direction="btt" size="70vh" body-class="!p-0" :show-arrow="false" :width="config.isMobile ? '95vw' : '680px'">
       <template #header>
         <span class="total">共{{ playData.playlist.length }}首歌曲</span>
         <el-button type="danger" :disabled="playData.playlist.length === 0" round @click="setPlayData({ playlist: [] })" icon="Delete">清空</el-button>
       </template>
-      <el-scrollbar @end-reached="(direction) => direction === 'bottom' && playlistRef.loadData()">
+      <el-scrollbar height="calc(70vh - 52px)" @end-reached="(direction) => direction === 'bottom' && playlistRef.loadData()">
         <Playlist ref="playlistRef" :show-header="false" :data="{ info: playData, tracks: playData.playlist }" :tableProps="{ miniHeight: '200px', showHeader: false }">
           <template #table-action="{ row }">
             <div v-if="!config.isMobile">

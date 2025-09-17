@@ -89,3 +89,19 @@ export const downloadFile = function (content, filename) {
   // 然后移除
   document.body.removeChild(eleLink);
 };
+
+ // 判断是否是pc设备
+export const isPc = () => {
+    const userAgentInfo = navigator.userAgent;
+    const Agents = ["Android", "iPhone",
+        "SymbianOS", "Windows Phone",
+        "iPad", "iPod"];
+    let flag = true;
+    for (let v = 0; v < Agents.length; v++) {
+        if (userAgentInfo.indexOf(Agents[v]) > 0) {
+            flag = false;
+            break;
+        }
+    }
+    return flag;
+}

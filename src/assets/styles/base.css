@@ -108,6 +108,25 @@ html.dark .blur-bg {
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 10%, #000 50%, transparent 100%);
 }
 
+/* 处理iOS安全区域 */
+/* @supports (padding: max(0px)) {
+  .scroll-wrapper {
+    padding-bottom: max(env(safe-area-inset-bottom), 20px);
+  }
+} */
+
+/* 旧版Android兼容 */
+/* .scroll-wrapper {
+  padding-bottom: constant(safe-area-inset-bottom);
+} */
+
+.el-scrollbar__wrap {
+  -webkit-overflow-scrolling: touch;
+  /* iOS平滑滚动 */
+  touch-action: pan-y;
+  /* 允许垂直滚动 */
+}
+
 .el-tabs__header {
   margin-bottom: 0 !important;
 }
@@ -176,4 +195,9 @@ html.dark .blur-bg {
 
 .el-select-dropdown .el-scrollbar {
   padding-bottom: 0 !important;
+}
+
+#__vconsole {
+  position: fixed;
+  z-index: 999999;
 }

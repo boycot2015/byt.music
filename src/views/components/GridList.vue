@@ -25,12 +25,12 @@
                   <div class="text-[var(--color-text)] line-clamp-2">{{ item.title || '--' }}</div>
                   <div class="text-[var(--color-text-secondary)] text-sm line-clamp-1 flex items-center">
                     <el-avatar class="mr-1" v-if="item.creator?.avatarUrl" :src="item.creator?.avatarUrl" size="small"></el-avatar>
-                    <span class="line-clamp-1 flex-1 max-w-[160px]" v-html="(item.creator?.nickname || item?.desc || '').replace(/<br>/g, '')"></span>
+                    <span class="line-clamp-1 flex-1 max-w-[140px]" v-html="(item.creator?.nickname || item?.desc || '').replace(/<br>/g, '')"></span>
                   </div>
                   <div v-if="item.create_time || item.ctime || item.createTime">{{ item.create_time || new Date(item.ctime || item.createTime).toLocaleString().replace(/\//g, '-').split(' ')[0] }}</div>
-                  <div class="flex justify-between text-xs w-full">
+                  <div class="flex justify-between items-center text-sm w-full">
                     <div class="line-clamp-1" v-if="item.type">来源：{{ config.types.find((type) => type.type === item.type)?.title }}</div>
-                    <div class="text-[var(--color-text-secondary)] line-clamp-1">{{ item.play_count ? (item.play_count > 10000 ? (item.play_count / 10000).toFixed(1) + '万次播放' : item.play_count + '次播放') : '' }}</div>
+                    <div class="text-[var(--color-text-secondary)] line-clamp-1" v-if="item.play_count">{{ filterPlayCount(item.play_count, 1) + '次播放' }}</div>
                   </div>
                   <slot name="action" :row="item"></slot>
                 </div>
@@ -48,6 +48,7 @@
 <script name="GridList" setup>
 import { useRouter } from 'vue-router'
 import { useConfigStore } from '@/stores/config'
+import { filterPlayCount } from '@/utils'
 const { config, setScrollRef } = useConfigStore()
 const scrollbarRef = ref(null)
 const router = useRouter()

@@ -2,14 +2,18 @@
   <div class="playlist-detail !overflow-hidden rounded-md">
     <el-skeleton :loading="loading && showSkeleton" animated>
       <template #template>
-        <div class="w-full md:flex">
-          <el-skeleton-item variant="image" class="!rounded w-full md:!w-[160px]" style="width: 100%; height: 160px" />
-          <div class="flex md:flex-col flex-1 space-x-2 my-4 md:my-0 md:ml-4">
+        <div class="w-full flex flex-col items-center md:items-start md:flex-row">
+          <el-skeleton-item variant="image" class="!rounded !w-[160px]" style="width: 100%; height: 160px" />
+		  <el-skeleton-item variant="h1" class="!w-[80%] my-2 !block md:!hidden" />
+          <el-skeleton-item variant="p" v-for="item in 2" :key="item" class="w-[100%] mb-2 !block md:!hidden" :class="{ '!w-[50%]': item == 2 }" />
+          <div class="flex md:flex-col flex-1 space-x-2 hidden md:block my-4 md:my-0 md:ml-4">
             <el-skeleton-item variant="h1" class="!w-[30%] mr-2 mb-2 !hidden md:!block" />
-            <el-skeleton-item variant="p" v-for="item in 4" :key="item" class="w-[100%] mr-2 md:my-2 !hidden md:!block" :class="{ '!w-[50%]': item == 4 }" />
-            <el-skeleton-item variant="button" v-for="item in 3" :key="item" class="!w-[33.33%] mr-2 last:mr-0 md:!hidden" />
+			<el-skeleton-item variant="p" v-for="item in 4" :key="item" class="w-[100%] mb-2 !hidden md:!block" :class="{ '!w-[50%]': item == 4 }" />
           </div>
         </div>
+		<div class="flex md:!hidden">
+			<el-skeleton-item variant="button" v-for="item in 3" :key="item" class="!w-[33.33%] mr-2 last:mr-0" />
+		</div>
         <div style="margin-top: 10px">
           <el-skeleton-item v-for="item in 5" :key="item" variant="text" class="!hidden md:!inline-block" style="width: 20%; height: 34px" />
           <div class="flex mb-2 justify-between items-center" v-for="item in 8" :key="item">
@@ -51,7 +55,7 @@
           <slot name="action">
             <div class="actions w-full mb-1 md:mb-0 md:w-[auto] flex md:text-right md:absolute bottom-5 right-2" :class="actionClass" v-if="showActions && data.info">
               <el-button type="primary" @click="handlePlayAll" :disabled="!data.info.id && !data.tracks.length"
-                ><el-icon class="mr-2"><VideoPlay /></el-icon>播放全部<span class="text-xs" v-if="data?.info?.total_song_num">({{ data?.info?.total_song_num || 0 }})</span></el-button
+                ><el-icon class="mr-2"><VideoPlay /></el-icon>播放<span class="text-xs" v-if="data?.info?.total_song_num">({{ data?.info?.total_song_num || 0 }})</span></el-button
               >
               <el-button type="warning" @click="toggleCollect" :disabled="!data.info.id" v-if="data?.info?.id"
                 ><el-icon class="mr-2"><IconHeartFill v-if="collectStore.has(data.info.id)" /> <IconHeart v-else /></el-icon> {{ collectStore.has(data.info.id) ? '已' : '' }}收藏</el-button

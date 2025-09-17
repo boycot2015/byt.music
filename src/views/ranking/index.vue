@@ -121,7 +121,7 @@ const fetchData = () => {
     return
   }
   cates.value[type.value] = { playlist: [], hasMore: false, total: 0 }
-  cates.value[type.value].playlist = new Array(9).fill('').map((_, index) => ({
+  cates.value[type.value].playlist = new Array(12).fill('').map((_, index) => ({
     id: (index + 1).toString(),
   }))
   fetch(`${$apiUrl}/music?type=${type.value}&id=${type.value == 'netease' ? '排行榜' : ctype.value}&limit=20&offset=0`)

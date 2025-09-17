@@ -3,10 +3,10 @@
     <div class="md:h-[calc(100vh-140px)] min-h-[calc(100vh-180px)] md:min-h-[calc(100vh-140px)] rounded-md overflow-y-auto md:!overflow-hidden">
       <Playlist ref="tableRef" showSkeleton :loading="loading" :data="data" :tableProps="{ height: config.isMobile ? null : 'calc(100vh - 300px)', showHeader: !config.isMobile }" :show-actions="true">
         <template #header>
-          <div class="md:flex mb-3 min-h-[100px] w-full md:min-h-[100px] relative rounded overflow-hidden" element-loading-custom-class="backdrop-blur !z-99">
-            <Image v-if="data.info.cover_img_url || '/logo.svg'" :src="data.info.cover_img_url" :size="120" class="absolute h-[180px] m-[auto] md:w-[120px] md:h-[120px] rounded scale-[2] blur-[200px] md:blur-[0px] md:scale-[1]"></Image>
-            <div class="info md:ml-4 p-2 rounded overflow-hidden md:p-0 flex-1 absolute h-full w-full md:relative backdrop-blur-2xl md:backdrop-blur-none left-0 top-0 right-0 flex flex-col justify-center md:justify-start">
-              <div class="title text-3xl mb-2">{{ data.info.title }}</div>
+          <div class="flex flex-col items-center md:flex-row md:items-start mb-3 min-h-[100px] w-full md:min-h-[100px] relative rounded overflow-hidden" element-loading-custom-class="backdrop-blur !z-99">
+            <Image v-if="data.info.cover_img_url || '/logo.svg'" :src="data.info.cover_img_url" :size="160" class="h-[160px] w-[160px] rounded"></Image>
+            <div class="info md:ml-4 p-2 text-center md:text-left rounded overflow-hidden md:p-0 flex-1 h-full w-full md:relative backdrop-blur-2xl md:backdrop-blur-none left-0 top-0 right-0 flex flex-col justify-center md:justify-start">
+              <div class="title text-xl mb-2 px-2">{{ data.info.title }}</div>
               <div v-if="data.info.desc" class="hidden md:block">
                 <el-tooltip placement="top" v-if="data.info.desc.replace(/<br>/g, '。').length > 100">
                   <div class="desc md:line-clamp-3 text-justify" v-if="data.info.desc" v-html="data.info.desc.replace(/<br>/g, '。')"></div>
@@ -142,11 +142,11 @@ const onAction = (command, row) => {
 }
 </script>
 <style scoped>
-.desc {
+/* .desc {
   box-shadow: 0px 0px 100px var(--el-bg-color);
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #fff 10%, #fff 50%, transparent 100%);
 }
 html.dark .desc {
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 10%, #000 50%, transparent 100%);
-}
+} */
 </style>

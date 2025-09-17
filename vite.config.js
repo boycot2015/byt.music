@@ -2,11 +2,11 @@ import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
+// import vueDevTools from 'vite-plugin-vue-devtools'
 import tailwindcss from '@tailwindcss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-import IconsResolver from 'unplugin-icons/resolver'
+// import IconsResolver from 'unplugin-icons/resolver'
 // import Icons from "unplugin-icons/vite";
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vueSetupExtend from 'vite-plugin-vue-setup-extend'
@@ -16,6 +16,9 @@ import vueSetupExtend from 'vite-plugin-vue-setup-extend'
 // https://vite.dev/config/
 export default defineConfig({
   base: './',
+  server: {
+    host: '0.0.0.0'
+  },
   plugins: [
     vue({
       template: {
@@ -25,7 +28,7 @@ export default defineConfig({
         }
       }
     }),
-    vueDevTools(),
+    // vueDevTools(),
     tailwindcss(),
     AutoImport({
       imports: ["vue", "@vueuse/core"],

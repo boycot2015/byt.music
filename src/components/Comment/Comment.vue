@@ -12,7 +12,7 @@
     >
       <el-tab-pane :label="item.label" :name="item.type" v-for="item in commentList" :key="item.type"> </el-tab-pane>
     </el-tabs>
-    <el-scrollbar ref="scrollbarRef" :height="type == 'music' ? 'calc(100vh - 110px)' : '100%'" class="pr-3" @end-reached="(direction) => direction === 'bottom' && getComments({ page: commentList[1].page, limit: commentList[1].limit })">
+    <el-scrollbar ref="scrollbarRef" :height="type == 'music' ? 'calc(100vh - 106px)' : '100%'" class="pr-3" @end-reached="onReached">
       <div v-for="item in commentList" :key="item.type">
         <div v-if="!loading || item.comments?.length" class="py-3" v-show="ctype == item.type">
           <div v-for="commit in item.comments" :key="commit.id">
@@ -33,7 +33,7 @@
 import { computed, getCurrentInstance, ref } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import { useVideoStore } from '@/stores/video'
-
+import { filterPlayCount } from '@/utils'
 const props = defineProps({
   data: {
     type: Object,
@@ -85,7 +85,7 @@ const setData = (data) => {
   commentList.value.forEach((item) => {
     let temp = {}
     item.total = data.total
-    if (data[item.prop] && data[item.prop].length) item.label = item.name + `(${item.prop == 'hotComments' ? data[item.prop].length : data.total})`
+    if (data[item.prop] && data[item.prop].length) item.label = item.name + `(${item.prop == 'hotComments' ? filterPlayCount(data[item.prop].length) : filterPlayCount(data.total)})`
     else item.label = item.name
     item.more = data.more
     let comments = data[item.prop]?.filter((item) => item.content && item.parentCommentId) || []
@@ -164,7 +164,11 @@ watch([playDataStore.value, playVideoDataStore.value], () => {
     getComments()
   }
 })
-onMounted(() => {  
+const onReached = (val) => {
+  if (val !== 'bottom') return
+  getComments({ page: commentList.value[1].page, limit: commentList.value[1].limit })
+}
+onMounted(() => {
   getComments()
 })
 defineExpose({
