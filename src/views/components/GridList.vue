@@ -27,10 +27,12 @@
                     <el-avatar class="mr-1" v-if="item.creator?.avatarUrl" :src="item.creator?.avatarUrl" size="small"></el-avatar>
                     <span class="line-clamp-1 flex-1 max-w-[140px]" v-html="(item.creator?.nickname || item?.desc || '').replace(/<br>/g, '')"></span>
                   </div>
-                  <div v-if="item.create_time || item.ctime || item.createTime">{{ item.create_time || new Date(item.ctime || item.createTime).toLocaleString().replace(/\//g, '-').split(' ')[0] }}</div>
+                  <div v-if="item.create_time || item.ctime || item.createTime">{{ new Date(item.create_time || item.ctime || item.createTime).toLocaleString().replace(/\//g, '-').split(' ')[0] }}</div>
                   <div class="flex justify-between items-center text-sm w-full">
                     <div class="line-clamp-1" v-if="item.type">来源：{{ config.types.find((type) => type.type === item.type)?.title }}</div>
-                    <div class="text-[var(--color-text-secondary)] line-clamp-1" v-if="item.play_count">{{ filterPlayCount(item.play_count, 1) + '次播放' }}</div>
+                    <div class="text-[var(--color-text-secondary)] line-clamp-1 flex items-center" v-if="item.play_count">
+                      <el-icon class="mr-1"> <Headset /> </el-icon>{{ filterPlayCount(item.play_count, 1) + '次播放' }}
+                    </div>
                   </div>
                   <slot name="action" :row="item"></slot>
                 </div>

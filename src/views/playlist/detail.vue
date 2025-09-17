@@ -6,7 +6,17 @@
           <div class="flex flex-col items-center md:flex-row md:items-start mb-3 min-h-[100px] w-full md:min-h-[100px] relative rounded overflow-hidden" element-loading-custom-class="backdrop-blur !z-99">
             <Image v-if="data.info.cover_img_url || '/logo.svg'" :src="data.info.cover_img_url" :size="160" class="h-[150px] w-[150px] rounded"></Image>
             <div class="info md:ml-4 p-2 text-center md:text-left rounded overflow-hidden md:p-0 flex-1 h-full w-full md:relative backdrop-blur-2xl md:backdrop-blur-none left-0 top-0 right-0 flex flex-col justify-center md:justify-start">
-              <div class="title text-xl mb-2 px-2">{{ data.info.title }}</div>
+              <div class="flex flex-col md:flex-row mb-2 px-2 md:px-0">
+                <el-tag class="md:mr-2" v-if="data.info.updateFrequency">{{ data.info.updateFrequency }}</el-tag>
+                <div class="title text-xl">{{ data.info.title }}</div>
+              </div>
+              <div class="creator mb-2 flex items-center justify-center md:justify-start !space-x-2">
+                <el-avatar v-if="data.info.creator?.avatarUrl || data.info.headurl" :src="data.info.creator?.avatarUrl || data.info.headurl" size="small"></el-avatar>
+                <div class="creator-name">{{ data.info.creator?.nickname || data.info?.nickname || '--' }}</div>
+                <el-icon> <Headset /> </el-icon>
+                <span v-if="data.info.play_count">{{ filterPlayCount(data.info.play_count, 1) }}次播放</span>
+              </div>
+              <div class="time mb-2" v-if="data.info.create_time || data.info.ctime || data.info.createTime">创建时间：{{ new Date(data.info.create_time || data.info.ctime || data.info.createTime).toLocaleString().replace(/\//g, '-') }}</div>
               <div v-if="data.info.desc" class="hidden md:block">
                 <el-tooltip placement="top" v-if="data.info.desc.replace(/<br>/g, '。').length > 100">
                   <div class="desc md:line-clamp-3 text-justify" v-if="data.info.desc" v-html="data.info.desc.replace(/<br>/g, '。')"></div>
@@ -69,6 +79,7 @@ import Playlist from '@/views/components/Playlist.vue'
 import { usePlayerStore } from '@/stores/player'
 import { useConfigStore } from '@/stores/config'
 import { useCollectStore } from '@/stores/collect'
+import { filterPlayCount } from '@/utils'
 const collectStore = useCollectStore()
 const { config } = useConfigStore()
 const playerStore = usePlayerStore()
