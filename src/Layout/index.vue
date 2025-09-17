@@ -116,15 +116,14 @@ onMounted(() => {
   })
 })
 router.afterEach(() => {
-  activeTab.value = route.name
+  activeTab.value = tabsComponents[route.name] ? route.name : activeTab.value
   let index = tabs.findIndex((el) => el.name == activeTab.value)
   activeIndex.value = index == -1 ? activeIndex.value : index
   swiperInstance.value?.slideTo(activeIndex.value)
   set({ activeTab: activeIndex.value })
 })
 
-const onReached = (val) => {
-  // console.log(val, 'onReached layout')
+const onReached = (val, index) => {
   if (val !== 'bottom') return
   set({ reachedEnd: true })
   setTimeout(() => {
@@ -153,16 +152,16 @@ const onAction = (command, row) => {
     <el-container class="overflow-hidden bg-[var(--el-bg-color)]">
       <el-header class="bg-[var(--el-bg-color)] !px-3 flex items-center shadow-[0_0_5px_0_rgba(0,0,0,0.1)]" :class="{ 'md:!shadow-[0_5px_30px_0_rgba(255,255,255,0.1)]': isDark }"><Header /></el-header>
       <swiper v-if="config.isMobile" :modules="modules" class="swipper w-full h-full" v-bind="{ ...swiperOptions, virtual: false, history: false, initialSlide: config.activeTab }" @swiper="onSwiper" @slideChange="onSlideChange">
-        <swiper-slide class="swipper-item h-full" v-for="tab in tabs" :key="tab.name">
+        <swiper-slide class="swipper-item h-full" v-for="(tab, index) in tabs" :key="tab.name">
           <el-main class="bg-[transparent] md:!overflow-hidden !p-0 rounded layout">
-            <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="scrollStyle" ref="scrollbarRef" :class="{ active: tab.name == activeTab }" @end-reached="onReached">
+            <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="scrollStyle" ref="scrollbarRef" :class="{ active: tab.name == activeTab }" @end-reached="(val) => tab.name == activeTab && onReached(val, index)">
               <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px] md:!pb-[10px]">
-                <transition :name="'slide-fade'" v-show="tabsComponents[tab.name] && activeTab == tab.name">
+                <transition :name="'slide-fade'" v-show="tabsComponents[tab.name] && route.name == tab.name">
                   <keep-alive :include="keepAliveRoutes">
                     <component :is="tabsComponents[tab.name]" />
                   </keep-alive>
                 </transition>
-                <router-view v-slot="{ Component }" v-show="!tabsComponents[route.name]">
+                <router-view v-slot="{ Component }" v-show="!tabsComponents[route.name]" v-if="tab.name == activeTab">
                   <transition :name="'slide-fade'">
                     <keep-alive :include="keepAliveRoutes">
                       <component :is="Component" />
@@ -175,7 +174,7 @@ const onAction = (command, row) => {
         </swiper-slide>
       </swiper>
       <el-main class="bg-[transparent] md:!overflow-hidden !p-0 rounded layout" v-else>
-        <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="scrollStyle" ref="scrollbarRef" @end-reached="onReached" @scroll="set({ reachedEnd: false })">
+        <el-scrollbar class="md:!h-[calc(100vh-120px)]" :style="scrollStyle" ref="scrollbarRef" @end-reached="onReached">
           <div class="scrollbar-wrapper !p-[10px] md:min-w-[700px] md:!pb-[10px]">
             <router-view v-slot="{ Component }">
               <transition :name="'slide-fade'">

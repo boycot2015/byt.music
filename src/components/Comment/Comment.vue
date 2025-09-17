@@ -165,7 +165,10 @@ watch([playDataStore.value, playVideoDataStore.value], () => {
   }
 })
 const onReached = (val) => {
-  if (val !== 'bottom') return
+  if (val !== 'bottom') {
+    loading.value = false
+    return
+  }
   getComments({ page: commentList.value[1].page, limit: commentList.value[1].limit })
 }
 onMounted(() => {

@@ -12,6 +12,7 @@
             @change="
               () => {
                 currentPage = 1
+                playlist = []
                 playlistRef.setScrollTop(0)
                 onSearch()
               }
@@ -54,13 +55,14 @@
       header-class="!pl-0 mb-2"
       action-class="mt-2"
       :loading="loading"
+      :key="keyword"
       :data="{ info: { id: keyword, total_song_num: total || playlist.length }, tracks: playlist }"
       :tableEvents="{ rowClick: (row) => stype != '0' && router.push({ path: '/playlist/' + row.id, query: { type } }) }"
-      :tableProps="{ height: config.isMobile ? 'calc(100vh - 360px)' : 'calc(100vh - 380px)', rowClassName: 'cursor-pointer' }"
+      :tableProps="{ height: config.isMobile ? 'auto' : 'calc(100vh - 380px)', rowClassName: 'cursor-pointer', showHeader: !config.isMobile }"
     >
       <template #action>
         <div class="relative flex-1 flex items-center justify-between" :class="{ '!justify-end': stype != '0' }">
-          <el-button type="primary" @click="playlistRef.handlePlayAll" v-show="stype == '0'" :disabled="!playlist.length || loading"
+          <el-button type="primary" @click="playlistRef?.handlePlayAll" v-show="stype == '0'" :disabled="!playlist.length || loading"
             ><el-icon class="mr-2"><VideoPlay /></el-icon> 播放</el-button
           >
           <el-segmented
@@ -84,7 +86,7 @@
           </el-segmented>
         </div>
       </template>
-      <template #pagination>
+      <template #pagination v-if="!config.isMobile">
         <div class="flex justify-center md:justify-end mt-2">
           <el-pagination class="!hidden md:!flex" layout="total, prev, pager, next, jumper, ->" :total="total" :page-size="pageSize" v-model:current-page="currentPage" @current-change="onSearch" />
           <el-pagination class="!flex md:!hidden" size="small" layout="prev, pager, next, jumper, ->" :total="total" :page-size="pageSize" v-model:current-page="currentPage" @current-change="onSearch" />
@@ -116,6 +118,7 @@ const keyword = ref('')
 const stype = ref('0')
 const type = ref('qq')
 const types = computed(() => config.types)
+const reachedEnd = computed(() => config.reachedEnd)
 const cates = ref([
   { title: '单曲', value: '0' },
   { title: '歌单', value: '1' },
@@ -143,7 +146,7 @@ const queryKeywords = async (queryString, cb) => {
   cb(results)
 }
 const onSearch = async () => {
-  loading.value = true
+  loading.value = currentPage.value === 1 || !config.isMobile
   playlistRef.value?.setScrollTop(0)
   cates.value.map((el) => {
     if (el.value !== stype.value) {
@@ -156,7 +159,8 @@ const onSearch = async () => {
     .catch(() => {
       loading.value = false
     })
-  playlist.value = results.result.map((el) => {
+  let templist = []
+  templist = results.result.map((el) => {
     if (!el.duration || typeof el.duration !== 'number') return { ...el, duration: el.duration || '--' }
     let duration = Math.floor(el.duration / 60 / 1000) + ':' + (el.duration % 60 > 9 ? el.duration % 60 : '0' + (el.duration % 60))
     if (Math.floor(el.duration / 60) < 10) {
@@ -172,7 +176,19 @@ const onSearch = async () => {
       el.total = results.total
     }
   })
+  if (config.isMobile) {
+    playlistRef.value?.loadData(templist)
+    currentPage.value === 1 && (playlist.value = templist)
+  } else {
+    playlist.value = templist
+  }
 }
+watch(reachedEnd, (val) => {
+  if (val) {
+    currentPage.value++
+    onSearch()
+  }
+})
 onMounted(() => {
   fetchData()
 })

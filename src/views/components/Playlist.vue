@@ -2,21 +2,23 @@
   <div class="playlist-detail !overflow-hidden rounded-md">
     <el-skeleton :loading="loading && showSkeleton" animated>
       <template #template>
-        <div class="w-full flex flex-col items-center md:items-start md:flex-row">
-          <el-skeleton-item variant="image" class="!rounded !w-[160px]" style="width: 100%; height: 160px" />
-          <el-skeleton-item variant="h1" class="!w-[80%] my-2 !block md:!hidden" />
-          <el-skeleton-item variant="p" v-for="item in 2" :key="item" class="w-[100%] mb-2 !block md:!hidden" :class="{ '!w-[50%]': item == 2 }" />
-          <div class="flex md:flex-col flex-1 space-x-2 hidden md:block my-4 md:my-0 md:ml-4">
-            <el-skeleton-item variant="h1" class="!w-[30%] mr-2 mb-2 !hidden md:!block" />
-            <el-skeleton-item variant="p" v-for="item in 4" :key="item" class="w-[100%] mb-2 !hidden md:!block" :class="{ '!w-[50%]': item == 4 }" />
+        <div v-if="showHeader">
+          <div class="w-full flex flex-col items-center md:items-start md:flex-row">
+            <el-skeleton-item variant="image" class="!rounded !w-[160px]" style="width: 100%; height: 160px" />
+            <el-skeleton-item variant="h1" class="!w-[80%] my-2 !block md:!hidden" />
+            <el-skeleton-item variant="p" v-for="item in 2" :key="item" class="w-[100%] mb-2 !block md:!hidden" :class="{ '!w-[50%]': item == 2 }" />
+            <div class="flex md:flex-col flex-1 space-x-2 hidden md:block my-4 md:my-0 md:ml-4">
+              <el-skeleton-item variant="h1" class="!w-[30%] mr-2 mb-2 !hidden md:!block" />
+              <el-skeleton-item variant="p" v-for="item in 4" :key="item" class="w-[100%] mb-2 !hidden md:!block" :class="{ '!w-[50%]': item == 4 }" />
+            </div>
           </div>
-        </div>
-        <div class="flex md:!hidden">
-          <el-skeleton-item variant="button" v-for="item in 3" :key="item" class="!w-[33.33%] mr-2 last:mr-0" />
+          <div class="flex md:!hidden">
+            <el-skeleton-item variant="button" v-for="item in 3" :key="item" class="!w-[33.33%] mr-2 last:mr-0" />
+          </div>
         </div>
         <div style="margin-top: 10px">
           <el-skeleton-item v-for="item in 5" :key="item" variant="text" class="!hidden md:!inline-block" style="width: 20%; height: 34px" />
-          <div class="flex mb-2 justify-between items-center" v-for="item in 8" :key="item">
+          <div class="flex mb-2 justify-between items-center" v-for="item in showHeader ? 8 : 11" :key="item">
             <el-skeleton-item variant="button" style="width: 5%; margin-right: 5px" />
             <div class="flex-1">
               <el-skeleton-item variant="h3" style="width: 50%" />
@@ -125,7 +127,7 @@
             <Empty></Empty>
           </template>
           <template v-slot:append>
-            <PageLoading v-if="total > tableData.length" />
+            <PageLoading v-if="total > tableData.length" class="md:hidden" />
           </template>
         </el-table>
       </template>
@@ -203,7 +205,7 @@ const tableRef = ref(null)
 const pageLoading = ref(false)
 const currentPage = ref(1)
 const pageSize = ref(20)
-const total = ref(props.data.tracks?.length || 0)
+const total = computed(() => props.data?.info?.total_song_num || props.data.tracks?.length || 0)
 const tracks = computed(() => props.data.tracks)
 const tableData = ref(props.data.tracks?.slice(0, pageSize.value) || [])
 const tableHeight = ref('calc(100vh - 402px)')
@@ -235,7 +237,6 @@ watch(tracks, () => {
   currentPage.value = 1
   pageLoading.value = false
   tableData.value = props.data.tracks?.slice(0, pageSize.value) || []
-  total.value = props.data.tracks?.length || 0
 })
 
 const getParentTop = (el) => {
@@ -247,12 +248,12 @@ const getParentTop = (el) => {
   }
   return actualTop
 }
-const loadData = () => {
+const loadData = (data) => {
   pageLoading.value = true
   currentPage.value++
   setTimeout(() => {
     pageLoading.value = false
-    tableData.value = [...tableData.value, ...props.data.tracks.slice(tableData.value.length, currentPage.value * pageSize.value)]
+    tableData.value = [...tableData.value, ...(data || props.data.tracks.slice(tableData.value.length, currentPage.value * pageSize.value))]
   }, 200)
 }
 const loadMore = (params) => {
