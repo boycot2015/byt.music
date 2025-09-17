@@ -4,16 +4,16 @@
       <template #template>
         <div class="w-full flex flex-col items-center md:items-start md:flex-row">
           <el-skeleton-item variant="image" class="!rounded !w-[160px]" style="width: 100%; height: 160px" />
-		  <el-skeleton-item variant="h1" class="!w-[80%] my-2 !block md:!hidden" />
+          <el-skeleton-item variant="h1" class="!w-[80%] my-2 !block md:!hidden" />
           <el-skeleton-item variant="p" v-for="item in 2" :key="item" class="w-[100%] mb-2 !block md:!hidden" :class="{ '!w-[50%]': item == 2 }" />
           <div class="flex md:flex-col flex-1 space-x-2 hidden md:block my-4 md:my-0 md:ml-4">
             <el-skeleton-item variant="h1" class="!w-[30%] mr-2 mb-2 !hidden md:!block" />
-			<el-skeleton-item variant="p" v-for="item in 4" :key="item" class="w-[100%] mb-2 !hidden md:!block" :class="{ '!w-[50%]': item == 4 }" />
+            <el-skeleton-item variant="p" v-for="item in 4" :key="item" class="w-[100%] mb-2 !hidden md:!block" :class="{ '!w-[50%]': item == 4 }" />
           </div>
         </div>
-		<div class="flex md:!hidden">
-			<el-skeleton-item variant="button" v-for="item in 3" :key="item" class="!w-[33.33%] mr-2 last:mr-0" />
-		</div>
+        <div class="flex md:!hidden">
+          <el-skeleton-item variant="button" v-for="item in 3" :key="item" class="!w-[33.33%] mr-2 last:mr-0" />
+        </div>
         <div style="margin-top: 10px">
           <el-skeleton-item v-for="item in 5" :key="item" variant="text" class="!hidden md:!inline-block" style="width: 20%; height: 34px" />
           <div class="flex mb-2 justify-between items-center" v-for="item in 8" :key="item">

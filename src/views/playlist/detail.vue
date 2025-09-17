@@ -4,7 +4,7 @@
       <Playlist ref="tableRef" showSkeleton :loading="loading" :data="data" :tableProps="{ height: config.isMobile ? null : 'calc(100vh - 300px)', showHeader: !config.isMobile }" :show-actions="true">
         <template #header>
           <div class="flex flex-col items-center md:flex-row md:items-start mb-3 min-h-[100px] w-full md:min-h-[100px] relative rounded overflow-hidden" element-loading-custom-class="backdrop-blur !z-99">
-            <Image v-if="data.info.cover_img_url || '/logo.svg'" :src="data.info.cover_img_url" :size="160" class="h-[160px] w-[160px] rounded"></Image>
+            <Image v-if="data.info.cover_img_url || '/logo.svg'" :src="data.info.cover_img_url" :size="160" class="h-[150px] w-[150px] rounded"></Image>
             <div class="info md:ml-4 p-2 text-center md:text-left rounded overflow-hidden md:p-0 flex-1 h-full w-full md:relative backdrop-blur-2xl md:backdrop-blur-none left-0 top-0 right-0 flex flex-col justify-center md:justify-start">
               <div class="title text-xl mb-2 px-2">{{ data.info.title }}</div>
               <div v-if="data.info.desc" class="hidden md:block">
