@@ -222,9 +222,9 @@ const handlePlayAll = () => {
     })
     .catch(() => {})
 }
-const handlePlay = (row) => {
+const handlePlay = (row, type) => {
   setPlayData({ playIndex: playData.playlist?.findIndex((item) => item.id == row.id), playlist: [row, ...playData.playlist].filter((item, index, self) => self.findIndex((i) => i.id == item.id) == index) })
-  play(row)
+  play(row, type)
 }
 const toggleCollect = () => {
   if (collectStore.has(data.value.info.id)) collectStore.remove(data.value.info.id)

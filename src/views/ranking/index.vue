@@ -69,7 +69,7 @@
           ref="playlistRef"
           :showHeader="!config.isMobile"
           :data="{ info: playlistInfo, tracks: playlist, id: playlistInfo.id, type }"
-          :tableProps="{ height: config.isMobile ? 'calc(100vh - 228px)' : 'calc(100vh - 190px)', showHeader: !config.isMobile }"
+          :tableProps="{ height: scrollStyle.height, showHeader: !config.isMobile }"
         >
           <template #action>
             <div class="justify-end items-center mb-2" v-if="playlistRef && !config.isMobile">
@@ -157,7 +157,6 @@ import { useConfigStore } from '@/stores/config'
 import { useCollectStore } from '@/stores/collect'
 import { useRouter } from 'vue-router'
 const router = useRouter()
-const { config } = useConfigStore()
 const collectStore = useCollectStore()
 const { proxy } = getCurrentInstance()
 const $apiUrl = proxy.$apiUrl
@@ -171,10 +170,12 @@ const keyword = ref('')
 const type = ref('qq')
 const ctype = ref('toplist')
 const activePlayIndex = ref('0')
-const types = computed(() => config.types)
+const config = computed(() => useConfigStore().config)
+const types = computed(() => useConfigStore().config.types)
 const cates = ref({})
 const playlistInfo = ref({})
 const scrollbarRef = ref(null)
+const scrollStyle = computed(() => ({ height: config.value.isMobile ? (config.value.showTab ? (config.value.showPlyerBar ? `calc(100vh - 228px)` : `calc(100vh - 168px)`) : !config.value.showPlyerBar ? `calc(100vh - 113px)` : `calc(100vh - 180px)`) : `calc(100vh - 190px)` }))
 const fetchData = () => {
   pageLoading.value = true
   loading.value = true
@@ -225,7 +226,7 @@ const fetchPlayList = async (id) => {
 const onAction = (command, row) => {
   switch (command) {
     case 'play':
-      playlistRef.value?.handlePlay(row)
+      playlistRef.value?.handlePlay(row, type.value)
       break
     case 'star':
       collectStore.has(row.id, 'song')
