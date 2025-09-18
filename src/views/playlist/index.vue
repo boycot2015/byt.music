@@ -115,8 +115,8 @@
     <GridList :loading="loading" :height="'calc(100vh - 36vh - 235px)'" :playlist="playlist" :type="type" :ctype="ctype" ref="gridRef">
       <template #pagination>
         <div class="flex justify-center md:justify-end my-2">
-          <el-pagination class="!hidden md:!flex" layout="total, prev, pager, next, jumper, ->" :total="total" v-model:current-page="currentPage" @current-change="fetchListData" />
-          <el-pagination class="!flex md:!hidden" layout="total, prev, next, jumper, ->" :total="total" v-model:current-page="currentPage" @current-change="fetchListData" />
+          <el-pagination class="!hidden md:!flex" layout="total, prev, pager, next, jumper, ->" :total="total" v-model:current-page="currentPage" v-model:page-size="pageSize" @current-change="fetchListData" />
+          <el-pagination class="!flex md:!hidden" layout="total, prev, next, jumper, ->" :total="total" v-model:current-page="currentPage" v-model:page-size="pageSize" @current-change="fetchListData" />
         </div>
       </template>
     </GridList>
@@ -172,6 +172,7 @@ const modalVisible = ref(false)
 const total = ref(0)
 const hasNextPage = ref(false)
 const currentPage = ref(route.query.page ? Number(route.query.page) : 1)
+const pageSize = ref(30)
 const gridRef = ref(null)
 const ctypeObj = ref({})
 const fetchData = (el) => {
@@ -210,7 +211,7 @@ const fetchCatesData = (item = { type: type.value }) => {
         cateLoading.value = false
         return
       }
-      cates.value[type.value] = [{ category: '热门', id: '', filters: res.data.recommend }, ...res.data.all]
+      cates.value[type.value] = [{ category: '热门', id: '', filters: res.data.recommend }, ...(res.data.all || [])]
       cates.value[type.value].some((val) => {
         let current = val.filters.find((el) => el.id == ctype.value)
         if (current) {
@@ -233,7 +234,7 @@ const fetchListData = (item = {}) => {
   playlist.value = new Array(12).fill('').map((_, index) => ({
     id: (index + 1).toString(),
   }))
-  fetch(`${$apiUrl}/music?type=${item.type || type.value}&offset=${currentPage.value - 1}&limit=12&id=${ctype.value}`)
+  fetch(`${$apiUrl}/music?type=${item.type || type.value}&offset=${currentPage.value - 1}&limit=${pageSize.value}&id=${ctype.value}`)
     .then((res) => res.json())
     .then((res) => {
       loading.value = false

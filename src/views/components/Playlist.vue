@@ -45,7 +45,7 @@
                 <span class="text-xs line-clamp-1">{{ data?.info?.ctime ? new Date(data?.info?.ctime).toLocaleString().split(' ')[0].replace(/\//g, '-') : '--' }}</span>
                 <el-divider class="!border-l-[var(--color-text)]" direction="vertical" />
               </div>
-              <div class="text-xs line-clamp-1 hidden lg:flex" v-if="data?.info?.play_count">
+              <div class="text-xs line-clamp-1 hidden lg:flex items-center" v-if="data?.info?.play_count">
                 <span>{{ data?.info?.play_count ? (data?.info.play_count > 10000 ? (data?.info?.play_count / 10000).toFixed(1) + '万次播放' : data?.info.play_count + '次播放') : '--' }}</span>
                 <el-divider class="!border-l-[var(--color-text)]" direction="vertical" />
               </div>
