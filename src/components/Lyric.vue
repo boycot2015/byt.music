@@ -62,7 +62,7 @@ const setSlider = (index) => {
     }
     top &&
       scrollbar.value.scrollTo({
-        top: top + 300,
+        top: top + (config.isMobile ? 60 : 100),
         left: 0,
         behavior: 'smooth',
       })

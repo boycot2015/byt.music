@@ -217,13 +217,13 @@ const handlePlayAll = () => {
   })
     .then(() => {
       tableRef.value?.setScrollTop(0)
-      setPlayData({ playIndex: 0, playlist: data.value.tracks })
+      setPlayData({ playIndex: 0, playlist: data.value.tracks.map((el) => ({ ...el, source: data.value.type || data.value.info.type || route.query.type })) })
       play(data.value.tracks[0], data.value.type || data.value.info.type || route.query.type)
     })
     .catch(() => {})
 }
 const handlePlay = (row, type) => {
-  setPlayData({ playIndex: playData.playlist?.findIndex((item) => item.id == row.id), playlist: [row, ...playData.playlist].filter((item, index, self) => self.findIndex((i) => i.id == item.id) == index) })
+  setPlayData({ playIndex: playData.playlist?.findIndex((item) => item.id == row.id), playlist: [{ ...row, source: data.value.type || data.value.info.type || route.query.type }, ...playData.playlist].filter((item, index, self) => self.findIndex((i) => i.id == item.id) == index) })
   play(row, type)
 }
 const toggleCollect = () => {

@@ -95,7 +95,8 @@ export const usePlayerStore = defineStore(
         analyser.value.connect(audioCtx.destination)
       })
     }
-    const play = async (item = {}, type = playData.value.type || 'qq') => {
+    const play = async (item = {}, type) => {
+      item = playData.value.playlist.find((el) => el.id == item.id)
       player.value.currentTime = 0
       playData.value.lyricIndex = 0
       audioRef.value.currentTime = 0
@@ -113,7 +114,7 @@ export const usePlayerStore = defineStore(
       playData.value.img_url = item.img_url
       playData.value.singer = item.singer || item.artist
       playData.value.album = item.album || item.album_name
-      fetch(`${apiUrl}/music/lyric?id=${item.id}&type=${type}&keyword=${item.title}`)
+      fetch(`${apiUrl}/music/lyric?id=${item.id}&type=${type||item.source}&keyword=${item.title}`)
         .then((res) => res.json())
         .then((data) => {
           player.value.lyricLoading = false
@@ -123,19 +124,20 @@ export const usePlayerStore = defineStore(
             return playData.value?.lyric
               ?.trim()
               ?.replace(/\r\n/g, '\n').split('\n')
-              .filter((_) => _ && _.split(']')[1])
+              // .filter((_) => _ && _.split(']')[1])
+              .filter((_) => _ && (_.split(']')[1] || _)).map((el, index) => el.indexOf('[') === -1 ? `[00:${index}]${el}` : el)
           })          
           setPlayData({
             lyricList: lyricArr,
             lyricIndex: 0
           })
         })
-      let url = `${apiUrl}/music/url?id=${item.id}&type=${type}&quality=${player.value.quality}`
+      let url = `${apiUrl}/music/url?id=${item.id}&type=${type||item.source}&quality=${player.value.quality}`
       if (source.value.id && source.value.apiKey) url += `&apiUrl=${source.value.apiUrl}&apiKey=${source.value.apiKey}`
       fetch(url)
         .then((res) => res.json())
         .then((data) => {
-          if (!data.data) {
+          if (!data.data || (typeof data.data == 'object' && !data.data?.url)) {
             playData.value.paused = true
             ElMessage({
               type: 'error',
@@ -144,9 +146,10 @@ export const usePlayerStore = defineStore(
               message: '获取歌曲失败，无法播放此歌曲~',
             })
             playData.value.url = ''
+            audioRef.value.pause()
             return false
           }
-          playData.value.url = data.data
+          playData.value.url = data.data?.url || data.data
           player.value.muted = false
           player.value.paused = false
           audioRef.value.src = playData.value.url
