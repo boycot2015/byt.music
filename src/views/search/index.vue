@@ -55,10 +55,10 @@
       header-class="!pl-0 mb-2"
       action-class="mt-2"
       :loading="loading"
-      :key="keyword"
+      :key="keyword || playlist.length + ''"
       :data="{ info: { id: keyword, total_song_num: total || playlist.length }, tracks: playlist }"
       :tableEvents="{ rowClick: (row) => stype != '0' && router.push({ path: '/playlist/' + row.id, query: { type } }) }"
-      :tableProps="{ height: config.isMobile ? 'auto' : 'calc(100vh - 380px)', rowClassName: 'cursor-pointer', showHeader: !config.isMobile }"
+      :tableProps="{ height: config.isMobile ? null : 'calc(100vh - 380px)', rowClassName: 'cursor-pointer', showHeader: !config.isMobile }"
     >
       <template #action>
         <div class="relative flex-1 flex items-center justify-between" :class="{ '!justify-end': stype != '0' }">
@@ -160,20 +160,21 @@ const onSearch = async () => {
       loading.value = false
     })
   let templist = []
-  templist = results.result.map((el) => {
-    if (!el.duration || typeof el.duration !== 'number') return { ...el, duration: el.duration || '--' }
-    let duration = Math.floor(el.duration / 60 / 1000) + ':' + (el.duration % 60 > 9 ? el.duration % 60 : '0' + (el.duration % 60))
-    if (Math.floor(el.duration / 60) < 10) {
-      duration = '0' + duration
-    }
-    return { ...el, duration: el.durationStr ? el.durationStr : duration || '--' }
-  })
-  hasNextPage.value = results.hasMore
-  total.value = results.total
+  templist =
+    results?.result?.map((el) => {
+      if (!el.duration || typeof el.duration !== 'number') return { ...el, duration: el.duration || '--' }
+      let duration = Math.floor(el.duration / 60 / 1000) + ':' + (el.duration % 60 > 9 ? el.duration % 60 : '0' + (el.duration % 60))
+      if (Math.floor(el.duration / 60) < 10) {
+        duration = '0' + duration
+      }
+      return { ...el, duration: el.durationStr ? el.durationStr : duration || '--' }
+    }) || []
+  hasNextPage.value = results?.hasMore || false
+  total.value = results?.total || 0
   loading.value = false
   cates.value.map((el) => {
     if (el.value === stype.value) {
-      el.total = results.total
+      el.total = results?.total || 0
     }
   })
   if (config.isMobile) {

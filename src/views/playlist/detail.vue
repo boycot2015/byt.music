@@ -131,7 +131,7 @@ onActivated(() => {
 const onAction = (command, row) => {
   switch (command) {
     case 'play':
-      tableRef.value?.handlePlay(row)
+      tableRef.value?.handlePlay(row, route.query.type)
       break
     case 'star':
       collectStore.has(row.id, 'song')

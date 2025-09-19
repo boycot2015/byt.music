@@ -218,7 +218,7 @@ const handlePlayAll = () => {
     .then(() => {
       tableRef.value?.setScrollTop(0)
       setPlayData({ playIndex: 0, playlist: data.value.tracks })
-      play(data.value.tracks[0])
+      play(data.value.tracks[0], data.value.type || data.value.info.type || route.query.type)
     })
     .catch(() => {})
 }
@@ -236,6 +236,8 @@ watch(playIndex, () => {
 watch(tracks, () => {
   currentPage.value = 1
   pageLoading.value = false
+  tableRef.value?.doLayout()
+  setHeight()
   tableData.value = props.data.tracks?.slice(0, pageSize.value) || []
 })
 
@@ -267,14 +269,17 @@ const loadMore = (params) => {
     loadData()
   }
 }
+const setHeight = () => {
+  if (tableRef.value === null) return
+  let parentTop = getParentTop(tableRef.value.$el)
+  tableHeight.value = 'calc(100vh - ' + (parentTop + 100 + (slots.pagination ? 30 : 0)) + 'px)'
+  window.addEventListener('resize', () => {
+    tableHeight.value = 'calc(100vh - ' + (parentTop + 100 + (slots.pagination ? 30 : 0)) + 'px)'
+  })
+}
 onMounted(() => {
   nextTick(() => {
-    if (tableRef.value === null) return
-    let parentTop = getParentTop(tableRef.value.$el)
-    tableHeight.value = 'calc(100vh - ' + (parentTop + 100 + (slots.pagination ? 30 : 0)) + 'px)'
-    window.addEventListener('resize', () => {
-      tableHeight.value = 'calc(100vh - ' + (parentTop + 100 + (slots.pagination ? 30 : 0)) + 'px)'
-    })
+    setHeight()
   })
 })
 defineExpose({

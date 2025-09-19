@@ -113,7 +113,7 @@ export const usePlayerStore = defineStore(
       playData.value.img_url = item.img_url
       playData.value.singer = item.singer || item.artist
       playData.value.album = item.album || item.album_name
-      fetch(`${apiUrl}/music/lyric?id=${item.id}&type=${type}`)
+      fetch(`${apiUrl}/music/lyric?id=${item.id}&type=${type}&keyword=${item.title}`)
         .then((res) => res.json())
         .then((data) => {
           player.value.lyricLoading = false
