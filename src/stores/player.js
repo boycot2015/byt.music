@@ -124,8 +124,8 @@ export const usePlayerStore = defineStore(
             return playData.value?.lyric
               ?.trim()
               ?.replace(/\r\n/g, '\n').split('\n')
-              // .filter((_) => _ && _.split(']')[1])
-              .filter((_) => _ && (_.split(']')[1] || _)).map((el, index) => el.indexOf('[') === -1 ? `[00:${index}]${el}` : el)
+              .filter((_) => _ && _.split(']')[1])
+              // .filter((_) => (_ && (_.split(']')[1]) || _)).map((el, index) => el.indexOf('[') === -1 ? `[00:${index}]${el}` : el).filter(el => el != '--')
           })          
           setPlayData({
             lyricList: lyricArr,
