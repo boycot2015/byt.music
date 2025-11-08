@@ -17,7 +17,9 @@
           </div>
         </div>
         <div style="margin-top: 10px">
-          <el-skeleton-item v-for="item in 5" :key="item" variant="text" class="!hidden md:!inline-block" style="width: 20%; height: 34px" />
+          <div v-if="showHeader">
+            <el-skeleton-item v-for="item in 5" :key="item" variant="text" class="!hidden md:!inline-block" style="width: 20%; height: 34px" />
+          </div>
           <div class="flex mb-2 justify-between items-center" v-for="item in showHeader ? 8 : 11" :key="item">
             <el-skeleton-item variant="button" style="width: 5%; margin-right: 5px" />
             <div class="flex-1">

@@ -3,22 +3,42 @@
     <div class="banner md:px-2">
       <el-skeleton :loading="bannerLoading" animated class="w-full h-[20vh] md:h-[36vh]">
         <template #template>
-          <el-carousel ref="bannerCarousel" :height="config.isMobile ? '20vh' : '36vh'" :indicator-position="!config.isMobile ? '' : 'none'" :interval="4000" :type="!config.isMobile ? 'card' : ''" arrow="hover">
-            <el-carousel-item v-for="item in 6" :key="item">
-              <el-skeleton-item variant="image" class="!h-[20vh] md:!h-[36vh] !rounded-lg"></el-skeleton-item>
-            </el-carousel-item>
-          </el-carousel>
+          <el-row :gutter="20">
+            <el-col :span="24" :md="16" :lg="18">
+              <el-carousel ref="bannerCarousel" :height="config.isMobile ? '20vh' : '36vh'" :indicator-position="!config.isMobile ? '' : 'none'" :interval="4000" :type="!config.isMobile ? 'card' : ''" arrow="hover">
+                <el-carousel-item v-for="item in 6" :key="item">
+                  <el-skeleton-item variant="image" class="!h-[20vh] md:!h-[36vh] !rounded-lg"></el-skeleton-item>
+                </el-carousel-item>
+              </el-carousel>
+            </el-col>
+            <el-col :span="0" :md="8" :lg="6">
+              <el-card body-class="h-[36vh]">
+                <Playlist :showSkeleton="true" :loading="bannerLoading" class="ranking-playlist-detail" ref="playlistRef" :showHeader="false" :data="{ info: {}, tracks: toplist, id: '0', type }" :tableProps="{ showHeader: false }" />
+              </el-card>
+            </el-col>
+          </el-row>
         </template>
         <template #default>
-          <el-carousel :key="config.isMobile ? 'mobile' : 'desktop'" :pause-on-hover="false" ref="bannerCarousel" :height="config.isMobile ? '20vh' : '36vh'" :indicator-position="!config.isMobile ? '' : 'none'" :interval="4000" :type="!config.isMobile ? 'card' : ''" arrow="hover">
-            <el-carousel-item v-for="(item, index) in banner" :key="index">
-              <div @click="(e) => bannerCarousel && bannerCarousel.activeIndex == index && handleBannerClick(e, item)" class="relative">
-                <el-image loading="lazy" v-if="config.isMobile" :src="item.imageUrl" alt="" class="rounded-lg h-[20vh] w-full" fit="cover" />
-                <el-image v-else lazy :src="item.imageUrl" alt="" class="rounded-lg h-[35vh] w-full" fit="cover" />
-                <el-tag class="absolute right-0 bottom-1.5 md:bottom-8" v-if="item.typeTitle">{{ item.typeTitle }}</el-tag>
-              </div>
-            </el-carousel-item>
-          </el-carousel>
+          <el-row :gutter="20">
+            <el-col :span="24" :md="16" :lg="18">
+              <el-carousel :key="config.isMobile ? 'mobile' : 'desktop'" :pause-on-hover="false" ref="bannerCarousel" :height="config.isMobile ? '20vh' : '36vh'" :indicator-position="!config.isMobile ? '' : 'none'" :interval="4000" :type="!config.isMobile ? 'card' : ''" arrow="hover">
+                <el-carousel-item v-for="(item, index) in banner" :key="index">
+                  <div @click="(e) => bannerCarousel && bannerCarousel.activeIndex == index && handleBannerClick(e, item)" class="relative">
+                    <el-image loading="lazy" v-if="config.isMobile" :src="item.imageUrl" alt="" class="rounded-lg h-[20vh] w-full" fit="cover" />
+                    <el-image v-else lazy :src="item.imageUrl" alt="" class="rounded-lg h-[35vh] w-full" fit="cover" />
+                    <el-tag class="absolute right-0 bottom-1.5 md:bottom-8" v-if="item.typeTitle">{{ item.typeTitle }}</el-tag>
+                  </div>
+                </el-carousel-item>
+              </el-carousel>
+            </el-col>
+            <el-col :span="0" :md="8" :lg="6">
+              <el-card :header="`今日推荐·${toplistTitle}`" body-class="!p-2 !py-0">
+                <el-scrollbar style="height: 27vh">
+                  <Playlist :loading="toplistLoading" :showSkeleton="true" class="ranking-playlist-detail" ref="playlistRef" :showHeader="false" :data="{ info: {}, tracks: toplist, id: '0', type }" :tableProps="{ showHeader: false }" />
+                </el-scrollbar>
+              </el-card>
+            </el-col>
+          </el-row>
         </template>
       </el-skeleton>
     </div>
@@ -152,6 +172,7 @@
 import { useRoute } from 'vue-router'
 import { useConfigStore } from '@/stores/config'
 import GridList from '@/views/components/GridList.vue'
+import Playlist from '@/views/components/Playlist.vue'
 defineOptions({ name: 'playlist' })
 const { config } = useConfigStore()
 const { proxy } = getCurrentInstance()
@@ -175,13 +196,18 @@ const currentPage = ref(route.query.page ? Number(route.query.page) : 1)
 const pageSize = ref(30)
 const gridRef = ref(null)
 const ctypeObj = ref({})
+const toplist = ref([])
+const toplistTitle = ref('热歌榜')
+const toplistLoading = ref(true)
 const fetchData = (el) => {
   const current = el ? { type: el } : types.value.find((el) => el.type == type.value)
   loading.value = true
+  toplistLoading.value = true
   currentPage.value = 1
   ctype.value = !el ? route.query.ctype || '' : ''
   fetchCatesData(current)
   fetchListData(current)
+  !config.isMobile && fetchListData({ id: 'toplist' })
 }
 const fetchBannerData = (item) => {
   banner.value = [1, 2, 3].concat(new Array(3).fill('')).map((_, index) => ({
@@ -229,21 +255,41 @@ const fetchListData = (item = {}) => {
     item = {}
   }
   gridRef.value?.setScrollTop(0)
-  ctype.value = item.id || ctype.value
+  if (item.id != 'toplist') {
+    ctype.value = item.id || ctype.value
+  }
   loading.value = true
+  toplistLoading.value = true
   playlist.value = new Array(12).fill('').map((_, index) => ({
     id: (index + 1).toString(),
   }))
-  fetch(`${$apiUrl}/music?type=${item.type || type.value}&offset=${currentPage.value - 1}&limit=${pageSize.value}&id=${ctype.value}`)
+  fetch(`${$apiUrl}/music?type=${item.type || type.value}&offset=${currentPage.value - 1}&limit=${pageSize.value}&id=${type.value == 'netease' && item.id == 'toplist' ? '排行榜' : item.id || ctype.value}`)
     .then((res) => res.json())
     .then((res) => {
-      loading.value = false
+      if (item.id == 'toplist') {
+        let current = res.data?.result.find((el) => el.title.includes('热歌榜')) || res.data?.result[0]
+        toplistTitle.value = current?.title || '热歌榜'
+        fetchPlayList(current?.id)
+        return
+      }
       if (!res.data) return
       total.value = res.data.total || 999
       if (currentPage.value) playlist.value = res.data.result
       hasNextPage.value = !!res.data.hasNextPage
+      loading.value = false
     })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+const fetchPlayList = async (id) => {
+  let results = await fetch(`${$apiUrl}/music/detail?type=${type.value}&cate=${ctype.value}&id=${id}`)
+    .then((res) => res.json())
+    .then((res) => res.data || {})
     .catch(() => {})
+  toplistLoading.value = false
+  toplist.value = results.tracks || []
+  // console.log(toplist.value, '12312')
 }
 const handleBannerClick = (e, item) => {
   e.stopPropagation()
